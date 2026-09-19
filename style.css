@@ -2095,3 +2095,19 @@ footer p {
   .map-main-grid{grid-template-columns:1fr;grid-template-areas:"core" "flekibard" "as" "flassi" "trust"}
   .map-services-grid{grid-template-columns:1fr 1fr}
 }
+
+
+/* Ecosystem Map — exact center alignment */
+.ecosystem-map-v2 .map-main-grid{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)!important;
+  grid-template-areas:
+    "flekibard core as"
+    "flassi core trust";
+  justify-items:stretch;
+}
+.ecosystem-map-v2 .map-core-card{
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  justify-self:stretch!important;
+}
