@@ -1522,3 +1522,8 @@ footer p {
   .map-node-bottom { bottom:24%; }
   .map-strip { bottom:100px; }
 }
+
+
+#projectModalLink[hidden] {
+  display: none !important;
+}
