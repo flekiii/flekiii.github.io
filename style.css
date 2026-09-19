@@ -856,12 +856,13 @@ a {
 
 .project-modal-link {
   position: relative;
-  z-index: 2;
+  z-index: 10;
   display: inline-flex;
   margin-top: 24px;
   min-height: 42px;
   pointer-events: auto;
   cursor: pointer;
+  border: 1px solid var(--border);
 }
 
 .support {
