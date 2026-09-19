@@ -203,178 +203,119 @@
       </div>
     </section>
 
-    <section id="currently" class="section currently">
-      <div class="section-heading">
-        <span>02</span>
-        <h2 data-i18n="currentlyTitle">Currently</h2>
-      </div>
-
-      <div class="currently-grid">
-        <article class="current-card">
-          <span class="current-label" data-i18n="currentLearning">LEARNING</span>
-          <strong>JavaScript</strong>
-          <p data-i18n="currentLearningDesc">Building real projects while learning the language.</p>
-        </article>
-
-        <article class="current-card">
-          <span class="current-label" data-i18n="currentBuilding">BUILDING</span>
-          <strong>Flekibard</strong>
-          <p data-i18n="currentBuildingDesc">Turning the messenger idea into a real product.</p>
-        </article>
-
-        <article class="current-card">
-          <span class="current-label" data-i18n="currentPlanning">PLANNING</span>
-          <strong>flekiii ecosystem</strong>
-          <p data-i18n="currentPlanningDesc">Connecting platforms, services and TRUE OS into one ecosystem.</p>
-        </article>
-
-        <article class="current-card">
-          <span class="current-label">PLATFORM</span>
-          <strong>BlackArch Linux</strong>
-          <p data-i18n="currentPlatformDesc">My main development environment.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="roadmap" class="section roadmap">
-      <div class="section-heading">
-        <span>03</span>
-        <h2 data-i18n="roadmapTitle">Roadmap</h2>
-      </div>
-
-      <div class="roadmap-line">
-        <article class="roadmap-item">
-          <span class="roadmap-dot active"></span>
-          <div class="roadmap-year">NOW</div>
-          <h3>2026</h3>
-          <p data-i18n="roadmap2026">JavaScript learning, Flekibard development and foundation work for the ecosystem.</p>
-        </article>
-
-        <article class="roadmap-item">
-          <span class="roadmap-dot"></span>
-          <div class="roadmap-year">NEXT</div>
-          <h3>2027</h3>
-          <p data-i18n="roadmap2027">Expand the ecosystem with new platforms, services and deeper project development.</p>
-        </article>
-
-        <article class="roadmap-item">
-          <span class="roadmap-dot"></span>
-          <div class="roadmap-year">FUTURE</div>
-          <h3 data-i18n="roadmapFutureTitle">Full ecosystem</h3>
-          <p data-i18n="roadmapFuture">Bring the major platforms and TRUE OS directions together into one independent ecosystem.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="about" class="section about">
-      <div class="section-heading">
-        <span>04</span>
-        <h2 data-i18n="aboutTitle">About</h2>
-      </div>
-
-      <div class="about-content">
-        <p data-i18n="about1">
-          I'm <strong>flekiii</strong>, a 15-year-old independent developer
-          building my own projects from the ground up.
-        </p>
-
-        <p data-i18n="about2">
-          I'm learning by actually making things: designing interfaces,
-          writing code, solving problems and turning ideas into working
-          software instead of keeping them as concepts.
-        </p>
-
-        <p data-i18n="about3">
-          I'm working toward a much larger ecosystem of software, platforms,
-          services and operating systems.
-        </p>
-
-        <p data-i18n="about4">
-          I like technology that gives people freedom and room to customize
-          things for themselves. My goal is to keep building, keep learning
-          and eventually turn these ideas into real products used by people.
-        </p>
-      </div>
-    </section>
-
-    <section id="profile" class="section profile">
-      <div class="profile-card">
-        <div class="profile-main">
-          <div class="profile-avatar">f.</div>
+    <section id="overview" class="section overview">
+      <div class="overview-shell">
+        <div class="overview-header">
           <div>
-            <div class="eyebrow" data-i18n="profileEyebrow">DEVELOPER PROFILE</div>
-            <h2>flekiii</h2>
-            <p data-i18n="profileRole">15 years old · Independent Developer</p>
+            <div class="eyebrow" data-i18n="overviewEyebrow">INSIDE FLEKIII</div>
+            <h2 data-i18n="overviewTitle">One place for the <span class="accent">bigger picture.</span></h2>
+          </div>
+
+          <div class="overview-tabs" role="tablist" aria-label="Developer overview">
+            <button class="overview-tab active" type="button" role="tab" aria-selected="true" data-tab="currently" data-i18n="tabCurrently">Currently</button>
+            <button class="overview-tab" type="button" role="tab" aria-selected="false" data-tab="roadmap" data-i18n="tabRoadmap">Roadmap</button>
+            <button class="overview-tab" type="button" role="tab" aria-selected="false" data-tab="ecosystem" data-i18n="tabEcosystem">Ecosystem</button>
+            <button class="overview-tab" type="button" role="tab" aria-selected="false" data-tab="about" data-i18n="tabAbout">About</button>
           </div>
         </div>
 
-        <div class="profile-tags">
-          <span>💻 Software</span>
-          <span>🌐 Platforms</span>
-          <span>🔐 Privacy</span>
-          <span>🖤 Freedom</span>
+        <div class="overview-panel active" data-panel="currently">
+          <div class="overview-grid">
+            <article class="overview-card">
+              <span class="overview-label" data-i18n="currentLearning">LEARNING</span>
+              <strong>JavaScript</strong>
+              <p data-i18n="currentLearningDesc">Building real projects while learning the language.</p>
+            </article>
+
+            <article class="overview-card">
+              <span class="overview-label" data-i18n="currentBuilding">BUILDING</span>
+              <strong>Flekibard</strong>
+              <p data-i18n="currentBuildingDesc">Turning the messenger idea into a real product.</p>
+            </article>
+
+            <article class="overview-card">
+              <span class="overview-label" data-i18n="currentPlanning">PLANNING</span>
+              <strong>flekiii ecosystem</strong>
+              <p data-i18n="currentPlanningDesc">Connecting platforms, services and TRUE OS into one ecosystem.</p>
+            </article>
+
+            <article class="overview-card">
+              <span class="overview-label" data-i18n="currentPlatform">PLATFORM</span>
+              <strong>BlackArch Linux</strong>
+              <p data-i18n="currentPlatformDesc">My main development environment.</p>
+            </article>
+          </div>
         </div>
 
-        <p class="profile-text" data-i18n="profileText">
-          Building an independent digital ecosystem from the ground up.
-        </p>
-      </div>
-    </section>
+        <div class="overview-panel" data-panel="roadmap">
+          <div class="roadmap-grid">
+            <article class="roadmap-card active">
+              <span class="roadmap-label">NOW</span>
+              <strong>2026</strong>
+              <p data-i18n="roadmap2026">JavaScript learning, Flekibard development and foundation work for the ecosystem.</p>
+            </article>
 
-    <section id="support" class="support">
-      <div class="support-inner">
-        <div class="eyebrow" data-i18n="supportEyebrow">KEEP BUILDING</div>
-        <h2 data-i18n="supportTitle">Support my work.</h2>
-        <p data-i18n="supportText">
-          If you like what I'm building and want to help me keep developing,
-          you can support the projects directly.
-        </p>
-        <div class="support-note-row">
-          <span>♡</span>
-          <small data-i18n="supportExtra">Every contribution helps me spend more time building.</small>
-        </div>
-        <a class="button primary support-button"
-           href="https://send.monobank.ua/jar/91HH8iY31q"
-           target="_blank"
-           rel="noopener noreferrer"
-           data-i18n="supportButton">
-          ❤️ SUPPORT FLEKIII
-        </a>
-        <small data-i18n="supportNote">Support link opens Monobank Jar.</small>
-      </div>
-    </section>
-  </main>
+            <article class="roadmap-card">
+              <span class="roadmap-label">NEXT</span>
+              <strong>2027</strong>
+              <p data-i18n="roadmap2027">Expand the ecosystem with new platforms, services and deeper project development.</p>
+            </article>
 
-    <section id="ecosystem" class="section ecosystem">
-      <div class="section-heading">
-        <span>05</span>
-        <h2 data-i18n="ecosystemTitle">flekiii Ecosystem</h2>
-      </div>
-
-      <div class="ecosystem-map">
-        <div class="eco-core">
-          <span>flekiii</span>
-          <small data-i18n="ecosystemCore">independent ecosystem</small>
+            <article class="roadmap-card">
+              <span class="roadmap-label">FUTURE</span>
+              <strong data-i18n="roadmapFutureTitle">Full ecosystem</strong>
+              <p data-i18n="roadmapFuture">Bring the major platforms and TRUE OS directions together into one independent ecosystem.</p>
+            </article>
+          </div>
         </div>
 
-        <div class="eco-group">
-          <span>💬 Flekibard</span>
-          <span>🤖 AS</span>
-          <span>💰 TRUSTmoney</span>
-          <span>🎬 flassi</span>
+        <div class="overview-panel" data-panel="ecosystem">
+          <div class="ecosystem-layout">
+            <div class="ecosystem-center">
+              <span>flekiii</span>
+              <small data-i18n="ecosystemCore">independent ecosystem</small>
+            </div>
+
+            <div class="ecosystem-cluster">
+              <span>Flekibard</span>
+              <span>AS</span>
+              <span>TRUSTmoney</span>
+              <span>flassi</span>
+            </div>
+
+            <div class="ecosystem-cluster">
+              <span>VPN</span>
+              <span>Private Browser</span>
+              <span>Search</span>
+              <span>Cloud</span>
+            </div>
+
+            <div class="ecosystem-cluster">
+              <span>TRUE OS · PC</span>
+              <span>TRUE OS · Redmi 12C</span>
+              <span>TRUE OS · iPhone 16</span>
+            </div>
+          </div>
         </div>
 
-        <div class="eco-group">
-          <span>🔐 VPN</span>
-          <span>🌐 Browser</span>
-          <span>🔎 Search</span>
-          <span>☁️ Cloud</span>
-        </div>
+        <div class="overview-panel" data-panel="about">
+          <div class="about-layout">
+            <div class="profile-mini">
+              <div class="profile-avatar">f.</div>
+              <div>
+                <div class="eyebrow" data-i18n="profileEyebrow">DEVELOPER PROFILE</div>
+                <h3>flekiii</h3>
+                <p data-i18n="profileRole">15 years old · Independent Developer</p>
+              </div>
+            </div>
 
-        <div class="eco-group">
-          <span>🖥️ TRUE OS · PC</span>
-          <span>📱 TRUE OS · Redmi 12C</span>
-          <span>🍎 TRUE OS · iPhone 16</span>
+            <div class="about-copy">
+              <p data-i18n="about1">I'm <strong>flekiii</strong>, a 15-year-old independent developer building my own projects from the ground up.</p>
+              <p data-i18n="about2">I'm learning by actually making things: designing interfaces, writing code, solving problems and turning ideas into working software instead of keeping them as concepts.</p>
+              <p data-i18n="about3">I'm working toward a much larger ecosystem of software, platforms, services and operating systems.</p>
+              <p data-i18n="about4">I like technology that gives people freedom and room to customize things for themselves. My goal is to keep building, keep learning and eventually turn these ideas into real products used by people.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
