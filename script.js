@@ -627,4 +627,13 @@ document.addEventListener("keydown", (event) => {
 const savedLanguage = localStorage.getItem("flekiii-language");
 setLanguage(savedLanguage || "en");
 updateYear();
+document.querySelectorAll("[data-map-project]").forEach((node) => {
+  node.addEventListener("click", (event) => {
+    if (node.dataset.mapProject === "flassi") {
+      event.preventDefault();
+      window.location.assign("/flassi/?v=5");
+    }
+  });
+});
+
 loadGithubActivity();
