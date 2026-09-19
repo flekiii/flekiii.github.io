@@ -225,6 +225,26 @@ const translations = {
   }
 };
 
+translations.en.mapTitle = "THE FLEKIII ECOSYSTEM";
+translations.en.mapSubtitle = "Projects, platforms and infrastructure connected as one direction.";
+translations.en.mapCore = "independent ecosystem";
+translations.en.mapMessenger = "Messenger";
+translations.en.mapAI = "AI";
+translations.en.mapVideo = "Video";
+translations.en.mapFinance = "Finance";
+translations.en.mapServices = "SERVICES";
+translations.en.mapOperating = "TRUE OS · ONE FAMILY";
+translations.en.mapOperatingSub = "PC + Redmi 12C + iPhone 16";
+translations.uk.mapTitle = "ЕКОСИСТЕМА FLEKIII";
+translations.uk.mapSubtitle = "Проєкти, платформи та інфраструктура, об'єднані в один напрям.";
+translations.uk.mapCore = "незалежна екосистема";
+translations.uk.mapMessenger = "Месенджер";
+translations.uk.mapAI = "AI";
+translations.uk.mapVideo = "Відео";
+translations.uk.mapFinance = "Фінанси";
+translations.uk.mapServices = "СЕРВІСИ";
+translations.uk.mapOperating = "TRUE OS · ОДНА СІМ'Я";
+translations.uk.mapOperatingSub = "PC + Redmi 12C + iPhone 16";
 const projectCatalog = {
   javascript: {
     icon: "📚",
@@ -237,7 +257,7 @@ const projectCatalog = {
     icon: "🔐",
     name: "VPN",
     status: "PLANNED",
-    page: "https://flekiii.github.io/vpn/?v=2",
+    page: "https://flekiii.github.io/vpn/?v=3",
     en: "A private VPN project focused on secure and flexible network access.",
     uk: "Власний VPN-проєкт, орієнтований на безпечний та гнучкий доступ до мережі."
   },
@@ -245,7 +265,7 @@ const projectCatalog = {
     icon: "🌐",
     name: "Private Browser",
     status: "PLANNED",
-    page: "https://flekiii.github.io/browser/?v=2",
+    page: "https://flekiii.github.io/browser/?v=3",
     en: "A privacy-focused browser designed around customization and user control.",
     uk: "Приватний браузер, створений навколо кастомізації та контролю користувача."
   },
@@ -253,7 +273,7 @@ const projectCatalog = {
     icon: "🔎",
     name: "Search Engine",
     status: "PLANNED",
-    page: "https://flekiii.github.io/search/?v=2",
+    page: "https://flekiii.github.io/search/?v=3",
     en: "An independent search engine for discovering information online.",
     uk: "Власний пошуковик для пошуку та відкриття інформації в інтернеті."
   },
@@ -261,7 +281,7 @@ const projectCatalog = {
     icon: "📧",
     name: "Email Service",
     status: "PLANNED",
-    page: "https://flekiii.github.io/email/?v=2",
+    page: "https://flekiii.github.io/email/?v=3",
     en: "My own email service for private communication and a personal digital identity.",
     uk: "Власний email-сервіс для приватного спілкування та цифрової ідентичності."
   },
@@ -269,7 +289,7 @@ const projectCatalog = {
     icon: "☁️",
     name: "Cloud Drive",
     status: "PLANNED",
-    page: "https://flekiii.github.io/cloud/?v=2",
+    page: "https://flekiii.github.io/cloud/?v=3",
     en: "A private cloud storage platform inspired by the idea of an independent Google Drive alternative.",
     uk: "Власне хмарне сховище за ідеєю незалежного аналога Google Drive."
   },
@@ -277,7 +297,7 @@ const projectCatalog = {
     icon: "🎵",
     name: "Music Platform",
     status: "PLANNED",
-    page: "https://flekiii.github.io/music/?v=2",
+    page: "https://flekiii.github.io/music/?v=3",
     en: "A music platform inspired by SoundCloud for artists, uploads and discovery.",
     uk: "Власна музична платформа на кшталт SoundCloud для артистів, завантажень і відкриття нової музики."
   },
@@ -285,7 +305,7 @@ const projectCatalog = {
     icon: "🎮",
     name: "Game Platform",
     status: "PLANNED",
-    page: "https://flekiii.github.io/games/?v=2",
+    page: "https://flekiii.github.io/games/?v=3",
     en: "A dedicated platform for video games, developers and players.",
     uk: "Окрема платформа для відеоігор, розробників та гравців."
   },
@@ -293,7 +313,7 @@ const projectCatalog = {
     icon: "🤖",
     name: "AS",
     status: "PLANNED",
-    page: "https://flekiii.github.io/as/?v=2",
+    page: "https://flekiii.github.io/as/?v=3",
     en: "My own AI project and one of the core parts of the flekiii ecosystem.",
     uk: "Мій власний AI та один з основних елементів екосистеми flekiii."
   },
@@ -301,7 +321,7 @@ const projectCatalog = {
     icon: "💬",
     name: "Flekibard",
     status: "PLANNED",
-    page: "https://flekiii.github.io/flekibard/?v=2",
+    page: "https://flekiii.github.io/flekibard/?v=3",
     en: "My own messenger focused on customization, privacy and freedom.",
     uk: "Мій власний месенджер з акцентом на кастомізацію, приватність і свободу."
   },
@@ -309,7 +329,7 @@ const projectCatalog = {
     icon: "🎬",
     name: "flassi",
     status: "PLANNED",
-    page: "https://flekiii.github.io/flassi/?v=2",
+    page: "https://flekiii.github.io/flassi/?v=3",
     en: "A short-video platform for creating, watching and sharing quick vertical videos.",
     uk: "Власна платформа коротких вертикальних відео для створення, перегляду та поширення контенту."
   },
@@ -317,7 +337,7 @@ const projectCatalog = {
     icon: "💰",
     name: "TRUSTmoney",
     status: "PLANNED",
-    page: "https://flekiii.github.io/trust/?v=2",
+    page: "https://flekiii.github.io/trust/?v=3",
     en: "A future financial platform built around my own TRUST Network.",
     uk: "Майбутня фінансова платформа, побудована навколо власної TRUST Network."
   },
@@ -325,7 +345,7 @@ const projectCatalog = {
     icon: "🌐",
     name: "Private Network",
     status: "PLANNED",
-    page: "https://flekiii.github.io/network/?v=2",
+    page: "https://flekiii.github.io/network/?v=3",
     en: "A private network designed as part of the wider flekiii ecosystem.",
     uk: "Власна приватна мережа як частина більшої екосистеми flekiii."
   },
@@ -333,7 +353,7 @@ const projectCatalog = {
     icon: "🖥️",
     name: "TRUE OS · PC",
     status: "PLANNED",
-    page: "https://flekiii.github.io/true-os/?v=2",
+    page: "https://flekiii.github.io/true-os/?v=3",
     en: "My own operating system direction for personal computers.",
     uk: "Власний напрям операційної системи для персональних комп'ютерів."
   },
@@ -341,7 +361,7 @@ const projectCatalog = {
     icon: "📱",
     name: "TRUE OS · Redmi 12C",
     status: "PLANNED",
-    page: "https://flekiii.github.io/true-os/?v=2",
+    page: "https://flekiii.github.io/true-os/?v=3",
     en: "A mobile operating system direction for Redmi 12C.",
     uk: "Мобільний напрям операційної системи для Redmi 12C."
   },
@@ -349,7 +369,7 @@ const projectCatalog = {
     icon: "🍎",
     name: "TRUE OS · iPhone 16",
     status: "PLANNED",
-    page: "https://flekiii.github.io/true-os/?v=2",
+    page: "https://flekiii.github.io/true-os/?v=3",
     en: "A mobile operating system direction for iPhone 16.",
     uk: "Мобільний напрям операційної системи для iPhone 16."
   }
