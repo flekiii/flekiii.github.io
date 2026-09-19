@@ -1854,3 +1854,11 @@ footer p {
   .map-services-label{bottom:124px}.map-os-label{bottom:62px}.map-os-sub{bottom:18px}
   .changelog-timeline{padding-left:28px}.changelog-entry{grid-template-columns:1fr;gap:5px}.changelog-entry-mark{padding-left:2px}.changelog-entry-mark i{left:-22px}
 }
+
+
+/* Dedicated flassi map hit-area */
+.map-node-flassi{
+  z-index:20 !important;
+  pointer-events:auto !important;
+  cursor:pointer !important;
+}
