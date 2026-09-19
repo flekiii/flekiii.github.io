@@ -14,88 +14,148 @@
 
   <header class="nav">
     <a class="logo" href="#top">flekiii<span>.</span></a>
-    <nav>
-      <a href="#projects">Projects</a>
-      <a href="#about">About</a>
-      <a href="#support">Support</a>
-    </nav>
+
+    <div class="nav-right">
+      <nav>
+        <a href="#projects" data-i18n="navProjects">Projects</a>
+        <a href="#about" data-i18n="navAbout">About</a>
+        <a href="#support" data-i18n="navSupport">Support</a>
+      </nav>
+
+      <label class="language-picker" for="languageSelect">
+        <span>◉</span>
+        <select id="languageSelect" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="uk">UA</option>
+        </select>
+      </label>
+    </div>
   </header>
 
   <main id="top">
     <section class="hero">
-      <div class="eyebrow">INDEPENDENT DEVELOPER · 15 YEARS OLD</div>
-      <h1>Building my own<br><span>digital world.</span></h1>
-      <p class="hero-text">
+      <div class="eyebrow" data-i18n="heroEyebrow">INDEPENDENT DEVELOPER · 15 YEARS OLD</div>
+      <h1 data-i18n="heroTitle">Building my own<br><span>digital world.</span></h1>
+      <p class="hero-text" data-i18n="heroText">
         I build software, platforms and tools with a focus on freedom,
         customization and privacy.
       </p>
       <div class="hero-actions">
-        <a class="button primary" href="#projects">VIEW PROJECTS</a>
-        <a class="button secondary" href="#support">❤️ SUPPORT</a>
+        <a class="button primary" href="#projects" data-i18n="heroProjects">VIEW PROJECTS</a>
+        <a class="button secondary" href="#support" data-i18n="heroSupport">❤️ SUPPORT</a>
       </div>
     </section>
 
     <section id="projects" class="section">
       <div class="section-heading">
         <span>01</span>
-        <h2>Projects</h2>
+        <h2 data-i18n="projectsTitle">Projects</h2>
       </div>
 
       <div class="projects-grid">
-        <article class="project-card featured">
+        <article class="project-card">
           <div class="project-number">01</div>
-          <h3>Flekibard</h3>
-          <p>A customizable messenger focused on freedom, privacy and a different approach to communication.</p>
-          <span class="status">IN DEVELOPMENT</span>
+          <h3>JavaScript</h3>
+          <p data-i18n="projectJsDesc">Learning JavaScript and building practical things while improving my programming skills.</p>
+          <span class="status in-progress" data-i18n="statusProgress">IN PROGRESS</span>
         </article>
 
-        <article class="project-card">
+        <article class="project-card featured">
           <div class="project-number">02</div>
-          <h3>AS</h3>
-          <p>An AI project being developed as part of the wider flekiii ecosystem.</p>
-          <span class="status">IN DEVELOPMENT</span>
+          <h3>🔐 VPN</h3>
+          <p data-i18n="projectVpnDesc">A private VPN project focused on secure and flexible network access.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
 
         <article class="project-card">
           <div class="project-number">03</div>
-          <h3>TRUSTmoney</h3>
-          <p>A future financial platform built around the idea of a dedicated TRUST network.</p>
-          <span class="status">IN DEVELOPMENT</span>
+          <h3>🌐 Private Browser</h3>
+          <p data-i18n="projectBrowserDesc">A privacy-focused browser designed around customization and user control.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
 
         <article class="project-card">
           <div class="project-number">04</div>
-          <h3>Search</h3>
-          <p>A search platform focused on building an independent way to discover information online.</p>
-          <span class="status">PLANNED</span>
+          <h3>🔎 Search Engine</h3>
+          <p data-i18n="projectSearchDesc">An independent search engine for discovering information online.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
 
         <article class="project-card">
           <div class="project-number">05</div>
-          <h3>Video Platform</h3>
-          <p>A future video platform for publishing, discovering and sharing content.</p>
-          <span class="status">PLANNED</span>
+          <h3>📧 Email Service</h3>
+          <p data-i18n="projectEmailDesc">My own email service for private communication and a personal digital identity.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
 
         <article class="project-card">
           <div class="project-number">06</div>
-          <h3>Game Platform</h3>
-          <p>A future platform built around games, developers and the people who play them.</p>
-          <span class="status">PLANNED</span>
+          <h3>☁️ Cloud Drive</h3>
+          <p data-i18n="projectCloudDesc">A private cloud storage platform inspired by the idea of an independent Google Drive alternative.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
 
         <article class="project-card">
           <div class="project-number">07</div>
-          <h3>Mail & Cloud</h3>
-          <p>Independent communication and cloud storage services planned for the flekiii ecosystem.</p>
-          <span class="status">PLANNED</span>
+          <h3>🎵 Music Platform</h3>
+          <p data-i18n="projectMusicDesc">A music platform inspired by SoundCloud for artists, uploads and discovery.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
 
         <article class="project-card">
           <div class="project-number">08</div>
-          <h3>Music Platform</h3>
-          <p>A future platform for artists, music discovery and independent publishing.</p>
-          <span class="status">PLANNED</span>
+          <h3>🎮 Game Platform</h3>
+          <p data-i18n="projectGamesDesc">A dedicated platform for video games, developers and players.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
+        </article>
+
+        <article class="project-card">
+          <div class="project-number">09</div>
+          <h3>🤖 AS</h3>
+          <p data-i18n="projectAsDesc">My own AI project and one of the core parts of the flekiii ecosystem.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
+        </article>
+
+        <article class="project-card">
+          <div class="project-number">10</div>
+          <h3>💬 Flekibard</h3>
+          <p data-i18n="projectFlekibardDesc">My own messenger focused on customization, privacy and freedom.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
+        </article>
+
+        <article class="project-card">
+          <div class="project-number">11</div>
+          <h3>💰 TRUSTmoney</h3>
+          <p data-i18n="projectTrustDesc">A future financial platform built around my own TRUST Network.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
+        </article>
+
+        <article class="project-card">
+          <div class="project-number">12</div>
+          <h3>🌐 Private Network</h3>
+          <p data-i18n="projectNetworkDesc">A private network designed as part of the wider flekiii ecosystem.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
+        </article>
+
+        <article class="project-card">
+          <div class="project-number">13</div>
+          <h3>🖥️ REAPER OS · PC</h3>
+          <p data-i18n="projectPcDesc">My own operating system direction for personal computers.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
+        </article>
+
+        <article class="project-card">
+          <div class="project-number">14</div>
+          <h3>📱 REAPER OS · Redmi 12C</h3>
+          <p data-i18n="projectRedmiDesc">A mobile operating system direction for Redmi 12C.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
+        </article>
+
+        <article class="project-card">
+          <div class="project-number">15</div>
+          <h3>🍎 REAPER OS · iPhone 16</h3>
+          <p data-i18n="projectIphoneDesc">A mobile operating system direction for iPhone 16.</p>
+          <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
       </div>
     </section>
@@ -103,28 +163,27 @@
     <section id="about" class="section about">
       <div class="section-heading">
         <span>02</span>
-        <h2>About</h2>
+        <h2 data-i18n="aboutTitle">About</h2>
       </div>
 
       <div class="about-content">
-        <p>
+        <p data-i18n="about1">
           I'm <strong>flekiii</strong>, a 15-year-old independent developer
           building my own projects from the ground up.
         </p>
 
-        <p>
+        <p data-i18n="about2">
           I'm learning by actually making things: designing interfaces,
           writing code, solving problems and turning ideas into working
           software instead of keeping them as concepts.
         </p>
 
-        <p>
-          Right now I'm building projects such as <strong>Flekibard</strong>,
-          <strong>AS</strong> and privacy-focused developer tools, while
-          working toward a much larger ecosystem of software and platforms.
+        <p data-i18n="about3">
+          I'm working toward a much larger ecosystem of software, platforms,
+          services and operating systems.
         </p>
 
-        <p>
+        <p data-i18n="about4">
           I like technology that gives people freedom and room to customize
           things for themselves. My goal is to keep building, keep learning
           and eventually turn these ideas into real products used by people.
@@ -134,19 +193,20 @@
 
     <section id="support" class="support">
       <div class="support-inner">
-        <div class="eyebrow">KEEP BUILDING</div>
-        <h2>Support my work.</h2>
-        <p>
+        <div class="eyebrow" data-i18n="supportEyebrow">KEEP BUILDING</div>
+        <h2 data-i18n="supportTitle">Support my work.</h2>
+        <p data-i18n="supportText">
           If you like what I'm building and want to help me keep developing,
           you can support the projects directly.
         </p>
         <a class="button primary support-button"
            href="https://send.monobank.ua/jar/91HH8iY31q"
            target="_blank"
-           rel="noopener noreferrer">
+           rel="noopener noreferrer"
+           data-i18n="supportButton">
           ❤️ SUPPORT FLEKIII
         </a>
-        <small>Support link opens Monobank Jar.</small>
+        <small data-i18n="supportNote">Support link opens Monobank Jar.</small>
       </div>
     </section>
   </main>
@@ -155,9 +215,9 @@
     <div class="footer-logo">flekiii<span>.</span></div>
     <div class="footer-links">
       <a href="https://github.com/flekiii" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <a href="#top">Back to top ↑</a>
+      <a href="#top" data-i18n="backTop">Back to top ↑</a>
     </div>
-    <p>© <span id="year"></span> flekiii. Built independently.</p>
+    <p data-i18n="footer">© flekiii. Built independently.</p>
   </footer>
 
   <script src="script.js"></script>
