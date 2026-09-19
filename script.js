@@ -37,7 +37,7 @@ const translations = {
     supportButton: "❤️ SUPPORT FLEKIII",
     supportNote: "Support link opens Monobank Jar.",
     backTop: "Back to top ↑",
-    footer: "© flekiii. Built independently."
+    footerText: "Built independently."
   },
   uk: {
     navProjects: "Проєкти",
@@ -77,11 +77,11 @@ const translations = {
     supportButton: "❤️ ПІДТРИМАТИ FLEKIII",
     supportNote: "Кнопка відкриває Monobank Jar.",
     backTop: "На початок ↑",
-    footer: "© flekiii. Створено незалежно."
+    footerText: "Створено незалежно."
   }
 };
 
-document.getElementById("year").textContent = new Date().getFullYear();
+function updateYear() {\n  document.getElementById("year").textContent = new Date().getFullYear();\n}\n\nupdateYear();
 
 const cards = document.querySelectorAll(".project-card");
 
@@ -116,7 +116,7 @@ function setLanguage(language) {
   });
 
   languageSelect.value = selected;
-  localStorage.setItem("flekiii-language", selected);
+  localStorage.setItem("flekiii-language", selected);\n  updateYear();
 }
 
 const savedLanguage = localStorage.getItem("flekiii-language");
