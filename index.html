@@ -19,7 +19,87 @@
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
   <link rel="stylesheet" href="style.css?v=17">
-</head>
+<style id="ecosystem-map-v3-style">
+#ecosystem-map-v3 .map-main-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 240px minmax(0,1fr)!important;
+  grid-template-rows:116px 116px!important;
+  grid-template-areas:"left-top center right-top" "left-bottom center right-bottom"!important;
+  gap:16px!important;
+  width:100%!important;
+  max-width:920px!important;
+  margin:28px auto 0!important;
+  padding:0!important;
+  position:relative!important;
+}
+#ecosystem-map-v3 .map-card{
+  position:relative!important;
+  inset:auto!important;
+  transform:none!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  min-height:116px!important;
+  margin:0!important;
+  z-index:20!important;
+  pointer-events:auto!important;
+}
+#ecosystem-map-v3 .map-card:hover{transform:translateY(-4px)!important}
+#ecosystem-map-v3 .map-card-flekibard{grid-area:left-top!important}
+#ecosystem-map-v3 .map-card-as{grid-area:right-top!important}
+#ecosystem-map-v3 .map-card-flassi{grid-area:left-bottom!important}
+#ecosystem-map-v3 .map-card-trust{grid-area:right-bottom!important}
+#ecosystem-map-v3 .map-core-card{
+  grid-area:center!important;
+  position:relative!important;
+  inset:auto!important;
+  transform:none!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:248px!important;
+  margin:0!important;
+  z-index:25!important;
+  pointer-events:auto!important;
+}
+#ecosystem-map-v3 .map-core-card:hover{transform:translateY(-4px)!important}
+#ecosystem-map-v3 .map-services-block,
+#ecosystem-map-v3 .map-os-block{
+  position:relative!important;
+  z-index:20!important;
+}
+#ecosystem-map-v3 .map-services-grid{
+  display:grid!important;
+  grid-template-columns:repeat(7,minmax(0,1fr))!important;
+}
+#ecosystem-map-v3 .map-service-link,
+#ecosystem-map-v3 .map-os-link{
+  position:relative!important;
+  inset:auto!important;
+  transform:none!important;
+  z-index:30!important;
+  pointer-events:auto!important;
+}
+#ecosystem-map-v3 .map-os-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+@media(max-width:780px){
+  #ecosystem-map-v3 .map-main-grid{
+    grid-template-columns:1fr 1fr!important;
+    grid-template-rows:auto!important;
+    grid-template-areas:"center center" "left-top right-top" "left-bottom right-bottom"!important;
+  }
+  #ecosystem-map-v3 .map-core-card{min-height:190px!important}
+  #ecosystem-map-v3 .map-services-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #ecosystem-map-v3 .map-os-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:470px){
+  #ecosystem-map-v3 .map-main-grid{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"center" "left-top" "right-top" "left-bottom" "right-bottom"!important;
+  }
+}
+</style></head>
 <body>
   <div class="glow glow-one"></div>
   <div class="glow glow-two"></div>
@@ -171,7 +251,7 @@
           <p class="progress-note" data-i18n="progressNote">JavaScript learning is intentionally not included in project progress.</p>
         </div>
         <div class="overview-panel" data-panel="ecosystem">
-  <div class="ecosystem-map ecosystem-map-v2">
+  <div id="ecosystem-map-v3" class="ecosystem-map ecosystem-map-v2">
     <div class="ecosystem-map-header">
       <div>
         <span class="overview-label" data-i18n="mapTitle">THE FLEKIII ECOSYSTEM</span>
