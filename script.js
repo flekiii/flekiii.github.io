@@ -314,7 +314,7 @@ const projectCatalog = {
     icon: "📱",
     name: "TRUE OS · Redmi 12C",
     status: "PLANNED",
-    page: "true-os/",
+    page: "https://flekiii.github.io/true-os/",
     en: "A mobile operating system direction for Redmi 12C.",
     uk: "Мобільний напрям операційної системи для Redmi 12C."
   },
@@ -483,7 +483,7 @@ function openProjectPage() {
     return;
   }
 
-  window.open(page, "_blank", "noopener,noreferrer");
+  window.location.assign(page);
 }
 
 projectModalLink.addEventListener("click", (event) => {
