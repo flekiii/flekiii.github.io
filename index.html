@@ -28,7 +28,8 @@
     <a class="logo" href="#top">flekiii<span>.</span></a>
 
     <div class="nav-right">
-      <nav>
+      <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
+      <nav id="mainNav">
         <a href="#projects" data-i18n="navProjects">Projects</a>
         <a href="#overview" data-i18n="navOverview">Overview</a>
         <a href="#updates" data-i18n="navUpdates">Updates</a>
@@ -299,7 +300,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=20"></script>
+  <script src="script.js?v=21"></script>
   <script id="project-filter-runtime">
     (() => {
       const filters = document.querySelectorAll(".project-filter");
