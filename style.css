@@ -755,6 +755,108 @@ a {
   color: var(--text);
 }
 
+.updates {
+  padding-top: 70px;
+}
+
+.updates-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 14px;
+}
+
+.updates-card {
+  min-height: 330px;
+  padding: 30px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  background: linear-gradient(145deg, var(--surface-2), var(--surface));
+}
+
+.updates-card h3 {
+  margin-top: 10px;
+  font-size: 34px;
+  letter-spacing: -0.05em;
+}
+
+.github-activity {
+  margin-top: 22px;
+  display: grid;
+  gap: 8px;
+}
+
+.github-loading {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.github-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 13px 14px;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.018);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.github-item:hover {
+  border-color: rgba(255,111,174,0.22);
+  background: rgba(255,111,174,0.035);
+  transform: translateY(-1px);
+}
+
+.github-item-name {
+  display: block;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.github-item-description {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.github-item-meta {
+  color: var(--pink-soft);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.updates-button {
+  margin-top: 24px;
+}
+
+.changelog-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.changelog-card p {
+  max-width: 430px;
+  margin-top: 16px;
+  color: var(--muted);
+  line-height: 1.75;
+  font-size: 14px;
+}
+
+.project-modal-link {
+  margin-top: 24px;
+  min-height: 42px;
+}
+
 .support {
   width: min(var(--max), calc(100% - 40px));
   margin: 30px auto 120px;
@@ -1164,6 +1266,15 @@ footer p {
     position: static;
     display: inline-flex;
     margin-top: 17px;
+  }
+
+  .updates-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .updates-card {
+    min-height: auto;
+    padding: 25px 22px;
   }
 
   footer {
