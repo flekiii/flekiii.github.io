@@ -22,13 +22,33 @@
         <a href="#support" data-i18n="navSupport">Support</a>
       </nav>
 
-      <label class="language-picker" for="languageSelect">
-        <span>◉</span>
-        <select id="languageSelect" aria-label="Language">
-          <option value="en">EN</option>
-          <option value="uk">UA</option>
-        </select>
-      </label>
+      <div class="language-picker" id="languagePicker">
+        <button class="language-button" id="languageButton" type="button" aria-haspopup="true" aria-expanded="false">
+          <span class="language-icon">🌐</span>
+          <span id="currentLanguage">EN</span>
+          <span class="language-chevron">⌄</span>
+        </button>
+
+        <div class="language-menu" id="languageMenu" aria-hidden="true">
+          <button class="language-option active" type="button" data-language="en">
+            <span class="language-flag">🇬🇧</span>
+            <span>
+              <strong>English</strong>
+              <small>English</small>
+            </span>
+            <span class="language-check">✓</span>
+          </button>
+
+          <button class="language-option" type="button" data-language="uk">
+            <span class="language-flag">🇺🇦</span>
+            <span>
+              <strong>Українська</strong>
+              <small>Ukrainian</small>
+            </span>
+            <span class="language-check">✓</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -139,21 +159,21 @@
 
         <article class="project-card">
           <div class="project-number">13</div>
-          <h3>🖥️ REAPER OS · PC</h3>
+          <h3>🖥️ TRUE OS · PC</h3>
           <p data-i18n="projectPcDesc">My own operating system direction for personal computers.</p>
           <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
 
         <article class="project-card">
           <div class="project-number">14</div>
-          <h3>📱 REAPER OS · Redmi 12C</h3>
+          <h3>📱 TRUE OS · Redmi 12C</h3>
           <p data-i18n="projectRedmiDesc">A mobile operating system direction for Redmi 12C.</p>
           <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
 
         <article class="project-card">
           <div class="project-number">15</div>
-          <h3>🍎 REAPER OS · iPhone 16</h3>
+          <h3>🍎 TRUE OS · iPhone 16</h3>
           <p data-i18n="projectIphoneDesc">A mobile operating system direction for iPhone 16.</p>
           <span class="status" data-i18n="statusPlanned">PLANNED</span>
         </article>
