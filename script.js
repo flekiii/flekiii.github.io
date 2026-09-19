@@ -268,7 +268,7 @@ const projectCatalog = {
     icon: "🤖",
     name: "AS",
     status: "PLANNED",
-    page: "as/",
+    page: "https://flekiii.github.io/as/",
     en: "My own AI project and one of the core parts of the flekiii ecosystem.",
     uk: "Мій власний AI та один з основних елементів екосистеми flekiii."
   },
@@ -276,7 +276,7 @@ const projectCatalog = {
     icon: "💬",
     name: "Flekibard",
     status: "PLANNED",
-    page: "flekibard/",
+    page: "https://flekiii.github.io/flekibard/",
     en: "My own messenger focused on customization, privacy and freedom.",
     uk: "Мій власний месенджер з акцентом на кастомізацію, приватність і свободу."
   },
@@ -284,7 +284,7 @@ const projectCatalog = {
     icon: "🎬",
     name: "flassi",
     status: "PLANNED",
-    page: "flassi/",
+    page: "https://flekiii.github.io/flassi/",
     en: "A short-video platform for creating, watching and sharing quick vertical videos.",
     uk: "Власна платформа коротких вертикальних відео для створення, перегляду та поширення контенту."
   },
@@ -306,7 +306,7 @@ const projectCatalog = {
     icon: "🖥️",
     name: "TRUE OS · PC",
     status: "PLANNED",
-    page: "true-os/",
+    page: "https://flekiii.github.io/true-os/",
     en: "My own operating system direction for personal computers.",
     uk: "Власний напрям операційної системи для персональних комп'ютерів."
   },
@@ -475,9 +475,13 @@ function renderModal(projectId) {
   if (project.page) {
     projectModalLink.hidden = false;
     projectModalLink.href = project.page;
+    projectModalLink.target = "_blank";
+    projectModalLink.rel = "noopener noreferrer";
   } else {
     projectModalLink.hidden = true;
     projectModalLink.removeAttribute("href");
+    projectModalLink.removeAttribute("target");
+    projectModalLink.removeAttribute("rel");
   }
 }
 
