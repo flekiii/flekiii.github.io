@@ -185,13 +185,27 @@
 }
 #ecosystem-map-v4 .map-services-grid{
   display:grid!important;
-  grid-template-columns:repeat(7,minmax(0,1fr))!important;
-  gap:8px!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+  max-width:900px!important;
+  margin:0 auto!important;
 }
 #ecosystem-map-v4 .map-service-link{
   min-width:0!important;
-  min-height:58px!important;
-  white-space:nowrap!important;
+  min-height:76px!important;
+  padding:16px 14px!important;
+  white-space:normal!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  text-align:center!important;
+  font-size:12px!important;
+  line-height:1.25!important;
+}
+#ecosystem-map-v4 .map-service-link span{
+  flex:0 0 auto!important;
+  font-size:18px!important;
 }
 #ecosystem-map-v4 .map-os-grid{
   display:grid!important;
@@ -224,7 +238,7 @@
   #ecosystem-map-v4 .map-core-card{width:min(300px,100%)!important}
   #ecosystem-map-v4 .map-projects-zone{grid-template-columns:1fr!important;gap:14px!important;margin-top:34px!important}
   #ecosystem-map-v4 .map-project-column::before{display:none}
-  #ecosystem-map-v4 .map-services-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #ecosystem-map-v4 .map-services-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
   #ecosystem-map-v4 .map-os-grid{grid-template-columns:1fr!important}
   #ecosystem-map-v4 .map-os-link strong{white-space:normal!important}
 }
