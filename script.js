@@ -356,11 +356,16 @@ function closeProject() {
   document.body.style.overflow = "";
 }
 
-document.querySelectorAll(".project-view").forEach((button) => {
-  button.addEventListener("click", (event) => {
-    event.stopPropagation();
-    openProject(button.dataset.project);
-  });
+document.addEventListener("click", (event) => {
+  const button = event.target.closest(".project-view");
+
+  if (!button) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+  openProject(button.dataset.project);
 });
 
 document.querySelectorAll("[data-modal-close]").forEach((element) => {
