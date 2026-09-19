@@ -2163,3 +2163,117 @@ footer p {
     grid-template-areas:"core" "flekibard" "as" "flassi" "trust";
   }
 }
+
+
+/* =========================================================
+   ECOSYSTEM MAP v3 — FINAL CLEAN LAYOUT
+   ========================================================= */
+.ecosystem-map-v2{
+  position:relative!important;
+  min-height:0!important;
+  padding:28px!important;
+  overflow:hidden!important;
+}
+.ecosystem-map-v2 .map-main-grid{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(220px,260px) minmax(0,1fr)!important;
+  grid-template-rows:1fr 1fr!important;
+  grid-template-areas:
+    "flekibard core as"
+    "flassi core trust"!important;
+  gap:14px!important;
+  margin:28px auto 0!important;
+  padding:0!important;
+  width:100%!important;
+  max-width:900px!important;
+  align-items:stretch!important;
+  justify-items:stretch!important;
+}
+.ecosystem-map-v2 .map-card{
+  position:relative!important;
+  inset:auto!important;
+  width:auto!important;
+  height:auto!important;
+  min-width:0!important;
+  min-height:116px!important;
+  margin:0!important;
+  transform:none!important;
+  padding:20px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  pointer-events:auto!important;
+  z-index:10!important;
+}
+.ecosystem-map-v2 .map-card:hover{
+  transform:translateY(-4px)!important;
+}
+.ecosystem-map-v2 .map-card-flekibard{grid-area:flekibard!important}
+.ecosystem-map-v2 .map-card-as{grid-area:as!important}
+.ecosystem-map-v2 .map-card-flassi{grid-area:flassi!important}
+.ecosystem-map-v2 .map-card-trust{grid-area:trust!important}
+
+.ecosystem-map-v2 .map-core-card{
+  position:relative!important;
+  inset:auto!important;
+  grid-area:core!important;
+  width:auto!important;
+  max-width:none!important;
+  height:auto!important;
+  min-height:246px!important;
+  margin:0!important;
+  transform:none!important;
+  padding:24px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  align-self:stretch!important;
+  justify-self:stretch!important;
+  pointer-events:auto!important;
+  z-index:11!important;
+}
+.ecosystem-map-v2 .map-core-card:hover{
+  transform:translateY(-4px)!important;
+}
+
+.ecosystem-map-v2::before{
+  inset:22% 22% 42%!important;
+  pointer-events:none!important;
+}
+
+@media (max-width:780px){
+  .ecosystem-map-v2{
+    padding:20px!important;
+  }
+  .ecosystem-map-v2 .map-main-grid{
+    grid-template-columns:1fr 1fr!important;
+    grid-template-rows:auto auto auto!important;
+    grid-template-areas:
+      "core core"
+      "flekibard as"
+      "flassi trust"!important;
+    max-width:100%!important;
+  }
+  .ecosystem-map-v2 .map-core-card{
+    min-height:190px!important;
+  }
+}
+
+@media (max-width:470px){
+  .ecosystem-map-v2 .map-main-grid{
+    grid-template-columns:1fr!important;
+    grid-template-rows:auto!important;
+    grid-template-areas:
+      "core"
+      "flekibard"
+      "as"
+      "flassi"
+      "trust"!important;
+  }
+  .ecosystem-map-v2 .map-card{
+    min-height:100px!important;
+  }
+}
