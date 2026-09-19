@@ -1761,3 +1761,96 @@ footer p {
 .map-strip, .map-os-row {
   z-index: 3;
 }
+
+
+/* v14 — shared project pages, TRUE OS and richer ecosystem map */
+.project-nav{
+  width:min(var(--max),calc(100% - 40px));margin:0 auto;min-height:78px;
+  display:flex;align-items:center;gap:28px;border-bottom:1px solid rgba(255,255,255,.06)
+}
+.project-nav nav{display:flex;gap:22px;flex:1;justify-content:center}
+.project-nav nav a{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.08em;text-decoration:none}
+.project-nav nav a:hover{color:var(--pink)}
+.project-language{display:flex;gap:4px;padding:4px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.02)}
+.project-language button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:9px;font-weight:800;letter-spacing:.08em;padding:7px 9px;border-radius:999px;cursor:pointer}
+.project-language button.active{color:#fff;background:rgba(255,105,180,.12);box-shadow:inset 0 0 0 1px rgba(255,105,180,.2)}
+.project-page-v2{width:min(1000px,calc(100% - 40px));margin:0 auto;padding:46px 0 90px}
+.project-back{display:inline-flex;color:var(--pink-soft);text-decoration:none;font-size:11px;font-weight:800;letter-spacing:.08em;margin-bottom:20px}
+.project-back:hover{color:var(--pink)}
+.project-hero-card,.project-info-card,.project-roadmap-card,.project-status-card{
+  border:1px solid rgba(255,111,174,.16);border-radius:26px;
+  background:linear-gradient(145deg,rgba(18,18,18,.98),rgba(10,10,10,.98));
+  box-shadow:0 18px 65px rgba(0,0,0,.16)
+}
+.project-hero-card{padding:42px}
+.project-hero-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.project-icon{width:76px;height:76px;display:grid;place-items:center;border-radius:22px;border:1px solid rgba(255,105,180,.22);background:rgba(255,105,180,.06);font-size:36px}
+.project-status-wrap{display:flex;align-items:center;gap:9px}
+.project-eyebrow,.project-section-label{color:var(--pink);font-size:9px;font-weight:900;letter-spacing:.15em}
+.project-status{padding:7px 10px;border:1px solid rgba(255,105,180,.18);border-radius:999px;color:var(--pink);font-size:9px;font-weight:800;letter-spacing:.1em}
+.project-hero-card h1{margin-top:20px;font-size:clamp(54px,9vw,94px);letter-spacing:-.075em;line-height:.92}
+.project-hero-card h1 span{color:var(--pink)}
+.project-lead{max-width:760px;margin-top:22px;color:rgba(255,255,255,.64);font-size:18px;line-height:1.8}
+.project-meta-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
+.project-meta-row span{padding:8px 11px;border:1px solid rgba(255,111,174,.17);border-radius:999px;color:var(--pink-soft);font-size:9px;font-weight:800;letter-spacing:.1em}
+.project-section-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.project-info-card{padding:30px;min-height:280px}
+.project-info-card h2,.project-roadmap-card h2,.project-status-card h2{margin-top:12px;font-size:32px;letter-spacing:-.05em}
+.project-info-card>p{margin-top:18px;color:rgba(255,255,255,.58);line-height:1.8;font-size:15px}
+.project-feature-list{display:grid;gap:9px;margin-top:24px}
+.project-feature-list>div{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;padding:12px 13px;border:1px solid rgba(255,255,255,.06);border-radius:14px;background:rgba(255,255,255,.018)}
+.project-feature-list span{color:var(--pink);font-size:9px;font-weight:900}
+.project-feature-list strong{font-size:13px}
+.project-roadmap-card{margin-top:14px;padding:30px}
+.project-roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}
+.project-roadmap article{min-height:160px;padding:20px;border:1px solid rgba(255,255,255,.06);border-radius:16px;background:rgba(255,255,255,.018)}
+.project-roadmap article>span{color:var(--pink);font-size:9px;font-weight:900;letter-spacing:.12em}
+.project-roadmap article strong{display:block;margin-top:22px;font-size:18px}
+.project-roadmap article p{margin-top:9px;color:rgba(255,255,255,.5);line-height:1.6;font-size:12px}
+.project-status-card{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px;padding:30px}
+.project-status-copy{display:flex;align-items:center;gap:18px;padding:20px;border-radius:16px;background:rgba(255,105,180,.05);border:1px solid rgba(255,105,180,.1)}
+.project-status-copy strong{color:var(--pink);font-size:54px;letter-spacing:-.06em}
+.project-status-copy p{color:rgba(255,255,255,.58);line-height:1.65;font-size:13px}
+.project-bottom-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.project-footer{width:min(1000px,calc(100% - 40px));margin:0 auto;padding:24px 0 44px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;color:#666;font-size:10px}
+.true-os-hero{text-align:center;padding:56px 42px}
+.true-os-orbit{width:92px;height:92px;margin:0 auto 20px;display:grid;place-items:center;border:1px solid rgba(255,105,180,.3);border-radius:50%;color:var(--pink);font-size:42px;box-shadow:0 0 55px rgba(255,105,180,.09)}
+.true-os-family{margin-top:14px;padding:34px;border:1px solid rgba(255,255,255,.07);border-radius:26px;background:rgba(255,255,255,.018)}
+.true-os-heading{text-align:center;max-width:760px;margin:0 auto}
+.true-os-heading h2{margin-top:12px;font-size:38px;letter-spacing:-.05em}
+.true-os-heading p{margin-top:12px;color:rgba(255,255,255,.55);line-height:1.7}
+.true-os-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+.true-os-card{position:relative;min-height:240px;padding:25px;border:1px solid rgba(255,105,180,.14);border-radius:20px;background:linear-gradient(145deg,rgba(255,105,180,.055),rgba(255,255,255,.018));overflow:hidden}
+.true-os-card>span{color:var(--pink);font-size:9px;font-weight:900;letter-spacing:.13em}
+.true-os-card strong{display:block;margin-top:48px;font-size:29px;letter-spacing:-.05em}
+.true-os-card p{margin-top:10px;color:rgba(255,255,255,.55);line-height:1.6;font-size:13px}
+.true-os-card b{position:absolute;right:20px;bottom:18px;color:rgba(255,255,255,.3);font-size:9px;letter-spacing:.12em}
+.ecosystem-map{padding:22px!important}
+.ecosystem-map-header{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.ecosystem-map-header p{margin-top:6px;max-width:500px;color:rgba(255,255,255,.44);font-size:12px;line-height:1.5}
+.ecosystem-live{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,105,180,.18);border-radius:999px;color:var(--pink);font-size:8px;font-weight:900;letter-spacing:.12em}
+.ecosystem-live i{width:6px;height:6px;border-radius:50%;background:var(--pink);box-shadow:0 0 14px rgba(255,105,180,.9)}
+.map-connector-label{position:absolute;z-index:4;color:rgba(255,255,255,.3);font-size:8px;font-weight:900;letter-spacing:.15em}
+.map-services-label{left:50%;bottom:106px;transform:translateX(-50%)}
+.map-os-label{left:50%;bottom:49px;transform:translateX(-50%)}
+.map-os-sub{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);z-index:4;color:rgba(255,255,255,.24);font-size:8px;letter-spacing:.08em;white-space:nowrap}
+.changelog-page .project-hero-card{text-align:left}
+.changelog-timeline{position:relative;margin-top:18px;padding-left:34px}
+.changelog-timeline::before{content:"";position:absolute;left:12px;top:6px;bottom:6px;width:1px;background:linear-gradient(180deg,rgba(255,105,180,.65),rgba(255,105,180,.08))}
+.changelog-entry{position:relative;display:grid;grid-template-columns:92px 1fr;gap:18px;margin-bottom:14px}
+.changelog-entry-mark{position:relative;padding-top:6px;color:var(--pink);font-size:11px;font-weight:900;letter-spacing:.08em}
+.changelog-entry-mark i{position:absolute;left:-27px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--pink);box-shadow:0 0 18px rgba(255,105,180,.55)}
+.changelog-entry-card{padding:23px 25px;border:1px solid rgba(255,255,255,.06);border-radius:20px;background:rgba(255,255,255,.018)}
+.changelog-entry-card small{color:rgba(255,255,255,.35);font-size:8px;font-weight:800;letter-spacing:.14em}
+.changelog-entry-card h2{margin-top:9px;font-size:22px;letter-spacing:-.04em}
+.changelog-entry-card p{margin-top:9px;color:rgba(255,255,255,.55);line-height:1.7;font-size:13px}
+@media(max-width:780px){
+  .project-nav{gap:12px}.project-nav nav{gap:12px}.project-nav nav a{font-size:9px}
+  .project-page-v2{padding-top:30px}.project-hero-card{padding:28px 22px}.project-hero-card h1{font-size:clamp(48px,15vw,76px)}
+  .project-section-grid,.project-status-card,.true-os-grid,.project-roadmap{grid-template-columns:1fr}
+  .project-info-card{min-height:auto}.project-roadmap article{min-height:130px}
+  .true-os-hero{padding:40px 22px}.true-os-heading h2{font-size:30px}
+  .ecosystem-map-header{flex-direction:column}.map-node-left{left:2%}.map-node-right{right:2%}
+  .map-services-label{bottom:124px}.map-os-label{bottom:62px}.map-os-sub{bottom:18px}
+  .changelog-timeline{padding-left:28px}.changelog-entry{grid-template-columns:1fr;gap:5px}.changelog-entry-mark{padding-left:2px}.changelog-entry-mark i{left:-22px}
+}
