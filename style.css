@@ -391,10 +391,12 @@ a {
   bottom: 20px;
   z-index: 2;
   padding: 9px 13px;
-  border: 1px solid rgba(255,111,174,0.24);
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid rgba(255,111,174,0.30) !important;
   border-radius: 10px;
-  background: rgba(255,111,174,0.06);
-  color: var(--pink-soft);
+  background: rgba(255,111,174,0.07) !important;
+  color: var(--pink-soft) !important;
   font: inherit;
   font-size: 9px;
   font-weight: 800;
