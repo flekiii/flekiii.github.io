@@ -2111,3 +2111,55 @@ footer p {
   margin:0!important;
   justify-self:stretch!important;
 }
+
+
+/* Ecosystem Map — absolute visual center */
+.ecosystem-map-v2 .map-main-grid{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  grid-template-rows:auto auto!important;
+  grid-template-areas:
+    "flekibard as"
+    "flassi trust";
+  gap:14px!important;
+  padding:0 18%!important;
+}
+.ecosystem-map-v2 .map-core-card{
+  position:absolute!important;
+  z-index:30!important;
+  left:50%!important;
+  top:50%!important;
+  width:min(230px,34%)!important;
+  min-height:240px!important;
+  transform:translate(-50%,-50%)!important;
+  margin:0!important;
+}
+.ecosystem-map-v2 .map-card{
+  min-height:118px!important;
+}
+.ecosystem-map-v2 .map-card-flekibard{grid-area:flekibard}
+.ecosystem-map-v2 .map-card-as{grid-area:as}
+.ecosystem-map-v2 .map-card-flassi{grid-area:flassi}
+.ecosystem-map-v2 .map-card-trust{grid-area:trust}
+@media(max-width:780px){
+  .ecosystem-map-v2 .map-main-grid{
+    grid-template-columns:1fr 1fr!important;
+    grid-template-areas:"core core" "flekibard as" "flassi trust";
+    padding:0!important;
+  }
+  .ecosystem-map-v2 .map-core-card{
+    position:relative!important;
+    left:auto!important;
+    top:auto!important;
+    width:auto!important;
+    transform:none!important;
+    grid-area:core;
+  }
+}
+@media(max-width:470px){
+  .ecosystem-map-v2 .map-main-grid{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"core" "flekibard" "as" "flassi" "trust";
+  }
+}
