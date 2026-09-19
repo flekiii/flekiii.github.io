@@ -103,36 +103,119 @@ a {
 }
 
 .language-picker {
+  position: relative;
+}
+
+.language-button {
+  min-width: 92px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 10px;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 12px;
   border: 1px solid rgba(255,111,174,0.18);
-  border-radius: 10px;
+  border-radius: 12px;
   background: rgba(255,255,255,0.025);
-  color: var(--pink);
-}
-
-.language-picker span {
-  font-size: 9px;
-}
-
-.language-picker select {
-  appearance: none;
-  border: 0;
-  outline: 0;
-  background: transparent;
   color: var(--text);
   font: inherit;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.08em;
   cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
-.language-picker option {
-  background: #111;
-  color: #f5f5f5;
+.language-button:hover,
+.language-picker.open .language-button {
+  border-color: rgba(255,111,174,0.42);
+  background: rgba(255,111,174,0.06);
+}
+
+.language-icon {
+  font-size: 13px;
+}
+
+.language-chevron {
+  color: var(--pink);
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.language-picker.open .language-chevron {
+  transform: rotate(180deg);
+}
+
+.language-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 205px;
+  padding: 8px;
+  border: 1px solid rgba(255,111,174,0.2);
+  border-radius: 16px;
+  background: rgba(13,13,13,0.97);
+  box-shadow: 0 18px 55px rgba(0,0,0,0.45), 0 0 30px rgba(255,111,174,0.08);
+  backdrop-filter: blur(18px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+  z-index: 20;
+}
+
+.language-picker.open .language-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.language-option {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 28px 1fr 18px;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 10px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.language-option:hover,
+.language-option.active {
+  background: rgba(255,111,174,0.08);
+}
+
+.language-flag {
+  font-size: 18px;
+}
+
+.language-option strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.language-option small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.language-check {
+  color: var(--pink);
+  font-size: 13px;
+  opacity: 0;
+}
+
+.language-option.active .language-check {
+  opacity: 1;
 }
 
 .status.in-progress {
