@@ -81,9 +81,17 @@ const translations = {
   }
 };
 
-function updateYear() {\n  document.getElementById("year").textContent = new Date().getFullYear();\n}\n\nupdateYear();
-
+const yearElement = document.getElementById("year");
 const cards = document.querySelectorAll(".project-card");
+const languagePicker = document.getElementById("languagePicker");
+const languageButton = document.getElementById("languageButton");
+const languageMenu = document.getElementById("languageMenu");
+const currentLanguage = document.getElementById("currentLanguage");
+const languageOptions = document.querySelectorAll(".language-option");
+
+function updateYear() {
+  yearElement.textContent = new Date().getFullYear();
+}
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -102,26 +110,66 @@ cards.forEach((card) => {
   observer.observe(card);
 });
 
-const languageSelect = document.getElementById("languageSelect");
+function closeLanguageMenu() {
+  languagePicker.classList.remove("open");
+  languageButton.setAttribute("aria-expanded", "false");
+  languageMenu.setAttribute("aria-hidden", "true");
+}
+
+function toggleLanguageMenu() {
+  const isOpen = languagePicker.classList.toggle("open");
+  languageButton.setAttribute("aria-expanded", String(isOpen));
+  languageMenu.setAttribute("aria-hidden", String(!isOpen));
+}
 
 function setLanguage(language) {
   const selected = translations[language] ? language : "en";
+
   document.documentElement.lang = selected;
 
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     const key = element.dataset.i18n;
-    if (translations[selected][key]) {
-      element.innerHTML = translations[selected][key];
+    const value = translations[selected][key];
+
+    if (value !== undefined) {
+      element.innerHTML = value;
     }
   });
 
-  languageSelect.value = selected;
-  localStorage.setItem("flekiii-language", selected);\n  updateYear();
+  currentLanguage.textContent = selected === "uk" ? "UA" : "EN";
+
+  languageOptions.forEach((option) => {
+    option.classList.toggle("active", option.dataset.language === selected);
+  });
+
+  localStorage.setItem("flekiii-language", selected);
+  updateYear();
+  closeLanguageMenu();
 }
+
+languageButton.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleLanguageMenu();
+});
+
+languageOptions.forEach((option) => {
+  option.addEventListener("click", () => {
+    setLanguage(option.dataset.language);
+  });
+});
+
+document.addEventListener("click", (event) => {
+  if (!languagePicker.contains(event.target)) {
+    closeLanguageMenu();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeLanguageMenu();
+  }
+});
 
 const savedLanguage = localStorage.getItem("flekiii-language");
 setLanguage(savedLanguage || "en");
-
-languageSelect.addEventListener("change", (event) => {
-  setLanguage(event.target.value);
-});
+updateYear();
