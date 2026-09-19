@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
   <div class="glow glow-one"></div>
@@ -171,26 +171,73 @@
           <p class="progress-note" data-i18n="progressNote">JavaScript learning is intentionally not included in project progress.</p>
         </div>
         <div class="overview-panel" data-panel="ecosystem">
-  <div class="ecosystem-map">
+  <div class="ecosystem-map ecosystem-map-v2">
     <div class="ecosystem-map-header">
-      <div><span class="overview-label" data-i18n="mapTitle">THE FLEKIII ECOSYSTEM</span><p data-i18n="mapSubtitle">Projects, platforms and infrastructure connected as one direction.</p></div>
+      <div>
+        <span class="overview-label" data-i18n="mapTitle">THE FLEKIII ECOSYSTEM</span>
+        <p data-i18n="mapSubtitle">Projects, platforms and infrastructure connected as one direction.</p>
+      </div>
       <span class="ecosystem-live"><i></i> LIVE MAP</span>
     </div>
-    <div class="map-line line-a"></div><div class="map-line line-b"></div><div class="map-line line-c"></div>
-    <a class="map-node map-node-main map-link" href="#projects" data-map-link="projects"><span>flekiii</span><small data-i18n="mapCore">independent ecosystem</small></a>
-    <a class="map-node map-node-top map-link" href="flekibard/?v=4" data-map-link="flekibard"><span>Flekibard</span><small data-i18n="mapMessenger">Messenger</small></a>
-    <a class="map-node map-node-right map-link" href="as/?v=4" data-map-link="as"><span>AS</span><small data-i18n="mapAI">AI</small></a>
-    <a class="map-node map-node-left map-node-flassi map-link" href="flassi/?v=5" data-map-link="flassi"><span>flassi</span><small data-i18n="mapVideo">Video</small></a>
-    <a class="map-node map-node-bottom map-link" href="trust/?v=4" data-map-link="trust"><span>TRUSTmoney</span><small data-i18n="mapFinance">Finance</small></a>
-    <div class="map-connector-label map-services-label" data-i18n="mapServices">SERVICES</div>
-    <div class="map-strip">
-      <a href="vpn/?v=4" class="map-link" data-map-link="vpn">VPN</a><a href="browser/?v=4" class="map-link" data-map-link="browser">Browser</a><a href="search/?v=4" class="map-link" data-map-link="search">Search</a><a href="email/?v=4" class="map-link" data-map-link="email">Email</a><a href="cloud/?v=4" class="map-link" data-map-link="cloud">Cloud</a><a href="music/?v=4" class="map-link" data-map-link="music">Music</a><a href="games/?v=4" class="map-link" data-map-link="games">Games</a>
+
+    <div class="map-main-grid">
+      <a class="map-card map-card-flekibard" href="flekibard/?v=6">
+        <span class="map-card-icon">💬</span>
+        <strong>Flekibard</strong>
+        <small data-i18n="mapMessenger">Messenger</small>
+      </a>
+
+      <a class="map-card map-card-as" href="as/?v=6">
+        <span class="map-card-icon">🤖</span>
+        <strong>AS</strong>
+        <small data-i18n="mapAI">AI</small>
+      </a>
+
+      <a class="map-core-card" href="#projects">
+        <span class="map-core-mark">flekiii</span>
+        <small data-i18n="mapCore">independent ecosystem</small>
+      </a>
+
+      <a class="map-card map-card-flassi" href="flassi/?v=6">
+        <span class="map-card-icon">🎬</span>
+        <strong>flassi</strong>
+        <small data-i18n="mapVideo">Video</small>
+      </a>
+
+      <a class="map-card map-card-trust" href="trust/?v=6">
+        <span class="map-card-icon">💰</span>
+        <strong>TRUSTmoney</strong>
+        <small data-i18n="mapFinance">Finance</small>
+      </a>
     </div>
-    <div class="map-connector-label map-os-label" data-i18n="mapOperating">TRUE OS · ONE FAMILY</div>
-    <div class="map-os-row">
-      <a href="true-os/?v=4" class="map-link" data-map-link="true-os">TRUE OS · PC</a><a href="true-os/?v=4" class="map-link" data-map-link="true-os">TRUE OS · Redmi 12C</a><a href="true-os/?v=4" class="map-link" data-map-link="true-os">TRUE OS · iPhone 16</a>
+
+    <div class="map-services-block">
+      <div class="map-block-heading">
+        <span data-i18n="mapServices">SERVICES</span>
+        <small>07</small>
+      </div>
+      <div class="map-services-grid">
+        <a href="vpn/?v=6" class="map-service-link"><span>🔐</span>VPN</a>
+        <a href="browser/?v=6" class="map-service-link"><span>🌐</span>Browser</a>
+        <a href="search/?v=6" class="map-service-link"><span>🔎</span>Search</a>
+        <a href="email/?v=6" class="map-service-link"><span>📧</span>Email</a>
+        <a href="cloud/?v=6" class="map-service-link"><span>☁️</span>Cloud</a>
+        <a href="music/?v=6" class="map-service-link"><span>🎵</span>Music</a>
+        <a href="games/?v=6" class="map-service-link"><span>🎮</span>Games</a>
+      </div>
     </div>
-    <div class="map-os-sub" data-i18n="mapOperatingSub">PC + Redmi 12C + iPhone 16</div>
+
+    <div class="map-os-block">
+      <div class="map-block-heading">
+        <span data-i18n="mapOperating">TRUE OS · ONE FAMILY</span>
+        <small data-i18n="mapOperatingSub">PC + Redmi 12C + iPhone 16</small>
+      </div>
+      <div class="map-os-grid">
+        <a href="true-os/?v=6" class="map-os-link"><span>🖥️</span><strong>TRUE OS · PC</strong><small>Desktop</small></a>
+        <a href="true-os/?v=6" class="map-os-link"><span>📱</span><strong>TRUE OS · Redmi 12C</strong><small>Mobile</small></a>
+        <a href="true-os/?v=6" class="map-os-link"><span>🍎</span><strong>TRUE OS · iPhone 16</strong><small>Mobile</small></a>
+      </div>
+    </div>
   </div>
 </div>
 <div class="overview-panel" data-panel="about">
@@ -315,6 +362,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=17"></script>
+  <script src="script.js?v=18"></script>
 </body>
 </html>
