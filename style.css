@@ -274,6 +274,10 @@ a {
   margin-bottom: 20px;
 }
 
+.about-content p:last-child {
+  margin-bottom: 0;
+}
+
 .about-content strong {
   color: var(--text);
 }
