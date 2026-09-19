@@ -1,8 +1,15 @@
 const translations = {
   en: {
     navProjects: "Projects",
-    navAbout: "About",
+    navOverview: "Overview",
     navSupport: "Support",
+    overviewEyebrow: "INSIDE FLEKIII",
+    overviewTitle: "One place for the <span class=\"accent\">bigger picture.</span>",
+    tabCurrently: "Currently",
+    tabRoadmap: "Roadmap",
+    tabEcosystem: "Ecosystem",
+    tabAbout: "About",
+    currentPlatform: "PLATFORM",
     heroEyebrow: "INDEPENDENT DEVELOPER · 15 YEARS OLD",
     heroTitle: "Building my own<br><span>digital world.</span>",
     heroText: "I build software, platforms and tools with a focus on freedom, customization and privacy.",
@@ -64,8 +71,15 @@ const translations = {
 
   uk: {
     navProjects: "Проєкти",
-    navAbout: "Про мене",
+    navOverview: "Огляд",
     navSupport: "Підтримати",
+    overviewEyebrow: "ВСЕРЕДИНІ FLEKIII",
+    overviewTitle: "Все важливе — в <span class=\"accent\">одному місці.</span>",
+    tabCurrently: "Зараз",
+    tabRoadmap: "Плани",
+    tabEcosystem: "Екосистема",
+    tabAbout: "Про мене",
+    currentPlatform: "СЕРЕДОВИЩЕ",
     heroEyebrow: "НЕЗАЛЕЖНИЙ РОЗРОБНИК · 15 РОКІВ",
     heroTitle: "Створюю власний<br><span>цифровий світ.</span>",
     heroText: "Я створюю програми, платформи та інструменти з акцентом на свободу, кастомізацію та приватність.",
@@ -248,6 +262,25 @@ const languageButton = document.getElementById("languageButton");
 const languageMenu = document.getElementById("languageMenu");
 const currentLanguage = document.getElementById("currentLanguage");
 const languageOptions = document.querySelectorAll(".language-option");
+
+const overviewTabs = document.querySelectorAll(".overview-tab");
+const overviewPanels = document.querySelectorAll(".overview-panel");
+
+overviewTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    const target = tab.dataset.tab;
+
+    overviewTabs.forEach((item) => {
+      const active = item === tab;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-selected", String(active));
+    });
+
+    overviewPanels.forEach((panel) => {
+      panel.classList.toggle("active", panel.dataset.panel === target);
+    });
+  });
+});
 
 const projectModal = document.getElementById("projectModal");
 const projectModalTitle = document.getElementById("projectModalTitle");
