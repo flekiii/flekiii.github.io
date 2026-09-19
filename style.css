@@ -658,12 +658,14 @@ a {
 .project-modal-backdrop {
   position: absolute;
   inset: 0;
+  z-index: 0;
   background: rgba(0,0,0,0.74);
   backdrop-filter: blur(10px);
 }
 
 .project-modal-window {
   position: relative;
+  z-index: 1;
   width: min(640px, 100%);
   padding: 38px;
   border: 1px solid rgba(255,111,174,0.22);
@@ -853,8 +855,13 @@ a {
 }
 
 .project-modal-link {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
   margin-top: 24px;
   min-height: 42px;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .support {
