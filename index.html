@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=19">
+  <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
   <div class="glow glow-one"></div>
@@ -300,5 +300,39 @@
   </div>
 
   <script src="script.js?v=20"></script>
+  <script id="project-filter-runtime">
+    (() => {
+      const filters = document.querySelectorAll(".project-filter");
+      const cards = document.querySelectorAll(".project-card[data-category]");
+
+      if (!filters.length || !cards.length) return;
+
+      const applyFilter = (filter) => {
+        filters.forEach((button) => {
+          const active = button.dataset.filter === filter;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        cards.forEach((card) => {
+          const show = filter === "all" || card.dataset.category === filter;
+          card.classList.toggle("project-card-hidden", !show);
+
+          if (show) {
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+          }
+        });
+      };
+
+      filters.forEach((button) => {
+        button.addEventListener("click", () => {
+          applyFilter(button.dataset.filter || "all");
+        });
+      });
+
+      applyFilter("all");
+    })();
+  </script>
 </body>
 </html>
