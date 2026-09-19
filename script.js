@@ -219,6 +219,7 @@ const projectCatalog = {
     icon: "🔐",
     name: "VPN",
     status: "PLANNED",
+    page: "https://flekiii.github.io/vpn/",
     en: "A private VPN project focused on secure and flexible network access.",
     uk: "Власний VPN-проєкт, орієнтований на безпечний та гнучкий доступ до мережі."
   },
@@ -226,6 +227,7 @@ const projectCatalog = {
     icon: "🌐",
     name: "Private Browser",
     status: "PLANNED",
+    page: "https://flekiii.github.io/browser/",
     en: "A privacy-focused browser designed around customization and user control.",
     uk: "Приватний браузер, створений навколо кастомізації та контролю користувача."
   },
@@ -233,6 +235,7 @@ const projectCatalog = {
     icon: "🔎",
     name: "Search Engine",
     status: "PLANNED",
+    page: "https://flekiii.github.io/search/",
     en: "An independent search engine for discovering information online.",
     uk: "Власний пошуковик для пошуку та відкриття інформації в інтернеті."
   },
@@ -240,6 +243,7 @@ const projectCatalog = {
     icon: "📧",
     name: "Email Service",
     status: "PLANNED",
+    page: "https://flekiii.github.io/email/",
     en: "My own email service for private communication and a personal digital identity.",
     uk: "Власний email-сервіс для приватного спілкування та цифрової ідентичності."
   },
@@ -247,6 +251,7 @@ const projectCatalog = {
     icon: "☁️",
     name: "Cloud Drive",
     status: "PLANNED",
+    page: "https://flekiii.github.io/cloud/",
     en: "A private cloud storage platform inspired by the idea of an independent Google Drive alternative.",
     uk: "Власне хмарне сховище за ідеєю незалежного аналога Google Drive."
   },
@@ -254,6 +259,7 @@ const projectCatalog = {
     icon: "🎵",
     name: "Music Platform",
     status: "PLANNED",
+    page: "https://flekiii.github.io/music/",
     en: "A music platform inspired by SoundCloud for artists, uploads and discovery.",
     uk: "Власна музична платформа на кшталт SoundCloud для артистів, завантажень і відкриття нової музики."
   },
@@ -261,6 +267,7 @@ const projectCatalog = {
     icon: "🎮",
     name: "Game Platform",
     status: "PLANNED",
+    page: "https://flekiii.github.io/games/",
     en: "A dedicated platform for video games, developers and players.",
     uk: "Окрема платформа для відеоігор, розробників та гравців."
   },
@@ -292,6 +299,7 @@ const projectCatalog = {
     icon: "💰",
     name: "TRUSTmoney",
     status: "PLANNED",
+    page: "https://flekiii.github.io/trust/",
     en: "A future financial platform built around my own TRUST Network.",
     uk: "Майбутня фінансова платформа, побудована навколо власної TRUST Network."
   },
@@ -299,6 +307,7 @@ const projectCatalog = {
     icon: "🌐",
     name: "Private Network",
     status: "PLANNED",
+    page: "https://flekiii.github.io/network/",
     en: "A private network designed as part of the wider flekiii ecosystem.",
     uk: "Власна приватна мережа як частина більшої екосистеми flekiii."
   },
