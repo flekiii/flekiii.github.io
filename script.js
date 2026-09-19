@@ -322,7 +322,7 @@ const projectCatalog = {
     icon: "🍎",
     name: "TRUE OS · iPhone 16",
     status: "PLANNED",
-    page: "true-os/",
+    page: "https://flekiii.github.io/true-os/",
     en: "A mobile operating system direction for iPhone 16.",
     uk: "Мобільний напрям операційної системи для iPhone 16."
   }
