@@ -480,6 +480,46 @@ const languageMenu = document.getElementById("languageMenu");
 const currentLanguage = document.getElementById("currentLanguage");
 const languageOptions = document.querySelectorAll(".language-option");
 
+
+const mobileMenuButton = document.getElementById("mobileMenuButton");
+const mainNav = document.getElementById("mainNav");
+const mainNavLinks = mainNav ? mainNav.querySelectorAll("a") : [];
+
+function closeMobileMenu() {
+  document.querySelector(".nav")?.classList.remove("mobile-open");
+  if (mobileMenuButton) {
+    mobileMenuButton.setAttribute("aria-expanded", "false");
+    mobileMenuButton.setAttribute("aria-label", "Open navigation");
+  }
+}
+
+if (mobileMenuButton && mainNav) {
+  mobileMenuButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const nav = document.querySelector(".nav");
+    const open = nav.classList.toggle("mobile-open");
+    mobileMenuButton.setAttribute("aria-expanded", String(open));
+    mobileMenuButton.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+  });
+
+  mainNavLinks.forEach((link) => {
+    link.addEventListener("click", closeMobileMenu);
+  });
+
+  document.addEventListener("click", (event) => {
+    const nav = document.querySelector(".nav");
+    if (nav && !nav.contains(event.target)) {
+      closeMobileMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMobileMenu();
+    }
+  });
+}
+
 const overviewTabs = document.querySelectorAll(".overview-tab");
 const overviewPanels = document.querySelectorAll(".overview-panel");
 
