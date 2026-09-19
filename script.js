@@ -472,25 +472,18 @@ function renderModal(projectId) {
     ? (project.status === "IN PROGRESS" ? "В ПРОЦЕСІ" : "У ПЛАНАХ")
     : project.status;
 
-  projectModalLink.hidden = !project.page;
-  projectModalLink.dataset.page = project.page || "";
-}
-
-function openProjectPage() {
-  const page = projectModalLink.dataset.page;
-
-  if (!page) {
-    return;
+  if (project.page) {
+    projectModalLink.hidden = false;
+    projectModalLink.dataset.page = project.page;
+    projectModalLink.onclick = function () {
+      window.location.href = project.page;
+    };
+  } else {
+    projectModalLink.hidden = true;
+    projectModalLink.dataset.page = "";
+    projectModalLink.onclick = null;
   }
-
-  window.location.assign(page);
 }
-
-projectModalLink.addEventListener("click", (event) => {
-  event.preventDefault();
-  event.stopPropagation();
-  openProjectPage();
-});
 
 function openProject(projectId) {
   if (!projectCatalog[projectId]) {
