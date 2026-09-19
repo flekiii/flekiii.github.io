@@ -1862,3 +1862,28 @@ footer p {
   pointer-events:auto !important;
   cursor:pointer !important;
 }
+
+
+/* Map click-layer hardening */
+.ecosystem-map .map-line,
+.ecosystem-map .map-connector-label,
+.ecosystem-map .map-os-sub,
+.ecosystem-map .ecosystem-map-header {
+  pointer-events: none !important;
+}
+.ecosystem-map .map-node,
+.ecosystem-map .map-strip,
+.ecosystem-map .map-os-row,
+.ecosystem-map .map-link {
+  pointer-events: auto !important;
+}
+.ecosystem-map .map-node { z-index: 20 !important; }
+.ecosystem-map .map-strip,
+.ecosystem-map .map-os-row { z-index: 25 !important; }
+.ecosystem-map .map-strip a,
+.ecosystem-map .map-os-row a {
+  position: relative;
+  z-index: 26 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
