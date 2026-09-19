@@ -19,7 +19,6 @@ const translations = {
     tabCurrently: "Live Status",
     tabRoadmap: "Roadmap",
     tabProgress: "Project Progress",
-    tabEcosystem: "Ecosystem",
     tabAbout: "About",
     heroEyebrow: "INDEPENDENT DEVELOPER · 15 YEARS OLD",
     heroTitle: "Building my own<br><span>digital world.</span>",
@@ -27,6 +26,11 @@ const translations = {
     heroProjects: "VIEW PROJECTS",
     heroSupport: "❤️ SUPPORT",
     projectsTitle: "Projects",
+    filterAll: "ALL",
+    filterServices: "SERVICES",
+    filterApps: "APPS",
+    filterEntertainment: "ENTERTAINMENT",
+    filterSystems: "SYSTEMS",
     statusProgress: "IN PROGRESS",
     statusPlanned: "PLANNED",
     viewProject: "VIEW PROJECT",
@@ -131,7 +135,6 @@ const translations = {
     tabCurrently: "Live Status",
     tabRoadmap: "Roadmap",
     tabProgress: "Прогрес проєктів",
-    tabEcosystem: "Екосистема",
     tabAbout: "Про мене",
     heroEyebrow: "НЕЗАЛЕЖНИЙ РОЗРОБНИК · 15 РОКІВ",
     heroTitle: "Створюю власний<br><span>цифровий світ.</span>",
@@ -139,6 +142,11 @@ const translations = {
     heroProjects: "ПЕРЕГЛЯНУТИ ПРОЄКТИ",
     heroSupport: "❤️ ПІДТРИМАТИ",
     projectsTitle: "Проєкти",
+    filterAll: "УСІ",
+    filterServices: "СЕРВІСИ",
+    filterApps: "ПРОГРАМИ",
+    filterEntertainment: "РОЗВАГИ",
+    filterSystems: "СИСТЕМИ",
     statusProgress: "В ПРОЦЕСІ",
     statusPlanned: "У ПЛАНАХ",
     viewProject: "ПЕРЕГЛЯНУТИ",
@@ -439,6 +447,33 @@ function escapeHtml(value) {
 
 const yearElement = document.getElementById("year");
 const cards = document.querySelectorAll(".project-card");
+
+const projectFilters = document.querySelectorAll(".project-filter");
+
+function applyProjectFilter(filter) {
+  projectFilters.forEach((button) => {
+    const active = button.dataset.filter === filter;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+
+  cards.forEach((card) => {
+    const visible = filter === "all" || card.dataset.category === filter;
+    card.classList.toggle("project-card-hidden", !visible);
+
+    if (visible) {
+      card.style.opacity = "1";
+      card.style.transform = "translateY(0)";
+    }
+  });
+}
+
+projectFilters.forEach((button) => {
+  button.addEventListener("click", () => {
+    applyProjectFilter(button.dataset.filter || "all");
+  });
+});
+
 const languagePicker = document.getElementById("languagePicker");
 const languageButton = document.getElementById("languageButton");
 const languageMenu = document.getElementById("languageMenu");
@@ -627,13 +662,4 @@ document.addEventListener("keydown", (event) => {
 const savedLanguage = localStorage.getItem("flekiii-language");
 setLanguage(savedLanguage || "en");
 updateYear();
-document.querySelectorAll("[data-map-link]").forEach((node) => {
-  node.addEventListener("click", (event) => {
-    const href = node.getAttribute("href");
-    if (!href) return;
-    event.preventDefault();
-    window.location.assign(new URL(href, window.location.href).href);
-  });
-});
-
 loadGithubActivity();
