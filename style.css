@@ -1685,3 +1685,40 @@ footer p {
   .now-building-content { align-items:flex-start; }
   .now-building-progress-head { flex-direction:column; gap:5px; }
 }
+
+
+/* Centered Now Building layout */
+.now-building-topline {
+  justify-content: center;
+  text-align: center;
+  flex-wrap: wrap;
+}
+
+.now-building-content {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.now-building-content p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.now-building-progress-head {
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.now-building-next {
+  align-items: center;
+  text-align: center;
+}
+
+.now-building-next p {
+  margin-left: auto;
+  margin-right: auto;
+}
