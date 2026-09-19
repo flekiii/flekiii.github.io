@@ -3,6 +3,7 @@ const translations = {
     navProjects: "Projects",
     navOverview: "Overview",
     navSupport: "Support",
+    navUpdates: "Updates",
     overviewEyebrow: "INSIDE FLEKIII",
     overviewTitle: "One place for the <span class=\"accent\">bigger picture.</span>",
     tabCurrently: "Currently",
@@ -11,6 +12,15 @@ const translations = {
     tabAbout: "About",
     currentPlatform: "PLATFORM",
     heroEyebrow: "INDEPENDENT DEVELOPER · 15 YEARS OLD",
+    updatesTitle: "Updates",
+    githubTitle: "LATEST ON GITHUB",
+    githubLoading: "Loading GitHub activity…",
+    githubError: "GitHub activity is temporarily unavailable.",
+    githubButton: "VIEW GITHUB",
+    changelogTitle: "What changed?",
+    changelogText: "A small project journal with updates to the flekiii website and ecosystem.",
+    changelogButton: "VIEW CHANGELOG",
+    openProjectPage: "OPEN PROJECT PAGE",
     heroTitle: "Building my own<br><span>digital world.</span>",
     heroText: "I build software, platforms and tools with a focus on freedom, customization and privacy.",
     heroProjects: "VIEW PROJECTS",
@@ -73,6 +83,7 @@ const translations = {
     navProjects: "Проєкти",
     navOverview: "Огляд",
     navSupport: "Підтримати",
+    navUpdates: "Оновлення",
     overviewEyebrow: "ВСЕРЕДИНІ FLEKIII",
     overviewTitle: "Все важливе — в <span class=\"accent\">одному місці.</span>",
     tabCurrently: "Зараз",
@@ -81,6 +92,15 @@ const translations = {
     tabAbout: "Про мене",
     currentPlatform: "СЕРЕДОВИЩЕ",
     heroEyebrow: "НЕЗАЛЕЖНИЙ РОЗРОБНИК · 15 РОКІВ",
+    updatesTitle: "Оновлення",
+    githubTitle: "ОСТАННЄ НА GITHUB",
+    githubLoading: "Завантаження активності GitHub…",
+    githubError: "Активність GitHub тимчасово недоступна.",
+    githubButton: "ВІДКРИТИ GITHUB",
+    changelogTitle: "Що змінилося?",
+    changelogText: "Невеликий журнал змін сайту flekiii та всієї екосистеми.",
+    changelogButton: "ВІДКРИТИ CHANGELOG",
+    openProjectPage: "ВІДКРИТИ СТОРІНКУ ПРОЄКТУ",
     heroTitle: "Створюю власний<br><span>цифровий світ.</span>",
     heroText: "Я створюю програми, платформи та інструменти з акцентом на свободу, кастомізацію та приватність.",
     heroProjects: "ПЕРЕГЛЯНУТИ ПРОЄКТИ",
@@ -201,6 +221,7 @@ const projectCatalog = {
     icon: "🤖",
     name: "AS",
     status: "PLANNED",
+    page: "as/",
     en: "My own AI project and one of the core parts of the flekiii ecosystem.",
     uk: "Мій власний AI та один з основних елементів екосистеми flekiii."
   },
@@ -208,6 +229,7 @@ const projectCatalog = {
     icon: "💬",
     name: "Flekibard",
     status: "PLANNED",
+    page: "flekibard/",
     en: "My own messenger focused on customization, privacy and freedom.",
     uk: "Мій власний месенджер з акцентом на кастомізацію, приватність і свободу."
   },
@@ -215,6 +237,7 @@ const projectCatalog = {
     icon: "🎬",
     name: "flassi",
     status: "PLANNED",
+    page: "flassi/",
     en: "A short-video platform for creating, watching and sharing quick vertical videos.",
     uk: "Власна платформа коротких вертикальних відео для створення, перегляду та поширення контенту."
   },
@@ -236,6 +259,7 @@ const projectCatalog = {
     icon: "🖥️",
     name: "TRUE OS · PC",
     status: "PLANNED",
+    page: "true-os/",
     en: "My own operating system direction for personal computers.",
     uk: "Власний напрям операційної системи для персональних комп'ютерів."
   },
@@ -243,6 +267,7 @@ const projectCatalog = {
     icon: "📱",
     name: "TRUE OS · Redmi 12C",
     status: "PLANNED",
+    page: "true-os/",
     en: "A mobile operating system direction for Redmi 12C.",
     uk: "Мобільний напрям операційної системи для Redmi 12C."
   },
@@ -250,10 +275,73 @@ const projectCatalog = {
     icon: "🍎",
     name: "TRUE OS · iPhone 16",
     status: "PLANNED",
+    page: "true-os/",
     en: "A mobile operating system direction for iPhone 16.",
     uk: "Мобільний напрям операційної системи для iPhone 16."
   }
 };
+
+async function loadGithubActivity() {
+  const container = document.getElementById("githubActivity");
+
+  if (!container) {
+    return;
+  }
+
+  try {
+    const response = await fetch("https://api.github.com/users/flekiii/repos?sort=updated&direction=desc&per_page=6", {
+      headers: {
+        Accept: "application/vnd.github+json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("GitHub API error");
+    }
+
+    const repositories = (await response.json())
+      .filter((repo) => !repo.fork)
+      .slice(0, 5);
+
+    if (repositories.length === 0) {
+      container.innerHTML = '<div class="github-loading">No public repositories yet.</div>';
+      return;
+    }
+
+    container.innerHTML = repositories.map((repo) => {
+      const description = repo.description
+        ? escapeHtml(repo.description)
+        : "Independent project repository.";
+
+      const language = repo.language
+        ? escapeHtml(repo.language.toUpperCase())
+        : "PROJECT";
+
+      return `
+        <a class="github-item" href="${repo.html_url}" target="_blank" rel="noopener noreferrer">
+          <span>
+            <span class="github-item-name">${escapeHtml(repo.name)}</span>
+            <span class="github-item-description">${description}</span>
+          </span>
+          <span class="github-item-meta">${language}</span>
+        </a>
+      `;
+    }).join("");
+  } catch {
+    const language = document.documentElement.lang === "uk" ? "uk" : "en";
+    const message = translations[language].githubError;
+    container.innerHTML = `<div class="github-loading">${message}</div>`;
+  }
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
 const yearElement = document.getElementById("year");
 const cards = document.querySelectorAll(".project-card");
@@ -286,6 +374,7 @@ const projectModal = document.getElementById("projectModal");
 const projectModalTitle = document.getElementById("projectModalTitle");
 const projectModalText = document.getElementById("projectModalText");
 const projectModalStatus = document.getElementById("projectModalStatus");
+const projectModalLink = document.getElementById("projectModalLink");
 
 let currentProjectId = null;
 
@@ -335,6 +424,14 @@ function renderModal(projectId) {
   projectModalStatus.textContent = language === "uk"
     ? (project.status === "IN PROGRESS" ? "В ПРОЦЕСІ" : "У ПЛАНАХ")
     : project.status;
+
+  if (project.page) {
+    projectModalLink.hidden = false;
+    projectModalLink.href = project.page;
+  } else {
+    projectModalLink.hidden = true;
+    projectModalLink.removeAttribute("href");
+  }
 }
 
 function openProject(projectId) {
@@ -432,3 +529,4 @@ document.addEventListener("keydown", (event) => {
 const savedLanguage = localStorage.getItem("flekiii-language");
 setLanguage(savedLanguage || "en");
 updateYear();
+loadGithubActivity();
