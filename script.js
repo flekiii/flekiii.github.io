@@ -205,7 +205,7 @@ projectVpnDesc: "Власний VPN-проєкт, орієнтований на 
     supportText: "Якщо тобі подобається те, що я створюю, і ти хочеш допомогти мені <span class=\"support-key\">продовжувати розробку</span>, ти можеш <span class=\"support-key\">підтримати мої проєкти</span>.",
     supportButton: "ПІДТРИМАТИ FLEKIII",
     supportNote: "Кнопка відкриває Monobank Jar.",
-    supportExtra: "Кожна підтримка допомагає мені витрачати більше часу на розробку.",
+    supportExtra: "Кожен <span class=\"support-key\">внесок</span> допомагає мені витрачати більше часу на <span class=\"support-key\">створення</span>.",
     backTop: "На початок ↑",
     footerText: "Створено незалежно."
   }
