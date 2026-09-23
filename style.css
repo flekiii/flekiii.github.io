@@ -3391,3 +3391,48 @@ footer p {
   font-size: clamp(8px, 0.62vw, 10px);
   letter-spacing: 0;
 }
+
+
+/* Give the Support action enough horizontal space */
+.support-editorial .support-inner {
+  grid-template-columns: minmax(0, 1fr) 470px;
+  gap: 50px;
+}
+
+.support-editorial .support-action {
+  min-width: 0;
+}
+
+.support-editorial .support-note-row {
+  width: max-content;
+  max-width: 100%;
+}
+
+.support-editorial .support-note-row small {
+  display: block;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 10px;
+}
+
+@media (max-width: 1050px) and (min-width: 851px) {
+  .support-editorial .support-inner {
+    grid-template-columns: minmax(0, 1fr) 400px;
+    gap: 34px;
+  }
+}
+
+@media (max-width: 850px) {
+  .support-editorial .support-inner {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .support-editorial .support-note-row {
+    width: 100%;
+  }
+
+  .support-editorial .support-note-row small {
+    white-space: normal;
+  }
+}
