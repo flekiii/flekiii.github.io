@@ -156,10 +156,10 @@
           <div><div class="eyebrow" data-i18n="overviewEyebrow">DEVELOPER OVERVIEW · FLEKIII</div><h2 data-i18n="overviewTitle">The work behind <span class="accent">flekiii.</span></h2></div>
           <div class="overview-tabs" role="tablist" aria-label="Developer overview">
             <button class="overview-tab" type="button" role="tab" aria-selected="false" data-tab="progress" data-i18n="tabProgress">Project Progress</button>
-            <button class="overview-tab" type="button" role="tab" aria-selected="false" data-tab="about" data-i18n="tabAbout">About</button>
+            <button class="overview-tab active" type="button" role="tab" aria-selected="true" data-tab="about" data-i18n="tabAbout">About</button>
           </div>
         </div>
-        <div class="overview-panel active" data-panel="progress">
+        <div class="overview-panel" data-panel="progress">
           <div class="progress-grid"><article class="progress-item"><div><strong>VPN</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>Private Browser</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>Search Engine</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>Email Service</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>Cloud Drive</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>Music Platform</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>Game Platform</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>AS</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>Flekibard</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>flassi</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>TRUSTmoney</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>Private Network</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>TRUE OS · PC</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>TRUE OS · Redmi 12C</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article><article class="progress-item"><div><strong>TRUE OS · iPhone 16</strong><span>0%</span></div><div class="progress-track"><i style="width:0%"></i></div></article></div>
           <p class="progress-note" data-i18n="progressNote">JavaScript learning is intentionally not included in project progress.</p>
         </div>
@@ -167,10 +167,11 @@
           <div class="about-layout">
             <div class="profile-mini"><div class="profile-avatar">f.</div><div><div class="eyebrow" data-i18n="profileEyebrow">DEVELOPER PROFILE</div><h3>flekiii</h3><p data-i18n="profileRole">15 years old · Independent Developer</p></div></div>
             <div class="about-copy">
-              <p data-i18n="about1">I'm <strong>flekiii</strong>, a 15-year-old independent developer who is learning by building.</p>
-              <p data-i18n="about2">Right now I'm focused on learning JavaScript, understanding how software works and turning what I learn into real code instead of leaving ideas on paper.</p>
-              <p data-i18n="about3">I want to build a large independent ecosystem: a messenger, AI, media and game platforms, search, cloud, finance, networking and my own operating-system direction for three target devices.</p>
-              <p data-i18n="about4">I like the idea of technology that gives people freedom, customization and control. This site is my public place to document the path from learning the basics to building the bigger system I imagine.</p>
+              <p data-i18n="about1">Я — <strong>flekiii</strong>, 15-річний незалежний розробник, який навчається на практиці, створюючи власні проєкти.</p>
+              <p data-i18n="about2">Цей сайт — мій публічний простір, де я документую свій шлях: від опанування основ до створення масштабної системи, яку я собі уявляю.</p>
+              <p data-i18n="about3">Я хочу дати як людям, так і собі свободу в інтернеті, щоб усі, хто хоче свободи, отримали її.</p>
+              <p data-i18n="about4">Я роблю це не тільки заради свободи та людей. Я з бідної сім'ї й хочу дати свободу не тільки в інтернеті, а й у житті своїй сім'ї та самому собі. Я хочу досягнути висот і розуміти, що я справді можу щось зробити. У мене немає підтримки, у мене ніхто не вірить, тому я повинен довести, що я це можу, що я можу багато чого — щоб я пишався собою і розумів, що дав людям те, що їм подобається.</p>
+              <div class="about-crosses" aria-hidden="true"><span>✕</span><span>✕</span><span>✕</span></div>
             </div>
           </div>
         </div>
@@ -285,7 +286,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=24"></script>
+  <script src="script.js?v=25"></script>
   <script id="project-filter-runtime">
     (() => {
       const filters = document.querySelectorAll(".project-filter");
