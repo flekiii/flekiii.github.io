@@ -3601,3 +3601,65 @@ footer p {
     line-height: 1.65;
   }
 }
+
+
+/* Phone refinements for Support Goals and Support note */
+@media (max-width: 700px) {
+  .goals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .goal-card-featured {
+    grid-column: 1 / -1 !important;
+  }
+
+  .goal-card {
+    min-height: 128px;
+    padding: 17px 15px;
+  }
+
+  .goal-card strong {
+    font-size: 17px;
+    line-height: 1.12;
+  }
+
+  .goal-card p {
+    margin-top: 9px;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .goal-card-top {
+    gap: 8px;
+  }
+
+  .goal-card-label {
+    font-size: 7px;
+  }
+
+  .support-editorial .support-note-row {
+    gap: 8px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .support-editorial .support-note-row small {
+    max-width: 100%;
+    min-width: 0;
+    font-size: 8px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  .support-editorial .support-mark {
+    width: 9px;
+    height: 9px;
+    flex-basis: 9px;
+  }
+
+  .support-editorial .support-mark::after {
+    inset: 2px;
+  }
+}
