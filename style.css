@@ -3198,3 +3198,10 @@ footer p {
     display: none;
   }
 }
+
+
+/* Keep the right margin completely clean */
+.section[data-editorial-number]::after,
+.support-editorial[data-editorial-number]::after {
+  display: none !important;
+}
