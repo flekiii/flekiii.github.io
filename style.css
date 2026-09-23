@@ -3436,3 +3436,168 @@ footer p {
     white-space: normal;
   }
 }
+
+
+/* Mobile layout: preserve desktop composition, scaled for small screens */
+@media (max-width: 700px) {
+  .section {
+    width: min(var(--max), calc(100% - 28px));
+    padding: 64px 0;
+  }
+
+  .section-heading {
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(30px, 9vw, 42px);
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px;
+  }
+
+  .project-card {
+    min-height: 225px;
+    padding: 16px;
+    border-radius: 15px;
+    gap: 16px;
+  }
+
+  .project-card-top {
+    gap: 8px;
+  }
+
+  .project-number {
+    font-size: 8px;
+  }
+
+  .project-mark {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+    border-radius: 10px;
+    transform: scale(0.88);
+    transform-origin: top right;
+  }
+
+  .project-card h3 {
+    max-width: 100%;
+    font-size: clamp(16px, 4.6vw, 21px);
+  }
+
+  .project-card p {
+    max-width: none;
+    margin-top: 8px;
+    font-size: 11px;
+    line-height: 1.55;
+  }
+
+  .project-card-footer {
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .project-card .status {
+    font-size: 7px;
+  }
+
+  .project-card .project-view {
+    padding: 7px 9px;
+    font-size: 7px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .project-filter-shell {
+    margin-bottom: 20px;
+  }
+
+  .project-filter {
+    min-height: 32px;
+    padding: 8px 11px;
+    font-size: 8px;
+  }
+
+  .hero {
+    min-height: 590px;
+    padding: 48px 0;
+  }
+
+  .hero h1 {
+    font-size: clamp(42px, 14vw, 68px);
+  }
+
+  .hero-text {
+    max-width: 100%;
+    margin-top: 26px;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .hero-actions {
+    margin-top: 30px;
+  }
+
+  .now-building-shell {
+    gap: 10px;
+  }
+
+  .now-building-main,
+  .now-building-next {
+    padding: 22px;
+  }
+
+  .overview-shell {
+    border-radius: 20px;
+  }
+
+  .overview-header {
+    padding: 26px 20px 18px;
+  }
+
+  .overview-header h2 {
+    font-size: clamp(30px, 9vw, 42px);
+  }
+
+  .overview-panel {
+    padding: 22px 20px 24px;
+  }
+
+  .about-layout {
+    gap: 22px;
+  }
+
+  .profile-mini {
+    padding: 18px;
+  }
+
+  .about-copy p {
+    font-size: 14px;
+    line-height: 1.68;
+  }
+
+  .updates-card {
+    border-radius: 16px;
+  }
+
+  .devlog-card,
+  .goal-card {
+    border-radius: 15px;
+  }
+
+  .support-inner {
+    padding: 34px 22px;
+  }
+
+  .support-copy h2 {
+    font-size: clamp(40px, 12vw, 58px);
+  }
+
+  .support-copy p {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+}
