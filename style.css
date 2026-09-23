@@ -9,7 +9,7 @@
   --pink: #ff6fae;
   --pink-soft: #ff9bc7;
   --border: rgba(255, 111, 174, 0.18);
-  --max: 1120px;
+  --max: 1240px;
 }
 
 * {
@@ -3135,5 +3135,94 @@ footer p {
 @media (max-width: 700px) {
   .projects-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* Intentional desktop side space */
+.desktop-rails {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.side-rail {
+  position: absolute;
+  top: 120px;
+  bottom: 86px;
+  width: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0.52;
+}
+
+.side-rail-left {
+  left: max(16px, calc((100vw - var(--max)) / 2 - 54px));
+}
+
+.side-rail-right {
+  right: max(16px, calc((100vw - var(--max)) / 2 - 54px));
+}
+
+.side-rail-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  color: rgba(255,255,255,0.34);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  white-space: nowrap;
+}
+
+.side-rail-line {
+  width: 1px;
+  flex: 1;
+  min-height: 110px;
+  margin: 18px 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,111,174,0),
+    rgba(255,111,174,0.28) 18%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,111,174,0.28) 82%,
+    rgba(255,111,174,0)
+  );
+}
+
+.side-rail-node {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border: 1px solid rgba(255,111,174,0.72);
+  border-radius: 50%;
+  background: #090909;
+  box-shadow:
+    0 0 0 4px rgba(255,111,174,0.035),
+    0 0 16px rgba(255,111,174,0.24);
+}
+
+.side-rail-code {
+  margin-top: 12px;
+  color: rgba(255,111,174,0.5);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+@media (max-width: 1480px) {
+  .desktop-rails {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .desktop-rails {
+    display: none;
   }
 }
