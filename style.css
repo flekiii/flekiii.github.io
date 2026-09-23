@@ -2486,3 +2486,13 @@ footer p {
   .about-crosses{gap:14px;margin-top:24px}
   .about-crosses span{font-size:22px}
 }
+
+ 
+.about-copy .about-key{
+  color:var(--pink-soft);
+  font-weight:700;
+  text-shadow:0 0 18px rgba(255,111,174,.16);
+}
+.about-copy strong.about-key{
+  color:var(--pink);
+}
