@@ -2601,12 +2601,37 @@ footer p {
  
 .goal-card-featured{
   grid-column:1 / -1;
-  min-height:210px;
+  min-height:168px;
+  padding:24px 28px;
   background:radial-gradient(circle at 88% 20%,rgba(255,111,174,.10),transparent 34%),rgba(255,255,255,.025);
   border-color:rgba(255,111,174,.22);
 }
 .goal-card-featured p{
   max-width:980px;
+}
+.goal-card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.goal-card-label{
+  color:rgba(255,155,199,.72);
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.14em;
+}
+.goal-card{
+  min-height:125px;
+  padding:22px 24px;
+}
+.goal-card strong{
+  color:var(--text);
+}
+.goal-key{
+  color:var(--pink-soft);
+  font-weight:700;
+  text-shadow:0 0 16px rgba(255,111,174,.16);
 }
 @media(max-width:780px){
   .goal-card-featured{grid-column:auto}
