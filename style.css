@@ -3366,3 +3366,11 @@ footer p {
     font-size: clamp(40px, 13vw, 60px);
   }
 }
+
+
+/* Support text accents */
+.support-key {
+  color: var(--pink-soft);
+  font-weight: 700;
+  text-shadow: 0 0 18px rgba(255,111,174,0.14);
+}
