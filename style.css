@@ -2597,3 +2597,17 @@ footer p {
 .devlog-card-current h3{
   margin-top:16px;
 }
+
+ 
+.goal-card-featured{
+  grid-column:1 / -1;
+  min-height:210px;
+  background:radial-gradient(circle at 88% 20%,rgba(255,111,174,.10),transparent 34%),rgba(255,255,255,.025);
+  border-color:rgba(255,111,174,.22);
+}
+.goal-card-featured p{
+  max-width:980px;
+}
+@media(max-width:780px){
+  .goal-card-featured{grid-column:auto}
+}
