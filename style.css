@@ -3374,3 +3374,11 @@ footer p {
   font-weight: 700;
   text-shadow: 0 0 18px rgba(255,111,174,0.14);
 }
+
+
+/* Strong Support keyword treatment */
+.support-editorial .support-key {
+  color: #ff9bc7 !important;
+  font-weight: 750 !important;
+  text-shadow: 0 0 16px rgba(255,111,174,0.18) !important;
+}
