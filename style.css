@@ -3382,3 +3382,12 @@ footer p {
   font-weight: 750 !important;
   text-shadow: 0 0 16px rgba(255,111,174,0.18) !important;
 }
+
+
+/* Keep the Support note on one line */
+.support-action .support-note-row small {
+  max-width: none;
+  white-space: nowrap;
+  font-size: clamp(8px, 0.62vw, 10px);
+  letter-spacing: 0;
+}
