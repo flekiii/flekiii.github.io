@@ -2491,8 +2491,13 @@ footer p {
 .about-copy .about-key{
   color:var(--pink-soft);
   font-weight:700;
-  text-shadow:0 0 18px rgba(255,111,174,.16);
+  text-shadow:0 0 18px rgba(255,111,174,.20);
+  transition:color .2s ease,text-shadow .2s ease;
 }
 .about-copy strong.about-key{
   color:var(--pink);
+}
+.about-copy .about-key:hover{
+  color:#ffc0dc;
+  text-shadow:0 0 24px rgba(255,111,174,.34);
 }
