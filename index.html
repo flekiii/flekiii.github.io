@@ -226,8 +226,28 @@
     </section>
     <section id="devlog" class="section devlog">
       <div class="section-heading"><span>05</span><h2 data-i18n="devlogTitle">Dev Log</h2></div>
-      <article class="devlog-card"><div class="devlog-date" data-i18n="devlogDate">LAST 3 DAYS</div><h3 data-i18n="devlogHeadline">Learning almost all of the JavaScript basics.</h3><p data-i18n="devlogText">The current work is not counted as a project. It is the learning phase that prepares the skills needed for the projects ahead.</p></article>
+
+      <div class="devlog-grid">
+        <article class="devlog-card devlog-card-complete">
+          <div class="devlog-card-top">
+            <div class="devlog-date" data-i18n="devlogJsDate">17–22 SEPTEMBER 2026</div>
+            <span class="devlog-state" data-i18n="devlogComplete">COMPLETED</span>
+          </div>
+          <h3 data-i18n="devlogJsTitle">Learning JavaScript</h3>
+          <p data-i18n="devlogJsText">I studied JavaScript from September 17 to September 22, focusing on the basics and turning what I learned into real code.</p>
+        </article>
+
+        <article class="devlog-card devlog-card-current">
+          <div class="devlog-card-top">
+            <div class="devlog-date" data-i18n="devlogProblemsDate">22 SEPTEMBER 2026 → ?</div>
+            <span class="devlog-state devlog-state-sad" aria-label="Current phase">🩷😔</span>
+          </div>
+          <h3 data-i18n="devlogProblemsTitle">Solving problems</h3>
+          <p data-i18n="devlogProblemsText">There are many problems in my life right now, so I cannot give as much attention to learning and projects as I would like. For now, I am trying to solve these problems first and move forward step by step.</p>
+        </article>
+      </div>
     </section>
+
     <section id="goals" class="section goals">
       <div class="section-heading"><span>06</span><h2 data-i18n="goalsTitle">Support Goals</h2></div>
       <div class="goals-grid">
@@ -287,7 +307,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=27"></script>
+  <script src="script.js?v=28"></script>
   <script id="project-filter-runtime">
     (() => {
       const filters = document.querySelectorAll(".project-filter");
