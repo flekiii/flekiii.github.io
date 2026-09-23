@@ -14,10 +14,8 @@ const translations = {
     nowBuildingNextLabel: "NEXT",
     nowBuildingNextTitle: "Node.js + Backend",
     nowBuildingNextText: "After JavaScript, the next step is learning Node.js and the basics of backend development.",
-    overviewEyebrow: "LIVE STATUS · FLEKIII",
+    overviewEyebrow: "DEVELOPER OVERVIEW · FLEKIII",
     overviewTitle: "What is happening <span class=\"accent\">right now.</span>",
-    tabCurrently: "Live Status",
-    tabRoadmap: "Roadmap",
     tabProgress: "Project Progress",
     tabAbout: "About",
     heroEyebrow: "INDEPENDENT DEVELOPER · 15 YEARS OLD",
@@ -36,25 +34,6 @@ const translations = {
     viewProject: "VIEW PROJECT",
     modalEyebrow: "PROJECT",
     openProjectPage: "OPEN PROJECT PAGE",
-    currentLearning: "LEARNING",
-    currentLearningDesc: "The current focus is learning JavaScript fundamentals.",
-    currentBuilding: "BUILDING",
-    currentBuildingDesc: "No major project is being counted as the current focus — the current phase is learning JavaScript.",
-    currentPlanning: "PLANNING",
-    currentPlanningDesc: "The bigger project ideas remain planned while I build the skills and foundations needed to make them real.",
-    currentPlatform: "PLATFORM",
-    currentPlatformDesc: "My main development environment.",
-    roadmapNowLabel: "NOW",
-    roadmapNow: "Learn the fundamentals of JavaScript and keep practicing with real code.",
-    roadmapNextLabel: "NEXT",
-    roadmapNext: "Move into Node.js and the basics of backend development.",
-    roadmapLaterLabel: "LATER",
-    roadmapLaterTitle: "Projects & ecosystem",
-    roadmapLater: "Return to deeper project development with stronger programming and backend foundations.",
-    liveLabel: "CURRENTLY LEARNING",
-    liveText: "For the last few days, my main focus has been learning the basics of JavaScript.",
-    nextLabel: "NEXT",
-    nextText: "After JavaScript: Node.js and the basics of backend development.",
     progressNote: "JavaScript learning is intentionally not included in project progress.",
     ecosystemCore: "independent ecosystem",
     profileEyebrow: "DEVELOPER PROFILE",
@@ -130,10 +109,8 @@ const translations = {
     nowBuildingNextLabel: "ДАЛІ",
     nowBuildingNextTitle: "Node.js + Backend",
     nowBuildingNextText: "Після JavaScript наступний етап — Node.js та основи backend-розробки.",
-    overviewEyebrow: "LIVE STATUS · FLEKIII",
+    overviewEyebrow: "ОГЛЯД РОЗРОБКИ · FLEKIII",
     overviewTitle: "Що відбувається <span class=\"accent\">прямо зараз.</span>",
-    tabCurrently: "Live Status",
-    tabRoadmap: "Roadmap",
     tabProgress: "Прогрес проєктів",
     tabAbout: "Про мене",
     heroEyebrow: "НЕЗАЛЕЖНИЙ РОЗРОБНИК · 15 РОКІВ",
@@ -522,6 +499,21 @@ if (mobileMenuButton && mainNav) {
 
 const overviewTabs = document.querySelectorAll(".overview-tab");
 const overviewPanels = document.querySelectorAll(".overview-panel");
+
+if (overviewTabs.length) {
+  const activeTab = document.querySelector('.overview-tab.active') || overviewTabs[0];
+  const activePanel = document.querySelector('.overview-panel.active') || overviewPanels[0];
+
+  overviewTabs.forEach((tab) => {
+    const active = tab === activeTab;
+    tab.classList.toggle("active", active);
+    tab.setAttribute("aria-selected", String(active));
+  });
+
+  overviewPanels.forEach((panel) => {
+    panel.classList.toggle("active", panel === activePanel);
+  });
+}
 
 overviewTabs.forEach((tab) => {
   tab.addEventListener("click", () => {
