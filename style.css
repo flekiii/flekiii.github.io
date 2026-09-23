@@ -3706,3 +3706,12 @@ footer p {
     inset: 2px;
   }
 }
+
+
+/* Match the featured Support Goal number to the other goal numbers */
+.goal-card-featured .goal-card-top > span:first-child {
+  color: #ff69b4;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
