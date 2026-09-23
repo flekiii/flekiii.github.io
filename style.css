@@ -3663,3 +3663,46 @@ footer p {
     inset: 2px;
   }
 }
+
+
+/* Final phone override: Support Goals + Support note */
+@media (max-width: 780px) {
+  .goals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .goals-grid .goal-card-featured {
+    grid-column: 1 / -1 !important;
+  }
+
+  .goals-grid .goal-card {
+    min-width: 0;
+  }
+
+  .support-editorial .support-note-row {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden;
+  }
+
+  .support-editorial .support-note-row small {
+    flex: 1 1 auto;
+    min-width: 0 !important;
+    max-width: none !important;
+    font-size: 6.7px !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.025em !important;
+    white-space: nowrap !important;
+  }
+
+  .support-editorial .support-mark {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+  }
+
+  .support-editorial .support-mark::after {
+    inset: 2px;
+  }
+}
