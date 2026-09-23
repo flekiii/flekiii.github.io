@@ -2466,3 +2466,23 @@ footer p {
     color: var(--pink);
   }
 }
+
+ 
+.about-crosses{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  margin-top:28px;
+}
+.about-crosses span{
+  color:var(--pink);
+  font-size:26px;
+  font-weight:700;
+  line-height:1;
+  text-shadow:0 0 18px rgba(255,111,174,.28);
+}
+@media(max-width:700px){
+  .about-crosses{gap:14px;margin-top:24px}
+  .about-crosses span{font-size:22px}
+}
