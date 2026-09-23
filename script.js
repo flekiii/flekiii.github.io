@@ -58,8 +58,8 @@ const translations = {
     projectTrustDesc: "A future financial platform built around my own TRUST Network.",
     projectNetworkDesc: "A private network designed as part of the wider flekiii ecosystem.",
     projectPcDesc: "My own operating system direction for personal computers.",
-    projectRedmiDesc: "A mobile operating system direction for Redmi 12C.",
-    projectIphoneDesc: "A mobile operating system direction for iPhone 16.",
+    projectRedmiDesc: "A mobile operating system direction for Android.",
+    projectIphoneDesc: "A mobile operating system direction for iPhone 11.",
     updatesTitle: "Updates",
     githubTitle: "LATEST ON GITHUB",
     githubLoading: "Loading GitHub activity…",
@@ -163,8 +163,8 @@ projectVpnDesc: "Власний VPN-проєкт, орієнтований на 
     projectTrustDesc: "Майбутня фінансова платформа, побудована навколо власної TRUST Network.",
     projectNetworkDesc: "Власна приватна мережа як частина більшої екосистеми flekiii.",
     projectPcDesc: "Власний напрям операційної системи для персональних комп'ютерів.",
-    projectRedmiDesc: "Мобільний напрям операційної системи для Redmi 12C.",
-    projectIphoneDesc: "Мобільний напрям операційної системи для iPhone 16.",
+    projectRedmiDesc: "Мобільний напрям операційної системи для Android.",
+    projectIphoneDesc: "Мобільний напрям операційної системи для iPhone 11.",
     updatesTitle: "Оновлення",
     githubTitle: "ОСТАННЄ НА GITHUB",
     githubLoading: "Завантаження активності GitHub…",
@@ -220,7 +220,7 @@ translations.en.mapVideo = "Video";
 translations.en.mapFinance = "Finance";
 translations.en.mapServices = "SERVICES";
 translations.en.mapOperating = "TRUE OS · ONE FAMILY";
-translations.en.mapOperatingSub = "PC + Redmi 12C + iPhone 16";
+translations.en.mapOperatingSub = "PC + Android + iPhone 11";
 translations.uk.mapTitle = "ЕКОСИСТЕМА FLEKIII";
 translations.uk.mapSubtitle = "Проєкти, платформи та інфраструктура, об'єднані в один напрям.";
 translations.uk.mapCore = "незалежна екосистема";
@@ -230,7 +230,7 @@ translations.uk.mapVideo = "Відео";
 translations.uk.mapFinance = "Фінанси";
 translations.uk.mapServices = "СЕРВІСИ";
 translations.uk.mapOperating = "TRUE OS · ОДНА СІМ'Я";
-translations.uk.mapOperatingSub = "PC + Redmi 12C + iPhone 16";
+translations.uk.mapOperatingSub = "PC + Android + iPhone 11";
 const projectCatalog = {
   javascript: {
     icon: "📚",
@@ -345,19 +345,19 @@ const projectCatalog = {
   },
   "trueos-redmi": {
     icon: "📱",
-    name: "TRUE OS · Redmi 12C",
+    name: "TRUE OS · Android",
     status: "PLANNED",
     page: "https://flekiii.github.io/true-os/?v=3",
-    en: "A mobile operating system direction for Redmi 12C.",
-    uk: "Мобільний напрям операційної системи для Redmi 12C."
+    en: "A mobile operating system direction for Android.",
+    uk: "Мобільний напрям операційної системи для Android."
   },
   "trueos-iphone": {
     icon: "🍎",
-    name: "TRUE OS · iPhone 16",
+    name: "TRUE OS · iPhone 11",
     status: "PLANNED",
     page: "https://flekiii.github.io/true-os/?v=3",
-    en: "A mobile operating system direction for iPhone 16.",
-    uk: "Мобільний напрям операційної системи для iPhone 16."
+    en: "A mobile operating system direction for iPhone 11.",
+    uk: "Мобільний напрям операційної системи для iPhone 11."
   }
 };
 
