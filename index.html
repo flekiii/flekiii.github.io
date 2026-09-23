@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body>
   <div class="glow glow-one"></div>
@@ -115,39 +115,119 @@
       </div>
     </section>
 
-    <section id="projects" class="section">
-      <div class="section-heading">
+    <section id="projects" class="section projects-section">
+      <div class="section-heading projects-heading">
         <span>02</span>
-        <h2 data-i18n="projectsTitle">Projects</h2>
+        <div>
+          <h2 data-i18n="projectsTitle">Projects</h2>
+          <p data-i18n="projectsMeta">A growing set of services, apps, entertainment and systems.</p>
+        </div>
       </div>
 
-
-      <div class="project-filter-bar" role="group" aria-label="Project categories">
-        <button class="project-filter active" type="button" data-filter="all" aria-pressed="true" data-i18n="filterAll">ALL</button>
-        <button class="project-filter" type="button" data-filter="services" aria-pressed="false" data-i18n="filterServices">SERVICES</button>
-        <button class="project-filter" type="button" data-filter="apps" aria-pressed="false" data-i18n="filterApps">APPS</button>
-        <button class="project-filter" type="button" data-filter="entertainment" aria-pressed="false" data-i18n="filterEntertainment">ENTERTAINMENT</button>
-        <button class="project-filter" type="button" data-filter="systems" aria-pressed="false" data-i18n="filterSystems">SYSTEMS</button>
+      <div class="project-filter-shell">
+        <span class="project-filter-label" data-i18n="filterLabel">FILTER</span>
+        <div class="project-filter-bar" role="group" aria-label="Project categories">
+          <button class="project-filter active" type="button" data-filter="all" aria-pressed="true" data-i18n="filterAll">ALL</button>
+          <button class="project-filter" type="button" data-filter="services" aria-pressed="false" data-i18n="filterServices">SERVICES</button>
+          <button class="project-filter" type="button" data-filter="apps" aria-pressed="false" data-i18n="filterApps">APPS</button>
+          <button class="project-filter" type="button" data-filter="entertainment" aria-pressed="false" data-i18n="filterEntertainment">ENTERTAINMENT</button>
+          <button class="project-filter" type="button" data-filter="systems" aria-pressed="false" data-i18n="filterSystems">SYSTEMS</button>
+        </div>
       </div>
 
       <div class="projects-grid">
-        <article class="project-card" data-category="services"><div class="project-number">01</div><h3>🔐 VPN</h3><p data-i18n="projectVpnDesc">A private VPN project focused on secure and flexible network access.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="vpn" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="apps"><div class="project-number">02</div><h3>🌐 Private Browser</h3><p data-i18n="projectBrowserDesc">A privacy-focused browser designed around customization and user control.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="browser" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="services"><div class="project-number">03</div><h3>🔎 Search Engine</h3><p data-i18n="projectSearchDesc">An independent search engine for discovering information online.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="search" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="services"><div class="project-number">04</div><h3>📧 Email Service</h3><p data-i18n="projectEmailDesc">My own email service for private communication and a personal digital identity.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="email" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="services"><div class="project-number">05</div><h3>☁️ Cloud Drive</h3><p data-i18n="projectCloudDesc">A private cloud storage platform inspired by an independent Google Drive alternative.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="cloud" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="entertainment"><div class="project-number">06</div><h3>🎵 Music Platform</h3><p data-i18n="projectMusicDesc">A music platform inspired by SoundCloud for artists, uploads and discovery.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="music" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="entertainment"><div class="project-number">07</div><h3>🎮 Game Platform</h3><p data-i18n="projectGamesDesc">A dedicated platform for video games, developers and players.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="games" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="apps"><div class="project-number">08</div><h3>🤖 AS</h3><p data-i18n="projectAsDesc">My own AI project and one of the core parts of the flekiii ecosystem.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="as" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="apps"><div class="project-number">09</div><h3>💬 Flekibard</h3><p data-i18n="projectFlekibardDesc">My own messenger focused on customization, privacy and freedom.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="flekibard" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="entertainment"><div class="project-number">10</div><h3>🎬 flassi</h3><p data-i18n="projectFlassiDesc">A short-video platform for creating, watching and sharing quick vertical videos.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="flassi" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="services"><div class="project-number">11</div><h3>💰 TRUSTmoney</h3><p data-i18n="projectTrustDesc">A future financial platform built around my own TRUST Network.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="trust" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="services"><div class="project-number">12</div><h3>🌐 Private Network</h3><p data-i18n="projectNetworkDesc">A private network designed as part of the wider flekiii ecosystem.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="network" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="systems"><div class="project-number">13</div><h3>🖥️ TRUE OS · PC</h3><p data-i18n="projectPcDesc">My own operating system direction for personal computers.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="trueos-pc" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="systems"><div class="project-number">14</div><h3>📱 TRUE OS · Redmi 12C</h3><p data-i18n="projectRedmiDesc">A mobile operating system direction for Redmi 12C.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="trueos-redmi" data-i18n="viewProject">VIEW PROJECT</button></article>
-        <article class="project-card" data-category="systems"><div class="project-number">15</div><h3>🍎 TRUE OS · iPhone 16</h3><p data-i18n="projectIphoneDesc">A mobile operating system direction for iPhone 16.</p><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="trueos-iphone" data-i18n="viewProject">VIEW PROJECT</button></article>
+        <article class="project-card" data-category="services">
+          <div class="project-card-top"><div class="project-number">01</div><span class="project-mark mark-shield" aria-hidden="true"></span></div>
+          <div><h3>VPN</h3><p data-i18n="projectVpnDesc">A private VPN project focused on secure and flexible network access.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="vpn" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="apps">
+          <div class="project-card-top"><div class="project-number">02</div><span class="project-mark mark-browser" aria-hidden="true"></span></div>
+          <div><h3>Private Browser</h3><p data-i18n="projectBrowserDesc">A privacy-focused browser designed around customization and user control.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="browser" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="services">
+          <div class="project-card-top"><div class="project-number">03</div><span class="project-mark mark-search" aria-hidden="true"></span></div>
+          <div><h3>Search Engine</h3><p data-i18n="projectSearchDesc">An independent search engine for discovering information online.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="search" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="services">
+          <div class="project-card-top"><div class="project-number">04</div><span class="project-mark mark-mail" aria-hidden="true"></span></div>
+          <div><h3>Email Service</h3><p data-i18n="projectEmailDesc">My own email service for private communication and a personal digital identity.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="email" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="services">
+          <div class="project-card-top"><div class="project-number">05</div><span class="project-mark mark-cloud" aria-hidden="true"></span></div>
+          <div><h3>Cloud Drive</h3><p data-i18n="projectCloudDesc">A private cloud storage platform inspired by an independent Google Drive alternative.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="cloud" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="entertainment">
+          <div class="project-card-top"><div class="project-number">06</div><span class="project-mark mark-music" aria-hidden="true"></span></div>
+          <div><h3>Music Platform</h3><p data-i18n="projectMusicDesc">A music platform inspired by SoundCloud for artists, uploads and discovery.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="music" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="entertainment">
+          <div class="project-card-top"><div class="project-number">07</div><span class="project-mark mark-game" aria-hidden="true"></span></div>
+          <div><h3>Game Platform</h3><p data-i18n="projectGamesDesc">A dedicated platform for video games, developers and players.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="games" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="apps">
+          <div class="project-card-top"><div class="project-number">08</div><span class="project-mark mark-core" aria-hidden="true"></span></div>
+          <div><h3>AS</h3><p data-i18n="projectAsDesc">My own AI project and one of the core parts of the flekiii ecosystem.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="as" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="apps">
+          <div class="project-card-top"><div class="project-number">09</div><span class="project-mark mark-chat" aria-hidden="true"></span></div>
+          <div><h3>Flekibard</h3><p data-i18n="projectFlekibardDesc">My own messenger focused on customization, privacy and freedom.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="flekibard" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="entertainment">
+          <div class="project-card-top"><div class="project-number">10</div><span class="project-mark mark-play" aria-hidden="true"></span></div>
+          <div><h3>flassi</h3><p data-i18n="projectFlassiDesc">A short-video platform for creating, watching and sharing quick vertical videos.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="flassi" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="services">
+          <div class="project-card-top"><div class="project-number">11</div><span class="project-mark mark-diamond" aria-hidden="true"></span></div>
+          <div><h3>TRUSTmoney</h3><p data-i18n="projectTrustDesc">A future financial platform built around my own TRUST Network.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="trust" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="services">
+          <div class="project-card-top"><div class="project-number">12</div><span class="project-mark mark-network" aria-hidden="true"></span></div>
+          <div><h3>Private Network</h3><p data-i18n="projectNetworkDesc">A private network designed as part of the wider flekiii ecosystem.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="network" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="systems">
+          <div class="project-card-top"><div class="project-number">13</div><span class="project-mark mark-screen" aria-hidden="true"></span></div>
+          <div><h3>TRUE OS · PC</h3><p data-i18n="projectPcDesc">My own operating system direction for personal computers.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="trueos-pc" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="systems">
+          <div class="project-card-top"><div class="project-number">14</div><span class="project-mark mark-phone" aria-hidden="true"></span></div>
+          <div><h3>TRUE OS · Redmi 12C</h3><p data-i18n="projectRedmiDesc">A mobile operating system direction for Redmi 12C.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="trueos-redmi" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
+        <article class="project-card" data-category="systems">
+          <div class="project-card-top"><div class="project-number">15</div><span class="project-mark mark-phone" aria-hidden="true"></span></div>
+          <div><h3>TRUE OS · iPhone 16</h3><p data-i18n="projectIphoneDesc">A mobile operating system direction for iPhone 16.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="trueos-iphone" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
       </div>
     </section>
+
 
 
     <section id="overview" class="section overview">
@@ -312,7 +392,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=30"></script>
+  <script src="script.js?v=31"></script>
   <script id="project-filter-runtime">
     (() => {
       const filters = document.querySelectorAll(".project-filter");
