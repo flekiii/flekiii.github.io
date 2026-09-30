@@ -3511,3 +3511,154 @@ footer p {
   font-weight: 800;
   letter-spacing: .12em;
 }
+
+
+/* Site share modal */
+.share-modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .2s ease, visibility .2s ease;
+  z-index: 110;
+}
+
+.share-modal.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.share-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.76);
+  backdrop-filter: blur(12px);
+}
+
+.share-modal-window {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100%);
+  padding: 34px;
+  border: 1px solid rgba(255,111,174,.22);
+  border-radius: 24px;
+  background: #0d0d0d;
+  box-shadow: 0 30px 100px rgba(0,0,0,.62), 0 0 45px rgba(255,111,174,.08);
+  transform: translateY(14px) scale(.98);
+  transition: transform .2s ease;
+}
+
+.share-modal.open .share-modal-window {
+  transform: translateY(0) scale(1);
+}
+
+.share-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.share-modal-window h2 {
+  margin-top: 5px;
+  max-width: 430px;
+  font-size: clamp(34px, 6vw, 52px);
+  letter-spacing: -.06em;
+}
+
+.share-modal-window > p {
+  margin-top: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.share-options {
+  display: grid;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.share-option {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  min-height: 66px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 15px;
+  background: rgba(255,255,255,.025);
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.share-option:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,105,180,.34);
+  background: rgba(255,105,180,.05);
+}
+
+.share-option-icon {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(255,105,180,.11);
+  color: var(--pink);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.share-option strong,
+.share-option small {
+  display: block;
+  text-align: left;
+}
+
+.share-option strong {
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+
+.share-option small {
+  margin-top: 4px;
+  color: rgba(255,255,255,.48);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+@media (max-width: 700px) {
+  .share-modal {
+    padding: 14px;
+  }
+
+  .share-modal-window {
+    padding: 28px 18px 18px;
+    border-radius: 20px;
+  }
+
+  .share-modal-window h2 {
+    font-size: clamp(31px, 10vw, 44px);
+  }
+
+  .share-option {
+    min-height: 62px;
+  }
+}
