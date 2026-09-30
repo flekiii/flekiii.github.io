@@ -23,6 +23,16 @@ const translations = {
     heroText: "I build software, platforms and tools with a focus on freedom, customization and privacy.",
     heroProjects: "VIEW PROJECTS",
     heroSupport: "❤️ SUPPORT",
+    shareSiteButton: "SHARE SITE",
+    shareModalEyebrow: "SHARE",
+    shareModalTitle: "Share my site.",
+    shareModalText: "Choose how you want to share flekiii.",
+    shareCopy: "COPY LINK",
+    shareCopyHint: "Copy the site link.",
+    shareCopied: "COPIED",
+    shareWhatsAppHint: "Choose a chat.",
+    shareTelegramHint: "Choose a chat.",
+    shareViberHint: "Choose a contact.",
     projectsTitle: "Projects",
     projectsMeta: "A growing set of services, apps, entertainment and systems.",
     filterLabel: "FILTER",
@@ -129,6 +139,16 @@ const translations = {
     heroText: "Я створюю програми, платформи та інструменти з акцентом на свободу, кастомізацію та приватність.",
     heroProjects: "ПЕРЕГЛЯНУТИ ПРОЄКТИ",
     heroSupport: "❤️ ПІДТРИМАТИ",
+    shareSiteButton: "ПОДІЛИТИСЬ САЙТОМ",
+    shareModalEyebrow: "ПОДІЛИТИСЬ",
+    shareModalTitle: "Поділитись моїм сайтом.",
+    shareModalText: "Обери, як хочеш поділитись flekiii.",
+    shareCopy: "СКОПІЮВАТИ ПОСИЛАННЯ",
+    shareCopyHint: "Скопіювати посилання на сайт.",
+    shareCopied: "СКОПІЙОВАНО",
+    shareWhatsAppHint: "Обери чат.",
+    shareTelegramHint: "Обери чат.",
+    shareViberHint: "Обери контакт.",
     projectsTitle: "Проєкти",
     projectsMeta: "Система сервісів, програм, розваг і власних систем, що постійно розвивається.",
     filterLabel: "ФІЛЬТР",
@@ -659,6 +679,7 @@ function setLanguage(language) {
 
   localStorage.setItem("flekiii-language", selected);
   updateYear();
+  updateShareLinks();
 
   if (currentProjectId) {
     renderModal(currentProjectId);
@@ -691,7 +712,86 @@ document.addEventListener("keydown", (event) => {
     if (projectModal.classList.contains("open")) {
       closeProject();
     }
+
+    if (shareModal?.classList.contains("open")) {
+      closeShare();
+    }
   }
+});
+
+const shareSiteButton = document.getElementById("shareSiteButton");
+const shareModal = document.getElementById("shareModal");
+const shareCopyButton = document.getElementById("shareCopyButton");
+const shareCopyStatus = document.getElementById("shareCopyStatus");
+const shareLinks = document.querySelectorAll("[data-share-link]");
+const shareUrl = "https://flekiii.github.io/";
+
+function getShareText() {
+  return document.documentElement.lang === "uk"
+    ? "Мій сайт flekiii: " + shareUrl
+    : "My flekiii website: " + shareUrl;
+}
+
+function updateShareLinks() {
+  const encodedUrl = encodeURIComponent(shareUrl);
+  const encodedText = encodeURIComponent(getShareText());
+
+  shareLinks.forEach((link) => {
+    const target = link.dataset.shareLink;
+
+    if (target === "whatsapp") {
+      link.href = "https://wa.me/?text=" + encodedText;
+    } else if (target === "telegram") {
+      link.href = "https://t.me/share/url?url=" + encodedUrl + "&text=" + encodedText;
+    } else if (target === "viber") {
+      link.href = "viber://forward?text=" + encodedText;
+    }
+  });
+}
+
+function openShare() {
+  if (!shareModal) return;
+  updateShareLinks();
+  shareModal.classList.add("open");
+  shareModal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeShare() {
+  if (!shareModal) return;
+  shareModal.classList.remove("open");
+  shareModal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+async function copyShareLink() {
+  if (!shareCopyStatus) return;
+
+  try {
+    await navigator.clipboard.writeText(shareUrl);
+  } catch (error) {
+    const textarea = document.createElement("textarea");
+    textarea.value = shareUrl;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  }
+
+  const selected = document.documentElement.lang === "uk" ? "uk" : "en";
+  shareCopyStatus.textContent = translations[selected].shareCopied;
+  window.setTimeout(() => {
+    shareCopyStatus.textContent = translations[selected].shareCopyHint;
+  }, 1800);
+}
+
+shareSiteButton?.addEventListener("click", openShare);
+shareCopyButton?.addEventListener("click", copyShareLink);
+document.querySelectorAll("[data-share-close]").forEach((element) => {
+  element.addEventListener("click", closeShare);
 });
 
 const savedLanguage = localStorage.getItem("flekiii-language");
