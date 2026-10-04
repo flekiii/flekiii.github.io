@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=41">
+  <link rel="stylesheet" href="style.css?v=42">
 </head>
 <body>
   <div class="glow glow-one"></div>
@@ -155,6 +155,12 @@
           <div class="project-card-footer"><span class="status" data-i18n="statusPlanned">PLANNED</span><button class="project-view" type="button" data-project="flekibard" data-i18n="viewProject">VIEW PROJECT</button></div>
         </article>
 
+        <article class="project-card" data-category="apps">
+          <div class="project-card-top"><span class="project-mark mark-convert" aria-hidden="true"></span></div>
+          <div><h3>FLEKI CONVERT</h3><p data-i18n="projectFlekiConvertDesc">A fast, simple and modern currency converter for desktop and mobile platforms.</p></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusProgress">IN PROGRESS</span><button class="project-view" type="button" data-project="fleki-convert" data-i18n="viewProject">VIEW PROJECT</button></div>
+        </article>
+
         <article class="project-card" data-category="entertainment">
           <div class="project-card-top"><span class="project-mark mark-play" aria-hidden="true"></span></div>
           <div><h3>flassi</h3><p data-i18n="projectFlassiDesc">A short-video platform for creating, watching and sharing quick vertical videos.</p></div>
@@ -270,7 +276,51 @@
     <section id="resources" class="section resources" data-editorial-label="GALLERY" data-editorial-number="06">
       <div class="section-heading"><h2 data-i18n="resourcesTitle">Downloads & Gallery</h2></div>
       <div class="resource-grid">
-        <article class="resource-card"><span class="resource-icon">↓</span><div><h3 data-i18n="downloadsTitle">Downloads</h3><p data-i18n="downloadsText">Nothing published for download yet. This space will be used for future builds, tools and releases.</p></div><span class="empty-badge" data-i18n="emptyBadge">EMPTY FOR NOW</span></article>
+        <article class="resource-card resource-card-downloads">
+          <span class="resource-icon" aria-hidden="true">↓</span>
+          <div class="resource-content">
+            <div class="resource-content-head">
+              <div>
+                <h3 data-i18n="downloadsTitle">Downloads</h3>
+                <p data-i18n="downloadsText">Official FLEKI CONVERT builds will appear here. This is the official download point for the converter.</p>
+              </div>
+              <span class="download-official-badge" data-i18n="officialDownload">OFFICIAL DOWNLOAD</span>
+            </div>
+
+            <div class="download-list" id="flekiConvertDownloads">
+              <a class="download-item" data-download-kind="appimage" hidden>
+                <span class="download-item-copy">
+                  <strong>Linux</strong>
+                  <small data-i18n="downloadAppImage">AppImage</small>
+                </span>
+                <span class="download-arrow" aria-hidden="true">↓</span>
+              </a>
+              <a class="download-item" data-download-kind="deb" hidden>
+                <span class="download-item-copy">
+                  <strong>Linux</strong>
+                  <small data-i18n="downloadDeb">Debian / Ubuntu · DEB</small>
+                </span>
+                <span class="download-arrow" aria-hidden="true">↓</span>
+              </a>
+              <a class="download-item" data-download-kind="arch" hidden>
+                <span class="download-item-copy">
+                  <strong>Linux</strong>
+                  <small data-i18n="downloadArch">Arch · pkg.tar.zst</small>
+                </span>
+                <span class="download-arrow" aria-hidden="true">↓</span>
+              </a>
+              <a class="download-item" data-download-kind="rpm" hidden>
+                <span class="download-item-copy">
+                  <strong>Linux</strong>
+                  <small data-i18n="downloadRpm">Fedora / openSUSE · RPM</small>
+                </span>
+                <span class="download-arrow" aria-hidden="true">↓</span>
+              </a>
+            </div>
+
+            <p class="download-status" id="flekiConvertDownloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
+          </div>
+        </article>
         <article class="resource-card"><span class="resource-icon">▧</span><div><h3 data-i18n="galleryTitle">Screens & Gallery</h3><p data-i18n="galleryText">Screenshots, interface previews and project visuals will appear here later.</p></div><span class="empty-badge" data-i18n="emptyBadge">EMPTY FOR NOW</span></article>
       </div>
     </section>
@@ -390,7 +440,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=37"></script>
+  <script src="script.js?v=38"></script>
   <script id="project-filter-runtime">
     (() => {
       const filters = document.querySelectorAll(".project-filter");
