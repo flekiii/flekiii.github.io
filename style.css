@@ -1553,6 +1553,92 @@ footer p {
   letter-spacing:.08em;
   white-space:nowrap;
 }
+.download-project-list {
+  display:grid;
+  gap:10px;
+  margin-top:17px;
+}
+.download-project-button {
+  width:100%;
+  min-height:72px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:14px;
+  padding:12px 14px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  background:rgba(255,255,255,.018);
+  color:inherit;
+  text-align:left;
+  font:inherit;
+  cursor:pointer;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease;
+}
+.download-project-button:hover,
+.download-project-button:focus-visible {
+  transform:translateY(-2px);
+  border-color:rgba(255,105,180,.34);
+  background:rgba(255,105,180,.05);
+  outline:none;
+}
+.download-project-mark {
+  width:38px;
+  height:38px;
+}
+.download-project-copy strong,
+.download-project-copy small {
+  display:block;
+}
+.download-project-copy strong {
+  font-size:12px;
+}
+.download-project-copy small {
+  margin-top:4px;
+  color:rgba(255,255,255,.5);
+  font-size:11px;
+}
+.download-project-arrow {
+  color:#ff69b4;
+  font-size:19px;
+}
+.download-project-view-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-top:17px;
+}
+.download-project-view-head h3 {
+  margin-top:12px;
+}
+.download-project-view-head p {
+  max-width:620px;
+}
+.download-back-button {
+  appearance:none;
+  border:0;
+  background:none;
+  padding:0;
+  color:#ff69b4;
+  font:inherit;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.12em;
+  cursor:pointer;
+}
+.download-back-button:hover {
+  color:#fff;
+}
+.download-project-version {
+  padding:7px 10px;
+  border:1px solid rgba(255,111,174,.2);
+  border-radius:999px;
+  color:#ff69b4;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.08em;
+}
 .download-list {
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
@@ -1623,6 +1709,9 @@ footer p {
   }
   .download-list {
     grid-template-columns:1fr;
+  }
+  .download-project-view-head {
+    flex-direction:column;
   }
   .ecosystem-map { min-height:650px; }
   .map-node-right { right:3%; top:34%; }
