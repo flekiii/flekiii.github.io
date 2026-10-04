@@ -424,13 +424,49 @@ async function loadFlekiConvertDownloads() {
 
   try {
     const response = await fetch(
-      "https://api.github.com/repos/flekiii/fleki-convert/releases/latest",
-      { headers: { Accept: "application/vnd.github+json" } }
+      "https://api.github.com/repos/flekiii/flekiii.github.io/releases?per_page=100",
+      {
+        headers: { Accept: "application/vnd.github+json" },
+        cache: "no-store"
+      }
     );
 
-    if (!response.ok) throw new Error("Release not available");
+    if (!response.ok) throw new Error("Releases not available");
 
-    const release = await response.json();
+    const releases = await response.json();
+
+    const converterReleases = Array.isArray(releases)
+      ? releases
+          .filter((release) =>
+            release &&
+            !release.draft &&
+            !release.prerelease &&
+            typeof release.tag_name === "string" &&
+            release.tag_name.toLowerCase().startsWith("fleki-convert-")
+          )
+          .sort((a, b) =>
+            new Date(b.published_at || b.created_at || 0) -
+            new Date(a.published_at || a.created_at || 0)
+          )
+      : [];
+
+    const release = converterReleases[0];
+
+    if (!release) {
+      items.forEach((item) => {
+        item.hidden = true;
+      });
+
+      status.dataset.state = "unavailable";
+      updateFlekiConvertDownloadStatus();
+
+      if (version) {
+        version.textContent = "PREPARING";
+      }
+
+      return;
+    }
+
     const assets = Array.isArray(release.assets) ? release.assets : [];
 
     const patterns = {
@@ -442,8 +478,9 @@ async function loadFlekiConvertDownloads() {
 
     let visibleCount = 0;
 
-    if (version && release.tag_name) {
-      version.textContent = release.tag_name;
+    if (version) {
+      const match = release.tag_name.match(/fleki-convert-(.+)$/i);
+      version.textContent = match ? match[1] : release.tag_name;
     }
 
     items.forEach((item) => {
@@ -468,6 +505,10 @@ async function loadFlekiConvertDownloads() {
 
     status.dataset.state = "unavailable";
     updateFlekiConvertDownloadStatus();
+
+    if (version) {
+      version.textContent = "PREPARING";
+    }
   }
 }
 
