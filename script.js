@@ -41,6 +41,7 @@ const translations = {
     filterApps: "APPS",
     filterEntertainment: "ENTERTAINMENT",
     filterSystems: "SYSTEMS",
+    filterReady: "READY TO DOWNLOAD",
     statusProgress: "IN PROGRESS",
     statusPlanned: "PLANNED",
     viewProject: "VIEW PROJECT",
@@ -160,6 +161,7 @@ const translations = {
     filterApps: "ПРОГРАМИ",
     filterEntertainment: "РОЗВАГИ",
     filterSystems: "СИСТЕМИ",
+    filterReady: "ГОТОВІ ДО ЗАВАНТАЖЕННЯ",
     statusProgress: "В ПРОЦЕСІ",
     statusPlanned: "У ПЛАНАХ",
     viewProject: "ПЕРЕГЛЯНУТИ",
@@ -629,7 +631,8 @@ function applyProjectFilter(filter) {
   });
 
   cards.forEach((card) => {
-    const visible = filter === "all" || card.dataset.category === filter;
+    const categories = (card.dataset.category || "").split(/\s+/).filter(Boolean);
+    const visible = filter === "all" || categories.includes(filter);
     card.classList.toggle("project-card-hidden", !visible);
 
     if (visible) {
