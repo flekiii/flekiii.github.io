@@ -64,6 +64,7 @@ const translations = {
     projectGamesDesc: "A dedicated platform for video games, developers and players.",
     projectAsDesc: "My own AI project and one of the core parts of the flekiii ecosystem.",
     projectFlekibardDesc: "My own messenger focused on customization, privacy and freedom.",
+    projectFlekiConvertDesc: "A fast, simple and modern currency converter for desktop and mobile platforms.",
     projectFlassiDesc: "A short-video platform for creating, watching and sharing quick vertical videos.",
     projectTrustDesc: "A future financial platform built around my own TRUST Network.",
     projectNetworkDesc: "A private network designed as part of the wider flekiii ecosystem.",
@@ -81,7 +82,15 @@ const translations = {
     socialTitle: "Social Hub",
     resourcesTitle: "Downloads & Gallery",
     downloadsTitle: "Downloads",
-    downloadsText: "Nothing published for download yet. This space will be used for future builds, tools and releases.",
+    downloadsText: "Official FLEKI CONVERT builds will appear here. This is the official download point for the converter.",
+    officialDownload: "OFFICIAL DOWNLOAD",
+    downloadAppImage: "AppImage",
+    downloadDeb: "Debian / Ubuntu · DEB",
+    downloadArch: "Arch · pkg.tar.zst",
+    downloadRpm: "Fedora / openSUSE · RPM",
+    downloadsChecking: "Checking the latest release…",
+    downloadsReady: "Official release available.",
+    downloadsUnavailable: "The first official release is not published yet. Downloads will appear here automatically.",
     galleryTitle: "Screens & Gallery",
     galleryText: "Screenshots, interface previews and project visuals will appear here later.",
     emptyBadge: "EMPTY FOR NOW",
@@ -171,6 +180,7 @@ projectVpnDesc: "Власний VPN-проєкт, орієнтований на 
     projectGamesDesc: "Окрема платформа для відеоігор, розробників та гравців.",
     projectAsDesc: "Мій власний AI та один з основних елементів екосистеми flekiii.",
     projectFlekibardDesc: "Мій власний месенджер з акцентом на кастомізацію, приватність і свободу.",
+    projectFlekiConvertDesc: "Швидкий, простий та сучасний конвертер валют для комп'ютерів і мобільних платформ.",
     projectFlassiDesc: "Власна платформа коротких вертикальних відео для створення, перегляду та поширення контенту.",
     projectTrustDesc: "Майбутня фінансова платформа, побудована навколо власної TRUST Network.",
     projectNetworkDesc: "Власна приватна мережа як частина більшої екосистеми flekiii.",
@@ -188,7 +198,15 @@ projectVpnDesc: "Власний VPN-проєкт, орієнтований на 
     socialTitle: "Social Hub",
     resourcesTitle: "Завантаження та галерея",
     downloadsTitle: "Завантаження",
-    downloadsText: "Поки що завантажувати нічого. Тут пізніше будуть майбутні збірки, інструменти та релізи.",
+    downloadsText: "Офіційні збірки FLEKI CONVERT з'являтимуться тут. Це офіційна точка завантаження конвертера.",
+    officialDownload: "ОФІЦІЙНЕ ЗАВАНТАЖЕННЯ",
+    downloadAppImage: "AppImage",
+    downloadDeb: "Debian / Ubuntu · DEB",
+    downloadArch: "Arch · pkg.tar.zst",
+    downloadRpm: "Fedora / openSUSE · RPM",
+    downloadsChecking: "Перевіряю останній реліз…",
+    downloadsReady: "Офіційний реліз доступний.",
+    downloadsUnavailable: "Перший офіційний реліз ще не опублікований. Завантаження з'являться тут автоматично.",
     galleryTitle: "Скріншоти та галерея",
     galleryText: "Тут згодом з'являться скріншоти, прев'ю інтерфейсів та візуали проєктів.",
     emptyBadge: "ПОКИ ПУСТО",
@@ -315,6 +333,14 @@ const projectCatalog = {
     en: "My own messenger focused on customization, privacy and freedom.",
     uk: "Мій власний месенджер з акцентом на кастомізацію, приватність і свободу."
   },
+  "fleki-convert": {
+    icon: "↔",
+    name: "FLEKI CONVERT",
+    status: "IN PROGRESS",
+    page: "https://flekiii.github.io/#resources",
+    en: "A fast, simple and modern currency converter. Official builds are downloaded only through the flekiii website.",
+    uk: "Швидкий, простий та сучасний конвертер валют. Офіційні збірки завантажуються тільки через сайт flekiii."
+  },
   flassi: {
     icon: "🎬",
     name: "flassi",
@@ -364,6 +390,87 @@ const projectCatalog = {
     uk: "Мобільний напрям операційної системи для iPhone 11."
   }
 };
+
+function updateFlekiConvertDownloadStatus() {
+  const status = document.getElementById("flekiConvertDownloadStatus");
+
+  if (!status) {
+    return;
+  }
+
+  const language = document.documentElement.lang === "uk" ? "uk" : "en";
+  const state = status.dataset.state || "checking";
+
+  const key = state === "ready"
+    ? "downloadsReady"
+    : state === "unavailable"
+      ? "downloadsUnavailable"
+      : "downloadsChecking";
+
+  status.textContent = translations[language][key];
+}
+
+async function loadFlekiConvertDownloads() {
+  const status = document.getElementById("flekiConvertDownloadStatus");
+  const items = document.querySelectorAll("[data-download-kind]");
+
+  if (!status || !items.length) {
+    return;
+  }
+
+  status.dataset.state = "checking";
+  updateFlekiConvertDownloadStatus();
+
+  try {
+    const response = await fetch(
+      "https://api.github.com/repos/flekiii/fleki-convert/releases/latest",
+      {
+        headers: {
+          Accept: "application/vnd.github+json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Release not available");
+    }
+
+    const release = await response.json();
+    const assets = Array.isArray(release.assets) ? release.assets : [];
+
+    const patterns = {
+      appimage: /\.AppImage$/i,
+      deb: /\.deb$/i,
+      arch: /\.pkg\.tar\.zst$/i,
+      rpm: /\.rpm$/i
+    };
+
+    let visibleCount = 0;
+
+    items.forEach((item) => {
+      const kind = item.dataset.downloadKind;
+      const asset = assets.find((candidate) => patterns[kind]?.test(candidate.name));
+
+      if (asset?.browser_download_url) {
+        item.href = asset.browser_download_url;
+        item.hidden = false;
+        visibleCount += 1;
+      } else {
+        item.hidden = true;
+      }
+    });
+
+    status.dataset.state = visibleCount > 0 ? "ready" : "unavailable";
+    updateFlekiConvertDownloadStatus();
+  } catch {
+    items.forEach((item) => {
+      item.hidden = true;
+    });
+
+    status.dataset.state = "unavailable";
+    updateFlekiConvertDownloadStatus();
+  }
+}
 
 async function loadGithubActivity() {
   const container = document.getElementById("githubActivity");
@@ -662,6 +769,7 @@ function setLanguage(language) {
   localStorage.setItem("flekiii-language", selected);
   updateYear();
   updateShareLinks();
+  updateFlekiConvertDownloadStatus();
 
   if (currentProjectId) {
     renderModal(currentProjectId);
@@ -779,4 +887,5 @@ document.querySelectorAll("[data-share-close]").forEach((element) => {
 const savedLanguage = localStorage.getItem("flekiii-language");
 setLanguage(savedLanguage || "en");
 updateYear();
+loadFlekiConvertDownloads();
 loadGithubActivity();
