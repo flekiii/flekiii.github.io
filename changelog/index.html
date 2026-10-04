@@ -10,7 +10,14 @@
     const uk = document.documentElement.lang === "uk";
     const entry = document.createElement("article");
     entry.className = "changelog-entry";
-    entry.id = "visitor-counter-changelog";
+    const entry = document.createElement("article");
+    entry.className = "changelog-entry";
+    entry.id = "fleki-convert-changelog";
+    entry.innerHTML = `<div class="changelog-entry-mark"><span>v0.0.58</span><i></i></div><div class="changelog-entry-card"><small>OCTOBER 4, 2026</small><h2>${uk ? "FLEKI CONVERT додано на сайт" : "FLEKI CONVERT added to the site"}</h2><p>${uk ? "FLEKI CONVERT додано до Projects і Downloads & Gallery. Секція завантажень тепер автоматично показує офіційні збірки з останнього релізу конвертера." : "FLEKI CONVERT was added to Projects and Downloads & Gallery. The downloads section now automatically shows official builds from the converter's latest release."}</p></div>`;
+    timeline.prepend(entry);
+
+    if (document.getElementById("visitor-counter-changelog")) return;
+    
     entry.innerHTML = `<div class="changelog-entry-mark"><span>v0.0.57</span><i></i></div><div class="changelog-entry-card"><small>OCTOBER 2, 2026</small><h2>${uk ? "Лічильник відвідувачів додано" : "Visitor counter added"}</h2><p>${uk ? "Біля футера додано лічильник ProveSource, щоб сайт показував активність відвідувачів." : "A ProveSource visitor counter was added near the footer so the site can show visitor activity."}</p></div>`;
     timeline.prepend(entry);
   };
