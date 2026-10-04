@@ -82,8 +82,11 @@ const translations = {
     socialTitle: "Social Hub",
     resourcesTitle: "Downloads & Gallery",
     downloadsTitle: "Downloads",
-    downloadsText: "Official FLEKI CONVERT builds will appear here. This is the official download point for the converter.",
+    downloadsText: "Choose a project to see its official downloads. More projects can be added here as releases become available.",
     officialDownload: "OFFICIAL DOWNLOAD",
+    downloadProjectFlekiConvert: "Currency converter · official builds",
+    downloadProjectFlekiConvertText: "Choose the build for your system. These are the official FLEKI CONVERT releases.",
+    downloadBack: "← BACK",
     downloadAppImage: "AppImage",
     downloadDeb: "Debian / Ubuntu · DEB",
     downloadArch: "Arch · pkg.tar.zst",
@@ -198,8 +201,11 @@ projectVpnDesc: "Власний VPN-проєкт, орієнтований на 
     socialTitle: "Social Hub",
     resourcesTitle: "Завантаження та галерея",
     downloadsTitle: "Завантаження",
-    downloadsText: "Офіційні збірки FLEKI CONVERT з'являтимуться тут. Це офіційна точка завантаження конвертера.",
+    downloadsText: "Обери проєкт, щоб побачити його офіційні завантаження. Інші проєкти можна буде додавати сюди після появи релізів.",
     officialDownload: "ОФІЦІЙНЕ ЗАВАНТАЖЕННЯ",
+    downloadProjectFlekiConvert: "Конвертер валют · офіційні збірки",
+    downloadProjectFlekiConvertText: "Обери збірку для своєї системи. Це офіційні релізи FLEKI CONVERT.",
+    downloadBack: "← НАЗАД",
     downloadAppImage: "AppImage",
     downloadDeb: "Debian / Ubuntu · DEB",
     downloadArch: "Arch · pkg.tar.zst",
@@ -337,7 +343,7 @@ const projectCatalog = {
     icon: "↔",
     name: "FLEKI CONVERT",
     status: "IN PROGRESS",
-    page: "https://flekiii.github.io/#resources",
+    page: "https://flekiii.github.io/fleki-convert/?v=1",
     en: "A fast, simple and modern currency converter. Official builds are downloaded only through the flekiii website.",
     uk: "Швидкий, простий та сучасний конвертер валют. Офіційні збірки завантажуються тільки через сайт flekiii."
   },
@@ -393,14 +399,10 @@ const projectCatalog = {
 
 function updateFlekiConvertDownloadStatus() {
   const status = document.getElementById("flekiConvertDownloadStatus");
-
-  if (!status) {
-    return;
-  }
+  if (!status) return;
 
   const language = document.documentElement.lang === "uk" ? "uk" : "en";
   const state = status.dataset.state || "checking";
-
   const key = state === "ready"
     ? "downloadsReady"
     : state === "unavailable"
@@ -412,11 +414,10 @@ function updateFlekiConvertDownloadStatus() {
 
 async function loadFlekiConvertDownloads() {
   const status = document.getElementById("flekiConvertDownloadStatus");
+  const version = document.getElementById("flekiConvertDownloadVersion");
   const items = document.querySelectorAll("[data-download-kind]");
 
-  if (!status || !items.length) {
-    return;
-  }
+  if (!status || !items.length) return;
 
   status.dataset.state = "checking";
   updateFlekiConvertDownloadStatus();
@@ -424,16 +425,10 @@ async function loadFlekiConvertDownloads() {
   try {
     const response = await fetch(
       "https://api.github.com/repos/flekiii/fleki-convert/releases/latest",
-      {
-        headers: {
-          Accept: "application/vnd.github+json"
-        }
-      }
+      { headers: { Accept: "application/vnd.github+json" } }
     );
 
-    if (!response.ok) {
-      throw new Error("Release not available");
-    }
+    if (!response.ok) throw new Error("Release not available");
 
     const release = await response.json();
     const assets = Array.isArray(release.assets) ? release.assets : [];
@@ -446,6 +441,10 @@ async function loadFlekiConvertDownloads() {
     };
 
     let visibleCount = 0;
+
+    if (version && release.tag_name) {
+      version.textContent = release.tag_name;
+    }
 
     items.forEach((item) => {
       const kind = item.dataset.downloadKind;
@@ -471,6 +470,35 @@ async function loadFlekiConvertDownloads() {
     updateFlekiConvertDownloadStatus();
   }
 }
+
+function openDownloadProject(projectId) {
+  const projectList = document.getElementById("downloadProjectList");
+  const projectView = document.getElementById("downloadProjectView");
+
+  if (!projectList || !projectView || projectId !== "fleki-convert") return;
+
+  projectList.hidden = true;
+  projectView.hidden = false;
+  loadFlekiConvertDownloads();
+}
+
+function closeDownloadProject() {
+  const projectList = document.getElementById("downloadProjectList");
+  const projectView = document.getElementById("downloadProjectView");
+
+  if (!projectList || !projectView) return;
+
+  projectView.hidden = true;
+  projectList.hidden = false;
+}
+
+document.querySelectorAll("[data-download-project]").forEach((button) => {
+  button.addEventListener("click", () => {
+    openDownloadProject(button.dataset.downloadProject || "");
+  });
+});
+
+document.getElementById("downloadProjectBack")?.addEventListener("click", closeDownloadProject);
 
 async function loadGithubActivity() {
   const container = document.getElementById("githubActivity");
@@ -887,5 +915,4 @@ document.querySelectorAll("[data-share-close]").forEach((element) => {
 const savedLanguage = localStorage.getItem("flekiii-language");
 setLanguage(savedLanguage || "en");
 updateYear();
-loadFlekiConvertDownloads();
 loadGithubActivity();
