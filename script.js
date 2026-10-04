@@ -82,10 +82,10 @@ const translations = {
     socialTitle: "Social Hub",
     resourcesTitle: "Downloads & Gallery",
     downloadsTitle: "Downloads",
-    downloadsText: "Choose a project to see its official downloads. More projects can be added here as releases become available.",
-    officialDownload: "OFFICIAL DOWNLOAD",
-    downloadProjectFlekiConvert: "Currency converter · official builds",
-    downloadProjectFlekiConvertText: "Choose the build for your system. These are the official FLEKI CONVERT releases.",
+    downloadsText: "Official downloads of my projects.",
+    officialDownload: "OFFICIAL DOWNLOADS",
+    downloadProjectFlekiConvert: "Currency converter",
+    downloadProjectFlekiConvertText: "Choose the build for your system.",
     downloadBack: "← BACK",
     downloadAppImage: "AppImage",
     downloadDeb: "Debian / Ubuntu · DEB",
@@ -475,10 +475,14 @@ function openDownloadProject(projectId) {
   const projectList = document.getElementById("downloadProjectList");
   const projectView = document.getElementById("downloadProjectView");
 
-  if (!projectList || !projectView || projectId !== "fleki-convert") return;
+  if (!projectList || !projectView) return;
+  if (projectId !== "fleki-convert") return;
 
   projectList.hidden = true;
   projectView.hidden = false;
+  projectList.setAttribute("aria-hidden", "true");
+  projectView.setAttribute("aria-hidden", "false");
+
   loadFlekiConvertDownloads();
 }
 
@@ -490,15 +494,24 @@ function closeDownloadProject() {
 
   projectView.hidden = true;
   projectList.hidden = false;
+  projectView.setAttribute("aria-hidden", "true");
+  projectList.setAttribute("aria-hidden", "false");
 }
 
-document.querySelectorAll("[data-download-project]").forEach((button) => {
-  button.addEventListener("click", () => {
-    openDownloadProject(button.dataset.downloadProject || "");
-  });
-});
+document.addEventListener("click", (event) => {
+  const projectButton = event.target.closest("[data-download-project]");
+  if (projectButton) {
+    event.preventDefault();
+    openDownloadProject(projectButton.dataset.downloadProject || "");
+    return;
+  }
 
-document.getElementById("downloadProjectBack")?.addEventListener("click", closeDownloadProject);
+  const backButton = event.target.closest("#downloadProjectBack");
+  if (backButton) {
+    event.preventDefault();
+    closeDownloadProject();
+  }
+});
 
 async function loadGithubActivity() {
   const container = document.getElementById("githubActivity");
@@ -728,14 +741,12 @@ function renderModal(projectId) {
 
   if (project.page) {
     projectModalLink.hidden = false;
-    projectModalLink.dataset.page = project.page;
-    projectModalLink.onclick = function () {
-      window.location.href = project.page;
-    };
+    projectModalLink.href = project.page;
+    projectModalLink.removeAttribute("aria-hidden");
   } else {
     projectModalLink.hidden = true;
-    projectModalLink.dataset.page = "";
-    projectModalLink.onclick = null;
+    projectModalLink.href = "#";
+    projectModalLink.setAttribute("aria-hidden", "true");
   }
 }
 
