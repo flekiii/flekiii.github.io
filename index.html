@@ -288,17 +288,17 @@
             </div>
 
             <div class="download-project-list" id="downloadProjectList">
-              <button class="download-project-button" type="button" data-download-project="fleki-convert">
+              <button class="download-project-button" type="button" data-download-project="fleki-convert" aria-controls="downloadProjectView" aria-expanded="false">
                 <span class="download-project-mark mark-convert" aria-hidden="true"></span>
                 <span class="download-project-copy">
                   <strong>FLEKI CONVERT</strong>
-                  <small data-i18n="downloadProjectFlekiConvert">Currency converter · official builds</small>
+                  <small data-i18n="downloadProjectFlekiConvert">Currency converter</small>
                 </span>
                 <span class="download-project-arrow" aria-hidden="true">→</span>
               </button>
             </div>
 
-            <div class="download-project-view" id="downloadProjectView" hidden>
+            <div class="download-project-view" id="downloadProjectView" hidden aria-hidden="true">
               <div class="download-project-view-head">
                 <div>
                   <button class="download-back-button" id="downloadProjectBack" type="button" data-i18n="downloadBack">← BACK</button>
@@ -462,7 +462,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=38"></script>
+  <script src="script.js?v=39"></script>
   <script id="project-filter-runtime">
     (() => {
       const filters = document.querySelectorAll(".project-filter");
