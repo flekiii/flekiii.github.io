@@ -82,7 +82,7 @@ const translations = {
     socialTitle: "Social Hub",
     resourcesTitle: "Downloads & Gallery",
     downloadsTitle: "Downloads",
-    downloadsText: "Official downloads of my projects.",
+    downloadsText: "Official download of my projects.",
     officialDownload: "OFFICIAL DOWNLOADS",
     downloadProjectFlekiConvert: "Currency converter",
     downloadProjectFlekiConvertText: "Choose the build for your system.",
