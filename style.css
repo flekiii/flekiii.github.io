@@ -1558,6 +1558,11 @@ footer p {
   gap:10px;
   margin-top:17px;
 }
+.download-project-list[hidden],
+.download-project-view[hidden],
+.download-item[hidden] {
+  display:none !important;
+}
 .download-project-button {
   width:100%;
   min-height:72px;
@@ -1723,6 +1728,9 @@ footer p {
 
 #projectModalLink[hidden] {
   display: none !important;
+}
+.project-modal-link {
+  text-decoration: none;
 }
 
 
