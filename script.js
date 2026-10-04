@@ -632,7 +632,12 @@ function applyProjectFilter(filter) {
 
   cards.forEach((card) => {
     const categories = (card.dataset.category || "").split(/\s+/).filter(Boolean);
-    const visible = filter === "all" || categories.includes(filter);
+    const readyToDownload = card.dataset.readyDownload === "true";
+    const visible =
+      filter === "all" ||
+      categories.includes(filter) ||
+      (filter === "ready" && readyToDownload);
+
     card.classList.toggle("project-card-hidden", !visible);
 
     if (visible) {
