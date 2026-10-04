@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=42">
+  <link rel="stylesheet" href="style.css?v=43">
 </head>
 <body>
   <div class="glow glow-one"></div>
@@ -282,43 +282,65 @@
             <div class="resource-content-head">
               <div>
                 <h3 data-i18n="downloadsTitle">Downloads</h3>
-                <p data-i18n="downloadsText">Official FLEKI CONVERT builds will appear here. This is the official download point for the converter.</p>
+                <p data-i18n="downloadsText">Choose a project to see its official downloads. More projects can be added here as releases become available.</p>
               </div>
               <span class="download-official-badge" data-i18n="officialDownload">OFFICIAL DOWNLOAD</span>
             </div>
 
-            <div class="download-list" id="flekiConvertDownloads">
-              <a class="download-item" data-download-kind="appimage" hidden>
-                <span class="download-item-copy">
-                  <strong>Linux</strong>
-                  <small data-i18n="downloadAppImage">AppImage</small>
+            <div class="download-project-list" id="downloadProjectList">
+              <button class="download-project-button" type="button" data-download-project="fleki-convert">
+                <span class="download-project-mark mark-convert" aria-hidden="true"></span>
+                <span class="download-project-copy">
+                  <strong>FLEKI CONVERT</strong>
+                  <small data-i18n="downloadProjectFlekiConvert">Currency converter · official builds</small>
                 </span>
-                <span class="download-arrow" aria-hidden="true">↓</span>
-              </a>
-              <a class="download-item" data-download-kind="deb" hidden>
-                <span class="download-item-copy">
-                  <strong>Linux</strong>
-                  <small data-i18n="downloadDeb">Debian / Ubuntu · DEB</small>
-                </span>
-                <span class="download-arrow" aria-hidden="true">↓</span>
-              </a>
-              <a class="download-item" data-download-kind="arch" hidden>
-                <span class="download-item-copy">
-                  <strong>Linux</strong>
-                  <small data-i18n="downloadArch">Arch · pkg.tar.zst</small>
-                </span>
-                <span class="download-arrow" aria-hidden="true">↓</span>
-              </a>
-              <a class="download-item" data-download-kind="rpm" hidden>
-                <span class="download-item-copy">
-                  <strong>Linux</strong>
-                  <small data-i18n="downloadRpm">Fedora / openSUSE · RPM</small>
-                </span>
-                <span class="download-arrow" aria-hidden="true">↓</span>
-              </a>
+                <span class="download-project-arrow" aria-hidden="true">→</span>
+              </button>
             </div>
 
-            <p class="download-status" id="flekiConvertDownloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
+            <div class="download-project-view" id="downloadProjectView" hidden>
+              <div class="download-project-view-head">
+                <div>
+                  <button class="download-back-button" id="downloadProjectBack" type="button" data-i18n="downloadBack">← BACK</button>
+                  <h3>FLEKI CONVERT</h3>
+                  <p data-i18n="downloadProjectFlekiConvertText">Choose the build for your system. These are the official FLEKI CONVERT releases.</p>
+                </div>
+                <span class="download-project-version" id="flekiConvertDownloadVersion">LATEST</span>
+              </div>
+
+              <div class="download-list" id="flekiConvertDownloads">
+                <a class="download-item" data-download-kind="appimage" hidden>
+                  <span class="download-item-copy">
+                    <strong>Linux</strong>
+                    <small data-i18n="downloadAppImage">AppImage</small>
+                  </span>
+                  <span class="download-arrow" aria-hidden="true">↓</span>
+                </a>
+                <a class="download-item" data-download-kind="deb" hidden>
+                  <span class="download-item-copy">
+                    <strong>Linux</strong>
+                    <small data-i18n="downloadDeb">Debian / Ubuntu · DEB</small>
+                  </span>
+                  <span class="download-arrow" aria-hidden="true">↓</span>
+                </a>
+                <a class="download-item" data-download-kind="arch" hidden>
+                  <span class="download-item-copy">
+                    <strong>Linux</strong>
+                    <small data-i18n="downloadArch">Arch · pkg.tar.zst</small>
+                  </span>
+                  <span class="download-arrow" aria-hidden="true">↓</span>
+                </a>
+                <a class="download-item" data-download-kind="rpm" hidden>
+                  <span class="download-item-copy">
+                    <strong>Linux</strong>
+                    <small data-i18n="downloadRpm">Fedora / openSUSE · RPM</small>
+                  </span>
+                  <span class="download-arrow" aria-hidden="true">↓</span>
+                </a>
+              </div>
+
+              <p class="download-status" id="flekiConvertDownloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
+            </div>
           </div>
         </article>
         <article class="resource-card"><span class="resource-icon">▧</span><div><h3 data-i18n="galleryTitle">Screens & Gallery</h3><p data-i18n="galleryText">Screenshots, interface previews and project visuals will appear here later.</p></div><span class="empty-badge" data-i18n="emptyBadge">EMPTY FOR NOW</span></article>
