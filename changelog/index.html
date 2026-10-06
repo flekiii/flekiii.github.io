@@ -11,7 +11,7 @@
     entry.className = "changelog-entry";
     entry.id = id;
     entry.innerHTML = `<div class="changelog-entry-mark"><span>${version}</span><i></i></div><div class="changelog-entry-card"><small>${date}</small><h2>${uk ? titleUk : titleEn}</h2><p>${uk ? textUk : textEn}</p></div>`;
-    timeline.prepend(entry);
+    timeline.append(entry);
   };
 
   const renderChangelog = () => {
