@@ -20,6 +20,16 @@
     if (!timeline) return;
 
     const uk = document.documentElement.lang === "uk";
+    renderEntry({
+      id: "visitor-counter-changelog",
+      version: "v0.0.57",
+      date: "OCTOBER 2, 2026",
+      titleEn: "Visitor counter added",
+      titleUk: "Лічильник відвідувачів додано",
+      textEn: "A ProveSource visitor counter was added near the footer so the site can show visitor activity.",
+      textUk: "Біля футера додано лічильник ProveSource, щоб сайт показував активність відвідувачів."
+    }, timeline, uk);
+
 
     renderEntry({
       id: "duplicate-project-filter-removed-changelog",
@@ -111,14 +121,46 @@
       textUk: "FLEKI CONVERT додано до Projects і Downloads & Gallery. Секція завантажень тепер автоматично показує офіційні збірки з останнього релізу конвертера."
     }, timeline, uk);
 
-    const visitorEntry = document.getElementById("visitor-counter-changelog");
-    if (visitorEntry) return;
+    renderEntry({
+      id: "ultra-compact-project-modal-changelog",
+      version: "v0.0.70",
+      date: "OCTOBER 6, 2026",
+      titleEn: "Ultra-compact project modal",
+      titleUk: "Максимально компактне меню проєктів",
+      textEn: "The mobile project detail window was tightened further: less padding, smaller typography, tighter line spacing and a compact project-page button so substantially more project information fits on screen.",
+      textUk: "Мобільне детальне вікно проєкту додатково ущільнено: менші відступи, шрифти, міжрядковий інтервал і компактніша кнопка сторінки проєкту, щоб на екрані поміщалося значно більше інформації."
+    }, timeline, uk);
 
-    const entry = document.createElement("article");
-    entry.className = "changelog-entry";
-    entry.id = "visitor-counter-changelog";
-    entry.innerHTML = `<div class="changelog-entry-mark"><span>v0.0.57</span><i></i></div><div class="changelog-entry-card"><small>OCTOBER 2, 2026</small><h2>${uk ? "Лічильник відвідувачів додано" : "Visitor counter added"}</h2><p>${uk ? "Біля футера додано лічильник ProveSource, щоб сайт показував активність відвідувачів." : "A ProveSource visitor counter was added near the footer so the site can show visitor activity."}</p></div>`;
-    timeline.prepend(entry);
+    renderEntry({
+      id: "project-modal-mobile-compact-changelog",
+      version: "v0.0.69",
+      date: "OCTOBER 6, 2026",
+      titleEn: "Mobile project details compacted",
+      titleUk: "Деталі проєктів на мобільному ущільнено",
+      textEn: "Project detail windows on phones were made more compact so more information is visible with less scrolling.",
+      textUk: "Детальні вікна проєктів на телефонах зроблено компактнішими, щоб більше інформації було видно з меншим гортанням."
+    }, timeline, uk);
+
+    renderEntry({
+      id: "project-modal-mobile-spacing-changelog",
+      version: "v0.0.68",
+      date: "OCTOBER 6, 2026",
+      titleEn: "Mobile project section tightened",
+      titleUk: "Мобільну секцію проєктів ущільнено",
+      textEn: "Mobile project cards and project details received tighter spacing and sizing to fit more content on screen.",
+      textUk: "Мобільні картки та деталі проєктів отримали компактніші відступи й розміри, щоб на екрані поміщалося більше контенту."
+    }, timeline, uk);
+
+    renderEntry({
+      id: "mobile-cache-refresh-changelog",
+      version: "v0.0.67",
+      date: "OCTOBER 6, 2026",
+      titleEn: "Mobile cache refresh added",
+      titleUk: "Оновлення кешу для мобільної версії",
+      textEn: "Site asset versions were refreshed so phones load the latest CSS and JavaScript changes instead of an older cached copy.",
+      textUk: "Версії файлів сайту оновлено, щоб телефони завантажували актуальні CSS і JavaScript замість старої копії з кешу."
+    }, timeline, uk);
+
   };
 
   document.addEventListener("DOMContentLoaded", () => {
