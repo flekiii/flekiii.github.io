@@ -3987,3 +3987,63 @@ footer p {
     padding: 15px 13px;
   }
 }
+
+
+/* Ultra-compact project modal on phones */
+@media (max-width: 700px) {
+  .project-modal {
+    padding: 4px;
+  }
+
+  .project-modal-window {
+    width: min(100%, 430px);
+    max-height: 97vh;
+    padding: 14px 12px 12px;
+    border-radius: 11px;
+  }
+
+  .project-modal-window .eyebrow {
+    margin-bottom: 4px;
+    font-size: 6px;
+    letter-spacing: .16em;
+  }
+
+  .project-modal-window h2 {
+    font-size: 21px;
+    line-height: .98;
+    letter-spacing: -.045em;
+  }
+
+  .project-modal-window > p {
+    margin-top: 6px;
+    font-size: 9px;
+    line-height: 1.28;
+  }
+
+  .modal-meta {
+    gap: 4px;
+    margin-top: 7px;
+  }
+
+  .modal-meta span {
+    padding: 4px 6px;
+    font-size: 6px;
+    letter-spacing: .09em;
+  }
+
+  .project-modal-link {
+    min-height: 31px;
+    margin-top: 8px;
+    padding: 0 10px;
+    font-size: 7px;
+    border-radius: 7px;
+  }
+
+  .project-modal-close {
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    font-size: 15px;
+  }
+}
