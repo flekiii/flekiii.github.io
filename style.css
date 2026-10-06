@@ -3810,3 +3810,109 @@ footer p {
   }
   .site-stat { min-width: 0; }
 }
+
+
+/* Compact phone Projects + project detail modal */
+@media (max-width: 700px) {
+  .section {
+    width: min(var(--max), calc(100% - 24px));
+    padding: 64px 0;
+  }
+
+  .section-heading {
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .section-heading h2 {
+    font-size: 30px;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .project-card {
+    min-height: 178px;
+    padding: 15px 13px;
+    border-radius: 13px;
+  }
+
+  .project-card h3 {
+    font-size: 17px;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+
+  .project-card p {
+    margin-top: 7px;
+    font-size: 10px;
+    line-height: 1.42;
+  }
+
+  .project-number {
+    margin-bottom: 15px;
+    font-size: 8px;
+  }
+
+  .status {
+    margin-top: 13px;
+    font-size: 7px;
+    letter-spacing: 0.12em;
+  }
+
+  .project-view {
+    right: 9px;
+    bottom: 9px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    font-size: 7px;
+    letter-spacing: 0.08em;
+  }
+
+  .project-modal {
+    padding: 10px;
+    align-items: center;
+  }
+
+  .project-modal-window {
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 24px 17px 17px;
+    border-radius: 16px;
+  }
+
+  .project-modal-close {
+    top: 9px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 19px;
+  }
+
+  .project-modal-window h2 {
+    margin-top: 2px;
+    padding-right: 30px;
+    font-size: 29px;
+    line-height: 1.02;
+  }
+
+  .project-modal-window > p {
+    margin-top: 10px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .modal-meta {
+    gap: 6px;
+    margin-top: 15px;
+  }
+
+  .modal-meta span {
+    padding: 6px 8px;
+    font-size: 7px;
+  }
+}
