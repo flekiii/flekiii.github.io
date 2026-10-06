@@ -3916,3 +3916,74 @@ footer p {
     font-size: 7px;
   }
 }
+
+
+/* Final compact phone density for project details */
+@media (max-width: 700px) {
+  .project-modal {
+    padding: 7px;
+  }
+
+  .project-modal-window {
+    max-height: 94vh;
+    padding: 18px 14px 14px;
+    border-radius: 13px;
+  }
+
+  .project-modal-window .eyebrow {
+    margin-bottom: 7px;
+    font-size: 7px;
+  }
+
+  .project-modal-window h2 {
+    margin: 0;
+    padding-right: 27px;
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .project-modal-window > p {
+    margin-top: 8px;
+    max-width: none;
+    font-size: 10px;
+    line-height: 1.38;
+  }
+
+  .modal-meta {
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .modal-meta span {
+    padding: 5px 7px;
+    font-size: 6.5px;
+    line-height: 1;
+  }
+
+  .project-modal-close {
+    top: 7px;
+    right: 7px;
+    width: 27px;
+    height: 27px;
+    font-size: 17px;
+  }
+
+  .goals-grid .goal-card {
+    min-height: 0;
+    padding: 13px 12px;
+  }
+
+  .goals-grid .goal-card strong {
+    font-size: 15px;
+  }
+
+  .goals-grid .goal-card p {
+    margin-top: 6px;
+    font-size: 9px;
+    line-height: 1.35;
+  }
+
+  .goals-grid .goal-card-featured {
+    padding: 15px 13px;
+  }
+}
