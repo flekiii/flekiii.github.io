@@ -796,30 +796,6 @@ a {
   color: var(--text);
 }
 
-.updates {
-  padding-top: 70px;
-}
-
-.updates-grid {
-  display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
-  gap: 14px;
-}
-
-.updates-card {
-  min-height: 330px;
-  padding: 30px;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 20px;
-  background: linear-gradient(145deg, var(--surface-2), var(--surface));
-}
-
-.updates-card h3 {
-  margin-top: 10px;
-  font-size: 34px;
-  letter-spacing: -0.05em;
-}
-
 .github-activity {
   margin-top: 22px;
   display: grid;
@@ -873,10 +849,6 @@ a {
   font-weight: 700;
   letter-spacing: 0.08em;
   white-space: nowrap;
-}
-
-.updates-button {
-  margin-top: 24px;
 }.project-modal-link {
   position: relative;
   z-index: 10;
@@ -1302,20 +1274,6 @@ footer p {
   .updates-grid {
     grid-template-columns: 1fr;
   }
-
-  .updates-card {
-    min-height: auto;
-    padding: 25px 22px;
-  }
-
-  footer {
-    grid-template-columns: 1fr;
-  }
-
-  .footer-links {
-    margin-top: 8px;
-  }
-}
 
 
 /* Expanded ecosystem sections */
@@ -3446,28 +3404,6 @@ footer p {
     font-size: 14px;
     line-height: 1.68;
   }
-
-  .updates-card {
-    border-radius: 16px;
-  }
-
-  .goal-card {
-    border-radius: 15px;
-  }
-
-  .support-inner {
-    padding: 34px 22px;
-  }
-
-  .support-copy h2 {
-    font-size: clamp(40px, 12vw, 58px);
-  }
-
-  .support-copy p {
-    font-size: 14px;
-    line-height: 1.65;
-  }
-}
 
 
 /* Phone refinements for Support Goals and Support note */
