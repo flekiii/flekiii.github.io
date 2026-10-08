@@ -41,7 +41,6 @@ const translations = {
     viewProject: "VIEW PROJECT",
     modalEyebrow: "PROJECT",
     openProjectPage: "OPEN PROJECT PAGE",
-    progressNote: "JavaScript learning is intentionally not included in project progress.",
     ecosystemCore: "independent ecosystem",
     profileEyebrow: "DEVELOPER PROFILE",
     profileRole: "15 years old · Independent Developer",
