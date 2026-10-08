@@ -27,6 +27,8 @@ const translations = {
     shareWhatsAppHint: "Choose a chat.",
     shareTelegramHint: "Choose a chat.",
     shareViberHint: "Choose a contact.",
+    projectMediaEyebrow: "PROJECT MEDIA",
+    projectMediaHint: "Photos and video will appear here.",
     projectsTitle: "Projects",
     projectsMeta: "A growing set of services, apps, entertainment and systems.",
     filterLabel: "FILTER",
@@ -687,6 +689,12 @@ const projectModalTitle = document.getElementById("projectModalTitle");
 const projectModalText = document.getElementById("projectModalText");
 const projectModalStatus = document.getElementById("projectModalStatus");
 const projectModalLink = document.getElementById("projectModalLink");
+const projectMediaGallery = document.getElementById("projectMediaGallery");
+const projectMediaGrid = document.getElementById("projectMediaGrid");
+
+// Future project screenshots/videos can be added here without changing the modal layout.
+// Example: projectMedia.vpn = [{ type: "image", src: "assets/projects/vpn-01.jpg", alt: "VV.CEO VPN" }, { type: "video", src: "assets/projects/vpn-demo.mp4", poster: "assets/projects/vpn-poster.jpg" }]
+const projectMedia = {};
 
 let currentProjectId = null;
 
@@ -723,6 +731,45 @@ function toggleLanguageMenu() {
   languageMenu.setAttribute("aria-hidden", String(!isOpen));
 }
 
+function renderProjectMedia(projectId) {
+  if (!projectMediaGallery || !projectMediaGrid) return;
+
+  const media = Array.isArray(projectMedia[projectId]) ? projectMedia[projectId] : [];
+  projectMediaGrid.innerHTML = "";
+
+  if (!media.length) {
+    projectMediaGallery.hidden = true;
+    projectMediaGallery.setAttribute("aria-hidden", "true");
+    return;
+  }
+
+  media.forEach((item) => {
+    const frame = document.createElement("div");
+    frame.className = "project-media-item";
+
+    if (item.type === "video") {
+      const video = document.createElement("video");
+      video.src = item.src;
+      if (item.poster) video.poster = item.poster;
+      video.controls = true;
+      video.preload = "metadata";
+      video.playsInline = true;
+      frame.appendChild(video);
+    } else {
+      const image = document.createElement("img");
+      image.src = item.src;
+      image.alt = item.alt || "";
+      image.loading = "lazy";
+      frame.appendChild(image);
+    }
+
+    projectMediaGrid.appendChild(frame);
+  });
+
+  projectMediaGallery.hidden = false;
+  projectMediaGallery.setAttribute("aria-hidden", "false");
+}
+
 function renderModal(projectId) {
   if (!projectId || !projectCatalog[projectId]) {
     return;
@@ -733,6 +780,7 @@ function renderModal(projectId) {
 
   projectModalTitle.textContent = project.icon + " " + project.name;
   projectModalText.textContent = project[language];
+  renderProjectMedia(projectId);
   projectModalStatus.textContent = language === "uk"
     ? (project.status === "IN PROGRESS" ? "В ПРОЦЕСІ" : "У ПЛАНАХ")
     : project.status;
@@ -915,7 +963,12 @@ async function copyShareLink() {
   }, 1800);
 }
 
-shareSiteButton?.addEventListener("click", openShare);
+document.addEventListener("click", (event) => {
+  const shareButton = event.target.closest("#shareSiteButton");
+  if (!shareButton) return;
+  event.preventDefault();
+  openShare();
+});
 shareCopyButton?.addEventListener("click", copyShareLink);
 document.querySelectorAll("[data-share-close]").forEach((element) => {
   element.addEventListener("click", closeShare);
