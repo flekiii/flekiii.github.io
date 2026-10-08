@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="style.css?v=52">
 </head>
 <body>
   <div class="glow glow-one"></div>
@@ -287,17 +287,11 @@
               </div>
               <div class="download-build-view" id="downloadBuildView" hidden aria-hidden="true">
                 <button class="download-build-back" id="downloadBuildBack" type="button" data-i18n="downloadBackToSystems">← ALL SYSTEMS</button>
-                <div class="download-build-card" id="downloadBuildCard">
-                  <div>
-                    <span class="download-build-label" id="downloadBuildOs">LINUX</span>
-                    <strong id="downloadBuildName">Build</strong>
-                    <small id="downloadBuildDescription">Official build</small>
-                  </div>
-                  <a class="download-build-button" id="downloadBuildLink" href="#" target="_blank" rel="noopener noreferrer" hidden>
-                    <span data-i18n="downloadBuild">DOWNLOAD BUILD</span>
-                    <span aria-hidden="true">↓</span>
-                  </a>
+                <div class="download-build-head">
+                  <span class="download-build-label" id="downloadBuildOs">LINUX</span>
+                  <p data-i18n="downloadBuildChoose">Choose a build to download.</p>
                 </div>
+                <div class="download-build-list" id="downloadBuildList"></div>
                 <p class="download-status" id="flekiConvertDownloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
               </div>
             </div>
@@ -412,6 +406,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=52"></script>
+  <script src="script.js?v=53"></script>
 </body>
 </html>
