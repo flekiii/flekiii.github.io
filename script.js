@@ -72,24 +72,24 @@ const translations = {
     githubError: "GitHub activity is temporarily unavailable.",
     githubButton: "VIEW GITHUB",
     socialTitle: "Social Hub",
-    resourcesTitle: "Downloads & Gallery",
+    resourcesTitle: "Downloads",
     downloadsTitle: "Downloads",
-    downloadsText: "Official download of my projects.",
+    downloadsText: "Choose FLEKI CONVERT and then select your operating system.",
     officialDownload: "OFFICIAL DOWNLOADS",
     downloadProjectFlekiConvert: "Currency converter",
-    downloadProjectFlekiConvertText: "Choose the build for your system.",
+    downloadProjectFlekiConvertText: "Choose your operating system to see its specific build.",
     downloadBack: "← BACK",
-    downloadAppImage: "AppImage",
-    downloadDeb: "Debian / Ubuntu · DEB",
-    downloadArch: "Arch · pkg.tar.zst",
-    downloadRpm: "Fedora / openSUSE · RPM",
+    downloadBackToSystems: "← ALL SYSTEMS",
+    downloadAndroid: "ANDROID",
+    downloadIOS: "iOS",
+    downloadWindows: "WINDOWS",
+    downloadLinux: "LINUX",
+    downloadMacOS: "MACOS",
+    downloadBuild: "DOWNLOAD BUILD",
     downloadsChecking: "Checking the latest release…",
-    downloadsReady: "Official release available.",
-    downloadsUnavailable: "No public build is available yet. Downloads will appear here automatically when a build is published.",
-    galleryTitle: "Screens & Gallery",
-    galleryText: "Screenshots, interface previews and project visuals will appear here later.",
-    emptyBadge: "EMPTY FOR NOW",
-    goalsTitle: "Support Goals",
+    downloadsReady: "Official release loaded.",
+    downloadsUnavailable: "A build for this system is not available yet.",
+        goalsTitle: "Support Goals",
     goalMacLabel: "TOP PRIORITY",
     goalMac: "Mac for Apple development",
     goalMacText: "Buy a <span class=\"goal-key\">good Mac</span> for building and testing my own <span class=\"goal-key\">macOS and iOS apps</span>. Target budget: <span class=\"goal-key\">≈ 85,000 UAH</span>.",
@@ -184,24 +184,24 @@ projectVpnDesc: "Власний VPN-проєкт, орієнтований на 
     githubError: "Активність GitHub тимчасово недоступна.",
     githubButton: "ВІДКРИТИ GITHUB",
     socialTitle: "Social Hub",
-    resourcesTitle: "Завантаження та галерея",
+    resourcesTitle: "Завантаження",
     downloadsTitle: "Завантаження",
-    downloadsText: "Офіційне завантаження моїх проєктів.",
+    downloadsText: "Обери FLEKI CONVERT, а потім свою операційну систему.",
     officialDownload: "ОФІЦІЙНІ ЗАВАНТАЖЕННЯ",
     downloadProjectFlekiConvert: "Конвертер валют",
-    downloadProjectFlekiConvertText: "Обери збірку для своєї системи.",
+    downloadProjectFlekiConvertText: "Обери операційну систему, щоб побачити конкретну збірку.",
     downloadBack: "← НАЗАД",
-    downloadAppImage: "AppImage",
-    downloadDeb: "Debian / Ubuntu · DEB",
-    downloadArch: "Arch · pkg.tar.zst",
-    downloadRpm: "Fedora / openSUSE · RPM",
+    downloadBackToSystems: "← УСІ СИСТЕМИ",
+    downloadAndroid: "ANDROID",
+    downloadIOS: "iOS",
+    downloadWindows: "WINDOWS",
+    downloadLinux: "LINUX",
+    downloadMacOS: "MACOS",
+    downloadBuild: "ЗАВАНТАЖИТИ ЗБІРКУ",
     downloadsChecking: "Перевіряю останній реліз…",
-    downloadsReady: "Офіційний реліз доступний.",
-    downloadsUnavailable: "Публічної збірки ще немає. Завантаження з'явиться тут автоматично після публікації збірки.",
-    galleryTitle: "Скріншоти та галерея",
-    galleryText: "Тут згодом з'являться скріншоти, прев'ю інтерфейсів та візуали проєктів.",
-    emptyBadge: "ПОКИ ПУСТО",
-    goalsTitle: "Цілі підтримки",
+    downloadsReady: "Офіційний реліз завантажено.",
+    downloadsUnavailable: "Збірка для цієї системи ще недоступна.",
+        goalsTitle: "Цілі підтримки",
     goalMacLabel: "ГОЛОВНА ЦІЛЬ",
     goalMac: "Mac для розробки Apple-додатків",
     goalMacText: "Купити <span class=\"goal-key\">хороший Mac</span> для створення та тестування власних <span class=\"goal-key\">macOS та iOS-додатків</span>. Орієнтовний бюджет: <span class=\"goal-key\">≈ 85 000 грн</span>.",
@@ -385,44 +385,106 @@ const projectCatalog = {
   }
 };
 
+const downloadBuilds = {
+  android: { label: "ANDROID", patterns: [/\\.apk$/i], description: "Android APK" },
+  ios: { label: "iOS", patterns: [/\\.ipa$/i], description: "iOS IPA" },
+  windows: { label: "WINDOWS", patterns: [/\\.exe$/i, /\\.msi$/i, /\\.msix$/i, /\\.zip$/i], description: "Windows build" },
+  linux: { label: "LINUX", patterns: [/\\.AppImage$/i, /\\.deb$/i, /\\.pkg\\.tar\\.zst$/i, /\\.rpm$/i], description: "Linux build" },
+  macos: { label: "MACOS", patterns: [/\\.dmg$/i, /\\.pkg$/i, /\\.zip$/i], description: "macOS build" }
+};
+
+let flekiConvertRelease = null;
+
 function updateFlekiConvertDownloadStatus() {
   const status = document.getElementById("flekiConvertDownloadStatus");
   if (!status) return;
-
   const language = document.documentElement.lang === "uk" ? "uk" : "en";
   const state = status.dataset.state || "checking";
-  const key = state === "ready"
-    ? "downloadsReady"
-    : state === "unavailable"
-      ? "downloadsUnavailable"
-      : "downloadsChecking";
-
+  const key = state === "ready" ? "downloadsReady" : state === "unavailable" ? "downloadsUnavailable" : "downloadsChecking";
   status.textContent = translations[language][key];
+}
+
+function findBuildForOs(os) {
+  const config = downloadBuilds[os];
+  const assets = Array.isArray(flekiConvertRelease?.assets) ? flekiConvertRelease.assets : [];
+  if (!config) return null;
+  for (const pattern of config.patterns) {
+    const asset = assets.find((candidate) => pattern.test(candidate?.name || ""));
+    if (asset?.browser_download_url) return { ...asset, os, description: config.description };
+  }
+  return null;
+}
+
+function showDownloadBuild(os) {
+  const systems = document.getElementById("downloadOsGrid");
+  const buildView = document.getElementById("downloadBuildView");
+  const buildOs = document.getElementById("downloadBuildOs");
+  const buildName = document.getElementById("downloadBuildName");
+  const buildDescription = document.getElementById("downloadBuildDescription");
+  const buildLink = document.getElementById("downloadBuildLink");
+  const status = document.getElementById("flekiConvertDownloadStatus");
+  if (!systems || !buildView || !buildOs || !buildName || !buildDescription || !buildLink) return;
+
+  const config = downloadBuilds[os];
+  if (!config) return;
+
+  systems.hidden = true;
+  buildView.hidden = false;
+  systems.setAttribute("aria-hidden", "true");
+  buildView.setAttribute("aria-hidden", "false");
+  buildOs.textContent = config.label;
+
+  const build = findBuildForOs(os);
+  if (build) {
+    buildName.textContent = build.name;
+    buildDescription.textContent = config.description;
+    buildLink.href = build.browser_download_url;
+    buildLink.hidden = false;
+    if (status) {
+      status.dataset.state = "ready";
+      updateFlekiConvertDownloadStatus();
+    }
+  } else {
+    buildName.textContent = "BUILD NOT AVAILABLE";
+    buildDescription.textContent = config.description;
+    buildLink.hidden = true;
+    buildLink.removeAttribute("href");
+    if (status) {
+      status.dataset.state = "unavailable";
+      updateFlekiConvertDownloadStatus();
+    }
+  }
+}
+
+function closeDownloadBuild() {
+  const systems = document.getElementById("downloadOsGrid");
+  const buildView = document.getElementById("downloadBuildView");
+  if (!systems || !buildView) return;
+  buildView.hidden = true;
+  systems.hidden = false;
+  buildView.setAttribute("aria-hidden", "true");
+  systems.setAttribute("aria-hidden", "false");
 }
 
 async function loadFlekiConvertDownloads() {
   const status = document.getElementById("flekiConvertDownloadStatus");
   const version = document.getElementById("flekiConvertDownloadVersion");
-  const items = document.querySelectorAll("[data-download-kind]");
-
-  if (!status || !items.length) return;
+  const systems = document.getElementById("downloadOsGrid");
+  const buildView = document.getElementById("downloadBuildView");
+  if (!status || !systems || !buildView) return;
 
   status.dataset.state = "checking";
   updateFlekiConvertDownloadStatus();
+  flekiConvertRelease = null;
 
   try {
     const response = await fetch(
       "https://api.github.com/repos/flekiii/flekiii.github.io/releases?per_page=100",
-      {
-        headers: { Accept: "application/vnd.github+json" },
-        cache: "no-store"
-      }
+      { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" }
     );
-
     if (!response.ok) throw new Error("Releases not available");
 
     const releases = await response.json();
-
     const converterReleases = Array.isArray(releases)
       ? releases
           .filter((release) =>
@@ -439,92 +501,49 @@ async function loadFlekiConvertDownloads() {
       : [];
 
     const release = converterReleases[0];
-
     if (!release) {
-      items.forEach((item) => {
-        item.hidden = true;
-      });
-
+      if (version) version.textContent = "PREPARING";
       status.dataset.state = "unavailable";
       updateFlekiConvertDownloadStatus();
-
-      if (version) {
-        version.textContent = "PREPARING";
-      }
-
       return;
     }
 
-    const assets = Array.isArray(release.assets) ? release.assets : [];
-
-    const patterns = {
-      appimage: /\.AppImage$/i,
-      deb: /\.deb$/i,
-      arch: /\.pkg\.tar\.zst$/i,
-      rpm: /\.rpm$/i
-    };
-
-    let visibleCount = 0;
-
+    flekiConvertRelease = release;
     if (version) {
       const match = release.tag_name.match(/fleki-convert-(.+)$/i);
       version.textContent = match ? match[1] : release.tag_name;
     }
-
-    items.forEach((item) => {
-      const kind = item.dataset.downloadKind;
-      const asset = assets.find((candidate) => patterns[kind]?.test(candidate.name));
-
-      if (asset?.browser_download_url) {
-        item.href = asset.browser_download_url;
-        item.hidden = false;
-        visibleCount += 1;
-      } else {
-        item.hidden = true;
-      }
-    });
-
-    status.dataset.state = visibleCount > 0 ? "ready" : "unavailable";
+    status.dataset.state = "ready";
     updateFlekiConvertDownloadStatus();
   } catch {
-    items.forEach((item) => {
-      item.hidden = true;
-    });
-
+    if (version) version.textContent = "PREPARING";
     status.dataset.state = "unavailable";
     updateFlekiConvertDownloadStatus();
-
-    if (version) {
-      version.textContent = "PREPARING";
-    }
   }
 }
 
 function openDownloadProject(projectId) {
   const projectList = document.getElementById("downloadProjectList");
   const projectView = document.getElementById("downloadProjectView");
-
-  if (!projectList || !projectView) return;
-  if (projectId !== "fleki-convert") return;
+  if (!projectList || !projectView || projectId !== "fleki-convert") return;
 
   projectList.hidden = true;
   projectView.hidden = false;
   projectList.setAttribute("aria-hidden", "true");
   projectView.setAttribute("aria-hidden", "false");
-
   loadFlekiConvertDownloads();
 }
 
 function closeDownloadProject() {
   const projectList = document.getElementById("downloadProjectList");
   const projectView = document.getElementById("downloadProjectView");
-
   if (!projectList || !projectView) return;
 
   projectView.hidden = true;
   projectList.hidden = false;
   projectView.setAttribute("aria-hidden", "true");
   projectList.setAttribute("aria-hidden", "false");
+  closeDownloadBuild();
 }
 
 document.addEventListener("click", (event) => {
@@ -532,6 +551,20 @@ document.addEventListener("click", (event) => {
   if (projectButton) {
     event.preventDefault();
     openDownloadProject(projectButton.dataset.downloadProject || "");
+    return;
+  }
+
+  const osButton = event.target.closest("[data-download-os]");
+  if (osButton) {
+    event.preventDefault();
+    showDownloadBuild(osButton.dataset.downloadOs || "");
+    return;
+  }
+
+  const buildBackButton = event.target.closest("#downloadBuildBack");
+  if (buildBackButton) {
+    event.preventDefault();
+    closeDownloadBuild();
     return;
   }
 
