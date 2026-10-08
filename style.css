@@ -4217,3 +4217,135 @@ footer p {
     width: 100%;
   }
 }
+
+
+/* Clean OS selector and multi-build download list */
+.download-os-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  padding: 0 14px;
+}
+
+.download-os-icon {
+  display: none;
+}
+
+.download-os-button strong {
+  flex: 1 1 auto;
+  font-size: 10px;
+  letter-spacing: .1em;
+}
+
+.download-os-arrow {
+  flex: 0 0 auto;
+}
+
+.download-build-head {
+  margin-top: 15px;
+  padding: 13px 15px;
+  border: 1px solid rgba(255,105,180,.12);
+  border-radius: 13px;
+  background: rgba(255,105,180,.035);
+}
+
+.download-build-label {
+  display: block;
+  color: var(--pink);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .13em;
+}
+
+.download-build-head p {
+  margin-top: 5px;
+  color: rgba(255,255,255,.45);
+  font-size: 10px;
+}
+
+.download-build-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.download-build-item {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 14px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  background: rgba(255,255,255,.022);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.download-build-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,105,180,.28);
+  background: rgba(255,105,180,.05);
+}
+
+.download-build-item-copy {
+  min-width: 0;
+}
+
+.download-build-item-copy strong,
+.download-build-item-copy small {
+  display: block;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.download-build-item-copy strong {
+  color: var(--pink);
+  font-size: 9px;
+  letter-spacing: .1em;
+}
+
+.download-build-item-copy small {
+  margin-top: 4px;
+  color: rgba(255,255,255,.48);
+  font-size: 10px;
+}
+
+.download-build-item-arrow {
+  flex: 0 0 auto;
+  color: var(--pink);
+  font-size: 16px;
+}
+
+.download-build-empty {
+  padding: 16px;
+  border: 1px dashed rgba(255,255,255,.1);
+  border-radius: 12px;
+  color: rgba(255,255,255,.45);
+  font-size: 10px;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .download-os-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .download-os-button {
+    min-height: 56px;
+    padding: 0 12px;
+    border-radius: 11px;
+  }
+
+  .download-os-button strong {
+    font-size: 8px;
+  }
+
+  .download-build-item {
+    padding: 12px;
+  }
+}
