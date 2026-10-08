@@ -4403,3 +4403,87 @@ footer p {
     font-size: 8px;
   }
 }
+
+
+/* About: Ukraine identity */
+.about-country {
+  margin-top: 9px !important;
+  color: rgba(255,255,255,.58) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+.ukraine-gradient {
+  display: inline-block;
+  font-weight: 900;
+  background: linear-gradient(to bottom, #58a9ff 0%, #58a9ff 49%, #ffd84d 51%, #ffd84d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 18px rgba(88,169,255,.08);
+}
+
+/* Downloads: the build list is a true overlay above the OS selector */
+.download-project-view {
+  position: relative !important;
+  isolation: isolate;
+}
+
+.download-build-view:not([hidden]) {
+  display: block !important;
+  position: absolute !important;
+  top: -8px !important;
+  right: -8px !important;
+  bottom: -8px !important;
+  left: -8px !important;
+  z-index: 999 !important;
+  margin: 0 !important;
+  padding: 22px !important;
+  overflow-y: auto !important;
+  border: 1px solid rgba(255,105,180,.35) !important;
+  border-radius: 18px !important;
+  background: rgba(10,10,10,.98) !important;
+  box-shadow: 0 30px 90px rgba(0,0,0,.75), 0 0 45px rgba(255,105,180,.12) !important;
+  backdrop-filter: blur(16px);
+}
+
+.download-build-view:not([hidden])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255,105,180,.06), transparent 32%);
+  pointer-events: none;
+}
+
+.download-build-view .download-build-head {
+  margin-top: 14px !important;
+}
+
+.download-build-view .download-build-list {
+  position: relative;
+  z-index: 1;
+}
+
+.download-build-view .download-status {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 700px) {
+  .about-country {
+    font-size: 11px !important;
+    margin-top: 7px !important;
+  }
+
+  .download-build-view:not([hidden]) {
+    top: -5px !important;
+    right: -5px !important;
+    bottom: -5px !important;
+    left: -5px !important;
+    padding: 15px !important;
+    border-radius: 14px !important;
+  }
+}
