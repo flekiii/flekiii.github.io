@@ -1466,7 +1466,7 @@ footer p {
 .goal-card strong { display:block; margin-top:18px; font-size:20px; }
 .goal-card p { color:rgba(255,255,255,.56); line-height:1.6; margin-bottom:0; }
 @media (max-width: 780px) {
-  .status-live, .resource-grid, .goals-grid, .progress-grid { grid-template-columns:1fr; }
+  .status-live, .resource-grid, .goals-grid
   .resource-content-head {
     flex-direction:column;
   }
