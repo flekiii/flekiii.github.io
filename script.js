@@ -8,14 +8,9 @@ const translations = {
     nowBuildingActive: "ACTIVE",
     nowBuildingTitle: "Learning JavaScript",
     nowBuildingText: "For the last few days, my main focus has been learning the basics of JavaScript and turning what I learn into real code.",
-    nowBuildingProgressLabel: "CURRENT FOCUS",
-    nowBuildingProgressValue: "JavaScript fundamentals",
     nowBuildingNextLabel: "NEXT",
     nowBuildingNextTitle: "Node.js + Backend",
     nowBuildingNextText: "After JavaScript, the next step is learning Node.js and the basics of backend development.",
-    overviewEyebrow: "DEVELOPER OVERVIEW · FLEKIII",
-    overviewTitle: "What is happening <span class=\"accent\">right now.</span>",
-    tabProgress: "Project Progress",
     tabAbout: "About",
     heroEyebrow: "INDEPENDENT DEVELOPER · 15 YEARS OLD",
     heroTitle: "Building my own<br><span>digital world.</span>",
@@ -126,14 +121,9 @@ const translations = {
     nowBuildingActive: "АКТИВНО",
     nowBuildingTitle: "Вивчення JavaScript",
     nowBuildingText: "Останні кілька днів мій головний фокус — вивчення основ JavaScript і перетворення того, що я вивчаю, на реальний код.",
-    nowBuildingProgressLabel: "ПОТОЧНИЙ ФОКУС",
-    nowBuildingProgressValue: "Основи JavaScript",
     nowBuildingNextLabel: "ДАЛІ",
     nowBuildingNextTitle: "Node.js + Backend",
     nowBuildingNextText: "Після JavaScript наступний етап — Node.js та основи backend-розробки.",
-    overviewEyebrow: "ОГЛЯД РОЗРОБКИ · FLEKIII",
-    overviewTitle: "Що відбувається <span class=\"accent\">прямо зараз.</span>",
-    tabProgress: "Прогрес проєктів",
     tabAbout: "Про мене",
     heroEyebrow: "НЕЗАЛЕЖНИЙ РОЗРОБНИК · 15 РОКІВ",
     heroTitle: "Створюю власний<br><span>цифровий світ.</span>",
@@ -164,7 +154,6 @@ const translations = {
     viewProject: "ПЕРЕГЛЯНУТИ",
     modalEyebrow: "ПРОЄКТ",
     openProjectPage: "ВІДКРИТИ СТОРІНКУ ПРОЄКТУ",
-    progressNote: "Вивчення JavaScript навмисно не входить у прогрес проєктів.",
     ecosystemCore: "незалежна екосистема",
     profileEyebrow: "ПРОФІЛЬ РОЗРОБНИКА",
     profileRole: "15 років · Незалежний розробник",
@@ -693,40 +682,6 @@ if (mobileMenuButton && mainNav) {
     }
   });
 }
-
-const overviewTabs = document.querySelectorAll(".overview-tab");
-const overviewPanels = document.querySelectorAll(".overview-panel");
-
-if (overviewTabs.length) {
-  const activeTab = document.querySelector('.overview-tab.active') || overviewTabs[0];
-  const activePanel = document.querySelector('.overview-panel.active') || overviewPanels[0];
-
-  overviewTabs.forEach((tab) => {
-    const active = tab === activeTab;
-    tab.classList.toggle("active", active);
-    tab.setAttribute("aria-selected", String(active));
-  });
-
-  overviewPanels.forEach((panel) => {
-    panel.classList.toggle("active", panel === activePanel);
-  });
-}
-
-overviewTabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    const target = tab.dataset.tab;
-
-    overviewTabs.forEach((item) => {
-      const active = item === tab;
-      item.classList.toggle("active", active);
-      item.setAttribute("aria-selected", String(active));
-    });
-
-    overviewPanels.forEach((panel) => {
-      panel.classList.toggle("active", panel.dataset.panel === target);
-    });
-  });
-});
 
 const projectModal = document.getElementById("projectModal");
 const projectModalTitle = document.getElementById("projectModalTitle");
