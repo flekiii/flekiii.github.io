@@ -397,6 +397,16 @@ const downloadBuilds = {
 
 let flekiConvertRelease = null;
 
+const flekiConvertFallbackRelease = {
+  tag_name: "fleki-convert-v1.0.0",
+  assets: [
+    { id: "linux-arch", name: "fleki-convert-1.0.0-1-x86_64.pkg.tar.zst", browser_download_url: "https://github.com/flekiii/flekiii.github.io/releases/download/fleki-convert-v1.0.0/fleki-convert-1.0.0-1-x86_64.pkg.tar.zst" },
+    { id: "linux-appimage", name: "fleki_convert-1.0.0+1-linux.AppImage", browser_download_url: "https://github.com/flekiii/flekiii.github.io/releases/download/fleki-convert-v1.0.0/fleki_convert-1.0.0%2B1-linux.AppImage" },
+    { id: "linux-deb", name: "fleki_convert-1.0.0+1-linux.deb", browser_download_url: "https://github.com/flekiii/flekiii.github.io/releases/download/fleki-convert-v1.0.0/fleki_convert-1.0.0%2B1-linux.deb" },
+    { id: "linux-rpm", name: "fleki_convert-1.0.0+1-linux.rpm", browser_download_url: "https://github.com/flekiii/flekiii.github.io/releases/download/fleki-convert-v1.0.0/fleki_convert-1.0.0%2B1-linux.rpm" }
+  ]
+};
+
 function updateFlekiConvertDownloadStatus() {
   const status = document.getElementById("flekiConvertDownloadStatus");
   if (!status) return;
@@ -567,6 +577,13 @@ async function loadFlekiConvertDownloads() {
     }
 
     flekiConvertRelease = release;
+    if (!Array.isArray(flekiConvertRelease.assets)) flekiConvertRelease.assets = [];
+    const knownLinuxAssets = flekiConvertFallbackRelease.assets;
+    knownLinuxAssets.forEach((fallbackAsset) => {
+      if (!flekiConvertRelease.assets.some((asset) => asset && (asset.id === fallbackAsset.id || asset.name === fallbackAsset.name))) {
+        flekiConvertRelease.assets.push(fallbackAsset);
+      }
+    });
     if (version) {
       const match = release.tag_name.match(/fleki-convert-(.+)$/i);
       version.textContent = match ? match[1] : release.tag_name;
@@ -574,8 +591,9 @@ async function loadFlekiConvertDownloads() {
     status.dataset.state = "ready";
     updateFlekiConvertDownloadStatus();
   } catch {
-    if (version) version.textContent = "PREPARING";
-    status.dataset.state = "unavailable";
+    flekiConvertRelease = flekiConvertFallbackRelease;
+    if (version) version.textContent = "1.0.0";
+    status.dataset.state = "ready";
     updateFlekiConvertDownloadStatus();
   }
 }
