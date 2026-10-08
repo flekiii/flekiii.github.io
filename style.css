@@ -3470,66 +3470,6 @@ footer p {
 }
 
 
-/* Site statistics */
-.site-stats {
-  width: min(var(--max), calc(100% - 40px));
-  margin: 0 auto 28px;
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 34px;
-  border-top: 1px solid rgba(255,255,255,0.055);
-  border-bottom: 1px solid rgba(255,255,255,0.055);
-}
-.site-stat {
-  min-width: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-.site-stat-label {
-  color: #777;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-}
-.site-stat-counter {
-  min-height: 24px;
-  display: flex;
-  align-items: center;
-}
-.site-stat-counter img {
-  display: block;
-  max-width: 100%;
-}
-.site-stat-online::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  flex: 0 0 7px;
-  border-radius: 50%;
-  background: var(--pink);
-  box-shadow: 0 0 12px rgba(255,111,174,0.5);
-}
-.site-stat-value {
-  color: var(--pink-soft);
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-}
-@media (max-width: 600px) {
-  .site-stats {
-    width: min(var(--max), calc(100% - 28px));
-    flex-wrap: wrap;
-    gap: 14px 24px;
-    padding: 16px;
-  }
-  .site-stat { min-width: 0; }
-}
-
-
 /* Compact phone Projects + project detail modal */
 @media (max-width: 700px) {
   .section {
