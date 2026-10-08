@@ -1122,7 +1122,7 @@ footer p {
   .updates-grid {
     grid-template-columns: 1fr;
   }
-
+}
 
 /* Expanded ecosystem sections */
 .status-live {
@@ -3782,3 +3782,4 @@ footer p {
     flex: 0 0 auto;
   }
 }
+
