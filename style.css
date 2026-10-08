@@ -3705,3 +3705,80 @@ footer p {
     font-size: 15px;
   }
 }
+
+
+/* Mobile resources: keep all text inside the viewport */
+@media (max-width: 700px) {
+  .resource-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .resource-card,
+  .resource-content,
+  .resource-content-head,
+  .download-project-view-head {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .resource-card {
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: start;
+    gap: 12px;
+    padding: 16px;
+    overflow: hidden;
+  }
+
+  .resource-card > .empty-badge {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .resource-content-head,
+  .download-project-view-head {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .resource-card h3,
+  .resource-card p,
+  .resource-content,
+  .resource-content-head > div,
+  .download-project-copy,
+  .download-project-copy strong,
+  .download-project-copy small {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .download-official-badge,
+  .download-project-version,
+  .empty-badge {
+    white-space: normal;
+    width: fit-content;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .download-project-button {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    gap: 10px;
+    min-width: 0;
+    padding: 11px 12px;
+  }
+
+  .download-project-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .download-project-arrow {
+    flex: 0 0 auto;
+  }
+}
