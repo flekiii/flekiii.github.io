@@ -86,6 +86,7 @@ const translations = {
     downloadLinux: "LINUX",
     downloadMacOS: "MACOS",
     downloadBuild: "DOWNLOAD BUILD",
+    downloadBuildChoose: "Choose a build to download.",
     downloadsChecking: "Checking the latest release…",
     downloadsReady: "Official release loaded.",
     downloadsUnavailable: "A build for this system is not available yet.",
@@ -198,6 +199,7 @@ projectVpnDesc: "Власний VPN-проєкт, орієнтований на 
     downloadLinux: "LINUX",
     downloadMacOS: "MACOS",
     downloadBuild: "ЗАВАНТАЖИТИ ЗБІРКУ",
+    downloadBuildChoose: "Обери збірку для завантаження.",
     downloadsChecking: "Перевіряю останній реліз…",
     downloadsReady: "Офіційний реліз завантажено.",
     downloadsUnavailable: "Збірка для цієї системи ще недоступна.",
@@ -404,26 +406,51 @@ function updateFlekiConvertDownloadStatus() {
   status.textContent = translations[language][key];
 }
 
-function findBuildForOs(os) {
+function findBuildsForOs(os) {
   const config = downloadBuilds[os];
   const assets = Array.isArray(flekiConvertRelease?.assets) ? flekiConvertRelease.assets : [];
-  if (!config) return null;
-  for (const pattern of config.patterns) {
-    const asset = assets.find((candidate) => pattern.test(candidate?.name || ""));
-    if (asset?.browser_download_url) return { ...asset, os, description: config.description };
-  }
-  return null;
+  if (!config) return [];
+
+  const matches = [];
+  const seen = new Set();
+
+  config.patterns.forEach((pattern) => {
+    assets.forEach((asset) => {
+      const identity = asset?.id || asset?.name;
+      if (!asset?.browser_download_url || seen.has(identity)) return;
+      if (!pattern.test(asset.name || "")) return;
+      seen.add(identity);
+      matches.push({ ...asset, os, description: config.description });
+    });
+  });
+
+  return matches;
+}
+
+function getBuildFormat(name) {
+  const lower = (name || "").toLowerCase();
+  if (lower.endsWith(".appimage")) return "AppImage";
+  if (lower.endsWith(".deb")) return "DEB";
+  if (lower.endsWith(".pkg.tar.zst")) return "Arch · pkg.tar.zst";
+  if (lower.endsWith(".rpm")) return "RPM";
+  if (lower.endsWith(".apk")) return "APK";
+  if (lower.endsWith(".ipa")) return "IPA";
+  if (lower.endsWith(".exe")) return "EXE";
+  if (lower.endsWith(".msi")) return "MSI";
+  if (lower.endsWith(".msix")) return "MSIX";
+  if (lower.endsWith(".dmg")) return "DMG";
+  if (lower.endsWith(".pkg")) return "PKG";
+  if (lower.endsWith(".zip")) return "ZIP";
+  return "BUILD";
 }
 
 function showDownloadBuild(os) {
   const systems = document.getElementById("downloadOsGrid");
   const buildView = document.getElementById("downloadBuildView");
   const buildOs = document.getElementById("downloadBuildOs");
-  const buildName = document.getElementById("downloadBuildName");
-  const buildDescription = document.getElementById("downloadBuildDescription");
-  const buildLink = document.getElementById("downloadBuildLink");
+  const buildList = document.getElementById("downloadBuildList");
   const status = document.getElementById("flekiConvertDownloadStatus");
-  if (!systems || !buildView || !buildOs || !buildName || !buildDescription || !buildLink) return;
+  if (!systems || !buildView || !buildOs || !buildList) return;
 
   const config = downloadBuilds[os];
   if (!config) return;
@@ -433,37 +460,68 @@ function showDownloadBuild(os) {
   systems.setAttribute("aria-hidden", "true");
   buildView.setAttribute("aria-hidden", "false");
   buildOs.textContent = config.label;
+  buildList.innerHTML = "";
 
-  const build = findBuildForOs(os);
-  if (build) {
-    buildName.textContent = build.name;
-    buildDescription.textContent = config.description;
-    buildLink.href = build.browser_download_url;
-    buildLink.hidden = false;
-    if (status) {
-      status.dataset.state = "ready";
-      updateFlekiConvertDownloadStatus();
-    }
-  } else {
-    buildName.textContent = "BUILD NOT AVAILABLE";
-    buildDescription.textContent = config.description;
-    buildLink.hidden = true;
-    buildLink.removeAttribute("href");
+  const builds = findBuildsForOs(os);
+
+  if (!builds.length) {
+    const empty = document.createElement("div");
+    empty.className = "download-build-empty";
+    empty.textContent = document.documentElement.lang === "uk"
+      ? "Для цієї системи збірок поки немає."
+      : "No builds are available for this system yet.";
+    buildList.appendChild(empty);
     if (status) {
       status.dataset.state = "unavailable";
       updateFlekiConvertDownloadStatus();
     }
+    return;
+  }
+
+  builds.forEach((build) => {
+    const item = document.createElement("a");
+    item.className = "download-build-item";
+    item.href = build.browser_download_url;
+    item.target = "_blank";
+    item.rel = "noopener noreferrer";
+
+    const copy = document.createElement("span");
+    copy.className = "download-build-item-copy";
+
+    const format = document.createElement("strong");
+    format.textContent = getBuildFormat(build.name);
+
+    const name = document.createElement("small");
+    name.textContent = build.name;
+
+    copy.append(format, name);
+
+    const arrow = document.createElement("span");
+    arrow.className = "download-build-item-arrow";
+    arrow.textContent = "↓";
+    arrow.setAttribute("aria-hidden", "true");
+
+    item.append(copy, arrow);
+    buildList.appendChild(item);
+  });
+
+  if (status) {
+    status.dataset.state = "ready";
+    updateFlekiConvertDownloadStatus();
   }
 }
 
 function closeDownloadBuild() {
   const systems = document.getElementById("downloadOsGrid");
   const buildView = document.getElementById("downloadBuildView");
+  const buildList = document.getElementById("downloadBuildList");
   if (!systems || !buildView) return;
+
   buildView.hidden = true;
   systems.hidden = false;
-  buildView.setAttribute("aria-hidden", "true");
   systems.setAttribute("aria-hidden", "false");
+  buildView.setAttribute("aria-hidden", "true");
+  if (buildList) buildList.innerHTML = "";
 }
 
 async function loadFlekiConvertDownloads() {
