@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=49">
+  <link rel="stylesheet" href="style.css?v=50">
 </head>
 <body>
   <div class="glow glow-one"></div>
@@ -230,16 +230,15 @@
       <div class="section-heading"><h2 data-i18n="resourcesTitle">Downloads & Gallery</h2></div>
       <div class="resource-grid">
         <article class="resource-card resource-card-downloads">
-          <span class="resource-icon" aria-hidden="true">↓</span>
+          <div class="resource-card-icon" aria-hidden="true">↓</div>
           <div class="resource-content">
             <div class="resource-content-head">
               <div>
+                <div class="resource-kicker" data-i18n="officialDownload">OFFICIAL DOWNLOAD</div>
                 <h3 data-i18n="downloadsTitle">Downloads</h3>
                 <p data-i18n="downloadsText">Choose a project to see its official downloads. More projects can be added here as releases become available.</p>
               </div>
-              <span class="download-official-badge" data-i18n="officialDownload">OFFICIAL DOWNLOAD</span>
             </div>
-
             <div class="download-project-list" id="downloadProjectList">
               <button class="download-project-button" type="button" data-download-project="fleki-convert" aria-controls="downloadProjectView" aria-expanded="false">
                 <span class="download-project-mark mark-convert" aria-hidden="true"></span>
@@ -250,7 +249,6 @@
                 <span class="download-project-arrow" aria-hidden="true">→</span>
               </button>
             </div>
-
             <div class="download-project-view" id="downloadProjectView" hidden aria-hidden="true">
               <div class="download-project-view-head">
                 <div>
@@ -260,45 +258,26 @@
                 </div>
                 <span class="download-project-version" id="flekiConvertDownloadVersion">LATEST</span>
               </div>
-
               <div class="download-list" id="flekiConvertDownloads">
-                <a class="download-item" data-download-kind="appimage" hidden>
-                  <span class="download-item-copy">
-                    <strong>Linux</strong>
-                    <small data-i18n="downloadAppImage">AppImage</small>
-                  </span>
-                  <span class="download-arrow" aria-hidden="true">↓</span>
-                </a>
-                <a class="download-item" data-download-kind="deb" hidden>
-                  <span class="download-item-copy">
-                    <strong>Linux</strong>
-                    <small data-i18n="downloadDeb">Debian / Ubuntu · DEB</small>
-                  </span>
-                  <span class="download-arrow" aria-hidden="true">↓</span>
-                </a>
-                <a class="download-item" data-download-kind="arch" hidden>
-                  <span class="download-item-copy">
-                    <strong>Linux</strong>
-                    <small data-i18n="downloadArch">Arch · pkg.tar.zst</small>
-                  </span>
-                  <span class="download-arrow" aria-hidden="true">↓</span>
-                </a>
-                <a class="download-item" data-download-kind="rpm" hidden>
-                  <span class="download-item-copy">
-                    <strong>Linux</strong>
-                    <small data-i18n="downloadRpm">Fedora / openSUSE · RPM</small>
-                  </span>
-                  <span class="download-arrow" aria-hidden="true">↓</span>
-                </a>
+                <a class="download-item" data-download-kind="appimage" hidden><span class="download-item-copy"><strong>Linux</strong><small data-i18n="downloadAppImage">AppImage</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+                <a class="download-item" data-download-kind="deb" hidden><span class="download-item-copy"><strong>Linux</strong><small data-i18n="downloadDeb">Debian / Ubuntu · DEB</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+                <a class="download-item" data-download-kind="arch" hidden><span class="download-item-copy"><strong>Linux</strong><small data-i18n="downloadArch">Arch · pkg.tar.zst</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+                <a class="download-item" data-download-kind="rpm" hidden><span class="download-item-copy"><strong>Linux</strong><small data-i18n="downloadRpm">Fedora / openSUSE · RPM</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
               </div>
-
               <p class="download-status" id="flekiConvertDownloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
             </div>
           </div>
         </article>
-        <article class="resource-card"><span class="resource-icon">▧</span><div><h3 data-i18n="galleryTitle">Screens & Gallery</h3><p data-i18n="galleryText">Screenshots, interface previews and project visuals will appear here later.</p></div><span class="empty-badge" data-i18n="emptyBadge">EMPTY FOR NOW</span></article>
-      </div>
-    </section>
+        <article class="resource-card resource-card-gallery">
+          <div class="resource-card-icon" aria-hidden="true">▧</div>
+          <div class="resource-content">
+            <div class="resource-kicker" data-i18n="emptyBadge">COMING SOON</div>
+            <h3 data-i18n="galleryTitle">Screens & Gallery</h3>
+            <p data-i18n="galleryText">Screenshots, interface previews and project visuals will appear here later.</p>
+            <div class="gallery-empty-preview" aria-hidden="true"><span></span><span></span><span></span></div>
+          </div>
+        </article>
+      </div>    </section>
 
     <section id="goals" class="section goals" data-editorial-label="GOALS" data-editorial-number="08">
       <div class="section-heading"><h2 data-i18n="goalsTitle">Support Goals</h2></div>
@@ -394,6 +373,10 @@
       <div class="eyebrow" data-i18n="modalEyebrow">PROJECT</div>
       <h2 id="projectModalTitle">Project</h2>
       <p id="projectModalText"></p>
+      <div class="project-media-gallery" id="projectMediaGallery" hidden aria-hidden="true">
+        <div class="project-media-heading"><span class="eyebrow" data-i18n="projectMediaEyebrow">PROJECT MEDIA</span><small data-i18n="projectMediaHint">Photos and video will appear here.</small></div>
+        <div class="project-media-grid" id="projectMediaGrid"></div>
+      </div>
       <div class="modal-meta">
         <span id="projectModalStatus">PLANNED</span>
         <span>flekiii</span>
