@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=50">
+  <link rel="stylesheet" href="style.css?v=51">
 </head>
 <body>
   <div class="glow glow-one"></div>
@@ -226,17 +226,17 @@
         </a>
       </div>
     </section>
-    <section id="resources" class="section resources" data-editorial-label="GALLERY" data-editorial-number="06">
-      <div class="section-heading"><h2 data-i18n="resourcesTitle">Downloads & Gallery</h2></div>
+    <section id="resources" class="section resources" data-editorial-label="DOWNLOADS" data-editorial-number="06">
+      <div class="section-heading"><h2 data-i18n="resourcesTitle">Downloads</h2></div>
       <div class="resource-grid">
-        <article class="resource-card resource-card-downloads">
+        <article class="resource-card resource-card-downloads resource-card-single">
           <div class="resource-card-icon" aria-hidden="true">↓</div>
           <div class="resource-content">
             <div class="resource-content-head">
               <div>
-                <div class="resource-kicker" data-i18n="officialDownload">OFFICIAL DOWNLOAD</div>
+                <div class="resource-kicker" data-i18n="officialDownload">OFFICIAL DOWNLOADS</div>
                 <h3 data-i18n="downloadsTitle">Downloads</h3>
-                <p data-i18n="downloadsText">Choose a project to see its official downloads. More projects can be added here as releases become available.</p>
+                <p data-i18n="downloadsText">Choose FLEKI CONVERT and then select your operating system.</p>
               </div>
             </div>
             <div class="download-project-list" id="downloadProjectList">
@@ -254,32 +254,59 @@
                 <div>
                   <button class="download-back-button" id="downloadProjectBack" type="button" data-i18n="downloadBack">← BACK</button>
                   <h3>FLEKI CONVERT</h3>
-                  <p data-i18n="downloadProjectFlekiConvertText">Choose the build for your system. These are the official FLEKI CONVERT releases.</p>
+                  <p data-i18n="downloadProjectFlekiConvertText">Choose your operating system to see its specific build.</p>
                 </div>
                 <span class="download-project-version" id="flekiConvertDownloadVersion">LATEST</span>
               </div>
-              <div class="download-list" id="flekiConvertDownloads">
-                <a class="download-item" data-download-kind="appimage" hidden><span class="download-item-copy"><strong>Linux</strong><small data-i18n="downloadAppImage">AppImage</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
-                <a class="download-item" data-download-kind="deb" hidden><span class="download-item-copy"><strong>Linux</strong><small data-i18n="downloadDeb">Debian / Ubuntu · DEB</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
-                <a class="download-item" data-download-kind="arch" hidden><span class="download-item-copy"><strong>Linux</strong><small data-i18n="downloadArch">Arch · pkg.tar.zst</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
-                <a class="download-item" data-download-kind="rpm" hidden><span class="download-item-copy"><strong>Linux</strong><small data-i18n="downloadRpm">Fedora / openSUSE · RPM</small></span><span class="download-arrow" aria-hidden="true">↓</span></a>
+              <div class="download-os-grid" id="downloadOsGrid">
+                <button class="download-os-button" type="button" data-download-os="android">
+                  <span class="download-os-icon" aria-hidden="true">▣</span>
+                  <strong data-i18n="downloadAndroid">ANDROID</strong>
+                  <span class="download-os-arrow" aria-hidden="true">→</span>
+                </button>
+                <button class="download-os-button" type="button" data-download-os="ios">
+                  <span class="download-os-icon" aria-hidden="true">●</span>
+                  <strong data-i18n="downloadIOS">iOS</strong>
+                  <span class="download-os-arrow" aria-hidden="true">→</span>
+                </button>
+                <button class="download-os-button" type="button" data-download-os="windows">
+                  <span class="download-os-icon" aria-hidden="true">▦</span>
+                  <strong data-i18n="downloadWindows">WINDOWS</strong>
+                  <span class="download-os-arrow" aria-hidden="true">→</span>
+                </button>
+                <button class="download-os-button" type="button" data-download-os="linux">
+                  <span class="download-os-icon" aria-hidden="true">◈</span>
+                  <strong data-i18n="downloadLinux">LINUX</strong>
+                  <span class="download-os-arrow" aria-hidden="true">→</span>
+                </button>
+                <button class="download-os-button" type="button" data-download-os="macos">
+                  <span class="download-os-icon" aria-hidden="true">◆</span>
+                  <strong data-i18n="downloadMacOS">MACOS</strong>
+                  <span class="download-os-arrow" aria-hidden="true">→</span>
+                </button>
               </div>
-              <p class="download-status" id="flekiConvertDownloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
+              <div class="download-build-view" id="downloadBuildView" hidden aria-hidden="true">
+                <button class="download-build-back" id="downloadBuildBack" type="button" data-i18n="downloadBackToSystems">← ALL SYSTEMS</button>
+                <div class="download-build-card" id="downloadBuildCard">
+                  <div>
+                    <span class="download-build-label" id="downloadBuildOs">LINUX</span>
+                    <strong id="downloadBuildName">Build</strong>
+                    <small id="downloadBuildDescription">Official build</small>
+                  </div>
+                  <a class="download-build-button" id="downloadBuildLink" href="#" target="_blank" rel="noopener noreferrer" hidden>
+                    <span data-i18n="downloadBuild">DOWNLOAD BUILD</span>
+                    <span aria-hidden="true">↓</span>
+                  </a>
+                </div>
+                <p class="download-status" id="flekiConvertDownloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
+              </div>
             </div>
           </div>
         </article>
-        <article class="resource-card resource-card-gallery">
-          <div class="resource-card-icon" aria-hidden="true">▧</div>
-          <div class="resource-content">
-            <div class="resource-kicker" data-i18n="emptyBadge">COMING SOON</div>
-            <h3 data-i18n="galleryTitle">Screens & Gallery</h3>
-            <p data-i18n="galleryText">Screenshots, interface previews and project visuals will appear here later.</p>
-            <div class="gallery-empty-preview" aria-hidden="true"><span></span><span></span><span></span></div>
-          </div>
-        </article>
-      </div>    </section>
+      </div>
+    </section>
 
-    <section id="goals" class="section goals" data-editorial-label="GOALS" data-editorial-number="08">
+<section id="goals" class="section goals" data-editorial-label="GOALS" data-editorial-number="08">
       <div class="section-heading"><h2 data-i18n="goalsTitle">Support Goals</h2></div>
       <div class="goals-grid">
         <article class="goal-card goal-card-featured">
@@ -385,6 +412,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=51"></script>
+  <script src="script.js?v=52"></script>
 </body>
 </html>
