@@ -1087,10 +1087,10 @@ const themeButton = document.getElementById("themeButton");
 const themeMenu = document.getElementById("themeMenu");
 const currentTheme = document.getElementById("currentTheme");
 const themeOptions = document.querySelectorAll(".theme-option");
-const themeNames = { pink:"Rose", blue:"Ocean", purple:"Lavender", green:"Emerald", amber:"Amber", light:"Light" };
+const themeNames = { pink:"Rose", blue:"Ocean", purple:"Lavender", green:"Emerald", amber:"Amber", light:"Light", crimson:"Crimson", ice:"Ice", sunset:"Sunset", mint:"Mint", violet:"Violet", graphite:"Graphite", cherry:"Cherry", solar:"Solar" };
 
 function setTheme(theme) {
-  const allowed = ["pink", "blue", "purple", "green", "amber", "light"];
+  const allowed = ["pink", "blue", "purple", "green", "amber", "light", "crimson", "ice", "sunset", "mint", "violet", "graphite", "cherry", "solar"];
   const selected = allowed.includes(theme) ? theme : "pink";
   document.documentElement.dataset.theme = selected;
   currentTheme.textContent = themeNames[selected];
