@@ -5261,3 +5261,43 @@ html[data-theme] .support .support-key,
 html[data-theme] .support-note-row .support-key {
   color: var(--pink) !important;
 }
+
+/* Theme-aware typography for every Downloads view and support accent. */
+html[data-theme] #resources .download-os-button strong,
+html[data-theme] #resources .download-build-item-copy strong,
+html[data-theme] #resources .download-project-copy strong,
+html[data-theme] #resources .download-item-copy strong {
+  color: var(--text) !important;
+}
+html[data-theme] #resources .download-build-label,
+html[data-theme] #resources .download-project-arrow,
+html[data-theme] #resources .download-arrow,
+html[data-theme] #resources .download-back-button,
+html[data-theme] #resources .download-official-badge {
+  color: var(--pink) !important;
+}
+html[data-theme] #resources .download-os-button:focus-visible strong,
+html[data-theme] #resources .download-os-button:hover strong {
+  color: var(--pink) !important;
+}
+html[data-theme] #resources .download-project-copy small,
+html[data-theme] #resources .download-build-head p,
+html[data-theme] #resources .download-status {
+  color: var(--muted) !important;
+}
+html[data-theme] .support .support-key,
+html[data-theme] .support-note-row .support-key {
+  color: var(--pink) !important;
+}
+html[data-theme] .project-language-menu {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+html[data-theme] .project-language-menu button {
+  color: var(--text) !important;
+}
+html[data-theme] .project-language-menu button:hover,
+html[data-theme] .project-language-menu button.active {
+  background: color-mix(in srgb,var(--pink) 12%,var(--surface-2)) !important;
+  color: var(--pink) !important;
+}
