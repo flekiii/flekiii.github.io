@@ -1039,6 +1039,7 @@ function openShare() {
   if (!shareModal) return;
   updateShareLinks();
   shareModal.classList.add("open");
+  shareModal.style.display = "flex";
   shareModal.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
 }
@@ -1046,6 +1047,7 @@ function openShare() {
 function closeShare() {
   if (!shareModal) return;
   shareModal.classList.remove("open");
+  shareModal.style.display = "none";
   shareModal.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
 }
