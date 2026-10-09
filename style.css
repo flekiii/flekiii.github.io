@@ -4458,3 +4458,23 @@ footer p {
   color: #fff0f7;
   box-shadow: 0 0 28px rgba(255,111,174,.20);
 }
+
+
+/* Make Share Site match Support in size, tint and hover */
+.hero-actions > .hero-share-button {
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,155,199,.72);
+  background: linear-gradient(135deg, rgba(255,111,174,.24), rgba(255,155,199,.13));
+  color: #ffd0e4;
+  font-size: 12px;
+  letter-spacing: .08em;
+  box-shadow: 0 0 22px rgba(255,111,174,.10);
+}
+.hero-actions > .hero-share-button:hover {
+  background: linear-gradient(135deg, rgba(255,111,174,.36), rgba(255,155,199,.22));
+  border-color: #ff9bc7;
+  color: #fff0f7;
+  box-shadow: 0 0 28px rgba(255,111,174,.20);
+}
