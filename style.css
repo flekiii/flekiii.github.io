@@ -3322,6 +3322,7 @@ footer p {
 /* Site share modal */
 .share-modal {
   position: fixed;
+  z-index: 99999;
   inset: 0;
   display: grid;
   place-items: center;
