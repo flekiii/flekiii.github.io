@@ -5255,3 +5255,9 @@ html[data-theme$="-light"] .status[data-i18n="statusPlanned"] {
 .project-language-menu button:hover,.project-language-menu button.active{background:color-mix(in srgb,var(--pink) 12%,var(--surface-2));color:var(--pink)}
 .project-language-menu button .project-language-name{flex:1}
 .project-language-menu button small{display:block;color:var(--muted);font-size:10px;font-weight:500}
+
+/* Keep the selected support keywords visibly pink across all palettes. */
+html[data-theme] .support .support-key,
+html[data-theme] .support-note-row .support-key {
+  color: var(--pink) !important;
+}
