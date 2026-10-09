@@ -5405,3 +5405,15 @@ html[data-theme="teal"] { --bg:#061312; --surface:#0b1c1b; --surface-2:#112927; 
 html[data-theme="teal-light"] { --bg:#f4faf9; --surface:#ffffff; --surface-2:#eaf4f2; --text:#1c2928; --muted:#647977; --pink:#168f89; --pink-soft:#48bcb4; --border:color-mix(in srgb,#168f89 24%,transparent); }
 html[data-theme="mocha"] { --bg:#140f0c; --surface:#201812; --surface-2:#2d2119; --text:#fff6ed; --muted:#c1ad9d; --pink:#c99b75; --pink-soft:#e5c0a0; --border:rgba(201,155,117,.23); }
 html[data-theme="mocha-light"] { --bg:#faf6f1; --surface:#ffffff; --surface-2:#f1e8df; --text:#2b211a; --muted:#78685c; --pink:#a96d42; --pink-soft:#c99b75; --border:color-mix(in srgb,#a96d42 24%,transparent); }
+
+
+/* FLEKI CONVERT project-page screenshot gallery */
+.project-screenshots-card{padding:clamp(20px,3vw,30px);border:1px solid var(--border);border-radius:22px;background:var(--surface);}
+.project-screenshots-heading h2{margin:8px 0 6px;font-size:clamp(21px,3vw,28px);letter-spacing:-.035em;}
+.project-screenshots-heading p{margin:0;color:var(--muted);font-size:13px;line-height:1.65;}
+.project-screenshots-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px;}
+.project-screenshot-placeholder{min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:18px;text-align:center;border:1px dashed color-mix(in srgb,var(--pink) 42%,var(--border));border-radius:16px;background:color-mix(in srgb,var(--pink) 5%,var(--surface-2));}
+.project-screenshot-placeholder>span{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:color-mix(in srgb,var(--pink) 15%,var(--surface));color:var(--pink);font-size:11px;font-weight:800;}
+.project-screenshot-placeholder strong{color:var(--text);font-size:13px;}
+.project-screenshot-placeholder small{color:var(--muted);font-size:10px;overflow-wrap:anywhere;}
+@media(max-width:700px){.project-screenshots-grid{grid-template-columns:1fr;gap:10px}.project-screenshot-placeholder{min-height:155px}}
