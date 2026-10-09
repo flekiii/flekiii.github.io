@@ -5198,3 +5198,49 @@ html[data-theme$="-light"] .project-status {
   color: color-mix(in srgb, var(--pink) 76%, #20212a) !important;
   background: color-mix(in srgb, var(--pink) 13%, #ffffff) !important;
 }
+
+
+/* Final theme consistency fixes: Support, Planned badges and hero actions follow the selected palette. */
+html[data-theme] .support .eyebrow,
+html[data-theme] .support h2 span,
+html[data-theme] .support strong,
+html[data-theme] .support-note-row,
+html[data-theme] .support-note-row span {
+  color: var(--pink) !important;
+}
+html[data-theme] .support p {
+  color: var(--muted) !important;
+}
+html[data-theme] .support small {
+  color: var(--muted) !important;
+}
+html[data-theme] .support .support-button,
+html[data-theme] .support .button,
+html[data-theme] .hero-actions > a.button.secondary,
+html[data-theme] .hero-actions > .hero-share-button {
+  background: color-mix(in srgb,var(--pink) 12%,var(--surface)) !important;
+  border-color: color-mix(in srgb,var(--pink) 52%,transparent) !important;
+  color: var(--pink) !important;
+  box-shadow: none !important;
+}
+html[data-theme] .support .support-button:hover,
+html[data-theme] .support .button:hover,
+html[data-theme] .hero-actions > a.button.secondary:hover,
+html[data-theme] .hero-actions > .hero-share-button:hover {
+  background: color-mix(in srgb,var(--pink) 22%,var(--surface)) !important;
+  border-color: var(--pink) !important;
+  color: var(--pink) !important;
+}
+html[data-theme] .project-card .status,
+html[data-theme] .project-card-footer .status,
+html[data-theme] .status[data-i18n="statusPlanned"] {
+  color: var(--pink) !important;
+  border-color: color-mix(in srgb,var(--pink) 35%,transparent) !important;
+  background: color-mix(in srgb,var(--pink) 8%,var(--surface)) !important;
+}
+html[data-theme$="-light"] .project-card .status,
+html[data-theme$="-light"] .project-card-footer .status,
+html[data-theme$="-light"] .status[data-i18n="statusPlanned"] {
+  color: var(--pink) !important;
+  background: color-mix(in srgb,var(--pink) 9%,white) !important;
+}
