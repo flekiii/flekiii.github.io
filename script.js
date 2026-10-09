@@ -1087,11 +1087,13 @@ const themeButton = document.getElementById("themeButton");
 const themeMenu = document.getElementById("themeMenu");
 const currentTheme = document.getElementById("currentTheme");
 const themeOptions = document.querySelectorAll(".theme-option");
-const themeNames = { pink:"Rose", blue:"Ocean", purple:"Lavender", green:"Emerald", amber:"Amber", light:"Light", crimson:"Crimson", ice:"Ice", sunset:"Sunset", mint:"Mint", violet:"Violet", graphite:"Graphite", cherry:"Cherry", solar:"Solar" };
+const baseThemeNames = { pink:"Rose", blue:"Ocean", purple:"Lavender", green:"Emerald", amber:"Amber", crimson:"Crimson", ice:"Ice", sunset:"Sunset", mint:"Mint", violet:"Violet", graphite:"Graphite", cherry:"Cherry", solar:"Solar" };
+const themeNames = Object.fromEntries(Object.entries(baseThemeNames).flatMap(([id,name]) => [[id, name+" Dark"],[id+"-light",name+" Light"]]));
+const allowedThemes = Object.keys(themeNames);
 
 function setTheme(theme) {
-  const allowed = ["pink", "blue", "purple", "green", "amber", "light", "crimson", "ice", "sunset", "mint", "violet", "graphite", "cherry", "solar"];
-  const selected = allowed.includes(theme) ? theme : "pink";
+  const legacy = theme === "light" ? "pink-light" : theme;
+  const selected = allowedThemes.includes(legacy) ? legacy : "pink";
   document.documentElement.dataset.theme = selected;
   currentTheme.textContent = themeNames[selected];
   themeOptions.forEach((option) => option.classList.toggle("active", option.dataset.theme === selected));
@@ -1106,7 +1108,7 @@ themeButton.addEventListener("click", (event) => {
   themeButton.setAttribute("aria-expanded", String(open));
   themeMenu.setAttribute("aria-hidden", String(!open));
 });
-themeOptions.forEach((option) => option.addEventListener("click", () => setTheme(option.dataset.theme)));
+themeOptions.forEach((option) => option.addEventListener("click", (event) => { event.stopPropagation(); setTheme(option.dataset.theme); }));
 document.addEventListener("click", (event) => {
   if (!themePicker.contains(event.target)) {
     themePicker.classList.remove("open");
