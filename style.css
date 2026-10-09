@@ -5158,3 +5158,43 @@ html[data-theme] .project-status-wrap .project-status { color:var(--pink); }
 html[data-theme] .project-meta-row span { border-color:var(--border); }
 html[data-theme] .project-bottom-actions .button.primary { background:var(--pink); border-color:var(--pink); color:#fff; }
 html[data-theme] .project-icon { border-color:var(--border); background:color-mix(in srgb,var(--pink) 8%,var(--surface)); }
+
+
+/* Theme consistency fixes: support text, planned badges and hero actions. */
+html[data-theme] .support-note-row,
+html[data-theme] .support-note-row span,
+html[data-theme] .support-note-row small,
+html[data-theme] .support-note-row .support-key {
+  color: var(--text) !important;
+}
+html[data-theme] .support-note-row .support-key {
+  font-weight: 600;
+}
+html[data-theme] .hero-actions .button.secondary,
+html[data-theme] .hero-actions .hero-share-button,
+html[data-theme] .hero-actions a[href="#support"] {
+  color: var(--pink) !important;
+  border-color: color-mix(in srgb, var(--pink) 42%, transparent) !important;
+  background: color-mix(in srgb, var(--pink) 9%, var(--surface)) !important;
+}
+html[data-theme] .hero-actions .button.secondary:hover,
+html[data-theme] .hero-actions .hero-share-button:hover,
+html[data-theme] .hero-actions a[href="#support"]:hover {
+  color: var(--text) !important;
+  border-color: var(--pink) !important;
+  background: color-mix(in srgb, var(--pink) 18%, var(--surface)) !important;
+}
+html[data-theme] .project-status,
+html[data-theme] .project-status-copy strong,
+html[data-theme] .project-status-wrap .project-status,
+html[data-theme] .project-meta-row .project-status {
+  color: var(--pink) !important;
+  border-color: color-mix(in srgb, var(--pink) 42%, transparent) !important;
+}
+html[data-theme] .project-status {
+  background: color-mix(in srgb, var(--pink) 10%, var(--surface)) !important;
+}
+html[data-theme$="-light"] .project-status {
+  color: color-mix(in srgb, var(--pink) 76%, #20212a) !important;
+  background: color-mix(in srgb, var(--pink) 13%, #ffffff) !important;
+}
