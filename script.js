@@ -977,6 +977,7 @@ loadGithubActivity();
   const backdrop = document.getElementById("siteShareBackdrop");
   const copyButton = document.getElementById("siteShareCopy");
   const status = document.getElementById("siteShareStatus");
+  const viberLink = document.getElementById("siteShareViber");
   const siteUrl = "https://flekiii.github.io/";
   const shareText = "My flekiii website: " + siteUrl;
 
@@ -1002,6 +1003,18 @@ loadGithubActivity();
     document.body.style.overflow = "hidden";
     closeButton.focus({ preventScroll: true });
   };
+
+  viberLink.addEventListener("click", async (event) => {
+    event.preventDefault();
+    const viberUrl = "viber://forward?text=" + encodeURIComponent(shareText);
+    try {
+      await navigator.clipboard.writeText(siteUrl);
+      status.textContent = "Website link copied. Opening Viber…";
+    } catch (error) {
+      status.textContent = "Opening Viber…";
+    }
+    window.location.href = viberUrl;
+  });
 
   openButton.addEventListener("click", open);
   closeButton.addEventListener("click", close);
