@@ -215,6 +215,124 @@ translations.uk.mapFinance = "Фінанси";
 translations.uk.mapServices = "СЕРВІСИ";
 translations.uk.mapOperating = "TRUE OS · ОДНА СІМ'Я";
 translations.uk.mapOperatingSub = "PC + Android + iPhone 11";
+
+translations.pl = {
+  ...translations.en,
+  navProjects:"Projekty", navSupport:"Wesprzyj", navSocial:"Media społecznościowe",
+  heroEyebrow:"NIEZALEŻNY DEWELOPER · 15 LAT", heroTitle:"Tworzę własny<br><span>cyfrowy świat.</span>",
+  heroText:"Tworzę oprogramowanie, platformy i narzędzia z naciskiem na wolność, personalizację i prywatność.",
+  heroSupport:"❤️ WESPRZYJ", projectsTitle:"Projekty", projectsMeta:"Rozwijający się zestaw usług, aplikacji, rozrywki i systemów.",
+  filterLabel:"FILTR", filterAll:"WSZYSTKIE", filterServices:"USŁUGI", filterApps:"APLIKACJE", filterEntertainment:"ROZRYWKA",
+  filterSystems:"SYSTEMY", filterReady:"GOTOWE DO POBRANIA", statusProgress:"W TRAKCIE", statusPlanned:"W PLANACH",
+  viewProject:"ZOBACZ PROJEKT", modalEyebrow:"PROJEKT", openProjectPage:"OTWÓRZ STRONĘ PROJEKTU",
+  githubTitle:"OSTATNIO NA GITHUB", githubLoading:"Ładowanie aktywności GitHub…", githubError:"Aktywność GitHub jest chwilowo niedostępna.",
+  githubButton:"OTWÓRZ GITHUB", socialTitle:"Media społecznościowe", resourcesTitle:"Pobieranie", downloadsTitle:"Pobieranie",
+  downloadsText:"Wybierz FLEKI CONVERT, a następnie swój system operacyjny.", officialDownload:"OFICJALNE PLIKI",
+  downloadProjectFlekiConvert:"Konwerter walut", downloadProjectFlekiConvertText:"Wybierz system, aby zobaczyć odpowiednią wersję.",
+  downloadBack:"← WRÓĆ", downloadBackToSystems:"← WSZYSTKIE SYSTEMY", downloadAndroid:"ANDROID", downloadIOS:"iOS",
+  downloadWindows:"WINDOWS", downloadLinux:"LINUX", downloadMacOS:"MACOS", downloadBuild:"POBIERZ WERSJĘ",
+  downloadBuildChoose:"Wybierz plik do pobrania.", downloadsChecking:"Sprawdzanie najnowszego wydania…",
+  downloadsReady:"Oficjalne wydanie załadowane.", downloadsUnavailable:"Wersja dla tego systemu nie jest jeszcze dostępna.",
+  goalsTitle:"Cele wsparcia", goalMacLabel:"NAJWAŻNIEJSZY CEL", goalMac:"Mac do tworzenia aplikacji Apple",
+  goalPhoneLabel:"OBECNY PRIORYTET", goalPhone:"Nowy telefon", goalServers:"Serwery", goalDomain:"Własna domena",
+  supportEyebrow:"TWORZĘ DALEJ", supportTitle:"Wesprzyj moją <span class=\"support-key\">pracę</span>.",
+  supportButton:"WESPRZYJ FLEKIII", supportNote:"Link do wsparcia otwiera skarbonkę Monobank.",
+  backTop:"Wróć na górę ↑", footerText:"Stworzone niezależnie.",
+  mapTitle:"EKOSYSTEM FLEKIII", mapSubtitle:"Projekty, platformy i infrastruktura połączone w jeden kierunek."
+};
+translations.de = {
+  ...translations.en,
+  navProjects:"Projekte", navSupport:"Unterstützen", navSocial:"Social Media",
+  heroEyebrow:"UNABHÄNGIGER ENTWICKLER · 15 JAHRE", heroTitle:"Ich erschaffe meine eigene<br><span>digitale Welt.</span>",
+  heroText:"Ich entwickle Software, Plattformen und Tools mit Fokus auf Freiheit, Anpassung und Datenschutz.",
+  heroSupport:"❤️ UNTERSTÜTZEN", projectsTitle:"Projekte", projectsMeta:"Eine wachsende Sammlung von Diensten, Apps, Unterhaltung und Systemen.",
+  filterLabel:"FILTER", filterAll:"ALLE", filterServices:"DIENSTE", filterApps:"APPS", filterEntertainment:"UNTERHALTUNG",
+  filterSystems:"SYSTEME", filterReady:"ZUM DOWNLOAD BEREIT", statusProgress:"IN ARBEIT", statusPlanned:"GEPLANT",
+  viewProject:"PROJEKT ANSEHEN", modalEyebrow:"PROJEKT", openProjectPage:"PROJEKTSEITE ÖFFNEN",
+  githubTitle:"NEUESTES AUF GITHUB", githubLoading:"GitHub-Aktivität wird geladen…", githubError:"GitHub-Aktivität ist vorübergehend nicht verfügbar.",
+  githubButton:"GITHUB ÖFFNEN", socialTitle:"Social Media", resourcesTitle:"Downloads", downloadsTitle:"Downloads",
+  downloadsText:"Wähle FLEKI CONVERT und anschließend dein Betriebssystem.", officialDownload:"OFFIZIELLE DOWNLOADS",
+  downloadProjectFlekiConvert:"Währungsrechner", downloadProjectFlekiConvertText:"Wähle dein Betriebssystem für den passenden Build.",
+  downloadBack:"← ZURÜCK", downloadBackToSystems:"← ALLE SYSTEME", downloadBuild:"BUILD HERUNTERLADEN",
+  downloadBuildChoose:"Wähle eine Datei zum Herunterladen.", downloadsChecking:"Neueste Version wird geprüft…",
+  downloadsReady:"Offizielle Version geladen.", downloadsUnavailable:"Für dieses System ist noch kein Build verfügbar.",
+  goalsTitle:"Unterstützungsziele", goalMacLabel:"HÖCHSTE PRIORITÄT", goalMac:"Mac für Apple-Entwicklung",
+  goalPhoneLabel:"AKTUELLE PRIORITÄT", goalPhone:"Neues Smartphone", goalServers:"Server", goalDomain:"Eigene Domain",
+  supportEyebrow:"WEITER ENTWICKELN", supportTitle:"Unterstütze meine <span class=\"support-key\">Arbeit</span>.",
+  supportButton:"FLEKIII UNTERSTÜTZEN", supportNote:"Der Support-Link öffnet das Monobank-Sparglas.",
+  backTop:"Nach oben ↑", footerText:"Unabhängig entwickelt.",
+  mapTitle:"DAS FLEKIII-ÖKOSYSTEM", mapSubtitle:"Projekte, Plattformen und Infrastruktur als gemeinsame Richtung."
+};
+translations.es = {
+  ...translations.en,
+  navProjects:"Proyectos", navSupport:"Apoyar", navSocial:"Redes sociales",
+  heroEyebrow:"DESARROLLADOR INDEPENDIENTE · 15 AÑOS", heroTitle:"Construyendo mi propio<br><span>mundo digital.</span>",
+  heroText:"Creo software, plataformas y herramientas centradas en la libertad, la personalización y la privacidad.",
+  heroSupport:"❤️ APOYAR", projectsTitle:"Proyectos", projectsMeta:"Un conjunto creciente de servicios, aplicaciones, entretenimiento y sistemas.",
+  filterLabel:"FILTRO", filterAll:"TODOS", filterServices:"SERVICIOS", filterApps:"APLICACIONES", filterEntertainment:"ENTRETENIMIENTO",
+  filterSystems:"SISTEMAS", filterReady:"LISTO PARA DESCARGAR", statusProgress:"EN DESARROLLO", statusPlanned:"PLANIFICADO",
+  viewProject:"VER PROYECTO", modalEyebrow:"PROYECTO", openProjectPage:"ABRIR PÁGINA DEL PROYECTO",
+  githubTitle:"LO ÚLTIMO EN GITHUB", githubLoading:"Cargando actividad de GitHub…", githubError:"La actividad de GitHub no está disponible temporalmente.",
+  githubButton:"ABRIR GITHUB", socialTitle:"Redes sociales", resourcesTitle:"Descargas", downloadsTitle:"Descargas",
+  downloadsText:"Elige FLEKI CONVERT y después tu sistema operativo.", officialDownload:"DESCARGAS OFICIALES",
+  downloadProjectFlekiConvert:"Conversor de divisas", downloadProjectFlekiConvertText:"Elige tu sistema operativo para ver la versión correspondiente.",
+  downloadBack:"← VOLVER", downloadBackToSystems:"← TODOS LOS SISTEMAS", downloadBuild:"DESCARGAR VERSIÓN",
+  downloadBuildChoose:"Elige un archivo para descargar.", downloadsChecking:"Comprobando la última versión…",
+  downloadsReady:"Versión oficial cargada.", downloadsUnavailable:"Todavía no hay una versión disponible para este sistema.",
+  goalsTitle:"Objetivos de apoyo", goalMacLabel:"MÁXIMA PRIORIDAD", goalMac:"Mac para desarrollar aplicaciones Apple",
+  goalPhoneLabel:"PRIORIDAD ACTUAL", goalPhone:"Teléfono nuevo", goalServers:"Servidores", goalDomain:"Dominio propio",
+  supportEyebrow:"SEGUIR CREANDO", supportTitle:"Apoya mi <span class=\"support-key\">trabajo</span>.",
+  supportButton:"APOYAR A FLEKIII", supportNote:"El enlace de apoyo abre la hucha de Monobank.",
+  backTop:"Volver arriba ↑", footerText:"Creado de forma independiente.",
+  mapTitle:"EL ECOSISTEMA FLEKIII", mapSubtitle:"Proyectos, plataformas e infraestructura unidos en una misma dirección."
+};
+translations.fr = {
+  ...translations.en,
+  navProjects:"Projets", navSupport:"Soutenir", navSocial:"Réseaux sociaux",
+  heroEyebrow:"DÉVELOPPEUR INDÉPENDANT · 15 ANS", heroTitle:"Je construis mon propre<br><span>monde numérique.</span>",
+  heroText:"Je crée des logiciels, des plateformes et des outils axés sur la liberté, la personnalisation et la confidentialité.",
+  heroSupport:"❤️ SOUTENIR", projectsTitle:"Projets", projectsMeta:"Un ensemble grandissant de services, d'applications, de divertissements et de systèmes.",
+  filterLabel:"FILTRE", filterAll:"TOUS", filterServices:"SERVICES", filterApps:"APPLICATIONS", filterEntertainment:"DIVERTISSEMENT",
+  filterSystems:"SYSTÈMES", filterReady:"PRÊT À TÉLÉCHARGER", statusProgress:"EN COURS", statusPlanned:"PRÉVU",
+  viewProject:"VOIR LE PROJET", modalEyebrow:"PROJET", openProjectPage:"OUVRIR LA PAGE DU PROJET",
+  githubTitle:"DERNIÈRES ACTIVITÉS SUR GITHUB", githubLoading:"Chargement de l'activité GitHub…", githubError:"L'activité GitHub est temporairement indisponible.",
+  githubButton:"OUVRIR GITHUB", socialTitle:"Réseaux sociaux", resourcesTitle:"Téléchargements", downloadsTitle:"Téléchargements",
+  downloadsText:"Choisis FLEKI CONVERT puis ton système d'exploitation.", officialDownload:"TÉLÉCHARGEMENTS OFFICIELS",
+  downloadProjectFlekiConvert:"Convertisseur de devises", downloadProjectFlekiConvertText:"Choisis ton système pour voir la version correspondante.",
+  downloadBack:"← RETOUR", downloadBackToSystems:"← TOUS LES SYSTÈMES", downloadBuild:"TÉLÉCHARGER",
+  downloadBuildChoose:"Choisis un fichier à télécharger.", downloadsChecking:"Vérification de la dernière version…",
+  downloadsReady:"Version officielle chargée.", downloadsUnavailable:"Aucune version n'est encore disponible pour ce système.",
+  goalsTitle:"Objectifs de soutien", goalMacLabel:"PRIORITÉ ABSOLUE", goalMac:"Mac pour développer des applications Apple",
+  goalPhoneLabel:"PRIORITÉ ACTUELLE", goalPhone:"Nouveau téléphone", goalServers:"Serveurs", goalDomain:"Domaine personnel",
+  supportEyebrow:"CONTINUER À CRÉER", supportTitle:"Soutiens mon <span class=\"support-key\">travail</span>.",
+  supportButton:"SOUTENIR FLEKIII", supportNote:"Le lien de soutien ouvre la cagnotte Monobank.",
+  backTop:"Retour en haut ↑", footerText:"Créé indépendamment.",
+  mapTitle:"L'ÉCOSYSTÈME FLEKIII", mapSubtitle:"Des projets, plateformes et infrastructures réunis dans une même direction."
+};
+translations.ja = {
+  ...translations.en,
+  navProjects:"プロジェクト", navSupport:"支援", navSocial:"ソーシャル",
+  heroEyebrow:"個人開発者 · 15歳", heroTitle:"自分だけの<br><span>デジタル世界を作る。</span>",
+  heroText:"自由、カスタマイズ、プライバシーを重視したソフトウェアやプラットフォーム、ツールを開発しています。",
+  heroSupport:"❤️ 支援する", projectsTitle:"プロジェクト", projectsMeta:"サービス、アプリ、エンターテインメント、システムを開発しています。",
+  filterLabel:"絞り込み", filterAll:"すべて", filterServices:"サービス", filterApps:"アプリ", filterEntertainment:"エンタメ",
+  filterSystems:"システム", filterReady:"ダウンロード可能", statusProgress:"開発中", statusPlanned:"予定",
+  viewProject:"詳細を見る", modalEyebrow:"プロジェクト", openProjectPage:"プロジェクトページを開く",
+  githubTitle:"GITHUBの最新情報", githubLoading:"GitHubの情報を読み込み中…", githubError:"GitHubの情報を一時的に取得できません。",
+  githubButton:"GITHUBを開く", socialTitle:"ソーシャル", resourcesTitle:"ダウンロード", downloadsTitle:"ダウンロード",
+  downloadsText:"FLEKI CONVERTを選び、次にOSを選択してください。", officialDownload:"公式ダウンロード",
+  downloadProjectFlekiConvert:"通貨コンバーター", downloadProjectFlekiConvertText:"OSを選ぶと対応するビルドが表示されます。",
+  downloadBack:"← 戻る", downloadBackToSystems:"← すべてのOS", downloadBuild:"ダウンロード",
+  downloadBuildChoose:"ダウンロードするファイルを選択してください。", downloadsChecking:"最新リリースを確認中…",
+  downloadsReady:"公式リリースを読み込みました。", downloadsUnavailable:"このOS向けのビルドはまだありません。",
+  goalsTitle:"支援目標", goalMacLabel:"最優先", goalMac:"Appleアプリ開発用のMac",
+  goalPhoneLabel:"現在の優先事項", goalPhone:"新しいスマートフォン", goalServers:"サーバー", goalDomain:"独自ドメイン",
+  supportEyebrow:"開発を続ける", supportTitle:"私の<span class=\"support-key\">活動</span>を支援してください。",
+  supportButton:"FLEKIIIを支援", supportNote:"支援リンクはMonobankの募金箱を開きます。",
+  backTop:"トップへ ↑", footerText:"個人で開発しています。",
+  mapTitle:"FLEKIII エコシステム", mapSubtitle:"プロジェクト、プラットフォーム、インフラをひとつにつなげます。"
+};
+
 const projectCatalog = {
   javascript: {
     icon: "📚",
@@ -920,7 +1038,7 @@ function setLanguage(language) {
     }
   });
 
-  currentLanguage.textContent = selected === "uk" ? "UA" : "EN";
+  currentLanguage.textContent = ({ en:"EN", uk:"UA", pl:"PL", de:"DE", es:"ES", fr:"FR", ja:"日本" })[selected] || "EN";
 
   languageOptions.forEach((option) => {
     option.classList.toggle("active", option.dataset.language === selected);
@@ -962,6 +1080,41 @@ document.addEventListener("keydown", (event) => {
       closeProject();
     }}
 });
+
+
+const themePicker = document.getElementById("themePicker");
+const themeButton = document.getElementById("themeButton");
+const themeMenu = document.getElementById("themeMenu");
+const currentTheme = document.getElementById("currentTheme");
+const themeOptions = document.querySelectorAll(".theme-option");
+const themeNames = { pink:"Rose", blue:"Ocean", purple:"Lavender", green:"Emerald", amber:"Amber", light:"Light" };
+
+function setTheme(theme) {
+  const allowed = ["pink", "blue", "purple", "green", "amber", "light"];
+  const selected = allowed.includes(theme) ? theme : "pink";
+  document.documentElement.dataset.theme = selected;
+  currentTheme.textContent = themeNames[selected];
+  themeOptions.forEach((option) => option.classList.toggle("active", option.dataset.theme === selected));
+  localStorage.setItem("flekiii-theme", selected);
+  themeButton.setAttribute("aria-expanded", "false");
+  themeMenu.setAttribute("aria-hidden", "true");
+  themePicker.classList.remove("open");
+}
+themeButton.addEventListener("click", (event) => {
+  event.stopPropagation();
+  const open = themePicker.classList.toggle("open");
+  themeButton.setAttribute("aria-expanded", String(open));
+  themeMenu.setAttribute("aria-hidden", String(!open));
+});
+themeOptions.forEach((option) => option.addEventListener("click", () => setTheme(option.dataset.theme)));
+document.addEventListener("click", (event) => {
+  if (!themePicker.contains(event.target)) {
+    themePicker.classList.remove("open");
+    themeButton.setAttribute("aria-expanded", "false");
+    themeMenu.setAttribute("aria-hidden", "true");
+  }
+});
+setTheme(localStorage.getItem("flekiii-theme") || "pink");
 
 const savedLanguage = localStorage.getItem("flekiii-language");
 setLanguage(savedLanguage || "en");
