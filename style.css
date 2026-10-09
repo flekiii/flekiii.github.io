@@ -3321,10 +3321,10 @@ footer p {
 
 /* Site share modal */
 .share-modal {
-  position: fixed;
-  z-index: 99999;
-  inset: 0;
-  display: grid;
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  inset: 0 !important;
+  display: none !important;
   place-items: center;
   padding: 20px;
   opacity: 0;
@@ -3334,9 +3334,10 @@ footer p {
 }
 
 .share-modal.open {
+  display: grid !important;
   opacity: 1;
   visibility: visible;
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
 
 .share-modal-backdrop {
