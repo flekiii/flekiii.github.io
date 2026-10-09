@@ -983,3 +983,64 @@ const savedLanguage = localStorage.getItem("flekiii-language");
 setLanguage(savedLanguage || "en");
 updateYear();
 loadGithubActivity();
+
+
+/* Fresh Share Site implementation — no dependencies on the old modal */
+(() => {
+  const layer = document.getElementById("siteShareLayer");
+  const openButton = document.getElementById("siteShareOpen");
+  const closeButton = document.getElementById("siteShareClose");
+  const backdrop = document.getElementById("siteShareBackdrop");
+  const copyButton = document.getElementById("siteShareCopy");
+  const status = document.getElementById("siteShareStatus");
+  const siteUrl = "https://flekiii.github.io/";
+  const shareText = "My flekiii website: " + siteUrl;
+
+  if (!layer || !openButton) return;
+
+  const close = () => {
+    layer.classList.remove("is-visible");
+    layer.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    openButton.focus({ preventScroll: true });
+  };
+
+  const open = () => {
+    document.getElementById("siteShareTelegram").href =
+      "https://t.me/share/url?url=" + encodeURIComponent(siteUrl) +
+      "&text=" + encodeURIComponent("My flekiii website");
+    document.getElementById("siteShareWhatsApp").href =
+      "https://wa.me/?text=" + encodeURIComponent(shareText);
+    document.getElementById("siteShareViber").href =
+      "viber://forward?text=" + encodeURIComponent(shareText);
+    layer.classList.add("is-visible");
+    layer.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    closeButton.focus({ preventScroll: true });
+  };
+
+  openButton.addEventListener("click", open);
+  closeButton.addEventListener("click", close);
+  backdrop.addEventListener("click", close);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && layer.classList.contains("is-visible")) close();
+  });
+
+  copyButton.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(siteUrl);
+      status.textContent = "Link copied!";
+    } catch (error) {
+      const field = document.createElement("textarea");
+      field.value = siteUrl;
+      field.readOnly = true;
+      field.style.position = "fixed";
+      field.style.left = "-9999px";
+      document.body.appendChild(field);
+      field.select();
+      const copied = document.execCommand("copy");
+      field.remove();
+      status.textContent = copied ? "Link copied!" : "Please copy: " + siteUrl;
+    }
+  });
+})();
