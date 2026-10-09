@@ -5244,3 +5244,14 @@ html[data-theme$="-light"] .status[data-i18n="statusPlanned"] {
   color: var(--pink) !important;
   background: color-mix(in srgb,var(--pink) 9%,white) !important;
 }
+
+/* Shared seven-language picker for all project pages. */
+.project-language{position:relative;display:inline-flex;align-items:center}
+.project-language-trigger{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);padding:8px 11px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}
+.project-language-trigger .language-chevron{color:var(--muted)}
+.project-language-menu{display:none;position:absolute;right:0;top:calc(100% + 8px);z-index:1000;min-width:190px;padding:6px;border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:0 16px 42px rgba(0,0,0,.3)}
+.project-language-menu.open{display:grid;gap:3px}
+.project-language-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;border-radius:9px;background:transparent;color:var(--text);text-align:left;font:inherit;font-size:12px;cursor:pointer}
+.project-language-menu button:hover,.project-language-menu button.active{background:color-mix(in srgb,var(--pink) 12%,var(--surface-2));color:var(--pink)}
+.project-language-menu button .project-language-name{flex:1}
+.project-language-menu button small{display:block;color:var(--muted);font-size:10px;font-weight:500}
