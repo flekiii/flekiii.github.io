@@ -1097,7 +1097,7 @@ const themeButton = document.getElementById("themeButton");
 const themeMenu = document.getElementById("themeMenu");
 const currentTheme = document.getElementById("currentTheme");
 const themeOptions = document.querySelectorAll(".theme-option");
-const baseThemeNames = { pink:"Rose", blue:"Ocean", purple:"Lavender", green:"Emerald", amber:"Amber", crimson:"Crimson", ice:"Ice", sunset:"Sunset", mint:"Mint", violet:"Violet", graphite:"Graphite", cherry:"Cherry", solar:"Solar" };
+const baseThemeNames = { pink:"Rose", blue:"Ocean", purple:"Lavender", green:"Emerald", amber:"Amber", crimson:"Crimson", ice:"Ice", sunset:"Sunset", mint:"Mint", violet:"Violet", graphite:"Graphite", cherry:"Cherry", solar:"Solar", teal:"Teal", mocha:"Mocha" };
 const themeNames = Object.fromEntries(Object.entries(baseThemeNames).flatMap(([id,name]) => [[id, name+" Dark"],[id+"-light",name+" Light"]]));
 const allowedThemes = Object.keys(themeNames);
 
