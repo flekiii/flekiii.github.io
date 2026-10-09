@@ -5350,14 +5350,27 @@ html[data-theme] .project-language-menu button.active {
 #goals .goal-card:nth-child(2) { border-color: color-mix(in srgb, var(--pink) 17%, transparent); }
 @media (max-width: 700px) {
   #goals .section-heading { margin-bottom: 18px; }
-  #goals .goals-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
-  #goals .goal-card, #goals .goal-card-featured {
-    grid-column: 1 / -1; min-height: 0; padding: 21px 19px; border-radius: 16px;
+  #goals .goals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
-  #goals .goal-card-featured { padding: 24px 20px; }
+  #goals .goal-card {
+    grid-column: auto;
+    min-height: 0;
+    padding: 15px 13px;
+    border-radius: 14px;
+  }
+  #goals .goal-card-featured {
+    grid-column: 1 / -1;
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
   #goals .goal-card-featured::before { top: 22px; bottom: 22px; }
   #goals .goal-card-featured strong { max-width: 100%; font-size: clamp(25px, 7vw, 32px); }
-  #goals .goal-card strong { font-size: 19px; }
-  #goals .goal-card p, #goals .goal-card-featured p { font-size: 13px; line-height: 1.68; }
+  #goals .goal-card-top { margin-bottom: 9px; }
+  #goals .goal-card-label { font-size: 8px; padding: 4px 6px; letter-spacing: .04em; }
+  #goals .goal-card strong { font-size: 16px; line-height: 1.25; }
+  #goals .goal-card p { margin-top: 8px; font-size: 11px; line-height: 1.55; }
+  #goals .goal-card-featured p { font-size: 13px; line-height: 1.68; }
 }
 @media (prefers-reduced-motion: reduce) { #goals .goal-card { transition: none; } }
