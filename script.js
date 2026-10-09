@@ -30,6 +30,7 @@ const translations = {
     filterReady: "READY TO DOWNLOAD",
     statusProgress: "IN DEVELOPMENT",
     statusPlanned: "PLANNED",
+    statusDeferred: "DEFERRED UNTIL MAC PURCHASE",
     viewProject: "VIEW PROJECT",
     modalEyebrow: "PROJECT",
     openProjectPage: "OPEN PROJECT PAGE",
@@ -129,6 +130,7 @@ const translations = {
     filterReady: "ГОТОВІ ДО ЗАВАНТАЖЕННЯ",
     statusProgress: "У РОЗРОБЦІ",
     statusPlanned: "У ПЛАНАХ",
+    statusDeferred: "ВІДКЛАДЕНО ДО ПОКУПКИ MAC",
     viewProject: "ПЕРЕГЛЯНУТИ",
     modalEyebrow: "ПРОЄКТ",
     openProjectPage: "ВІДКРИТИ СТОРІНКУ ПРОЄКТУ",
@@ -233,7 +235,7 @@ translations.pl = {
   heroText:"Tworzę oprogramowanie, platformy i narzędzia z naciskiem na wolność, personalizację i prywatność.",
   heroSupport:"❤️ WESPRZYJ", projectsTitle:"Projekty", projectsMeta:"Rozwijający się zestaw usług, aplikacji, rozrywki i systemów.",
   filterLabel:"FILTR", filterAll:"WSZYSTKIE", filterServices:"USŁUGI", filterApps:"APLIKACJE", filterEntertainment:"ROZRYWKA",
-  filterSystems:"SYSTEMY", filterReady:"GOTOWE DO POBRANIA", statusProgress:"W TRAKCIE ROZWOJU", statusPlanned:"W PLANACH",
+  filterSystems:"SYSTEMY", filterReady:"GOTOWE DO POBRANIA", statusProgress:"W TRAKCIE ROZWOJU", statusPlanned:"W PLANACH", statusDeferred:"ODŁOŻONE DO ZAKUPU MAC",
   viewProject:"ZOBACZ PROJEKT", modalEyebrow:"PROJEKT", openProjectPage:"OTWÓRZ STRONĘ PROJEKTU",
   githubTitle:"OSTATNIO NA GITHUB", githubLoading:"Ładowanie aktywności GitHub…", githubError:"Aktywność GitHub jest chwilowo niedostępna.",
   githubButton:"OTWÓRZ GITHUB", socialTitle:"Media społecznościowe", resourcesTitle:"Pobieranie", downloadsTitle:"Pobieranie",
@@ -257,7 +259,7 @@ translations.de = {
   heroText:"Ich entwickle Software, Plattformen und Tools mit Fokus auf Freiheit, Anpassung und Datenschutz.",
   heroSupport:"❤️ UNTERSTÜTZEN", projectsTitle:"Projekte", projectsMeta:"Eine wachsende Sammlung von Diensten, Apps, Unterhaltung und Systemen.",
   filterLabel:"FILTER", filterAll:"ALLE", filterServices:"DIENSTE", filterApps:"APPS", filterEntertainment:"UNTERHALTUNG",
-  filterSystems:"SYSTEME", filterReady:"ZUM DOWNLOAD BEREIT", statusProgress:"IN ENTWICKLUNG", statusPlanned:"GEPLANT",
+  filterSystems:"SYSTEME", filterReady:"ZUM DOWNLOAD BEREIT", statusProgress:"IN ENTWICKLUNG", statusPlanned:"GEPLANT", statusDeferred:"BIS ZUM MAC-KAUF AUFGESCHOBEN",
   viewProject:"PROJEKT ANSEHEN", modalEyebrow:"PROJEKT", openProjectPage:"PROJEKTSEITE ÖFFNEN",
   githubTitle:"NEUESTES AUF GITHUB", githubLoading:"GitHub-Aktivität wird geladen…", githubError:"GitHub-Aktivität ist vorübergehend nicht verfügbar.",
   githubButton:"GITHUB ÖFFNEN", socialTitle:"Social Media", resourcesTitle:"Downloads", downloadsTitle:"Downloads",
@@ -280,7 +282,7 @@ translations.es = {
   heroText:"Creo software, plataformas y herramientas centradas en la libertad, la personalización y la privacidad.",
   heroSupport:"❤️ APOYAR", projectsTitle:"Proyectos", projectsMeta:"Un conjunto creciente de servicios, aplicaciones, entretenimiento y sistemas.",
   filterLabel:"FILTRO", filterAll:"TODOS", filterServices:"SERVICIOS", filterApps:"APLICACIONES", filterEntertainment:"ENTRETENIMIENTO",
-  filterSystems:"SISTEMAS", filterReady:"LISTO PARA DESCARGAR", statusProgress:"EN DESARROLLO", statusPlanned:"PLANIFICADO",
+  filterSystems:"SISTEMAS", filterReady:"LISTO PARA DESCARGAR", statusProgress:"EN DESARROLLO", statusPlanned:"PLANIFICADO", statusDeferred:"APLAZADO HASTA COMPRAR UN MAC",
   viewProject:"VER PROYECTO", modalEyebrow:"PROYECTO", openProjectPage:"ABRIR PÁGINA DEL PROYECTO",
   githubTitle:"LO ÚLTIMO EN GITHUB", githubLoading:"Cargando actividad de GitHub…", githubError:"La actividad de GitHub no está disponible temporalmente.",
   githubButton:"ABRIR GITHUB", socialTitle:"Redes sociales", resourcesTitle:"Descargas", downloadsTitle:"Descargas",
@@ -303,7 +305,7 @@ translations.fr = {
   heroText:"Je crée des logiciels, des plateformes et des outils axés sur la liberté, la personnalisation et la confidentialité.",
   heroSupport:"❤️ SOUTENIR", projectsTitle:"Projets", projectsMeta:"Un ensemble grandissant de services, d'applications, de divertissements et de systèmes.",
   filterLabel:"FILTRE", filterAll:"TOUS", filterServices:"SERVICES", filterApps:"APPLICATIONS", filterEntertainment:"DIVERTISSEMENT",
-  filterSystems:"SYSTÈMES", filterReady:"PRÊT À TÉLÉCHARGER", statusProgress:"EN DÉVELOPPEMENT", statusPlanned:"PRÉVU",
+  filterSystems:"SYSTÈMES", filterReady:"PRÊT À TÉLÉCHARGER", statusProgress:"EN DÉVELOPPEMENT", statusPlanned:"PRÉVU", statusDeferred:"REPORTÉ JUSQU’À L’ACHAT DU MAC",
   viewProject:"VOIR LE PROJET", modalEyebrow:"PROJET", openProjectPage:"OUVRIR LA PAGE DU PROJET",
   githubTitle:"DERNIÈRES ACTIVITÉS SUR GITHUB", githubLoading:"Chargement de l'activité GitHub…", githubError:"L'activité GitHub est temporairement indisponible.",
   githubButton:"OUVRIR GITHUB", socialTitle:"Réseaux sociaux", resourcesTitle:"Téléchargements", downloadsTitle:"Téléchargements",
@@ -326,7 +328,7 @@ translations.ja = {
   heroText:"自由、カスタマイズ、プライバシーを重視したソフトウェアやプラットフォーム、ツールを開発しています。",
   heroSupport:"❤️ 支援する", projectsTitle:"プロジェクト", projectsMeta:"サービス、アプリ、エンターテインメント、システムを開発しています。",
   filterLabel:"絞り込み", filterAll:"すべて", filterServices:"サービス", filterApps:"アプリ", filterEntertainment:"エンタメ",
-  filterSystems:"システム", filterReady:"ダウンロード可能", statusProgress:"開発中", statusPlanned:"予定",
+  filterSystems:"システム", filterReady:"ダウンロード可能", statusProgress:"開発中", statusPlanned:"予定", statusDeferred:"Mac購入まで延期",
   viewProject:"詳細を見る", modalEyebrow:"プロジェクト", openProjectPage:"プロジェクトページを開く",
   githubTitle:"GITHUBの最新情報", githubLoading:"GitHubの情報を読み込み中…", githubError:"GitHubの情報を一時的に取得できません。",
   githubButton:"GITHUBを開く", socialTitle:"ソーシャル", resourcesTitle:"ダウンロード", downloadsTitle:"ダウンロード",
@@ -426,7 +428,7 @@ const projectCatalog = {
   "fleki-convert": {
     icon: "↔",
     name: "FLEKI CONVERT",
-    status: "IN PROGRESS",
+    status: "DEFERRED UNTIL MAC PURCHASE",
     page: "https://flekiii.github.io/fleki-convert/?v=1",
     en: "A fast, simple and modern currency converter. Official builds are downloaded only through the flekiii website.",
     uk: "Швидкий, простий та сучасний конвертер валют. Офіційні збірки завантажуються тільки через сайт flekiii."
@@ -984,9 +986,9 @@ function renderModal(projectId) {
   projectModalTitle.textContent = project.icon + " " + project.name;
   projectModalText.textContent = project[language];
   renderProjectMedia(projectId);
-  projectModalStatus.textContent = language === "uk"
-    ? (project.status === "IN PROGRESS" ? "В ПРОЦЕСІ" : "У ПЛАНАХ")
-    : project.status;
+  projectModalStatus.textContent = project.status === "DEFERRED UNTIL MAC PURCHASE"
+    ? ({en:"DEFERRED UNTIL MAC PURCHASE",uk:"ВІДКЛАДЕНО ДО ПОКУПКИ MAC",pl:"ODŁOŻONE DO ZAKUPU MAC",de:"BIS ZUM MAC-KAUF AUFGESCHOBEN",es:"APLAZADO HASTA COMPRAR UN MAC",fr:"REPORTÉ JUSQU’À L’ACHAT DU MAC",ja:"Mac購入まで延期"}[language] || project.status)
+    : (language === "uk" ? (project.status === "IN PROGRESS" ? "В ПРОЦЕСІ" : "У ПЛАНАХ") : project.status);
 
   if (project.page) {
     projectModalLink.hidden = false;
