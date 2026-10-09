@@ -429,7 +429,7 @@ const projectCatalog = {
     icon: "↔",
     name: "FLEKI CONVERT",
     status: "DEFERRED UNTIL MAC PURCHASE",
-    page: "https://flekiii.github.io/fleki-convert/?v=1",
+    page: "https://flekiii.github.io/fleki-convert/?v=2",
     en: "A fast, simple and modern currency converter. Official builds are downloaded only through the flekiii website.",
     uk: "Швидкий, простий та сучасний конвертер валют. Офіційні збірки завантажуються тільки через сайт flekiii."
   },
