@@ -4443,3 +4443,18 @@ footer p {
 }
 .hero-share-button:hover { background: rgba(255,111,174,.22); border-color: #ff6fae; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+
+
+/* Brighter pink Support action in the hero */
+.hero-actions > a.button.secondary {
+  background: linear-gradient(135deg, rgba(255,111,174,.24), rgba(255,155,199,.13));
+  border-color: rgba(255,155,199,.72);
+  color: #ffd0e4;
+  box-shadow: 0 0 22px rgba(255,111,174,.10);
+}
+.hero-actions > a.button.secondary:hover {
+  background: linear-gradient(135deg, rgba(255,111,174,.36), rgba(255,155,199,.22));
+  border-color: #ff9bc7;
+  color: #fff0f7;
+  box-shadow: 0 0 28px rgba(255,111,174,.20);
+}
