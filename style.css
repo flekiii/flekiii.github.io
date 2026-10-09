@@ -4421,3 +4421,25 @@ footer p {
 @media (max-width: 760px) {
   .nav-share-button { margin: 8px 0 0; width: 100%; min-height: 42px; }
 }
+
+
+/* Place Share Site beside Support in the hero actions */
+.hero-share-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255,111,174,.55);
+  border-radius: 9px;
+  background: rgba(255,111,174,.12);
+  color: #ff9bc7;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hero-share-button:hover { background: rgba(255,111,174,.22); border-color: #ff6fae; }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
