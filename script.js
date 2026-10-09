@@ -344,7 +344,7 @@ const projectCatalog = {
   vpn: {
     icon: "🔐",
     name: "VPN",
-    status: "PLANNED",
+    status: "IN PROGRESS",
     page: "https://flekiii.github.io/vpn/?v=3",
     en: "A private VPN project focused on secure and flexible network access.",
     uk: "Власний VPN-проєкт, орієнтований на безпечний та гнучкий доступ до мережі."
