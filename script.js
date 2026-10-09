@@ -354,11 +354,11 @@ const projectCatalog = {
 };
 
 const downloadBuilds = {
-  android: { label: "ANDROID", patterns: [/\\.apk$/i], description: "Android APK" },
-  ios: { label: "iOS", patterns: [/\\.ipa$/i], description: "iOS IPA" },
-  windows: { label: "WINDOWS", patterns: [/\\.exe$/i, /\\.msi$/i, /\\.msix$/i, /\\.zip$/i], description: "Windows build" },
-  linux: { label: "LINUX", patterns: [/\\.AppImage$/i, /\\.deb$/i, /\\.pkg\\.tar\\.zst$/i, /\\.rpm$/i], description: "Linux build" },
-  macos: { label: "MACOS", patterns: [/\\.dmg$/i, /\\.pkg$/i, /\\.zip$/i], description: "macOS build" }
+  android: { label: "ANDROID", patterns: [/\.apk$/i], description: "Android APK" },
+  ios: { label: "iOS", patterns: [/\.ipa$/i], description: "iOS IPA" },
+  windows: { label: "WINDOWS", patterns: [/\.exe$/i, /\.msi$/i, /\.msix$/i, /\.zip$/i], description: "Windows build" },
+  linux: { label: "LINUX", patterns: [/\.AppImage$/i, /\.deb$/i, /\.pkg\.tar\.zst$/i, /\.rpm$/i], description: "Linux build" },
+  macos: { label: "MACOS", patterns: [/\.dmg$/i, /\.pkg$/i, /\.zip$/i], description: "macOS build" }
 };
 
 let flekiConvertRelease = null;
