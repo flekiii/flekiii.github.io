@@ -5374,3 +5374,34 @@ html[data-theme] .project-language-menu button.active {
   #goals .goal-card-featured p { font-size: 13px; line-height: 1.68; }
 }
 @media (prefers-reduced-motion: reduce) { #goals .goal-card { transition: none; } }
+
+
+/* Share menu follows the active palette instead of hard-coded pink colors. */
+html[data-theme] #siteSharePanel {
+  background: var(--surface) !important;
+  color: var(--text);
+  border-color: var(--border) !important;
+}
+html[data-theme] #siteSharePanel h2 { color: var(--text) !important; }
+html[data-theme] #siteSharePanel > p { color: var(--muted) !important; }
+html[data-theme] #siteShareClose { color: var(--pink) !important; }
+html[data-theme] .site-share-choice {
+  color: var(--text) !important;
+  background: var(--surface-2) !important;
+  border-color: var(--border) !important;
+}
+html[data-theme] .site-share-choice:hover,
+html[data-theme] .site-share-choice:focus-visible {
+  color: var(--pink) !important;
+  border-color: var(--pink) !important;
+  background: color-mix(in srgb, var(--pink) 10%, var(--surface-2)) !important;
+}
+html[data-theme] #siteShareStatus { color: var(--pink) !important; }
+
+/* Two additional palettes: Teal and Mocha, each with dark and light modes. */
+.teal-swatch { --swatch: #48d7cf; }
+.mocha-swatch { --swatch: #c99b75; }
+html[data-theme="teal"] { --bg:#061312; --surface:#0b1c1b; --surface-2:#112927; --text:#effffc; --muted:#9abbb7; --pink:#48d7cf; --pink-soft:#9af0e9; --border:rgba(72,215,207,.22); }
+html[data-theme="teal-light"] { --bg:#f4faf9; --surface:#ffffff; --surface-2:#eaf4f2; --text:#1c2928; --muted:#647977; --pink:#168f89; --pink-soft:#48bcb4; --border:color-mix(in srgb,#168f89 24%,transparent); }
+html[data-theme="mocha"] { --bg:#140f0c; --surface:#201812; --surface-2:#2d2119; --text:#fff6ed; --muted:#c1ad9d; --pink:#c99b75; --pink-soft:#e5c0a0; --border:rgba(201,155,117,.23); }
+html[data-theme="mocha-light"] { --bg:#faf6f1; --surface:#ffffff; --surface-2:#f1e8df; --text:#2b211a; --muted:#78685c; --pink:#a96d42; --pink-soft:#c99b75; --border:color-mix(in srgb,#a96d42 24%,transparent); }
