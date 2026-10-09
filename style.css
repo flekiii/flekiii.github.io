@@ -4328,3 +4328,71 @@ footer p {
     border-radius: 14px !important;
   }
 }
+
+
+/* Fresh Share Site implementation — independent of the removed modal */
+#siteShareLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#siteShareLayer.is-visible { display: flex; }
+#siteShareBackdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgba(0,0,0,.78);
+  backdrop-filter: blur(10px);
+  cursor: default;
+}
+#siteSharePanel {
+  position: relative;
+  z-index: 1;
+  width: min(500px, 100%);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  padding: 32px;
+  border: 1px solid rgba(255,111,174,.28);
+  border-radius: 22px;
+  background: #0d0d0d;
+  box-shadow: 0 24px 90px rgba(0,0,0,.65);
+}
+#siteSharePanel h2 { margin: 12px 0; color: #fff; font-size: clamp(28px, 5vw, 38px); }
+#siteSharePanel > p { margin: 0 0 18px; color: #aaa; }
+#siteShareClose {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: 0;
+  background: transparent;
+  color: #ff9bc7;
+  font-size: 30px;
+  cursor: pointer;
+}
+.site-share-choice {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 10px;
+  padding: 12px 15px;
+  border: 1px solid rgba(255,111,174,.22);
+  border-radius: 12px;
+  background: #141014;
+  color: #ff9bc7;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.site-share-choice:hover { border-color: #ff6fae; background: #21121b; }
+#siteShareStatus { min-height: 18px; margin: 12px 0 0; color: #ff9bc7; font-size: 13px; }
+@media (max-width: 600px) {
+  #siteSharePanel { padding: 28px 18px 18px; border-radius: 18px; }
+}
