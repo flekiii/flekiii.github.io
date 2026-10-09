@@ -3331,7 +3331,6 @@ footer p {
   visibility: hidden;
   pointer-events: none;
   transition: opacity .2s ease, visibility .2s ease;
-  z-index: 110;
 }
 
 .share-modal.open {
