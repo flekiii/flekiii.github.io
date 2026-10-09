@@ -74,6 +74,7 @@
       </p>
       <div class="hero-actions">
         <a class="button secondary" href="#support" data-i18n="heroSupport">❤️ SUPPORT</a>
+         <button class="button secondary" type="button" id="siteShareOpen">SHARE SITE</button>
       </div>
     </section>
 
@@ -371,6 +372,22 @@
     </div>
   </div>
 
-  <script src="script.js?v=58"></script>
+
+  <div id="siteShareLayer" aria-hidden="true">
+    <button type="button" id="siteShareBackdrop" aria-label="Close sharing menu"></button>
+    <section id="siteSharePanel" role="dialog" aria-modal="true" aria-labelledby="siteShareTitle">
+      <button type="button" id="siteShareClose" aria-label="Close">×</button>
+      <span class="eyebrow">SHARE</span>
+      <h2 id="siteShareTitle">Share my site.</h2>
+      <p>Choose how you want to share flekiii.</p>
+      <button type="button" class="site-share-choice" id="siteShareCopy">Copy website link</button>
+      <a class="site-share-choice" id="siteShareTelegram" href="#" target="_blank" rel="noopener noreferrer">Share with Telegram ↗</a>
+      <a class="site-share-choice" id="siteShareWhatsApp" href="#" target="_blank" rel="noopener noreferrer">Share with WhatsApp ↗</a>
+      <a class="site-share-choice" id="siteShareViber" href="#">Share with Viber ↗</a>
+      <p id="siteShareStatus" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <script src="script.js?v=59"></script>
 </body>
 </html>
