@@ -195,10 +195,10 @@
           <div class="project-card-footer"><span class="status" data-i18n="statusDeferred">DEFERRED UNTIL MAC PURCHASE</span><button class="project-view" type="button" data-project="fleki-convert" data-i18n="viewProject">VIEW PROJECT</button></div>
         </article>
 
-        <article class="project-card" data-category="apps">
+        <article class="project-card" data-category="apps ready-download">
           <div class="project-card-top"><span class="project-mark mark-orbit" aria-hidden="true"></span></div>
           <div><h3>Fleki Orbit</h3><p data-i18n="projectOrbitDesc">A custom full-screen XFCE app launcher with photo or video backgrounds, app categories, search and customizable accent colors.</p></div>
-          <div class="project-card-footer"><span class="status" data-i18n="statusProgress">IN DEVELOPMENT</span><button class="project-view" type="button" data-project="orbit" data-i18n="viewProject">VIEW PROJECT</button></div>
+          <div class="project-card-footer"><span class="status" data-i18n="statusOrbitRelease">LINUX RELEASE PREPARING</span><button class="project-view" type="button" data-project="orbit" data-i18n="viewProject">VIEW PROJECT</button></div>
         </article>
 
         <article class="project-card" data-category="entertainment">
@@ -275,15 +275,23 @@
                 </span>
                 <span class="download-project-arrow" aria-hidden="true">→</span>
               </button>
+              <button class="download-project-button" type="button" data-download-project="orbit" aria-controls="downloadProjectView" aria-expanded="false">
+                <span class="download-project-mark mark-orbit" aria-hidden="true">◉</span>
+                <span class="download-project-copy">
+                  <strong>Fleki Orbit</strong>
+                  <small data-i18n="downloadProjectOrbit">Linux desktop launcher</small>
+                </span>
+                <span class="download-project-arrow" aria-hidden="true">→</span>
+              </button>
             </div>
             <div class="download-project-view" id="downloadProjectView" hidden aria-hidden="true">
               <div class="download-project-view-head">
                 <div>
                   <button class="download-back-button" id="downloadProjectBack" type="button" data-i18n="downloadBack">← BACK</button>
-                  <h3>FLEKI CONVERT</h3>
-                  <p data-i18n="downloadProjectFlekiConvertText">Choose your operating system to see its specific build.</p>
+                  <h3 id="downloadProjectTitle">FLEKI CONVERT</h3>
+                  <p id="downloadProjectDescription" data-i18n="downloadProjectFlekiConvertText">Choose an operating system to see its specific build.</p>
                 </div>
-                <span class="download-project-version" id="flekiConvertDownloadVersion">LATEST</span>
+                <span class="download-project-version" id="downloadProjectVersion">LATEST</span>
               </div>
               <div class="download-os-grid" id="downloadOsGrid">
                 <button class="download-os-button" type="button" data-download-os="android">
@@ -314,7 +322,7 @@
                   <p data-i18n="downloadBuildChoose">Choose a build to download.</p>
                 </div>
                 <div class="download-build-list" id="downloadBuildList"></div>
-                <p class="download-status" id="flekiConvertDownloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
+                <p class="download-status" id="downloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
               </div>
             </div>
           </div>
@@ -420,6 +428,6 @@
     </section>
   </div>
 
-  <script src="script.js?v=76"></script>
+  <script src="script.js?v=77"></script>
 </body>
 </html>
