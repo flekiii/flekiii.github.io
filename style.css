@@ -2559,6 +2559,28 @@ footer p {
   box-shadow: 0 0 12px color-mix(in srgb,var(--pink) 42%,transparent);
 }
 
+
+.mark-orbit::before {
+  left: 9px;
+  top: 9px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--pink);
+  border-radius: 50%;
+  box-shadow: 0 0 12px color-mix(in srgb,var(--pink) 20%,transparent);
+}
+
+.mark-orbit::after {
+  left: 5px;
+  top: 13px;
+  width: 28px;
+  height: 11px;
+  border: 1.5px solid var(--pink);
+  border-radius: 50%;
+  transform: rotate(-32deg);
+  box-shadow: 0 0 10px color-mix(in srgb,var(--pink) 18%,transparent);
+}
+
 .mark-chat::before {
   width: 22px;
   height: 16px;
