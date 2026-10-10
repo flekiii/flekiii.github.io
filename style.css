@@ -5417,3 +5417,10 @@ html[data-theme="mocha-light"] { --bg:#faf6f1; --surface:#ffffff; --surface-2:#f
 .project-screenshot-placeholder strong{color:var(--text);font-size:13px;}
 .project-screenshot-placeholder small{color:var(--muted);font-size:10px;overflow-wrap:anywhere;}
 @media(max-width:700px){.project-screenshots-grid{grid-template-columns:1fr;gap:10px}.project-screenshot-placeholder{min-height:155px}}
+
+/* FLEKI CONVERT: auto-loaded project screenshots */
+.project-screenshots-two{grid-template-columns:repeat(2,minmax(0,1fr));}
+.project-screenshot-image{display:flex;min-height:0;padding:8px;border-style:solid;overflow:hidden;}
+.project-screenshot-image[hidden]{display:none!important;}
+.project-screenshot-image img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain;border-radius:10px;}
+@media(max-width:700px){.project-screenshots-two{grid-template-columns:1fr;}.project-screenshot-image img{max-height:none;}}
