@@ -345,7 +345,24 @@ translations.ja = {
   mapTitle:"FLEKIII エコシステム", mapSubtitle:"プロジェクト、プラットフォーム、インフラをひとつにつなげます。"
 };
 
+
+translations.en.projectOrbitDesc = "A custom full-screen XFCE app launcher with photo or video backgrounds, app categories, search and customizable accent colors.";
+translations.uk.projectOrbitDesc = "Власне повноекранне меню запуску програм для XFCE з фото- або відеофоном, категоріями, пошуком і налаштуванням акцентного кольору.";
+translations.pl.projectOrbitDesc = "Własne pełnoekranowe menu aplikacji dla XFCE z tłem ze zdjęcia lub wideo, kategoriami, wyszukiwaniem i konfigurowalnym kolorem akcentu.";
+translations.de.projectOrbitDesc = "Ein eigener Vollbild-App-Launcher für XFCE mit Foto- oder Videohintergrund, Kategorien, Suche und anpassbarer Akzentfarbe.";
+translations.es.projectOrbitDesc = "Un lanzador de aplicaciones a pantalla completa para XFCE con fondo de foto o vídeo, categorías, búsqueda y color de acento configurable.";
+translations.fr.projectOrbitDesc = "Un lanceur d’applications plein écran pour XFCE avec fond photo ou vidéo, catégories, recherche et couleur d’accent personnalisable.";
+translations.ja.projectOrbitDesc = "写真や動画の背景、カテゴリ、検索、アクセントカラーのカスタマイズに対応したXFCE向けフルスクリーンアプリランチャー.";
+
 const projectCatalog = {
+  orbit: {
+    icon: "🪟",
+    name: "Fleki Orbit",
+    status: "IN PROGRESS",
+    page: "https://flekiii.github.io/orbit/?v=1",
+    en: "A custom full-screen app launcher for XFCE with categorized applications, search, photo or video backgrounds and configurable accent colors.",
+    uk: "Власне повноекранне меню запуску програм для XFCE з категоріями, пошуком, фото- або відеофоном і налаштуванням акцентного кольору."
+  },
   javascript: {
     icon: "📚",
     name: "JavaScript",
