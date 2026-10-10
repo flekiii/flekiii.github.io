@@ -346,6 +346,18 @@ translations.ja = {
 };
 
 
+// XONI Mail is now available at its live service URL.
+const xoniMailCopy = {
+  en: { projectEmailDesc: "Private email with signup that does not require your real name, phone number or address. Use a secret recovery phrase to protect access, with XONI ID planned as a shared identity across future apps. Messages are currently for XONI Mail users.", statusReady: "AVAILABLE NOW", openXoniMail: "OPEN XONI MAIL ↗" },
+  uk: { projectEmailDesc: "Приватна пошта без обов’язкових справжнього імені, номера телефону чи адреси. Для відновлення доступу використовується секретна фраза; у майбутньому XONI ID має стати спільним входом до наших застосунків. Наразі листування доступне між користувачами XONI Mail.", statusReady: "ВЖЕ ДОСТУПНИЙ", openXoniMail: "ВІДКРИТИ XONI MAIL ↗" },
+  pl: { projectEmailDesc: "Prywatna poczta, której rejestracja nie wymaga prawdziwego imienia i nazwiska, numeru telefonu ani adresu. Dostęp można odzyskać za pomocą tajnej frazy. Wiadomości są obecnie dostępne między użytkownikami XONI Mail.", statusReady: "JUŻ DOSTĘPNE", openXoniMail: "OTWÓRZ XONI MAIL ↗" },
+  de: { projectEmailDesc: "Private E-Mail mit Registrierung ohne echten Namen, Telefonnummer oder Adresse. Der Zugang kann mit einer geheimen Wiederherstellungsphrase wiederhergestellt werden. Nachrichten sind derzeit für XONI-Mail-Nutzer verfügbar.", statusReady: "JETZT VERFÜGBAR", openXoniMail: "XONI MAIL ÖFFNEN ↗" },
+  es: { projectEmailDesc: "Correo privado con registro sin nombre real, teléfono ni dirección. Puedes recuperar el acceso con una frase secreta. Por ahora, los mensajes están disponibles entre usuarios de XONI Mail.", statusReady: "DISPONIBLE", openXoniMail: "ABRIR XONI MAIL ↗" },
+  fr: { projectEmailDesc: "Messagerie privée avec inscription sans nom réel, numéro de téléphone ni adresse. Une phrase secrète permet de récupérer l’accès. Pour le moment, les messages sont destinés aux utilisateurs de XONI Mail.", statusReady: "DISPONIBLE", openXoniMail: "OUVRIR XONI MAIL ↗" },
+  ja: { projectEmailDesc: "本名、電話番号、住所を登録せずに利用できるプライベートメールです。秘密の復旧フレーズでアクセスを回復できます。現在、メッセージはXONI Mailユーザー間で利用できます。", statusReady: "利用可能", openXoniMail: "XONI MAILを開く ↗" }
+};
+for (const [language, values] of Object.entries(xoniMailCopy)) Object.assign(translations[language], values);
+
 translations.en.projectOrbitDesc = "A custom full-screen XFCE app launcher with photo or video backgrounds, app categories, search and customizable accent colors.";
 translations.uk.projectOrbitDesc = "Власне повноекранне меню запуску програм для XFCE з фото- або відеофоном, категоріями, пошуком і налаштуванням акцентного кольору.";
 translations.pl.projectOrbitDesc = "Własne pełnoekranowe menu aplikacji dla XFCE z tłem ze zdjęcia lub wideo, kategoriami, wyszukiwaniem i konfigurowalnym kolorem akcentu.";
@@ -451,11 +463,11 @@ const projectCatalog = {
   },
   email: {
     icon: "📧",
-    name: "Email Service",
-    status: "PLANNED",
-    page: "https://flekiii.github.io/email/?v=3",
-    en: "My own email service for private communication and a personal digital identity.",
-    uk: "Власний email-сервіс для приватного спілкування та цифрової ідентичності."
+    name: "XONI Mail",
+    status: "AVAILABLE NOW",
+    page: "https://xoni-mail.pages.dev",
+    en: "A privacy-focused email service that does not require a real name, phone number or address to sign up. Account recovery uses a secret recovery phrase. XONI Mail currently supports messaging between its own users, with XONI ID intended to connect future flekiii apps.",
+    uk: "Приватний email-сервіс, для реєстрації якого не потрібні справжнє ім’я, номер телефону чи адреса. Для відновлення доступу використовується секретна фраза. Наразі листування працює між користувачами XONI Mail, а XONI ID задуманий як спільний вхід до майбутніх застосунків flekiii."
   },
   cloud: {
     icon: "☁️",
