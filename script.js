@@ -801,7 +801,7 @@ async function loadDownloadProject(projectId) {
           .filter((release) =>
             release &&
             !release.draft &&
-            !release.prerelease &&
+            (!release.prerelease || projectId === "orbit") &&
             typeof release.tag_name === "string" &&
             release.tag_name.toLowerCase().startsWith(project.tagPrefix)
           )
