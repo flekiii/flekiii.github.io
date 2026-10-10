@@ -354,6 +354,61 @@ translations.es.projectOrbitDesc = "Un lanzador de aplicaciones a pantalla compl
 translations.fr.projectOrbitDesc = "Un lanceur d’applications plein écran pour XFCE avec fond photo ou vidéo, catégories, recherche et couleur d’accent personnalisable.";
 translations.ja.projectOrbitDesc = "写真や動画の背景、カテゴリ、検索、アクセントカラーのカスタマイズに対応したXFCE向けフルスクリーンアプリランチャー.";
 
+const downloadUiText = {
+  en: {
+    downloadsText: "Choose a project below, then select an available operating system.",
+    downloadProjectOrbit: "Linux desktop launcher",
+    downloadProjectOrbitText: "Choose Linux to check for the latest official release.",
+    downloadOrbitUnavailable: "The Linux package has not been published yet. Check back after the first release.",
+    statusOrbitRelease: "LINUX RELEASE PREPARING"
+  },
+  uk: {
+    downloadsText: "Обери проєкт нижче, а потім доступну операційну систему.",
+    downloadProjectOrbit: "Меню програм для Linux",
+    downloadProjectOrbitText: "Обери Linux, щоб перевірити останній офіційний реліз.",
+    downloadOrbitUnavailable: "Linux-пакет ще не опубліковано. Перевір після виходу першого релізу.",
+    statusOrbitRelease: "ГОТУЄТЬСЯ LINUX-РЕЛІЗ"
+  },
+  pl: {
+    downloadsText: "Wybierz projekt poniżej, a następnie dostępny system operacyjny.",
+    downloadProjectOrbit: "Launcher pulpitu Linux",
+    downloadProjectOrbitText: "Wybierz Linux, aby sprawdzić najnowsze oficjalne wydanie.",
+    downloadOrbitUnavailable: "Pakiet Linux nie został jeszcze opublikowany. Sprawdź ponownie po pierwszym wydaniu.",
+    statusOrbitRelease: "PRZYGOTOWYWANE WYDANIE LINUX"
+  },
+  de: {
+    downloadsText: "Wähle unten ein Projekt und danach ein verfügbares Betriebssystem.",
+    downloadProjectOrbit: "Linux-Desktop-Launcher",
+    downloadProjectOrbitText: "Wähle Linux, um die neueste offizielle Version zu prüfen.",
+    downloadOrbitUnavailable: "Das Linux-Paket wurde noch nicht veröffentlicht. Schau nach der ersten Veröffentlichung erneut vorbei.",
+    statusOrbitRelease: "LINUX-RELEASE IN VORBEREITUNG"
+  },
+  es: {
+    downloadsText: "Elige un proyecto y después un sistema operativo disponible.",
+    downloadProjectOrbit: "Lanzador de escritorio Linux",
+    downloadProjectOrbitText: "Elige Linux para comprobar la última versión oficial.",
+    downloadOrbitUnavailable: "El paquete de Linux aún no se ha publicado. Vuelve después del primer lanzamiento.",
+    statusOrbitRelease: "PREPARANDO LA VERSIÓN PARA LINUX"
+  },
+  fr: {
+    downloadsText: "Choisis un projet ci-dessous, puis un système disponible.",
+    downloadProjectOrbit: "Lanceur de bureau Linux",
+    downloadProjectOrbitText: "Choisis Linux pour vérifier la dernière version officielle.",
+    downloadOrbitUnavailable: "Le paquet Linux n’a pas encore été publié. Reviens après la première version.",
+    statusOrbitRelease: "VERSION LINUX EN PRÉPARATION"
+  },
+  ja: {
+    downloadsText: "プロジェクトを選択し、利用可能なオペレーティングシステムを選んでください。",
+    downloadProjectOrbit: "Linuxデスクトップランチャー",
+    downloadProjectOrbitText: "Linuxを選んで最新の公式リリースを確認してください。",
+    downloadOrbitUnavailable: "Linuxパッケージはまだ公開されていません。最初のリリース後にもう一度確認してください。",
+    statusOrbitRelease: "Linux版を準備中"
+  }
+};
+for (const [language, values] of Object.entries(downloadUiText)) {
+  Object.assign(translations[language], values);
+}
+
 const projectCatalog = {
   orbit: {
     icon: "🪟",
@@ -504,11 +559,13 @@ const downloadBuilds = {
   android: { label: "ANDROID", patterns: [/\.apk$/i], description: "Android APK" },
   ios: { label: "iOS", patterns: [/\.ipa$/i], description: "iOS IPA" },
   windows: { label: "WINDOWS", patterns: [/\.exe$/i, /\.msi$/i, /\.msix$/i, /\.zip$/i], description: "Windows build" },
-  linux: { label: "LINUX", patterns: [/\.AppImage$/i, /\.deb$/i, /\.pkg\.tar\.zst$/i, /\.rpm$/i], description: "Linux build" },
+  linux: {
+    label: "LINUX",
+    patterns: [/\.AppImage$/i, /\.deb$/i, /\.pkg\.tar\.zst$/i, /\.rpm$/i, /\.tar\.gz$/i, /\.tar\.xz$/i, /\.tar\.zst$/i, /\.zip$/i, /\.sh$/i, /\.run$/i],
+    description: "Linux build"
+  },
   macos: { label: "MACOS", patterns: [/\.dmg$/i, /\.pkg$/i, /\.zip$/i], description: "macOS build" }
 };
-
-let flekiConvertRelease = null;
 
 const flekiConvertFallbackRelease = {
   tag_name: "fleki-convert-v1.0.0",
@@ -520,19 +577,84 @@ const flekiConvertFallbackRelease = {
   ]
 };
 
-function updateFlekiConvertDownloadStatus() {
-  const status = document.getElementById("flekiConvertDownloadStatus");
+const downloadProjects = {
+  "fleki-convert": {
+    title: "FLEKI CONVERT",
+    subtitleKey: "downloadProjectFlekiConvertText",
+    tagPrefix: "fleki-convert-",
+    platforms: ["android", "ios", "windows", "linux", "macos"],
+    fallbackRelease: flekiConvertFallbackRelease,
+    fallbackVersion: "1.0.0",
+    unavailableKey: "downloadsUnavailable"
+  },
+  orbit: {
+    title: "Fleki Orbit",
+    subtitleKey: "downloadProjectOrbitText",
+    tagPrefix: "fleki-orbit-",
+    platforms: ["linux"],
+    fallbackRelease: null,
+    fallbackVersion: "PREPARING",
+    unavailableKey: "downloadOrbitUnavailable"
+  }
+};
+
+const downloadReleaseCache = Object.create(null);
+let currentDownloadProject = "fleki-convert";
+
+function currentDownloadLanguage() {
+  const language = document.documentElement.lang || "en";
+  return translations[language] ? language : "en";
+}
+
+function updateDownloadStatus() {
+  const status = document.getElementById("downloadStatus");
   if (!status) return;
-  const language = document.documentElement.lang === "uk" ? "uk" : "en";
+
+  const language = currentDownloadLanguage();
+  const strings = translations[language] || translations.en;
   const state = status.dataset.state || "checking";
-  const key = state === "ready" ? "downloadsReady" : state === "unavailable" ? "downloadsUnavailable" : "downloadsChecking";
-  status.textContent = translations[language][key];
+  const key = state === "ready" ? "downloadsReady"
+    : state === "unavailable" ? "downloadsUnavailable"
+    : "downloadsChecking";
+  status.textContent = strings[key] || translations.en[key] || "";
+}
+
+function updateDownloadProjectCopy() {
+  const project = downloadProjects[currentDownloadProject];
+  if (!project) return;
+
+  const strings = translations[currentDownloadLanguage()] || translations.en;
+  const title = document.getElementById("downloadProjectTitle");
+  const description = document.getElementById("downloadProjectDescription");
+  if (title) title.textContent = project.title;
+  if (description) {
+    description.textContent = strings[project.subtitleKey] || translations.en[project.subtitleKey] || "";
+  }
+}
+
+function syncDownloadPlatforms(projectId) {
+  const config = downloadProjects[projectId];
+  const grid = document.getElementById("downloadOsGrid");
+  if (!config || !grid) return;
+
+  const buttons = grid.querySelectorAll("[data-download-os]");
+  buttons.forEach((button) => {
+    const visible = config.platforms.includes(button.dataset.downloadOs);
+    button.hidden = !visible;
+    button.setAttribute("aria-hidden", String(!visible));
+    button.disabled = !visible;
+  });
+  grid.style.gridTemplateColumns = config.platforms.length === 1
+    ? "minmax(0, 260px)"
+    : "";
 }
 
 function findBuildsForOs(os) {
+  const project = downloadProjects[currentDownloadProject];
   const config = downloadBuilds[os];
-  const assets = Array.isArray(flekiConvertRelease?.assets) ? flekiConvertRelease.assets : [];
-  if (!config) return [];
+  const release = downloadReleaseCache[currentDownloadProject];
+  const assets = Array.isArray(release?.assets) ? release.assets : [];
+  if (!project || !config || !project.platforms.includes(os)) return [];
 
   const matches = [];
   const seen = new Set();
@@ -553,8 +675,11 @@ function findBuildsForOs(os) {
 function getBuildFormat(name) {
   const lower = (name || "").toLowerCase();
   if (lower.endsWith(".appimage")) return "AppImage";
-  if (lower.endsWith(".deb")) return "DEB";
   if (lower.endsWith(".pkg.tar.zst")) return "Arch · pkg.tar.zst";
+  if (lower.endsWith(".tar.gz")) return "TAR.GZ";
+  if (lower.endsWith(".tar.xz")) return "TAR.XZ";
+  if (lower.endsWith(".tar.zst")) return "TAR.ZST";
+  if (lower.endsWith(".deb")) return "DEB";
   if (lower.endsWith(".rpm")) return "RPM";
   if (lower.endsWith(".apk")) return "APK";
   if (lower.endsWith(".ipa")) return "IPA";
@@ -564,6 +689,8 @@ function getBuildFormat(name) {
   if (lower.endsWith(".dmg")) return "DMG";
   if (lower.endsWith(".pkg")) return "PKG";
   if (lower.endsWith(".zip")) return "ZIP";
+  if (lower.endsWith(".sh")) return "SHELL INSTALLER";
+  if (lower.endsWith(".run")) return "RUN INSTALLER";
   return "BUILD";
 }
 
@@ -572,8 +699,9 @@ function showDownloadBuild(os) {
   const buildView = document.getElementById("downloadBuildView");
   const buildOs = document.getElementById("downloadBuildOs");
   const buildList = document.getElementById("downloadBuildList");
-  const status = document.getElementById("flekiConvertDownloadStatus");
-  if (!systems || !buildView || !buildOs || !buildList) return;
+  const status = document.getElementById("downloadStatus");
+  const project = downloadProjects[currentDownloadProject];
+  if (!systems || !buildView || !buildOs || !buildList || !project || !project.platforms.includes(os)) return;
 
   const config = downloadBuilds[os];
   if (!config) return;
@@ -590,13 +718,14 @@ function showDownloadBuild(os) {
   if (!builds.length) {
     const empty = document.createElement("div");
     empty.className = "download-build-empty";
-    empty.textContent = document.documentElement.lang === "uk"
-      ? "Для цієї системи збірок поки немає."
-      : "No builds are available for this system yet.";
+    const language = currentDownloadLanguage();
+    const strings = translations[language] || translations.en;
+    const messageKey = currentDownloadProject === "orbit" ? "downloadOrbitUnavailable" : "downloadsUnavailable";
+    empty.textContent = strings[messageKey] || translations.en[messageKey] || translations.en.downloadsUnavailable;
     buildList.appendChild(empty);
     if (status) {
       status.dataset.state = "unavailable";
-      updateFlekiConvertDownloadStatus();
+      updateDownloadStatus();
     }
     return;
   }
@@ -630,7 +759,7 @@ function showDownloadBuild(os) {
 
   if (status) {
     status.dataset.state = "ready";
-    updateFlekiConvertDownloadStatus();
+    updateDownloadStatus();
   }
 }
 
@@ -643,20 +772,21 @@ function closeDownloadBuild() {
   buildView.hidden = true;
   systems.hidden = false;
   systems.setAttribute("aria-hidden", "false");
-  buildView.setAttribute("aria-hidden", "true");
+  syncDownloadPlatforms(currentDownloadProject);
   if (buildList) buildList.innerHTML = "";
 }
 
-async function loadFlekiConvertDownloads() {
-  const status = document.getElementById("flekiConvertDownloadStatus");
-  const version = document.getElementById("flekiConvertDownloadVersion");
+async function loadDownloadProject(projectId) {
+  const project = downloadProjects[projectId];
+  const status = document.getElementById("downloadStatus");
+  const version = document.getElementById("downloadProjectVersion");
   const systems = document.getElementById("downloadOsGrid");
   const buildView = document.getElementById("downloadBuildView");
-  if (!status || !systems || !buildView) return;
+  if (!project || !status || !systems || !buildView) return;
 
   status.dataset.state = "checking";
-  updateFlekiConvertDownloadStatus();
-  flekiConvertRelease = null;
+  updateDownloadStatus();
+  downloadReleaseCache[projectId] = null;
 
   try {
     const response = await fetch(
@@ -666,14 +796,14 @@ async function loadFlekiConvertDownloads() {
     if (!response.ok) throw new Error("Releases not available");
 
     const releases = await response.json();
-    const converterReleases = Array.isArray(releases)
+    const matchingReleases = Array.isArray(releases)
       ? releases
           .filter((release) =>
             release &&
             !release.draft &&
             !release.prerelease &&
             typeof release.tag_name === "string" &&
-            release.tag_name.toLowerCase().startsWith("fleki-convert-")
+            release.tag_name.toLowerCase().startsWith(project.tagPrefix)
           )
           .sort((a, b) =>
             new Date(b.published_at || b.created_at || 0) -
@@ -681,46 +811,76 @@ async function loadFlekiConvertDownloads() {
           )
       : [];
 
-    const release = converterReleases[0];
+    const release = matchingReleases[0];
     if (!release) {
-      if (version) version.textContent = "PREPARING";
-      status.dataset.state = "unavailable";
-      updateFlekiConvertDownloadStatus();
+      if (currentDownloadProject === projectId) {
+        if (version) version.textContent = project.fallbackVersion;
+        status.dataset.state = "unavailable";
+        updateDownloadStatus();
+      }
       return;
     }
 
-    flekiConvertRelease = release;
-    if (!Array.isArray(flekiConvertRelease.assets)) flekiConvertRelease.assets = [];
-    const knownLinuxAssets = flekiConvertFallbackRelease.assets;
-    knownLinuxAssets.forEach((fallbackAsset) => {
-      if (!flekiConvertRelease.assets.some((asset) => asset && (asset.id === fallbackAsset.id || asset.name === fallbackAsset.name))) {
-        flekiConvertRelease.assets.push(fallbackAsset);
-      }
-    });
-    if (version) {
-      const match = release.tag_name.match(/fleki-convert-(.+)$/i);
-      version.textContent = match ? match[1] : release.tag_name;
+    downloadReleaseCache[projectId] = release;
+    if (!Array.isArray(downloadReleaseCache[projectId].assets)) {
+      downloadReleaseCache[projectId].assets = [];
     }
-    status.dataset.state = "ready";
-    updateFlekiConvertDownloadStatus();
+
+    if (project.fallbackRelease) {
+      project.fallbackRelease.assets.forEach((fallbackAsset) => {
+        if (!downloadReleaseCache[projectId].assets.some((asset) =>
+          asset && (asset.id === fallbackAsset.id || asset.name === fallbackAsset.name)
+        )) {
+          downloadReleaseCache[projectId].assets.push(fallbackAsset);
+        }
+      });
+    }
+
+    if (currentDownloadProject === projectId) {
+      if (version) {
+        version.textContent = release.tag_name.slice(project.tagPrefix.length) || "LATEST";
+      }
+      status.dataset.state = "ready";
+      updateDownloadStatus();
+    }
   } catch {
-    flekiConvertRelease = flekiConvertFallbackRelease;
-    if (version) version.textContent = "1.0.0";
-    status.dataset.state = "ready";
-    updateFlekiConvertDownloadStatus();
+    if (project.fallbackRelease) {
+      downloadReleaseCache[projectId] = project.fallbackRelease;
+      if (currentDownloadProject === projectId) {
+        if (version) version.textContent = project.fallbackVersion;
+        status.dataset.state = "ready";
+        updateDownloadStatus();
+      }
+    } else if (currentDownloadProject === projectId) {
+      if (version) version.textContent = project.fallbackVersion;
+      status.dataset.state = "unavailable";
+      updateDownloadStatus();
+    }
   }
 }
 
 function openDownloadProject(projectId) {
   const projectList = document.getElementById("downloadProjectList");
   const projectView = document.getElementById("downloadProjectView");
-  if (!projectList || !projectView || projectId !== "fleki-convert") return;
+  if (!projectList || !projectView || !downloadProjects[projectId]) return;
+
+  currentDownloadProject = projectId;
+  updateDownloadProjectCopy();
+  syncDownloadPlatforms(projectId);
+
+  document.querySelectorAll("[data-download-project]").forEach((button) => {
+    const active = button.dataset.downloadProject === projectId;
+    button.setAttribute("aria-expanded", String(active));
+  });
 
   projectList.hidden = true;
   projectView.hidden = false;
   projectList.setAttribute("aria-hidden", "true");
   projectView.setAttribute("aria-hidden", "false");
-  loadFlekiConvertDownloads();
+
+  const version = document.getElementById("downloadProjectVersion");
+  if (version) version.textContent = downloadProjects[projectId].fallbackVersion;
+  loadDownloadProject(projectId);
 }
 
 function closeDownloadProject() {
@@ -732,6 +892,9 @@ function closeDownloadProject() {
   projectList.hidden = false;
   projectView.setAttribute("aria-hidden", "true");
   projectList.setAttribute("aria-hidden", "false");
+  document.querySelectorAll("[data-download-project]").forEach((button) => {
+    button.setAttribute("aria-expanded", "false");
+  });
   closeDownloadBuild();
 }
 
@@ -1075,7 +1238,9 @@ function setLanguage(language) {
 
   localStorage.setItem("flekiii-language", selected);
   updateYear();
-  updateFlekiConvertDownloadStatus();
+  updateDownloadStatus();
+  updateDownloadProjectCopy();
+  syncDownloadPlatforms(currentDownloadProject);
 
   if (currentProjectId) {
     renderModal(currentProjectId);
