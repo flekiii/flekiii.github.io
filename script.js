@@ -1219,6 +1219,11 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  // Real links (such as the XONI Mail launch link) must navigate normally.
+  if (button.tagName === "A" && button.href) {
+    return;
+  }
+
   event.preventDefault();
   event.stopPropagation();
   openProject(button.dataset.project);
