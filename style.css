@@ -5509,3 +5509,23 @@ html[data-theme="mocha-light"] { --bg:#faf6f1; --surface:#ffffff; --surface-2:#f
   .project-card .project-report-bug { padding: 7px 8px; font-size: 8px; min-height: 28px; }
   #resources .download-report-bug { font-size: 9px; }
 }
+
+/* Bug report action in the compact project modal. */
+#projectModalBug[hidden] { display: none !important; }
+#projectModalBug {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  margin: 8px 8px 0 0;
+  align-items: center;
+  justify-content: center;
+  border-color: color-mix(in srgb, var(--pink) 36%, transparent) !important;
+  background: color-mix(in srgb, var(--pink) 8%, var(--surface)) !important;
+  color: var(--pink) !important;
+  white-space: normal;
+}
+#projectModalBug:hover,
+#projectModalBug:focus-visible {
+  background: color-mix(in srgb, var(--pink) 18%, var(--surface)) !important;
+  border-color: var(--pink) !important;
+}
