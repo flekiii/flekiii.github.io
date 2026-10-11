@@ -421,7 +421,60 @@ for (const [language, values] of Object.entries(downloadUiText)) {
   Object.assign(translations[language], values);
 }
 
+// MOTION Linux public beta translations.
+const motionReleaseCopy = {
+  "en": {
+    "projectMotionDesc": "Live video and photo wallpapers with movable desktop shortcuts. Linux beta available.",
+    "statusMotionBeta": "LINUX BETA AVAILABLE",
+    "downloadProjectMotion": "Live wallpapers for Linux",
+    "downloadProjectMotionText": "Choose Linux to download MOTION as AppImage or TAR.GZ."
+  },
+  "uk": {
+    "projectMotionDesc": "Живі відео- та фотошпалери з рухомими ярликами. Linux-бета вже доступна.",
+    "statusMotionBeta": "LINUX-БЕТА ДОСТУПНА",
+    "downloadProjectMotion": "Живі шпалери для Linux",
+    "downloadProjectMotionText": "Обери Linux, щоб завантажити MOTION у форматі AppImage або TAR.GZ."
+  },
+  "pl": {
+    "projectMotionDesc": "Tapety wideo i zdjęcia z ruchomymi ikonami pulpitu. Linux beta jest dostępna.",
+    "statusMotionBeta": "BETA NA LINUX DOSTĘPNA",
+    "downloadProjectMotion": "Animowane tapety dla Linux",
+    "downloadProjectMotionText": "Wybierz Linux, aby pobrać AppImage lub TAR.GZ."
+  },
+  "de": {
+    "projectMotionDesc": "Video- und Fotohintergründe mit verschiebbaren Desktop-Symbolen. Linux-Beta verfügbar.",
+    "statusMotionBeta": "LINUX-BETA VERFÜGBAR",
+    "downloadProjectMotion": "Live-Hintergründe für Linux",
+    "downloadProjectMotionText": "Wähle Linux, um AppImage oder TAR.GZ herunterzuladen."
+  },
+  "es": {
+    "projectMotionDesc": "Fondos de vídeo y fotos con iconos de escritorio movibles. Beta Linux disponible.",
+    "statusMotionBeta": "BETA LINUX DISPONIBLE",
+    "downloadProjectMotion": "Fondos animados para Linux",
+    "downloadProjectMotionText": "Elige Linux para descargar AppImage o TAR.GZ."
+  },
+  "fr": {
+    "projectMotionDesc": "Fonds vidéo et photo avec icônes de bureau déplaçables. Bêta Linux disponible.",
+    "statusMotionBeta": "BÊTA LINUX DISPONIBLE",
+    "downloadProjectMotion": "Fonds animés pour Linux",
+    "downloadProjectMotionText": "Choisis Linux pour télécharger AppImage ou TAR.GZ."
+  },
+  "ja": {
+    "projectMotionDesc": "動画・写真の壁紙と移動可能なデスクトップアイコン。Linuxベータ版公開中。",
+    "statusMotionBeta": "LINUXベータ版公開中",
+    "downloadProjectMotion": "Linux向けライブ壁紙",
+    "downloadProjectMotionText": "Linuxを選んでAppImageまたはTAR.GZをダウンロード。"
+  }
+};
+for (const [language, values] of Object.entries(motionReleaseCopy)) Object.assign(translations[language], values);
+
 const projectCatalog = {
+  motion: {
+    icon: "◉", name: "MOTION", status: "LINUX BETA AVAILABLE",
+    page: "https://github.com/flekiii/motion/releases/tag/v0.1.0-beta",
+    en: "Live video and photo wallpapers with movable desktop shortcuts, saved positions and themes. Linux x86_64 beta for XFCE on X11.",
+    uk: "Живі відео- та фотошпалери з рухомими ярликами, збереженням позицій і темами. Linux x86_64 бета для XFCE на X11."
+  },
   orbit: {
     icon: "🪟",
     name: "Fleki Orbit",
@@ -589,7 +642,29 @@ const flekiConvertFallbackRelease = {
   ]
 };
 
+const motionReleaseFallback = {
+  "tag_name": "v0.1.0-beta",
+  "assets": [
+    {
+      "id": "motion-beta-0",
+      "name": "MOTION-0.1.0-beta-linux-x86_64.AppImage",
+      "browser_download_url": "https://github.com/flekiii/motion/releases/download/v0.1.0-beta/MOTION-0.1.0-beta-linux-x86_64.AppImage"
+    },
+    {
+      "id": "motion-beta-1",
+      "name": "MOTION-0.1.0-beta-linux-x86_64.tar.gz",
+      "browser_download_url": "https://github.com/flekiii/motion/releases/download/v0.1.0-beta/MOTION-0.1.0-beta-linux-x86_64.tar.gz"
+    }
+  ]
+};
+
 const downloadProjects = {
+  motion: {
+    title: "MOTION", subtitleKey: "downloadProjectMotionText",
+    releaseRepo: "flekiii/motion", allowPrerelease: true,
+    tagPrefix: "v", platforms: ["linux"], fallbackRelease: motionReleaseFallback,
+    fallbackVersion: "0.1.0 Beta", unavailableKey: "downloadsUnavailable"
+  },
   "fleki-convert": {
     title: "FLEKI CONVERT",
     subtitleKey: "downloadProjectFlekiConvertText",
@@ -802,7 +877,7 @@ async function loadDownloadProject(projectId) {
 
   try {
     const response = await fetch(
-      "https://api.github.com/repos/flekiii/flekiii.github.io/releases?per_page=100",
+      `https://api.github.com/repos/${project.releaseRepo || "flekiii/flekiii.github.io"}/releases?per_page=100`,
       { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" }
     );
     if (!response.ok) throw new Error("Releases not available");
@@ -813,7 +888,7 @@ async function loadDownloadProject(projectId) {
           .filter((release) =>
             release &&
             !release.draft &&
-            (!release.prerelease || projectId === "orbit") &&
+            (!release.prerelease || project.allowPrerelease || projectId === "orbit") &&
             typeof release.tag_name === "string" &&
             release.tag_name.toLowerCase().startsWith(project.tagPrefix)
           )
@@ -1178,7 +1253,9 @@ function renderModal(projectId) {
   projectModalTitle.textContent = project.icon + " " + project.name;
   projectModalText.textContent = project[language];
   renderProjectMedia(projectId);
-  projectModalStatus.textContent = project.status === "DEFERRED UNTIL MAC PURCHASE"
+  projectModalStatus.textContent = projectId === "motion"
+    ? (translations[document.documentElement.lang]?.statusMotionBeta || translations.en.statusMotionBeta)
+    : project.status === "DEFERRED UNTIL MAC PURCHASE"
     ? ({en:"DEFERRED UNTIL MAC PURCHASE",uk:"ВІДКЛАДЕНО ДО ПОКУПКИ MAC",pl:"ODŁOŻONE DO ZAKUPU MAC",de:"BIS ZUM MAC-KAUF AUFGESCHOBEN",es:"APLAZADO HASTA COMPRAR UN MAC",fr:"REPORTÉ JUSQU’À L’ACHAT DU MAC",ja:"Mac購入まで延期"}[language] || project.status)
     : (language === "uk" ? (project.status === "IN PROGRESS" ? "В ПРОЦЕСІ" : "У ПЛАНАХ") : project.status);
 
