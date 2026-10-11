@@ -1,0 +1,15 @@
+{
+  "name": "FLEKORA",
+  "version": "0.4.2",
+  "platform": "x86_64",
+  "format": "AppImage",
+  "minimum_glibc": "2.43",
+  "first_target": "BlackArch/Arch XFCE X11",
+  "tested_distributions": [],
+  "backup_format": 1,
+  "packaging_tools": {
+    "linuxdeploy-x86_64.AppImage": "8aea8da0f7f7039d2a2cecb14657d752a222a5e1d3825caeef186c82f751cdd1",
+    "linuxdeploy-plugin-gtk.sh": "b0f4cbc684a0103a9651f0955b635eaea0096b3a66c0f5a2c2aa337960375171"
+  },
+  "sha256": "5f2cdca7671db387749b0e07e1d5d997451c3de8aa9959b24f19008266f35e53"
+}
