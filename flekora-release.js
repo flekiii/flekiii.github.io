@@ -1,6 +1,6 @@
 // FLEKORA release integration. Written by prepare_website.py after checking the Linux archive.
 (() => {
-  const release = {"name": "FLEKORA-0.4.1-x86_64.AppImage", "size": 0, "sha256": null, "glibc": null, "available": false};
+  const release = {"name": "FLEKORA-0.4.1-x86_64.AppImage", "size": 70035960, "sha256": "0ef80598d023dfc315fb72e81e5ec0933251913854e7a6e1e6df794b33555bc5", "glibc": "2.43", "available": true};
   const available = release.available !== false;
   const copy = {
     en: {ready:'LINUX ALPHA AVAILABLE', desc:'Offline notes, tasks and a floating focus timer. Export and import backups without an account.', about:'FLEKORA keeps your notes and tasks on your device. Its rounded mini assistant stays on top, shares tasks with the main window and restores the timer. Five interface languages and four themes are available.', features:['Notes and tasks stored locally in SQLite','Movable timer with pause, resume and compact view','Backup export/import, five languages and four themes'], road:['Improve the offline experience','Test Linux packages on more distributions','Accounts and sync postponed until servers are available'], downloads:'VIEW DOWNLOADS', install:'Linux x86_64 · AppImage', status:'The first 0.4.1 alpha targets BlackArch/Arch with XFCE/X11. Make the AppImage executable and launch it without sudo. Compatibility with other distributions needs testing. Flutter is not required to run it.', checksum:'SHA-256 checksum'},
