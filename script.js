@@ -471,7 +471,7 @@ for (const [language, values] of Object.entries(motionReleaseCopy)) Object.assig
 const projectCatalog = {
   motion: {
     icon: "◉", name: "MOTION", status: "LINUX BETA AVAILABLE",
-    page: "https://github.com/flekiii/motion/releases/tag/v0.1.0-beta",
+    page: "https://flekiii.github.io/motion/",
     en: "Live video and photo wallpapers with movable desktop shortcuts, saved positions and themes. Linux x86_64 beta for XFCE on X11.",
     uk: "Живі відео- та фотошпалери з рухомими ярликами, збереженням позицій і темами. Linux x86_64 бета для XFCE на X11."
   },
