@@ -5458,3 +5458,54 @@ html[data-theme="mocha-light"] { --bg:#faf6f1; --surface:#ffffff; --surface-2:#f
 .download-os-button[hidden] {
   display: none !important;
 }
+
+
+/* Public beta feedback: compact, responsive, theme-aware links. */
+.project-card:has(> .project-report-bug) { gap: 12px; }
+.project-card .project-report-bug,
+#resources .download-report-bug {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  max-width: 100%;
+  min-height: 31px;
+  padding: 7px 10px;
+  border: 1px solid color-mix(in srgb, var(--pink) 34%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--pink) 6%, var(--surface));
+  color: var(--pink);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: .035em;
+  text-decoration: none;
+  text-align: center;
+  overflow-wrap: anywhere;
+  transition: background .18s ease, border-color .18s ease;
+}
+.project-card .project-report-bug:hover,
+.project-card .project-report-bug:focus-visible,
+#resources .download-report-bug:hover,
+#resources .download-report-bug:focus-visible {
+  background: color-mix(in srgb, var(--pink) 16%, var(--surface));
+  border-color: var(--pink);
+  color: var(--pink);
+}
+#resources .download-report-bug { margin: 14px 0 0; }
+#resources .download-report-bug[hidden] { display: none !important; }
+.project-bottom-actions .project-bug-action {
+  border-color: color-mix(in srgb, var(--pink) 42%, transparent) !important;
+  color: var(--pink) !important;
+  background: color-mix(in srgb, var(--pink) 7%, var(--surface)) !important;
+}
+.project-bottom-actions .project-bug-action:hover,
+.project-bottom-actions .project-bug-action:focus-visible {
+  background: color-mix(in srgb, var(--pink) 17%, var(--surface)) !important;
+  border-color: var(--pink) !important;
+}
+@media(max-width:700px) {
+  .project-card:has(> .project-report-bug) { gap: 9px; }
+  .project-card .project-report-bug { padding: 7px 8px; font-size: 8px; min-height: 28px; }
+  #resources .download-report-bug { font-size: 9px; }
+}
