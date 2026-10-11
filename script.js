@@ -1200,6 +1200,7 @@ const projectModalTitle = document.getElementById("projectModalTitle");
 const projectModalText = document.getElementById("projectModalText");
 const projectModalStatus = document.getElementById("projectModalStatus");
 const projectModalLink = document.getElementById("projectModalLink");
+const projectModalBug = document.getElementById("projectModalBug");
 const projectMediaGallery = document.getElementById("projectMediaGallery");
 const projectMediaGrid = document.getElementById("projectMediaGrid");
 
@@ -1297,6 +1298,13 @@ function renderModal(projectId) {
     : project.status === "DEFERRED UNTIL MAC PURCHASE"
     ? ({en:"DEFERRED UNTIL MAC PURCHASE",uk:"ВІДКЛАДЕНО ДО ПОКУПКИ MAC",pl:"ODŁOŻONE DO ZAKUPU MAC",de:"BIS ZUM MAC-KAUF AUFGESCHOBEN",es:"APLAZADO HASTA COMPRAR UN MAC",fr:"REPORTÉ JUSQU’À L’ACHAT DU MAC",ja:"Mac購入まで延期"}[language] || project.status)
     : (language === "uk" ? (project.status === "IN PROGRESS" ? "В ПРОЦЕСІ" : "У ПЛАНАХ") : project.status);
+
+  if (projectModalBug) {
+    const bugUrl = downloadProjects[projectId]?.bugUrl || "";
+    projectModalBug.hidden = !bugUrl;
+    projectModalBug.setAttribute("aria-hidden", String(!bugUrl));
+    projectModalBug.href = bugUrl || "#";
+  }
 
   if (project.page) {
     projectModalLink.hidden = false;
