@@ -2,6 +2,7 @@
 (() => {
   const release = {"name": "FLEKORA-0.4.1-x86_64.AppImage", "size": 70035960, "sha256": "0ef80598d023dfc315fb72e81e5ec0933251913854e7a6e1e6df794b33555bc5", "glibc": "2.43", "available": true};
   const available = release.available !== false;
+  const downloadLabels = {en:'DOWNLOAD APPIMAGE',uk:'ЗАВАНТАЖИТИ APPIMAGE',pl:'POBIERZ APPIMAGE',de:'APPIMAGE HERUNTERLADEN',ja:'APPIMAGEをダウンロード',es:'DESCARGAR APPIMAGE',fr:'TÉLÉCHARGER APPIMAGE'};
   const copy = {
     en: {ready:'LINUX ALPHA AVAILABLE', desc:'Offline notes, tasks and a floating focus timer. Export and import backups without an account.', about:'FLEKORA keeps your notes and tasks on your device. Its rounded mini assistant stays on top, shares tasks with the main window and restores the timer. Five interface languages and four themes are available.', features:['Notes and tasks stored locally in SQLite','Movable timer with pause, resume and compact view','Backup export/import, five languages and four themes'], road:['Improve the offline experience','Test Linux packages on more distributions','Accounts and sync postponed until servers are available'], downloads:'VIEW DOWNLOADS', install:'Linux x86_64 · AppImage', status:'The first 0.4.1 alpha targets BlackArch/Arch with XFCE/X11. Make the AppImage executable and launch it without sudo. Compatibility with other distributions needs testing. Flutter is not required to run it.', checksum:'SHA-256 checksum'},
     uk: {ready:'LINUX-АЛЬФА ДОСТУПНА', desc:'Офлайн-нотатки, завдання й плаваючий таймер. Експорт та імпорт копій без акаунта.', about:'FLEKORA зберігає нотатки й завдання на твоєму пристрої. Округлений мініпомічник тримається поверх вікон, використовує спільні завдання й відновлює таймер. Є п’ять мов інтерфейсу та чотири теми.', features:['Локальні нотатки й завдання в SQLite','Рухомий таймер із паузою, продовженням і компактним виглядом','Експорт/імпорт копій, п’ять мов і чотири теми'], road:['Покращувати офлайн-можливості','Перевіряти Linux-пакети на інших дистрибутивах','Акаунти й синхронізацію відкладено до появи серверів'], downloads:'ПЕРЕГЛЯНУТИ ЗАВАНТАЖЕННЯ', install:'Linux x86_64 · AppImage', status:'Перша альфа 0.4.1 призначена для BlackArch/Arch із XFCE/X11. Зроби AppImage виконуваним та запусти без sudo. Сумісність з іншими дистрибутивами потребує перевірки. Flutter для запуску не потрібен.', checksum:'Контрольна сума SHA-256'},
@@ -79,7 +80,11 @@
       const list=(selector,items)=>{const node=document.querySelector(selector);const tag=selector.includes('roadmap')?'article':'div';if(node)node.innerHTML=items.map((value,index)=>`<${tag}><span>0${index+1}</span><strong>${esc(value)}</strong></${tag}>`).join('');};
       list('[data-project-content="features"]',text.features); list('[data-project-content="roadmap"]',text.road);
       const downloads=document.querySelector('[data-project-i18n="flekoraDownloads"]');
-      if(downloads)downloads.href=available?binaryUrl:'../#resources';
+      if(downloads){
+        downloads.href=available?binaryUrl:'../#resources';
+        if(available){downloads.textContent=downloadLabels[language]||downloadLabels.en;downloads.setAttribute('download',release.name);}
+        else downloads.removeAttribute('download');
+      }
       const notice=document.getElementById('flekora-publish-note');
       if(notice){notice.hidden=available;notice.textContent=(pending[language]||pending.en)[1];}
       let checksum=document.getElementById('flekora-checksum');
