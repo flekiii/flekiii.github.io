@@ -468,6 +468,19 @@ const motionReleaseCopy = {
 };
 for (const [language, values] of Object.entries(motionReleaseCopy)) Object.assign(translations[language], values);
 
+/* Public beta feedback and Android release copy for all site languages. */
+const publicReleaseText = {
+  en: { reportBug:"REPORT A BUG ↗", projectMotionDesc:"Live video wallpapers for Linux and Android. Both betas are available.", statusMotionBeta:"LINUX + ANDROID BETAS", downloadProjectMotion:"Live wallpapers for Linux and Android", downloadProjectMotionText:"Choose Android for the APK or Linux for the AppImage / TAR.GZ.", statusOrbitRelease:"LINUX BETA AVAILABLE" },
+  uk: { reportBug:"ПОВІДОМИТИ ПРО БАГ ↗", projectMotionDesc:"Живі відеошпалери для Linux та Android. Обидві бета-версії доступні.", statusMotionBeta:"БЕТИ LINUX + ANDROID", downloadProjectMotion:"Живі шпалери для Linux та Android", downloadProjectMotionText:"Обери Android для APK або Linux для AppImage / TAR.GZ.", statusOrbitRelease:"LINUX-БЕТА ДОСТУПНА" },
+  pl: { reportBug:"ZGŁOŚ BŁĄD ↗", projectMotionDesc:"Animowane tapety dla Linux i Android. Obie wersje beta są dostępne.", statusMotionBeta:"BETY LINUX + ANDROID", downloadProjectMotion:"Tapety dla Linux i Android", downloadProjectMotionText:"Wybierz Android dla APK lub Linux dla AppImage / TAR.GZ.", statusOrbitRelease:"BETA LINUX DOSTĘPNA" },
+  de: { reportBug:"FEHLER MELDEN ↗", projectMotionDesc:"Animierte Hintergrundbilder für Linux und Android. Beide Betas sind verfügbar.", statusMotionBeta:"LINUX + ANDROID BETAS", downloadProjectMotion:"Hintergründe für Linux und Android", downloadProjectMotionText:"Wähle Android für APK oder Linux für AppImage / TAR.GZ.", statusOrbitRelease:"LINUX-BETA VERFÜGBAR" },
+  es: { reportBug:"REPORTAR ERROR ↗", projectMotionDesc:"Fondos animados para Linux y Android. Ambas versiones beta están disponibles.", statusMotionBeta:"BETAS LINUX + ANDROID", downloadProjectMotion:"Fondos para Linux y Android", downloadProjectMotionText:"Elige Android para APK o Linux para AppImage / TAR.GZ.", statusOrbitRelease:"BETA LINUX DISPONIBLE" },
+  fr: { reportBug:"SIGNALER UN BUG ↗", projectMotionDesc:"Fonds animés pour Linux et Android. Les deux bêtas sont disponibles.", statusMotionBeta:"BÊTAS LINUX + ANDROID", downloadProjectMotion:"Fonds animés Linux et Android", downloadProjectMotionText:"Choisis Android pour APK ou Linux pour AppImage / TAR.GZ.", statusOrbitRelease:"BÊTA LINUX DISPONIBLE" },
+  ja: { reportBug:"バグを報告 ↗", projectMotionDesc:"LinuxとAndroid向けのライブ壁紙。両方のベータ版を公開中。", statusMotionBeta:"LINUX・ANDROID ベータ公開中", downloadProjectMotion:"Linux・Android向けライブ壁紙", downloadProjectMotionText:"AndroidならAPK、LinuxならAppImageまたはTAR.GZを選んでください。", statusOrbitRelease:"LINUXベータ版公開中" }
+};
+for (const [language, copy] of Object.entries(publicReleaseText)) Object.assign(translations[language], copy);
+
+
 const projectCatalog = {
   motion: {
     icon: "◉", name: "MOTION", status: "LINUX BETA AVAILABLE",
@@ -654,6 +667,11 @@ const motionReleaseFallback = {
       "id": "motion-beta-1",
       "name": "MOTION-0.1.0-beta-linux-x86_64.tar.gz",
       "browser_download_url": "https://github.com/flekiii/motion/releases/download/v0.1.0-beta/MOTION-0.1.0-beta-linux-x86_64.tar.gz"
+    },
+    {
+      "id": "motion-android-beta-032",
+      "name": "MOTION-0.3.2-beta-android-universal.apk",
+      "browser_download_url": "https://github.com/flekiii/motion/releases/download/android-v0.3.2-beta/MOTION-0.3.2-beta-android-universal.apk"
     }
   ]
 };
@@ -662,8 +680,9 @@ const downloadProjects = {
   motion: {
     title: "MOTION", subtitleKey: "downloadProjectMotionText",
     releaseRepo: "flekiii/motion", allowPrerelease: true,
-    tagPrefix: "v", platforms: ["linux"], fallbackRelease: motionReleaseFallback,
-    fallbackVersion: "0.1.0 Beta", unavailableKey: "downloadsUnavailable"
+    tagPrefix: "v", tagPrefixes: ["android-v", "v"], platforms: ["android", "linux"], fallbackRelease: motionReleaseFallback,
+    fallbackVersion: "ANDROID + LINUX BETA", unavailableKey: "downloadsUnavailable",
+    bugUrl: "https://github.com/flekiii/motion/issues/new?template=bug_report.yml&title=%5BMOTION%5D%20"
   },
   "fleki-convert": {
     title: "FLEKI CONVERT",
@@ -672,7 +691,8 @@ const downloadProjects = {
     platforms: ["android", "ios", "windows", "linux", "macos"],
     fallbackRelease: flekiConvertFallbackRelease,
     fallbackVersion: "1.0.0",
-    unavailableKey: "downloadsUnavailable"
+    unavailableKey: "downloadsUnavailable",
+    bugUrl: "https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml&title=%5BFLEKI%20CONVERT%5D%20"
   },
   orbit: {
     title: "Fleki Orbit",
@@ -681,7 +701,8 @@ const downloadProjects = {
     platforms: ["linux"],
     fallbackRelease: null,
     fallbackVersion: "PREPARING",
-    unavailableKey: "downloadOrbitUnavailable"
+    unavailableKey: "downloadOrbitUnavailable",
+    bugUrl: "https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml&title=%5BFleki%20Orbit%5D%20"
   }
 };
 
@@ -716,6 +737,11 @@ function updateDownloadProjectCopy() {
   if (title) title.textContent = project.title;
   if (description) {
     description.textContent = strings[project.subtitleKey] || translations.en[project.subtitleKey] || "";
+  }
+  const reportLink = document.getElementById("downloadReportBug");
+  if (reportLink) {
+    reportLink.hidden = !project.bugUrl;
+    if (project.bugUrl) reportLink.href = project.bugUrl;
   }
 }
 
@@ -890,7 +916,9 @@ async function loadDownloadProject(projectId) {
             !release.draft &&
             (!release.prerelease || project.allowPrerelease || projectId === "orbit") &&
             typeof release.tag_name === "string" &&
-            release.tag_name.toLowerCase().startsWith(project.tagPrefix)
+            (project.tagPrefixes || [project.tagPrefix]).some((prefix) =>
+              release.tag_name.toLowerCase().startsWith(prefix)
+            )
           )
           .sort((a, b) =>
             new Date(b.published_at || b.created_at || 0) -
@@ -898,7 +926,12 @@ async function loadDownloadProject(projectId) {
           )
       : [];
 
-    const release = matchingReleases[0];
+    const selectedReleases = projectId === "motion"
+      ? project.tagPrefixes.map((prefix) =>
+          matchingReleases.find((entry) => entry.tag_name.toLowerCase().startsWith(prefix))
+        ).filter(Boolean)
+      : matchingReleases.slice(0, 1);
+    const release = selectedReleases[0];
     if (!release) {
       if (currentDownloadProject === projectId) {
         if (version) version.textContent = project.fallbackVersion;
@@ -908,7 +941,11 @@ async function loadDownloadProject(projectId) {
       return;
     }
 
-    downloadReleaseCache[projectId] = release;
+    downloadReleaseCache[projectId] = projectId === "motion"
+      ? { ...release, assets: selectedReleases.flatMap((entry) =>
+          Array.isArray(entry.assets) ? entry.assets : []
+        ) }
+      : release;
     if (!Array.isArray(downloadReleaseCache[projectId].assets)) {
       downloadReleaseCache[projectId].assets = [];
     }
@@ -925,7 +962,9 @@ async function loadDownloadProject(projectId) {
 
     if (currentDownloadProject === projectId) {
       if (version) {
-        version.textContent = release.tag_name.slice(project.tagPrefix.length) || "LATEST";
+        version.textContent = projectId === "motion"
+          ? "ANDROID + LINUX BETA"
+          : (release.tag_name.slice(project.tagPrefix.length) || "LATEST");
       }
       status.dataset.state = "ready";
       updateDownloadStatus();
