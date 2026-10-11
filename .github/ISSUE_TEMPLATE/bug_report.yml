@@ -1,0 +1,61 @@
+name: Application bug report
+description: Report a problem with FLEKI CONVERT or Fleki Orbit
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing! Please do not share passwords, account information, private files, or sensitive screenshots and logs.
+  - type: dropdown
+    id: project
+    attributes:
+      label: Project
+      options:
+        - FLEKI CONVERT
+        - Fleki Orbit
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      placeholder: "e.g. FLEKI CONVERT 1.0.0 or Fleki Orbit 0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: OS and device
+      placeholder: "e.g. Linux / BlackArch XFCE X11, or Android version and phone model"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What went wrong?
+      placeholder: Describe what happened and any error messages.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the app
+        2. Click ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Optional screenshots or logs
+      description: Redact any sensitive information first.
+    validations:
+      required: false
