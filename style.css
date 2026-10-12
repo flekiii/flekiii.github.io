@@ -5529,3 +5529,23 @@ html[data-theme="mocha-light"] { --bg:#faf6f1; --surface:#ffffff; --surface-2:#f
   background: color-mix(in srgb, var(--pink) 18%, var(--surface)) !important;
   border-color: var(--pink) !important;
 }
+
+
+/* Consistent uninstall documentation on every released project page. */
+.project-uninstall-card{display:block;min-width:0}
+.project-uninstall-header{display:block;min-width:0}
+.project-uninstall-header h2{font-size:clamp(24px,3.5vw,32px);line-height:1.22;margin-top:12px;letter-spacing:-.04em}
+.project-uninstall-intro{margin-top:12px;max-width:780px;color:var(--muted);font-size:14px;line-height:1.7}
+.project-uninstall-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px;align-items:stretch}
+.project-uninstall-item{display:block;min-width:0;padding:20px;border:1px solid var(--border);border-radius:18px;background:color-mix(in srgb,var(--pink) 3%,var(--surface-2))}
+.project-uninstall-item-title{display:block;width:auto;min-width:0;max-width:100%;margin:0 0 16px;color:var(--text);font-size:16px;font-weight:750;line-height:1.5;letter-spacing:normal;overflow-wrap:break-word;word-break:normal}
+.project-uninstall-codebox{display:flex;flex-direction:column;align-items:stretch;min-width:0;gap:10px}
+.project-uninstall-codebox pre{max-width:100%;min-width:0;margin:0;padding:15px;border-radius:13px;background:color-mix(in srgb,var(--bg) 87%,var(--pink));border:1px solid var(--border);overflow-x:auto;overflow-y:hidden;white-space:pre;tab-size:2}
+.project-uninstall-codebox code{display:block;width:max-content;min-width:100%;font-size:12px;line-height:1.85;color:var(--text);font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace;white-space:pre;word-break:normal;overflow-wrap:normal}
+.project-uninstall-copy{align-self:flex-end;width:auto;padding:9px 14px;border-radius:10px;background:color-mix(in srgb,var(--pink) 14%,var(--surface-2));color:var(--text);border:1px solid var(--border);font:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s,border-color .15s}
+.project-uninstall-copy:hover,.project-uninstall-copy:focus-visible{border-color:var(--pink);background:color-mix(in srgb,var(--pink) 23%,var(--surface-2))}
+.project-uninstall-copy.copied{color:var(--pink)}
+.project-uninstall-android{padding:14px 15px;border:1px solid var(--border);border-radius:13px;background:color-mix(in srgb,var(--pink) 6%,var(--surface));font-size:13px;line-height:1.75;color:var(--text);overflow-wrap:break-word}
+.project-uninstall-warning{margin-top:12px;font-size:12px;color:var(--muted);line-height:1.7;overflow-wrap:break-word}
+.project-uninstall-footnote{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.75;overflow-wrap:break-word}
+@media(max-width:700px){.project-uninstall-grid{grid-template-columns:minmax(0,1fr)}.project-uninstall-card{padding:22px 18px}.project-uninstall-item{padding:15px}.project-uninstall-codebox pre{padding:12px}.project-uninstall-item-title{font-size:15px}}
