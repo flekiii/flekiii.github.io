@@ -23,8 +23,8 @@
     "fleki-convert": [
       ["appimage", 'rm -i -- "$HOME/Downloads/fleki_convert-1.0.0+1-linux.AppImage"'],
       ["arch", 'sudo pacman -R fleki-convert'],
-      ["deb", 'dpkg-query -W -f="' + '$' + '{binary:Package}\\n" | grep -Ei "^fleki[-_]convert$"\nsudo apt remove fleki-convert'],
-      ["rpm", 'rpm -qa | grep -Ei "^fleki[-_]convert"\nsudo dnf remove fleki-convert'],
+      ["deb", "pkg=\"$(dpkg-query -W -f='${binary:Package}\\n' | grep -Ei '^fleki[-_]convert$' | head -n 1)\"\nif [ -n \"$pkg\" ]; then\n  sudo apt remove \"$pkg\"\nelse\n  echo 'FLEKI CONVERT package not found'\nfi"],
+      ["rpm", "pkg=\"$(rpm -qa --qf '%{NAME}\\n' | grep -Ei '^fleki[-_]convert$' | head -n 1)\"\nif [ -n \"$pkg\" ]; then\n  sudo dnf remove \"$pkg\"\nelse\n  echo 'FLEKI CONVERT package not found'\nfi"],
       ["androidConvert", null]
     ]
   };
