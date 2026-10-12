@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0a0a0a">
   <meta name="description" content="Fleki Power Menu — a customizable top-edge power menu for XFCE by flekiii.">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../style.css?v=86">
+  <link rel="stylesheet" href="../style.css?v=87">
   <title>Fleki Power Menu · flekiii</title>
 </head>
 <body data-site-page="project" data-project-id="power">
@@ -80,26 +80,7 @@
       </div>
     </section>
 
-    <section class="project-roadmap-card" aria-labelledby="power-uninstall-title">
-      <div>
-        <span class="project-section-label" data-project-i18n="powerUninstallLabel">UNINSTALL</span>
-        <h2 id="power-uninstall-title" data-project-i18n="powerUninstallTitle">How to remove Fleki Power Menu.</h2>
-        <p data-project-i18n="powerUninstallIntro">Choose the method you used to run the app. These commands only target Fleki Power Menu, not Fleki Orbit or your XFCE panel.</p>
-      </div>
-      <div class="project-feature-list" style="margin-top: 20px">
-        <div><strong data-project-i18n="powerUninstallAppImage">AppImage: delete the downloaded file from its folder. If you put it in Downloads:</strong></div>
-      </div>
-      <pre style="overflow-x:auto;white-space:pre-wrap;word-break:break-word;padding:16px;border-radius:14px;background:rgba(0,0,0,.24);margin:12px 0 22px"><code>rm -i -- "$HOME/Downloads/Fleki-Power-Menu-0.2.0-x86_64.AppImage"</code></pre>
-      <div class="project-feature-list">
-        <div><strong data-project-i18n="powerUninstallInstalled">If you installed the earlier Python version with autostart, run:</strong></div>
-      </div>
-      <pre style="overflow-x:auto;white-space:pre-wrap;word-break:break-word;padding:16px;border-radius:14px;background:rgba(0,0,0,.24);margin:12px 0 12px"><code>pkill -f "^python3 $HOME/.local/bin/fleki-power-menu.py$" || true
-rm -i -- "$HOME/.local/bin/fleki-power-menu.py"
-find "$HOME/.config/autostart" -maxdepth 1 -type f -iname '*fleki*power*.desktop' -print</code></pre>
-      <p data-project-i18n="powerUninstallAutostart">Review the displayed autostart file paths and remove only the Fleki Power Menu entry if present. Do not delete other desktop entries.</p>
-      <p data-project-i18n="powerUninstallSettings">Optional: to also erase your saved menu color, run:</p>
-      <pre style="overflow-x:auto;white-space:pre-wrap;word-break:break-word;padding:16px;border-radius:14px;background:rgba(0,0,0,.24);margin:12px 0"><code>rm -i -- "$HOME/.config/fleki-power-menu/settings.json"</code></pre>
-    </section>
+
 
     <div class="project-bottom-actions"><a class="button secondary project-bug-action" href="https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml&amp;title=%5BFleki%20Power%20Menu%5D%20" target="_blank" rel="noopener noreferrer" data-project-i18n="reportBug">REPORT A BUG ↗</a>
       <a class="button secondary" href="../#projects" data-project-i18n="backProjects">← BACK TO PROJECTS</a>
@@ -108,5 +89,6 @@ find "$HOME/.config/autostart" -maxdepth 1 -type f -iname '*fleki*power*.desktop
   </main>
   <footer class="project-footer"><span>flekiii.</span><span data-project-i18n="footer">Built independently.</span></footer>
   <script src="../project-page.js?v=59"></script>
+  <script src="../project-uninstall.js?v=1"></script>
 </body>
 </html>
