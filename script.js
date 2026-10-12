@@ -490,6 +490,53 @@ const powerText = {
 };
 for (const [language, copy] of Object.entries(powerText)) Object.assign(translations[language], copy);
 
+const downloadsHubText = {
+  en: {
+    downloadLaunchTitle:"Get the apps.",
+    downloadLaunchDescription:"One clean catalog for every released flekiii app. Choose a program, download the right file and find installation and emergency removal instructions.",
+    downloadLaunchButton:"DOWNLOAD ↗",
+    downloadLaunchNote:"Released apps only · Linux & Android · Installation & Uninstall"
+  },
+  uk: {
+    downloadLaunchTitle:"Завантажуй програми.",
+    downloadLaunchDescription:"Один зручний каталог усіх випущених програм flekiii. Обирай програму, завантажуй потрібний файл і переглядай інструкції зі встановлення та екстреного видалення.",
+    downloadLaunchButton:"ЗАВАНТАЖИТИ ↗",
+    downloadLaunchNote:"Тільки випущені програми · Linux та Android · Встановлення й видалення"
+  },
+  pl: {
+    downloadLaunchTitle:"Pobierz aplikacje.",
+    downloadLaunchDescription:"Jeden katalog wydanych aplikacji flekiii. Wybierz projekt, pobierz plik oraz poznaj instalację i awaryjne odinstalowanie.",
+    downloadLaunchButton:"POBIERZ ↗",
+    downloadLaunchNote:"Wydane aplikacje · Linux i Android · Instalacja i usuwanie"
+  },
+  de: {
+    downloadLaunchTitle:"Apps herunterladen.",
+    downloadLaunchDescription:"Alle veröffentlichten flekiii-Apps in einem Katalog: passende Dateien, Installation und Notfall-Deinstallation.",
+    downloadLaunchButton:"DOWNLOAD ↗",
+    downloadLaunchNote:"Nur veröffentlichte Apps · Linux und Android · Installieren und Entfernen"
+  },
+  es: {
+    downloadLaunchTitle:"Descarga las aplicaciones.",
+    downloadLaunchDescription:"Un catálogo de todas las aplicaciones publicadas de flekiii, con archivos, instalación y desinstalación de emergencia.",
+    downloadLaunchButton:"DESCARGAR ↗",
+    downloadLaunchNote:"Solo apps publicadas · Linux y Android · Instalación y eliminación"
+  },
+  fr: {
+    downloadLaunchTitle:"Télécharger les applications.",
+    downloadLaunchDescription:"Un catalogue pour toutes les applications flekiii publiées : fichiers, installation et désinstallation d’urgence.",
+    downloadLaunchButton:"TÉLÉCHARGER ↗",
+    downloadLaunchNote:"Applications publiées · Linux et Android · Installation et suppression"
+  },
+  ja: {
+    downloadLaunchTitle:"アプリをダウンロード。",
+    downloadLaunchDescription:"公開済みのflekiiiアプリを一か所で探せます。ファイル、インストール手順、緊急アンインストールも確認できます。",
+    downloadLaunchButton:"ダウンロード ↗",
+    downloadLaunchNote:"公開済みアプリのみ · Linux・Android · 導入と削除"
+  }
+};
+for (const [language, copy] of Object.entries(downloadsHubText)) Object.assign(translations[language], copy);
+
+
 
 const projectCatalog = {
   motion: {
