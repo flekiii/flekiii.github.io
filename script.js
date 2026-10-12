@@ -480,13 +480,13 @@ const publicReleaseText = {
 };
 for (const [language, copy] of Object.entries(publicReleaseText)) Object.assign(translations[language], copy);
 const powerText = {
-  en: {projectPowerDesc:"A beautiful top-edge XFCE power menu with shutdown, restart, log out and customizable colors.",downloadProjectPower:"Top-edge power menu for XFCE",downloadProjectPowerText:"Choose Linux to download the AppImage when the first build is published.",statusPowerPreparing:"APPIMAGE PREPARING"},
-  uk: {projectPowerDesc:"Красиве меню живлення XFCE з верхнього краю екрана: вимкнення, перезапуск, вихід і власний колір.",downloadProjectPower:"Меню живлення для XFCE",downloadProjectPowerText:"Обери Linux, щоб завантажити AppImage після публікації першої збірки.",statusPowerPreparing:"APPIMAGE ГОТУЄТЬСЯ"},
-  pl: {projectPowerDesc:"Menu zasilania XFCE przy górnej krawędzi ekranu, z wyborem kolorów.",downloadProjectPower:"Menu zasilania XFCE",downloadProjectPowerText:"Wybierz Linux, aby pobrać AppImage po opublikowaniu wersji.",statusPowerPreparing:"APPIMAGE W PRZYGOTOWANIU"},
-  de: {projectPowerDesc:"Ein XFCE-Energiemenü am oberen Bildschirmrand mit frei wählbaren Farben.",downloadProjectPower:"XFCE-Energiemenü",downloadProjectPowerText:"Wähle Linux, um das AppImage nach der Veröffentlichung herunterzuladen.",statusPowerPreparing:"APPIMAGE IN VORBEREITUNG"},
-  es: {projectPowerDesc:"Menú de energía para XFCE en el borde superior, con colores personalizables.",downloadProjectPower:"Menú de energía XFCE",downloadProjectPowerText:"Elige Linux para descargar el AppImage cuando se publique.",statusPowerPreparing:"APPIMAGE EN PREPARACIÓN"},
-  fr: {projectPowerDesc:"Menu d'alimentation XFCE en haut de l'écran avec couleurs personnalisables.",downloadProjectPower:"Menu d'alimentation XFCE",downloadProjectPowerText:"Choisis Linux pour télécharger l’AppImage dès sa publication.",statusPowerPreparing:"APPIMAGE EN PRÉPARATION"},
-  ja: {projectPowerDesc:"画面上端から開くXFCE用電源メニュー。色の変更にも対応。",downloadProjectPower:"XFCE電源メニュー",downloadProjectPowerText:"公開後にLinuxを選んでAppImageをダウンロードできます。",statusPowerPreparing:"APPIMAGE 準備中"}
+  en: {projectPowerDesc:"A beautiful top-edge XFCE power menu with shutdown, restart, log out and customizable colors.",downloadProjectPower:"Top-edge power menu for XFCE",downloadProjectPowerText:"Choose Linux to download the official v0.2.0 beta AppImage.",statusPowerRelease:"LINUX BETA AVAILABLE"},
+  uk: {projectPowerDesc:"Красиве меню живлення XFCE з верхнього краю екрана: вимкнення, перезапуск, вихід і власний колір.",downloadProjectPower:"Меню живлення для XFCE",downloadProjectPowerText:"Обери Linux, щоб завантажити офіційний AppImage v0.2.0 beta.",statusPowerRelease:"LINUX-БЕТА ДОСТУПНА"},
+  pl: {projectPowerDesc:"Menu zasilania XFCE przy górnej krawędzi ekranu, z wyborem kolorów.",downloadProjectPower:"Menu zasilania XFCE",downloadProjectPowerText:"Wybierz Linux, aby pobrać oficjalny AppImage v0.2.0 beta.",statusPowerRelease:"BETA LINUX DOSTĘPNA"},
+  de: {projectPowerDesc:"Ein XFCE-Energiemenü am oberen Bildschirmrand mit frei wählbaren Farben.",downloadProjectPower:"XFCE-Energiemenü",downloadProjectPowerText:"Wähle Linux, um das offizielle AppImage v0.2.0 Beta herunterzuladen.",statusPowerRelease:"LINUX-BETA VERFÜGBAR"},
+  es: {projectPowerDesc:"Menú de energía para XFCE en el borde superior, con colores personalizables.",downloadProjectPower:"Menú de energía XFCE",downloadProjectPowerText:"Elige Linux para descargar el AppImage oficial v0.2.0 beta.",statusPowerRelease:"BETA LINUX DISPONIBLE"},
+  fr: {projectPowerDesc:"Menu d'alimentation XFCE en haut de l'écran avec couleurs personnalisables.",downloadProjectPower:"Menu d'alimentation XFCE",downloadProjectPowerText:"Choisis Linux pour télécharger l’AppImage officiel v0.2.0 bêta.",statusPowerRelease:"BÊTA LINUX DISPONIBLE"},
+  ja: {projectPowerDesc:"画面上端から開くXFCE用電源メニュー。色の変更にも対応。",downloadProjectPower:"XFCE電源メニュー",downloadProjectPowerText:"Linuxを選んで公式AppImage v0.2.0ベータ版をダウンロードできます。",statusPowerRelease:"LINUXベータ版公開中"}
 };
 for (const [language, copy] of Object.entries(powerText)) Object.assign(translations[language], copy);
 
@@ -700,7 +700,7 @@ const downloadProjects = {
     allowPrerelease: true,
     platforms: ["linux"],
     fallbackRelease: null,
-    fallbackVersion: "APPIMAGE PREPARING",
+    fallbackVersion: "0.2.0 BETA",
     unavailableKey: "downloadsUnavailable",
     bugUrl: "https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml&title=%5BFleki%20Power%20Menu%5D%20"
   },
