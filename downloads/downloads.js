@@ -83,7 +83,7 @@
       backApps:"← ALL APPS",release:"OFFICIAL RELEASE",test:"TESTED BUILD",platformLabel:"PLATFORM",platformTitle:"Choose operating system",
       filesLabel:"DOWNLOADS",filesTitle:"Official files",filesIntro:"Only published files are shown. Choose a build for its installation instructions.",
       installLabel:"INSTALLATION",installTitle:"How to install",install:"INSTALL GUIDE",download:"DOWNLOAD ↓",sha:"SHA-256 ↗",
-      emergencyLabel:"EMERGENCY · UNINSTALL",emergencyTitle:"If you urgently need to remove the app",
+      emergencyLabel:"EMERGENCY · UNINSTALL",emergencyQuick:"EMERGENCY UNINSTALL ↓",emergencyTitle:"If you urgently need to remove the app",
       emergencyAndroid:"On Android: Settings → Apps → this app → Force stop → Uninstall. If it is stuck, restart the phone and retry. Do not erase unrelated app data.",
       emergency:"If it freezes or starts unexpectedly, close it via System Monitor; if it restarts at login, disable its entry under XFCE Settings → Session and Startup → Application Autostart. Use the commands below only for the affected project. Personal data is not automatically erased.",
       project:"PROJECT PAGE ↗",bug:"REPORT A BUG ↗",footer:"Independent software. Official downloads only.",
@@ -114,7 +114,7 @@
       backApps:"← УСІ ПРОГРАМИ",release:"ОФІЦІЙНИЙ РЕЛІЗ",test:"ПЕРЕВІРЕНА ЗБІРКА",platformLabel:"ПЛАТФОРМА",platformTitle:"Обери операційну систему",
       filesLabel:"ЗАВАНТАЖЕННЯ",filesTitle:"Офіційні файли",filesIntro:"Тут лише опубліковані файли. Для кожного формату доступна інструкція зі встановлення.",
       installLabel:"ВСТАНОВЛЕННЯ",installTitle:"Як встановити",install:"ІНСТРУКЦІЯ",download:"ЗАВАНТАЖИТИ ↓",sha:"SHA-256 ↗",
-      emergencyLabel:"ЕКСТРЕНЕ ВИДАЛЕННЯ",emergencyTitle:"Як терміново видалити програму",
+      emergencyLabel:"ЕКСТРЕНЕ ВИДАЛЕННЯ",emergencyQuick:"ЕКСТРЕНЕ ВИДАЛЕННЯ ↓",emergencyTitle:"Як терміново видалити програму",
       emergencyAndroid:"На Android: Налаштування → Програми → потрібна програма → Примусово зупинити → Видалити. Якщо не вдається, перезавантаж телефон і спробуй ще раз. Не чіпай дані інших програм.",
       emergency:"Якщо програма зависла або запускається сама, закрий її через Системний монітор. Якщо вона запускається під час входу, вимкни її у XFCE: Налаштування → Сеанси та запуск → Автозапуск програм. Наведені нижче команди стосуються лише цієї програми. Особисті дані автоматично не стираються.",
       project:"СТОРІНКА ПРОЄКТУ ↗",bug:"ПОВІДОМИТИ ПРО БАГ ↗",footer:"Незалежні програми. Тільки офіційні завантаження.",
@@ -136,15 +136,15 @@
       check:"Для цієї збірки є контрольна сума.",
       filters:"Фільтр платформи",light:"Світла",dark:"Темна"
     },
-    pl:{catTitle:"Wybierz ",catTitleAccent:"aplikację.",catIntro:"Wybierz opublikowany projekt, pobierz pliki i sprawdź instrukcje instalacji oraz awaryjnego usuwania.",search:"Szukaj aplikacji…",ready:"DOSTĘPNE",open:"PLIKI",backApps:"← WSZYSTKIE APLIKACJE",installTitle:"Jak zainstalować",emergencyTitle:"Awaryjne odinstalowanie",
+    pl:{catTitle:"Wybierz ",catTitleAccent:"aplikację.",catIntro:"Wybierz opublikowany projekt, pobierz pliki i sprawdź instrukcje instalacji oraz awaryjnego usuwania.",search:"Szukaj aplikacji…",ready:"DOSTĘPNE",open:"PLIKI",backApps:"← WSZYSTKIE APLIKACJE",installTitle:"Jak zainstalować",emergencyTitle:"Awaryjne odinstalowanie",emergencyQuick:"AWARYJNE USUWANIE ↓",
       emergencyAndroid:"Android: Ustawienia → Aplikacje → aplikacja → Wymuś zatrzymanie → Odinstaluj. Uruchom telefon ponownie w razie potrzeby.",download:"POBIERZ ↓",copy:"KOPIUJ",copied:"SKOPIOWANO!",filesTitle:"Oficjalne pliki",platformTitle:"Wybierz system",navDownloads:"POBIERANIE"},
-    de:{catTitle:"Wähle deine ",catTitleAccent:"App.",catIntro:"Offizielle Versionen an einem Ort. Dateien, Installation und Notfall-Deinstallation.",search:"Apps suchen…",ready:"VERFÜGBAR",open:"DATEIEN",backApps:"← ALLE APPS",installTitle:"Installation",emergencyTitle:"Notfall-Deinstallation",
+    de:{catTitle:"Wähle deine ",catTitleAccent:"App.",catIntro:"Offizielle Versionen an einem Ort. Dateien, Installation und Notfall-Deinstallation.",search:"Apps suchen…",ready:"VERFÜGBAR",open:"DATEIEN",backApps:"← ALLE APPS",installTitle:"Installation",emergencyTitle:"Notfall-Deinstallation",emergencyQuick:"NOTFALL-DEINSTALLATION ↓",
       emergencyAndroid:"Android: Einstellungen → Apps → App → Beenden erzwingen → Deinstallieren. Falls nötig, das Telefon neu starten.",download:"DOWNLOAD ↓",copy:"KOPIEREN",copied:"KOPIERT!",filesTitle:"Offizielle Dateien",platformTitle:"Betriebssystem wählen",navDownloads:"DOWNLOADS"},
-    es:{catTitle:"Elige tu ",catTitleAccent:"app.",catIntro:"Versiones oficiales en un solo lugar, con instalación y desinstalación de emergencia.",search:"Buscar aplicaciones…",ready:"DISPONIBLE",open:"ARCHIVOS",backApps:"← TODAS LAS APPS",installTitle:"Cómo instalar",emergencyTitle:"Desinstalación de emergencia",
+    es:{catTitle:"Elige tu ",catTitleAccent:"app.",catIntro:"Versiones oficiales en un solo lugar, con instalación y desinstalación de emergencia.",search:"Buscar aplicaciones…",ready:"DISPONIBLE",open:"ARCHIVOS",backApps:"← TODAS LAS APPS",installTitle:"Cómo instalar",emergencyTitle:"Desinstalación de emergencia",emergencyQuick:"DESINSTALACIÓN DE EMERGENCIA ↓",
       emergencyAndroid:"Android: Ajustes → Aplicaciones → aplicación → Forzar detención → Desinstalar. Reinicia el teléfono si es necesario.",download:"DESCARGAR ↓",copy:"COPIAR",copied:"¡COPIADO!",filesTitle:"Archivos oficiales",platformTitle:"Elige sistema operativo",navDownloads:"DESCARGAS"},
-    fr:{catTitle:"Choisis ton ",catTitleAccent:"application.",catIntro:"Toutes les versions officielles au même endroit, avec installation et suppression d’urgence.",search:"Rechercher des applications…",ready:"DISPONIBLE",open:"FICHIERS",backApps:"← TOUTES LES APPS",installTitle:"Comment installer",emergencyTitle:"Désinstallation d’urgence",
+    fr:{catTitle:"Choisis ton ",catTitleAccent:"application.",catIntro:"Toutes les versions officielles au même endroit, avec installation et suppression d’urgence.",search:"Rechercher des applications…",ready:"DISPONIBLE",open:"FICHIERS",backApps:"← TOUTES LES APPS",installTitle:"Comment installer",emergencyTitle:"Désinstallation d’urgence",emergencyQuick:"DÉSINSTALLATION D’URGENCE ↓",
       emergencyAndroid:"Android : Paramètres → Applications → application → Forcer l’arrêt → Désinstaller. Redémarre le téléphone si besoin.",download:"TÉLÉCHARGER ↓",copy:"COPIER",copied:"COPIÉ !",filesTitle:"Fichiers officiels",platformTitle:"Choisir le système",navDownloads:"TÉLÉCHARGEMENTS"},
-    ja:{catTitle:"アプリを",catTitleAccent:"選ぶ。",catIntro:"公開済みアプリの公式ファイル、インストール方法、緊急アンインストールをまとめました。",search:"アプリを検索…",ready:"公開済み",open:"ファイルを見る",backApps:"← アプリ一覧",installTitle:"インストール方法",emergencyTitle:"緊急アンインストール",
+    ja:{catTitle:"アプリを",catTitleAccent:"選ぶ。",catIntro:"公開済みアプリの公式ファイル、インストール方法、緊急アンインストールをまとめました。",search:"アプリを検索…",ready:"公開済み",open:"ファイルを見る",backApps:"← アプリ一覧",installTitle:"インストール方法",emergencyTitle:"緊急アンインストール",emergencyQuick:"緊急アンインストール ↓",
       emergencyAndroid:"Android：設定 → アプリ → 対象アプリ → 強制停止 → アンインストール。必要に応じてスマートフォンを再起動してください。",download:"ダウンロード ↓",copy:"コピー",copied:"コピーしました！",filesTitle:"公式ファイル",platformTitle:"OSを選択",navDownloads:"ダウンロード"}
   };
   let language = "en";
@@ -369,6 +369,7 @@
     $("fdRequirementTag").textContent=t("test");
     $("fdProjectPage").href="../"+(app.id==="fleki-convert"?"fleki-convert":app.id)+"/";
     $("fdReportBug").href=app.bug;
+    $("fdEmergencyShortcut").textContent = "!  "+t("emergencyQuick");
     $("fdEmergencyText").textContent = currentOS==="android"?t("emergencyAndroid"):t("emergency");
     const tabs=$("fdOsTabs");
     tabs.replaceChildren();
