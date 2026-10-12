@@ -5549,3 +5549,16 @@ html[data-theme="mocha-light"] { --bg:#faf6f1; --surface:#ffffff; --surface-2:#f
 .project-uninstall-warning{margin-top:12px;font-size:12px;color:var(--muted);line-height:1.7;overflow-wrap:break-word}
 .project-uninstall-footnote{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.75;overflow-wrap:break-word}
 @media(max-width:700px){.project-uninstall-grid{grid-template-columns:minmax(0,1fr)}.project-uninstall-card{padding:22px 18px}.project-uninstall-item{padding:15px}.project-uninstall-codebox pre{padding:12px}.project-uninstall-item-title{font-size:15px}}
+
+
+/* One-button Downloads entry point. Detailed builds live at /downloads/. */
+.downloads-hub-card .resource-card-icon{border-color:var(--border);color:var(--pink);background:color-mix(in srgb,var(--pink) 9%,var(--surface))}
+.downloads-hub-card .resource-kicker{color:var(--pink)}
+.downloads-hub-card .resource-content{min-width:0}
+.downloads-hub-card .resource-content-head{margin-bottom:20px}
+.downloads-hub-card .resource-card h3{color:var(--text)}
+.downloads-hub-card .resource-content p{max-width:680px;color:var(--muted);overflow-wrap:break-word}
+.downloads-hub-cta{display:inline-flex;align-items:center;justify-content:center;min-width:210px;min-height:52px;text-decoration:none;font-weight:850;letter-spacing:.07em;transition:transform .18s ease,box-shadow .18s ease}
+.downloads-hub-cta:hover,.downloads-hub-cta:focus-visible{transform:translateY(-2px);box-shadow:0 12px 32px color-mix(in srgb,var(--pink) 22%,transparent)}
+.downloads-hub-card .downloads-hub-note{margin-top:13px;font-size:11px;color:var(--muted);line-height:1.7}
+@media(max-width:600px){.downloads-hub-cta{width:100%}.downloads-hub-card .resource-content-head{margin-bottom:17px}}
