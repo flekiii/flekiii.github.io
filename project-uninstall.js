@@ -3,6 +3,7 @@
   "use strict";
   const guides = {
     power: [
+      ["powerAutostart", 'pkill -f "^(/usr/bin/)?python(3)? .*/fleki-power-menu\\.py$" || true\nrm -i -- "$HOME/.config/autostart/fleki-power-menu.desktop"\nrm -i -- "$HOME/.local/opt/fleki-power-menu/Fleki-Power-Menu.AppImage"'],
       ["appimage", 'rm -i -- "$HOME/Downloads/Fleki-Power-Menu-0.2.0-x86_64.AppImage"'],
       ["python", 'pkill -f "^python3 $HOME/.local/bin/fleki-power-menu.py$" || true\nrm -i -- "$HOME/.local/bin/fleki-power-menu.py"\nrm -i -- "$HOME/.config/autostart/fleki-power-menu.desktop"'],
       ["settings", 'rm -i -- "$HOME/.config/fleki-power-menu/settings.json"']
@@ -41,6 +42,7 @@
   function t(key) {
     const i = keys.indexOf(key);
     const lang = document.documentElement.lang;
+    if (key === "powerAutostart") return ({"en":"Installed AppImage + XFCE autostart","uk":"Встановлений AppImage + автозапуск XFCE","pl":"Zainstalowany AppImage + autostart XFCE","de":"Installierte AppImage + XFCE-Autostart","es":"AppImage instalado + inicio automático XFCE","fr":"AppImage installée + démarrage automatique XFCE","ja":"インストール済みAppImage + XFCE自動起動"})[lang] || "Installed AppImage + XFCE autostart";
     return (L[lang] || L.en)[i] || L.en[i] || key;
   }
   function make(tag, className, value) {
