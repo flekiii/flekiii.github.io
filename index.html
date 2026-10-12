@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=86">
+  <link rel="stylesheet" href="style.css?v=88">
 </head>
 <body>
   <!-- Share Site deployment refresh -->
@@ -281,93 +281,18 @@
     <section id="resources" class="section resources" data-editorial-label="DOWNLOADS" data-editorial-number="06">
       <div class="section-heading"><h2 data-i18n="resourcesTitle">Downloads</h2></div>
       <div class="resource-grid">
-        <article class="resource-card resource-card-downloads resource-card-single">
+        <article class="resource-card resource-card-downloads resource-card-single downloads-hub-card">
           <div class="resource-card-icon" aria-hidden="true">↓</div>
           <div class="resource-content">
             <div class="resource-content-head">
               <div>
                 <div class="resource-kicker" data-i18n="officialDownload">OFFICIAL DOWNLOADS</div>
-                <h3 data-i18n="downloadsTitle">Downloads</h3>
-                <p data-i18n="downloadsText">Choose FLEKI CONVERT and then select your operating system.</p>
+                <h3 data-i18n="downloadLaunchTitle">Get the apps.</h3>
+                <p data-i18n="downloadLaunchDescription">One clean catalog for every published flekiii app. Choose your program, download the right file, see installation instructions and emergency removal steps.</p>
               </div>
             </div>
-            <div class="download-project-list" id="downloadProjectList">
-              <!-- FLEKORA download selector -->
-              <button class="download-project-button" type="button" data-download-project="flekora" aria-controls="downloadProjectView" aria-expanded="false">
-                <img src="flekora-icon.svg" alt="" width="36" height="36">
-                <span class="download-project-copy"><strong>FLEKORA</strong><small data-i18n="downloadProjectFlekora">Offline notes, tasks and timer</small></span>
-                <span class="download-project-arrow" aria-hidden="true">→</span>
-              </button>
-
-              <button class="download-project-button" type="button" data-download-project="fleki-convert" aria-controls="downloadProjectView" aria-expanded="false">
-                <span class="download-project-mark mark-convert" aria-hidden="true"></span>
-                <span class="download-project-copy">
-                  <strong>FLEKI CONVERT</strong>
-                  <small data-i18n="downloadProjectFlekiConvert">Currency converter</small>
-                </span>
-                <span class="download-project-arrow" aria-hidden="true">→</span>
-              </button>
-              <button class="download-project-button" type="button" data-download-project="motion" aria-controls="downloadProjectView" aria-expanded="false">
-                <span class="download-project-mark mark-orbit" aria-hidden="true">◉</span>
-                <span class="download-project-copy"><strong>MOTION</strong><small data-i18n="downloadProjectMotion">Live wallpapers for Linux and Android</small></span>
-                <span class="download-project-arrow" aria-hidden="true">→</span>
-              </button>
-              <button class="download-project-button" type="button" data-download-project="power" aria-controls="downloadProjectView" aria-expanded="false">
-                <span class="download-project-mark mark-orbit" aria-hidden="true">⏻</span>
-                <span class="download-project-copy"><strong>Fleki Power Menu</strong><small data-i18n="downloadProjectPower">Top-edge power menu for XFCE</small></span>
-                <span class="download-project-arrow" aria-hidden="true">→</span>
-              </button>
-              <button class="download-project-button" type="button" data-download-project="orbit" aria-controls="downloadProjectView" aria-expanded="false">
-                <span class="download-project-mark mark-orbit" aria-hidden="true">◉</span>
-                <span class="download-project-copy">
-                  <strong>Fleki Orbit</strong>
-                  <small data-i18n="downloadProjectOrbit">Linux desktop launcher</small>
-                </span>
-                <span class="download-project-arrow" aria-hidden="true">→</span>
-              </button>
-            </div>
-            <div class="download-project-view" id="downloadProjectView" hidden aria-hidden="true">
-              <div class="download-project-view-head">
-                <div>
-                  <button class="download-back-button" id="downloadProjectBack" type="button" data-i18n="downloadBack">← BACK</button>
-                  <h3 id="downloadProjectTitle">FLEKI CONVERT</h3>
-                  <p id="downloadProjectDescription" data-i18n="downloadProjectFlekiConvertText">Choose an operating system to see its specific build.</p>
-                </div>
-                <span class="download-project-version" id="downloadProjectVersion">LATEST</span>
-              </div>
-              <a class="download-report-bug" id="downloadReportBug" href="https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml&amp;title=%5BFLEKI%20CONVERT%5D%20" target="_blank" rel="noopener noreferrer" data-i18n="reportBug">REPORT A BUG ↗</a>
-              <div class="download-os-grid" id="downloadOsGrid">
-                <button class="download-os-button" type="button" data-download-os="android">
-                  <strong data-i18n="downloadAndroid">ANDROID</strong>
-                  <span class="download-os-arrow" aria-hidden="true">→</span>
-                </button>
-                <button class="download-os-button" type="button" data-download-os="ios">
-                  <strong data-i18n="downloadIOS">iOS</strong>
-                  <span class="download-os-arrow" aria-hidden="true">→</span>
-                </button>
-                <button class="download-os-button" type="button" data-download-os="windows">
-                  <strong data-i18n="downloadWindows">WINDOWS</strong>
-                  <span class="download-os-arrow" aria-hidden="true">→</span>
-                </button>
-                <button class="download-os-button" type="button" data-download-os="linux">
-                  <strong data-i18n="downloadLinux">LINUX</strong>
-                  <span class="download-os-arrow" aria-hidden="true">→</span>
-                </button>
-                <button class="download-os-button" type="button" data-download-os="macos">
-                  <strong data-i18n="downloadMacOS">MACOS</strong>
-                  <span class="download-os-arrow" aria-hidden="true">→</span>
-                </button>
-              </div>
-              <div class="download-build-view" id="downloadBuildView" hidden aria-hidden="true">
-                <button class="download-build-back" id="downloadBuildBack" type="button" data-i18n="downloadBackToSystems">← ALL SYSTEMS</button>
-                <div class="download-build-head">
-                  <span class="download-build-label" id="downloadBuildOs">LINUX</span>
-                  <p data-i18n="downloadBuildChoose">Choose a build to download.</p>
-                </div>
-                <div class="download-build-list" id="downloadBuildList"></div>
-                <p class="download-status" id="downloadStatus" data-state="checking" data-i18n="downloadsChecking">Checking the latest release…</p>
-              </div>
-            </div>
+            <a class="button primary downloads-hub-cta" href="./downloads/" data-i18n="downloadLaunchButton">DOWNLOAD ↗</a>
+            <p class="downloads-hub-note" data-i18n="downloadLaunchNote">Available apps only · Linux and Android · Installation &amp; Uninstall</p>
           </div>
         </article>
       </div>
@@ -473,7 +398,7 @@
   </div>
 
   <!-- MOTION Linux + Android public betas -->
-  <script src="script.js?v=85"></script>
+  <script src="script.js?v=86"></script>
   <script src="flekora-release.js?v=045-f23c7edbdd1d"></script>
 </body>
 </html>
