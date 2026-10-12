@@ -49,9 +49,7 @@
     if (value !== undefined) e.textContent = value;
     return e;
   }
-  function paint() {
-    const section = document.getElementById("project-uninstall");
-    const id = document.body.dataset.projectId;
+  function paint(section = document.getElementById("project-uninstall"), id = (section && section.dataset.projectId) || document.body.dataset.projectId) {
     if (!section || !guides[id]) return;
     section.replaceChildren();
     const header = make("header", "project-uninstall-header");
@@ -100,6 +98,14 @@
     }
     section.append(grid, make("p", "project-uninstall-footnote", t("pathNotice")), make("p", "project-uninstall-footnote", t("privacyNotice")));
   }
+  // Shared API for the Downloads flow. Project pages keep their own automatic guide.
+  window.flekiRenderUninstall = (container, projectId) => {
+    if (!container || !guides[projectId]) return false;
+    container.dataset.projectId = projectId;
+    paint(container, projectId);
+    return true;
+  };
+
   function init() {
     if (!guides[document.body.dataset.projectId]) return;
     const actions = document.querySelector(".project-bottom-actions");
