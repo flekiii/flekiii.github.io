@@ -128,3 +128,10 @@ html[data-theme$="-light"] .fd-action-primary{color:white}
 
 .fd-emergency-shortcut{display:inline-flex;align-items:center;gap:6px;margin-top:17px;border:1px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--pink);font-size:11px;font-weight:850;letter-spacing:.06em;text-decoration:none;background:color-mix(in srgb,var(--pink) 7%,var(--surface));transition:background .17s,border-color .17s}
 .fd-emergency-shortcut:hover,.fd-emergency-shortcut:focus-visible{background:color-mix(in srgb,var(--pink) 17%,var(--surface));border-color:var(--pink);outline-offset:3px}
+
+
+/* Power Menu: optional permanent installation and autostart. */
+.fd-autostart-title{margin:26px 0 8px;font-size:20px;font-weight:850;letter-spacing:-.03em;color:var(--text)}
+.fd-autostart-code{margin-top:13px}
+.fd-autostart-code pre{overflow-x:auto}
+.fd-installation-content>.fd-outline-link{display:inline-block;margin:12px 0}
