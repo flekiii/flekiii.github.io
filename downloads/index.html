@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="green">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08110f">
+  <meta name="description" content="Download official flekiii apps. Choose a released project, get verified build links, installation steps, and emergency uninstall instructions.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../style.css?v=87">
+  <link rel="stylesheet" href="./downloads.css?v=1">
+  <title>Downloads · flekiii</title>
+</head>
+<body class="fd-body">
+  <div class="fd-orb fd-orb-a" aria-hidden="true"></div>
+  <div class="fd-orb fd-orb-b" aria-hidden="true"></div>
+  <header class="project-nav fd-nav">
+    <a class="logo" href="../">flekiii<span>.</span></a>
+    <nav aria-label="Site navigation">
+      <a href="../#projects" id="fdNavProjects">PROJECTS</a>
+      <a href="../#resources" id="fdNavDownloads" aria-current="page">DOWNLOADS</a>
+      <a href="../#support" id="fdNavSupport">SUPPORT</a>
+    </nav>
+    <div class="fd-settings">
+      <label for="fdLanguage" class="fd-visually-hidden">Language</label>
+      <select id="fdLanguage" class="fd-select" aria-label="Language">
+        <option value="en">🇬🇧 EN</option><option value="uk">🇺🇦 UA</option>
+        <option value="pl">🇵🇱 PL</option><option value="de">🇩🇪 DE</option>
+        <option value="es">🇪🇸 ES</option><option value="fr">🇫🇷 FR</option>
+        <option value="ja">🇯🇵 JA</option>
+      </select>
+      <label for="fdTheme" class="fd-visually-hidden">Color theme</label>
+      <select id="fdTheme" class="fd-select" aria-label="Color theme"></select>
+    </div>
+  </header>
+
+  <main class="fd-main">
+    <div class="fd-topline">
+      <a href="../#resources" class="fd-backlink" id="fdHomeBack">← FLEKIII</a>
+      <div class="fd-steps" aria-label="Download flow">
+        <span class="fd-step fd-step-done">01 · HOME</span>
+        <span class="fd-step fd-step-active" id="fdStageCatalog">02 · APPS</span>
+        <span class="fd-step" id="fdStageDetail">03 · DOWNLOAD</span>
+      </div>
+    </div>
+
+    <section id="fdCatalog" class="fd-scene" aria-labelledby="fdCatalogTitle">
+      <div class="fd-hero">
+        <span class="project-eyebrow" id="fdCatalogEyebrow">OFFICIAL RELEASES · FLEKIII</span>
+        <h1 id="fdCatalogTitle">Choose your <em>app.</em></h1>
+        <p id="fdCatalogIntro">All published applications in one place. Pick a project to see real downloads, setup instructions and safe emergency removal.</p>
+        <div class="fd-hero-stats"><span class="fd-live-dot" aria-hidden="true"></span><span id="fdReleaseCount">5 RELEASED APPS</span></div>
+      </div>
+      <div class="fd-toolbar">
+        <label class="fd-search-wrap">
+          <span aria-hidden="true">⌕</span>
+          <span class="fd-visually-hidden" id="fdSearchLabel">Search apps</span>
+          <input id="fdSearch" type="search" autocomplete="off" placeholder="Search released apps…" aria-labelledby="fdSearchLabel">
+        </label>
+        <div class="fd-filter" id="fdFilters" aria-label="Filter by platform">
+          <button type="button" class="is-active" data-filter="all" aria-pressed="true">ALL</button>
+          <button type="button" data-filter="linux" aria-pressed="false">LINUX</button>
+          <button type="button" data-filter="android" aria-pressed="false">ANDROID</button>
+        </div>
+      </div>
+      <div class="fd-cards" id="fdCards" aria-live="polite"></div>
+      <p class="fd-empty" id="fdEmpty" hidden>No matching released apps.</p>
+    </section>
+
+    <section id="fdDetail" class="fd-scene" aria-labelledby="fdDetailTitle" hidden>
+      <button class="fd-backlink fd-detail-back" type="button" id="fdBackToApps">← ALL APPS</button>
+      <div class="fd-detail-hero">
+        <div class="fd-detail-badge" id="fdAppIcon" aria-hidden="true">◉</div>
+        <div class="fd-detail-heading">
+          <span class="project-eyebrow" id="fdReleaseLabel">OFFICIAL RELEASE</span>
+          <h1 id="fdDetailTitle">App</h1>
+          <p id="fdDetailDescription"></p>
+          <div class="fd-detail-meta"><span id="fdVersion">VERSION</span><span id="fdPlatforms">LINUX</span><span id="fdRequirementTag">TESTED BUILD</span></div>
+        </div>
+      </div>
+
+      <section class="fd-panel" aria-labelledby="fdPlatformsTitle">
+        <div class="fd-section-heading">
+          <span class="fd-section-index">01</span>
+          <div><span class="project-section-label" id="fdPlatformsLabel">PLATFORM</span><h2 id="fdPlatformsTitle">Choose operating system</h2></div>
+        </div>
+        <div class="fd-os-tabs" id="fdOsTabs"></div>
+      </section>
+
+      <section class="fd-panel" aria-labelledby="fdFilesTitle">
+        <div class="fd-section-heading">
+          <span class="fd-section-index">02</span>
+          <div><span class="project-section-label" id="fdFilesLabel">DOWNLOADS</span><h2 id="fdFilesTitle">Official files</h2></div>
+        </div>
+        <p class="fd-section-description" id="fdFilesIntro">Only published files are shown. Choose a build for its installation instructions.</p>
+        <div id="fdReleaseStatus" class="fd-status" role="status"></div>
+        <div class="fd-files" id="fdFiles"></div>
+      </section>
+
+      <section class="fd-panel" id="fdInstallation" aria-labelledby="fdInstallTitle">
+        <div class="fd-section-heading">
+          <span class="fd-section-index">03</span>
+          <div><span class="project-section-label" id="fdInstallLabel">INSTALLATION</span><h2 id="fdInstallTitle">How to install</h2></div>
+        </div>
+        <div class="fd-installation-content" id="fdInstallContent"></div>
+      </section>
+
+      <section class="fd-panel fd-emergency" id="fdEmergency" aria-labelledby="fdEmergencyTitle">
+        <div class="fd-section-heading">
+          <span class="fd-section-index fd-emergency-icon">!</span>
+          <div><span class="project-section-label" id="fdEmergencyLabel">EMERGENCY · UNINSTALL</span><h2 id="fdEmergencyTitle">If you need to remove the app</h2></div>
+        </div>
+        <p class="fd-section-description" id="fdEmergencyText">If an app is stuck, close it from System Monitor or stop its autostart before removing it. The commands below target this project only and do not erase personal data automatically.</p>
+        <div id="fdSharedUninstall" class="fd-uninstall-slot"></div>
+      </section>
+
+      <div class="fd-bottom-actions">
+        <a class="fd-outline-link" id="fdProjectPage" href="../#projects">PROJECT PAGE ↗</a>
+        <a class="fd-outline-link" id="fdReportBug" href="https://github.com/flekiii/flekiii.github.io/issues" target="_blank" rel="noopener noreferrer">REPORT A BUG ↗</a>
+      </div>
+    </section>
+  </main>
+  <footer class="project-footer fd-footer"><span>flekiii.</span><span id="fdFooter">Independent software. Official downloads only.</span></footer>
+  <noscript><p class="fd-noscript">JavaScript is needed for the interactive catalog. Find official release files at <a href="https://github.com/flekiii/flekiii.github.io/releases">GitHub Releases</a>.</p></noscript>
+  <script src="../project-uninstall.js?v=2"></script>
+  <script src="./downloads.js?v=1"></script>
+</body>
+</html>
