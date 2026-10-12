@@ -199,11 +199,11 @@
   ];
   const nodes = [
     {id:"xoni",name:"XONI Mail",description:"nx",state:"live",href:"https://xoni-mail.pages.dev/",x:"20%",y:"22%"},
-    {id:"veltrix",name:"VELTRIX",description:"nv",state:"dev",href:"#projects",x:"50%",y:"9%"},
-    {id:"true",name:"TRUE OS",description:"nt",state:"preview",href:"#projects",x:"80%",y:"22%"},
-    {id:"flekibard",name:"Flekibard",description:"nf",state:"dev",href:"#projects",x:"20%",y:"78%"},
-    {id:"motion",name:"MOTION",description:"nm",state:"beta",href:"./downloads/",x:"50%",y:"91%"},
-    {id:"flekora",name:"FLEKORA",description:"nfl",state:"beta",href:"./downloads/",x:"80%",y:"78%"}
+    {id:"veltrix",name:"VELTRIX",description:"nv",state:"dev",href:"#projects",projectId:"games",x:"50%",y:"9%"},
+    {id:"true",name:"TRUE OS",description:"nt",state:"preview",href:"#projects",projectId:"trueos-pc",x:"80%",y:"22%"},
+    {id:"flekibard",name:"Flekibard",description:"nf",state:"dev",href:"#projects",projectId:"flekibard",x:"20%",y:"78%"},
+    {id:"motion",name:"MOTION",description:"nm",state:"beta",href:"#projects",projectId:"motion",x:"50%",y:"91%"},
+    {id:"flekora",name:"FLEKORA",description:"nfl",state:"beta",href:"#projects",projectId:"flekora",x:"80%",y:"78%"}
   ];
   const anchor = document.getElementById("projects");
   if (!anchor || document.getElementById("flekiiiPortal")) return;
@@ -215,7 +215,7 @@
       '<span class="portal-kicker">' + tp("hubK") + '</span><h2 id="portal-heading">' + tp("hubT") + '</h2><p>' + tp("hubL") + '</p>' +
       '<div class="portal-tabs" aria-label="Portal sections">' + links.map(function(x){return '<a href="#'+x[0]+'">'+tp(x[1])+'</a>';}).join("") + '</div></div></section>' +
     '<section class="portal-section" id="ecosystem"><div class="portal-heading"><div><h2>'+tp("mapT")+'</h2><p>'+tp("mapL")+'</p></div></div>' +
-      '<div class="portal-network" role="group" aria-label="Interactive ecosystem project map"><div class="portal-orbit-core"><strong>flekiii<span style="color:var(--pink)">.</span></strong><small>ECOSYSTEM</small></div>' +
+      '<div class="portal-network" role="group" aria-label="Interactive ecosystem project map"><svg class="portal-wires" aria-hidden="true" viewBox="0 0 1000 440" preserveAspectRatio="none"><path d="M500 220 L200 97 M500 220 L500 40 M500 220 L800 97 M500 220 L200 343 M500 220 L500 400 M500 220 L800 343" /></svg><div class="portal-orbit-core"><strong>flekiii<span style="color:var(--pink)">.</span></strong><small id="portalCoreLabel"></small></div>' +
       nodes.map(function(n){return '<button type="button" class="portal-node" data-node="'+n.id+'" style="--x:'+n.x+';--y:'+n.y+'"><strong>'+n.name+'</strong><small>'+tp(n.state)+'</small></button>';}).join("") +
       '</div><div class="portal-selection" aria-live="polite"><div><small id="portalSelectedState"></small><h3 id="portalSelectedName"></h3><p id="portalSelectedDescription"></p></div><a class="portal-link" id="portalSelectedLink" href="#projects">'+tp("mapOpen")+'</a></div>' +
       '<p class="portal-muted">'+tp("mapHint")+'</p></section>' +
@@ -256,6 +256,10 @@
     const navigation = nav && nav.querySelector('a[href="#portal"]');
     if (navigation) navigation.textContent = dict.nav;
     document.getElementById("portalSearch").placeholder = dict.search;
+    document.getElementById("portalSearch").setAttribute("aria-label", dict.search);
+    container.querySelector(".portal-tabs").setAttribute("aria-label", dict.hubK);
+    container.querySelector(".portal-network").setAttribute("aria-label", dict.mapT);
+    document.getElementById("portalCoreLabel").textContent = dict.tabMap;
     updateNodeSelection();
     updateStatusText();
     filterFaq();
@@ -276,6 +280,11 @@
       el.setAttribute("aria-pressed", String(isSelected));
     });
   }
+  document.getElementById("portalSelectedLink").addEventListener("click", function(event){
+    if (!selectedNode.projectId) return;
+    const target = document.querySelector(".project-view[data-project=\"" + selectedNode.projectId + "\"]");
+    if (target) {event.preventDefault();target.click();}
+  });
   container.querySelectorAll(".portal-node").forEach(function(button){
     button.addEventListener("click", function() {
       selectedNode = nodes.find(function(n){return n.id === button.dataset.node;}) || nodes[0];
