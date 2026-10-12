@@ -124,3 +124,7 @@ html[data-theme$="-light"] .fd-action-primary{color:white}
  .fd-hero h1{font-size:49px}
  .fd-bottom-actions>a{flex:1;text-align:center}
 }
+
+
+.fd-emergency-shortcut{display:inline-flex;align-items:center;gap:6px;margin-top:17px;border:1px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--pink);font-size:11px;font-weight:850;letter-spacing:.06em;text-decoration:none;background:color-mix(in srgb,var(--pink) 7%,var(--surface));transition:background .17s,border-color .17s}
+.fd-emergency-shortcut:hover,.fd-emergency-shortcut:focus-visible{background:color-mix(in srgb,var(--pink) 17%,var(--surface));border-color:var(--pink);outline-offset:3px}
