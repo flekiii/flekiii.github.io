@@ -60,6 +60,9 @@
     section.append(header);
     const grid = make("div", "project-uninstall-grid");
     for (const [type, command] of guides[id]) {
+      const os = section.dataset.os;
+      const isAndroid = type === "androidMotion" || type === "androidConvert";
+      if ((os === "android" && !isAndroid) || (os === "linux" && isAndroid)) continue;
       const item = make("article", "project-uninstall-item");
       item.append(make("h3", "project-uninstall-item-title", t(type)));
       if (command !== null) {
