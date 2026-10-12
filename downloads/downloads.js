@@ -470,6 +470,29 @@
     if(app.id==="motion" && currentOS==="linux")extras.push(el("p","fd-install-note",t("appNoteMotion")));
     if(app.id==="flekora")extras.push(el("p","fd-install-note",t("appNoteFlekora")));
     wrap.append(...extras);
+    if (app.id === "power" && currentOS === "linux" && file.name.toLowerCase().endsWith(".appimage")) {
+      const labels = {
+        en:["Start automatically with XFCE","For automatic startup after login, download the official installer script, inspect it, and run the command below. It copies the AppImage to a stable folder and creates an XFCE autostart entry. No sudo.","DOWNLOAD AUTOSTART INSTALLER ↓"],
+        uk:["Автозапуск разом із XFCE","Щоб меню запускалося після кожного входу до XFCE, завантаж офіційний скрипт встановлення, переглянь його й виконай команду нижче. Скрипт перенесе AppImage у постійну папку та налаштує автозапуск без sudo.","ЗАВАНТАЖИТИ СКРИПТ АВТОЗАПУСКУ ↓"],
+        pl:["Automatyczny start z XFCE","Pobierz i sprawdź oficjalny skrypt instalatora, następnie wykonaj polecenie. Tworzy wpis autostartu XFCE bez sudo.","POBIERZ INSTALATOR AUTOSTARTU ↓"],
+        de:["Autostart mit XFCE","Lade das offizielle Installationsskript herunter, prüfe es und führe den Befehl aus. Es richtet den XFCE-Autostart ohne sudo ein.","AUTOSTART-INSTALLER LADEN ↓"],
+        es:["Inicio automático con XFCE","Descarga y revisa el instalador oficial y ejecuta el comando. Configura el inicio automático de XFCE sin sudo.","DESCARGAR INSTALADOR DE INICIO ↓"],
+        fr:["Démarrage automatique avec XFCE","Télécharge et examine le script officiel, puis exécute la commande. Il configure le démarrage XFCE sans sudo.","TÉLÉCHARGER LE SCRIPT DE DÉMARRAGE ↓"],
+        ja:["XFCEで自動起動","公式インストーラスクリプトをダウンロードして内容を確認し、コマンドを実行してください。sudoを使わず自動起動を設定できます。","自動起動スクリプトをダウンロード ↓"]
+      };
+      const txt=labels[language]||labels.en;
+      wrap.append(el("h3","fd-autostart-title",txt[0]),el("p","fd-install-note",txt[1]));
+      const helper=el("a","fd-outline-link",txt[2]);
+      helper.href="./power/install-autostart.sh";
+      helper.download="install-autostart.sh";
+      wrap.append(helper);
+      const command='bash "$HOME/Downloads/install-autostart.sh" "$HOME/Downloads/' + file.name + '"';
+      const box=el("div","fd-code fd-autostart-code");
+      const pre=el("pre");
+      pre.append(el("code","",command));
+      box.append(pre,copyButton(command));
+      wrap.append(box);
+    }
   }
   function render() {
     renderCatalog();
