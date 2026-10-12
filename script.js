@@ -479,6 +479,16 @@ const publicReleaseText = {
   ja: { reportBug:"バグを報告 ↗", projectMotionDesc:"LinuxとAndroid向けのライブ壁紙。両方のベータ版を公開中。", statusMotionBeta:"LINUX・ANDROID ベータ公開中", downloadProjectMotion:"Linux・Android向けライブ壁紙", downloadProjectMotionText:"AndroidならAPK、LinuxならAppImageまたはTAR.GZを選んでください。", statusOrbitRelease:"LINUXベータ版公開中" }
 };
 for (const [language, copy] of Object.entries(publicReleaseText)) Object.assign(translations[language], copy);
+const powerText = {
+  en: {projectPowerDesc:"A beautiful top-edge XFCE power menu with shutdown, restart, log out and customizable colors.",downloadProjectPower:"Top-edge power menu for XFCE",downloadProjectPowerText:"Choose Linux to download the AppImage when the first build is published.",statusPowerPreparing:"APPIMAGE PREPARING"},
+  uk: {projectPowerDesc:"Красиве меню живлення XFCE з верхнього краю екрана: вимкнення, перезапуск, вихід і власний колір.",downloadProjectPower:"Меню живлення для XFCE",downloadProjectPowerText:"Обери Linux, щоб завантажити AppImage після публікації першої збірки.",statusPowerPreparing:"APPIMAGE ГОТУЄТЬСЯ"},
+  pl: {projectPowerDesc:"Menu zasilania XFCE przy górnej krawędzi ekranu, z wyborem kolorów.",downloadProjectPower:"Menu zasilania XFCE",downloadProjectPowerText:"Wybierz Linux, aby pobrać AppImage po opublikowaniu wersji.",statusPowerPreparing:"APPIMAGE W PRZYGOTOWANIU"},
+  de: {projectPowerDesc:"Ein XFCE-Energiemenü am oberen Bildschirmrand mit frei wählbaren Farben.",downloadProjectPower:"XFCE-Energiemenü",downloadProjectPowerText:"Wähle Linux, um das AppImage nach der Veröffentlichung herunterzuladen.",statusPowerPreparing:"APPIMAGE IN VORBEREITUNG"},
+  es: {projectPowerDesc:"Menú de energía para XFCE en el borde superior, con colores personalizables.",downloadProjectPower:"Menú de energía XFCE",downloadProjectPowerText:"Elige Linux para descargar el AppImage cuando se publique.",statusPowerPreparing:"APPIMAGE EN PREPARACIÓN"},
+  fr: {projectPowerDesc:"Menu d'alimentation XFCE en haut de l'écran avec couleurs personnalisables.",downloadProjectPower:"Menu d'alimentation XFCE",downloadProjectPowerText:"Choisis Linux pour télécharger l’AppImage dès sa publication.",statusPowerPreparing:"APPIMAGE EN PRÉPARATION"},
+  ja: {projectPowerDesc:"画面上端から開くXFCE用電源メニュー。色の変更にも対応。",downloadProjectPower:"XFCE電源メニュー",downloadProjectPowerText:"公開後にLinuxを選んでAppImageをダウンロードできます。",statusPowerPreparing:"APPIMAGE 準備中"}
+};
+for (const [language, copy] of Object.entries(powerText)) Object.assign(translations[language], copy);
 
 
 const projectCatalog = {
@@ -487,6 +497,12 @@ const projectCatalog = {
     page: "https://flekiii.github.io/motion/",
     en: "Live video and photo wallpapers with movable desktop shortcuts, saved positions and themes. Linux x86_64 beta for XFCE on X11.",
     uk: "Живі відео- та фотошпалери з рухомими ярликами, збереженням позицій і темами. Linux x86_64 бета для XFCE на X11."
+  },
+  power: {
+    icon: "⏻", name: "Fleki Power Menu", status: "LINUX APPIMAGE PREPARING",
+    page: "https://flekiii.github.io/power/",
+    en: "An elegant top-edge power menu for XFCE with Shutdown, Restart, Log out, confirmations and fully customizable colors.",
+    uk: "Стильне меню живлення для XFCE з верхнього краю екрана: вимкнення, перезапуск, вихід, підтвердження та вибір кольору."
   },
   orbit: {
     icon: "🪟",
@@ -677,6 +693,17 @@ const motionReleaseFallback = {
 };
 
 const downloadProjects = {
+  power: {
+    title: "Fleki Power Menu",
+    subtitleKey: "downloadProjectPowerText",
+    tagPrefix: "fleki-power-",
+    allowPrerelease: true,
+    platforms: ["linux"],
+    fallbackRelease: null,
+    fallbackVersion: "APPIMAGE PREPARING",
+    unavailableKey: "downloadsUnavailable",
+    bugUrl: "https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml&title=%5BFleki%20Power%20Menu%5D%20"
+  },
   motion: {
     title: "MOTION", subtitleKey: "downloadProjectMotionText",
     releaseRepo: "flekiii/motion", allowPrerelease: true,
