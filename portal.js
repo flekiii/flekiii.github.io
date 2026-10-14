@@ -200,6 +200,8 @@
     shell.querySelectorAll("[data-portal]").forEach(function (node) {
       node.textContent = text[node.dataset.portal] || "";
     });
+    const navLink = nav && nav.querySelector(".nav-downloads");
+    if (navLink) navLink.textContent = text.nav;
     shell.querySelectorAll("[data-app-name]").forEach(function (node) {
       const app = text.apps[node.dataset.appName];
       node.textContent = app[0];
