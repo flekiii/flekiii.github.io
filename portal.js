@@ -131,12 +131,19 @@
           '<div class="portal-download-ring portal-ring-two"></div><div class="portal-download-core"><span>flekiii</span><b>DOWNLOADS</b></div>' +
           '<i class="portal-float-tag tag-flekora">FLEKORA</i><i class="portal-float-tag tag-motion">MOTION</i></div>' +
       '</div><div class="portal-app-grid" aria-label="Available projects"></div></section>' +
-    '<section class="portal-section portal-community-section" id="community"><div class="portal-community-heading">' +
-      '<div><span class="portal-kicker">FLEKIII COMMUNITY</span><h2 data-portal="community"></h2><p data-portal="communityText"></p></div></div>' +
+    '<section class="portal-section portal-community-section portal-community-redesign" id="community">' +
+      '<div class="portal-community-heading"><div><span class="portal-kicker">FLEKIII COMMUNITY</span>' +
+        '<h2 data-portal="community"></h2><p data-portal="communityText"></p></div><span class="portal-community-count" aria-hidden="true">03</span></div>' +
       '<div class="portal-community-grid">' +
-        '<article class="portal-card"><span class="portal-community-mark">01</span><h3 data-portal="bug"></h3><p data-portal="bugText"></p><a class="portal-link" href="https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml" target="_blank" rel="noopener noreferrer"><span data-portal="open"></span></a></article>' +
-        '<article class="portal-card"><span class="portal-community-mark">02</span><h3 data-portal="idea"></h3><p data-portal="ideaText"></p><a class="portal-link" href="https://github.com/flekiii/flekiii.github.io/issues/new?labels=enhancement" target="_blank" rel="noopener noreferrer"><span data-portal="open"></span></a></article>' +
-        '<article class="portal-card"><span class="portal-community-mark">03</span><h3 data-portal="discuss"></h3><p data-portal="discussText"></p><a class="portal-link" href="https://github.com/flekiii/flekiii.github.io/discussions" target="_blank" rel="noopener noreferrer"><span data-portal="open"></span></a></article>' +
+        '<a class="portal-card portal-community-card" href="https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml" target="_blank" rel="noopener noreferrer">' +
+          '<span class="portal-community-card-top"><span class="portal-community-mark">01</span><span class="portal-community-arrow" aria-hidden="true">↗</span></span>' +
+          '<span class="portal-community-card-copy"><h3 data-portal="bug"></h3><p data-portal="bugText"></p></span><span class="portal-link"><span data-portal="open"></span><b aria-hidden="true">↗</b></span></a>' +
+        '<a class="portal-card portal-community-card" href="https://github.com/flekiii/flekiii.github.io/issues/new?labels=enhancement" target="_blank" rel="noopener noreferrer">' +
+          '<span class="portal-community-card-top"><span class="portal-community-mark">02</span><span class="portal-community-arrow" aria-hidden="true">↗</span></span>' +
+          '<span class="portal-community-card-copy"><h3 data-portal="idea"></h3><p data-portal="ideaText"></p></span><span class="portal-link"><span data-portal="open"></span><b aria-hidden="true">↗</b></span></a>' +
+        '<a class="portal-card portal-community-card" href="https://github.com/flekiii/flekiii.github.io/discussions" target="_blank" rel="noopener noreferrer">' +
+          '<span class="portal-community-card-top"><span class="portal-community-mark">03</span><span class="portal-community-arrow" aria-hidden="true">↗</span></span>' +
+          '<span class="portal-community-card-copy"><h3 data-portal="discuss"></h3><p data-portal="discussText"></p></span><span class="portal-link"><span data-portal="open"></span><b aria-hidden="true">↗</b></span></a>' +
       '</div></section>';
   const appGrid = shell.querySelector(".portal-app-grid");
   projects.forEach(function (project) {

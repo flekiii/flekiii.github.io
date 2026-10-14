@@ -48,3 +48,26 @@
 @media(max-width:700px){.portal-download-hero{grid-template-columns:1fr;min-height:0}.portal-download-copy h2{max-width:520px}.portal-download-art{width:min(80vw,300px);margin-top:8px}.portal-app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.portal-community-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.portal-shell{padding-bottom:58px}.portal-section{width:calc(100% - 30px);padding:25px 0}.portal-download-section{padding-top:28px}.portal-download-hero{padding:25px 21px;border-radius:23px}.portal-download-art{width:min(76vw,260px)}.portal-app-grid{gap:9px}.portal-app-card{padding:14px;border-radius:15px}.portal-app-info h3{font-size:13px}.portal-app-info p{font-size:10px}.portal-app-link{font-size:10px;padding:9px}.nav nav a.nav-downloads{padding:7px 9px}}
 @media(prefers-reduced-motion:reduce){.portal-shell *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Community section refresh */
+.portal-community-section.portal-community-redesign{padding-top:clamp(52px,7vw,82px);border-top:1px solid var(--border)}
+.portal-community-redesign .portal-community-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:25px}
+.portal-community-redesign .portal-community-heading h2{margin-bottom:10px}
+.portal-community-redesign .portal-community-heading p{max-width:560px;font-size:14px}
+.portal-community-count{display:grid;place-items:center;width:54px;height:54px;flex:0 0 54px;border:1px solid var(--border);border-radius:17px;color:var(--pink);font-size:15px;font-weight:850;background:var(--surface-2)}
+.portal-community-redesign .portal-community-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.portal-community-redesign .portal-community-card{position:relative;display:flex;flex-direction:column;min-width:0;min-height:240px;padding:23px;border:1px solid var(--border);border-radius:22px;color:var(--text);text-decoration:none;background:linear-gradient(145deg,color-mix(in srgb,var(--pink) 7%,var(--surface)),var(--surface-2));transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.portal-community-redesign .portal-community-card:hover,.portal-community-redesign .portal-community-card:focus-visible{transform:translateY(-4px);border-color:color-mix(in srgb,var(--pink) 54%,var(--border));box-shadow:0 18px 42px rgba(0,0,0,.18)}
+.portal-community-redesign .portal-community-card:focus-visible{outline:2px solid var(--pink);outline-offset:3px}
+.portal-community-card-top{display:flex;align-items:center;justify-content:space-between}
+.portal-community-mark{display:grid;place-items:center;width:38px;height:38px;margin:0;border:1px solid color-mix(in srgb,var(--pink) 26%,var(--border));border-radius:12px;color:var(--pink);background:color-mix(in srgb,var(--pink) 9%,var(--surface-2));font-size:10px;font-weight:850;letter-spacing:.1em}
+.portal-community-arrow{color:var(--muted);font-size:18px;transition:transform .2s ease,color .2s ease}
+.portal-community-card:hover .portal-community-arrow{transform:translate(2px,-2px);color:var(--pink)}
+.portal-community-card-copy{display:block;flex:1;padding-top:23px}
+.portal-community-card-copy h3{margin:0 0 8px;color:var(--text);font-size:18px;letter-spacing:-.03em}
+.portal-community-card-copy p{margin:0;color:var(--muted);font-size:13px;line-height:1.7}
+.portal-community-redesign .portal-community-card .portal-link{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:23px;color:var(--pink);font-size:10px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
+.portal-community-redesign .portal-community-card .portal-link b{font-size:15px;transition:transform .2s ease}
+.portal-community-redesign .portal-community-card:hover .portal-link b{transform:translate(2px,-2px)}
+@media(max-width:850px){.portal-community-redesign .portal-community-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.portal-community-redesign .portal-community-grid{grid-template-columns:1fr}.portal-community-redesign .portal-community-card{min-height:205px;padding:20px}.portal-community-redesign .portal-community-heading{align-items:flex-start}}
