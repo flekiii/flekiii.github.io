@@ -129,7 +129,7 @@
           '<span class="portal-catalog-note" data-portal="catalogNote"></span></div>' +
         '<div class="portal-download-art" aria-hidden="true"><div class="portal-download-ring portal-ring-one"></div>' +
           '<div class="portal-download-ring portal-ring-two"></div><div class="portal-download-core"><span>flekiii</span><b>DOWNLOADS</b></div>' +
-          '<i class="portal-float-tag tag-flekora">FLEKORA</i><i class="portal-float-tag tag-motion">MOTION</i><i class="portal-float-tag tag-veltrix">VELTRIX</i></div>' +
+          '<i class="portal-float-tag tag-flekora">FLEKORA</i><i class="portal-float-tag tag-motion">MOTION</i></div>' +
       '</div><div class="portal-app-grid" aria-label="Available projects"></div></section>' +
     '<section class="portal-section portal-community-section" id="community"><div class="portal-community-heading">' +
       '<div><span class="portal-kicker">FLEKIII COMMUNITY</span><h2 data-portal="community"></h2><p data-portal="communityText"></p></div></div>' +
