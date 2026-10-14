@@ -5592,3 +5592,35 @@ html[data-theme="mocha-light"] { --bg:#faf6f1; --surface:#ffffff; --surface-2:#f
 @media(max-width:750px){.personal-setup{padding-top:75px;padding-bottom:75px}.personal-setup .setup-intro{align-items:flex-start;flex-direction:column;gap:12px}.setup-grid{grid-template-columns:minmax(0,1fr)}.setup-card{padding:22px;border-radius:18px}.setup-card-heading{margin-bottom:19px}.setup-specs dt{flex-basis:76px}.setup-hz{font-size:92px}}
 @media(max-width:380px){.setup-card{padding:18px}.setup-specs>div{gap:8px}.setup-specs dt{flex-basis:62px;font-size:11px}.setup-specs dd{font-size:12px}}
 
+
+
+/* Social Hub refresh */
+#social.social-hub-redesign { padding-top:clamp(52px,8vw,96px); padding-bottom:clamp(58px,8vw,100px); }
+#social.social-hub-redesign .social-intro { display:flex;align-items:flex-end;justify-content:space-between;gap:28px;margin:0 0 30px;padding-bottom:26px;border-bottom:1px solid var(--border,rgba(255,255,255,.1)); }
+#social.social-hub-redesign .social-intro-copy { max-width:650px; }
+#social.social-hub-redesign .social-eyebrow { display:inline-block;margin-bottom:13px;color:var(--pink,#61d9ae);font-size:10px;font-weight:800;letter-spacing:.2em; }
+#social.social-hub-redesign .section-heading { margin:0; }
+#social.social-hub-redesign .social-intro h2 { margin:0;color:var(--text,#f4f5f5);font-size:clamp(34px,5.5vw,62px);line-height:1;letter-spacing:-.065em; }
+#social.social-hub-redesign .social-intro p { max-width:510px;margin:16px 0 0;color:var(--muted,#9da4a1);font-size:15px;line-height:1.7; }
+#social.social-hub-redesign .social-platforms { display:flex;align-items:center;gap:10px;flex:0 0 auto;padding:11px 14px;border:1px solid var(--border,rgba(255,255,255,.1));border-radius:999px;background:var(--surface-2,rgba(255,255,255,.035));color:var(--muted,#a8aeab);font-size:9px;font-weight:800;letter-spacing:.16em; }
+#social.social-hub-redesign .social-platforms i { color:var(--pink,#61d9ae);font-size:14px;font-style:normal; }
+#social.social-hub-redesign .social-grid-featured { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:none; }
+#social.social-hub-redesign .social-feature-card { --social-glow:#55ded1;position:relative;isolation:isolate;min-height:190px;overflow:hidden;display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:19px;padding:26px;border:1px solid color-mix(in srgb,var(--social-glow) 24%,var(--border,rgba(255,255,255,.1)));border-radius:24px;color:var(--text,#f4f5f5);text-decoration:none;background:radial-gradient(ellipse at 8% 2%,color-mix(in srgb,var(--social-glow) 19%,transparent),transparent 56%),linear-gradient(145deg,var(--surface,#101513),var(--surface-2,#151a18));box-shadow:inset 0 1px 0 rgba(255,255,255,.035);transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease; }
+#social.social-hub-redesign .social-feature-card::after { content:"";position:absolute;z-index:-1;width:180px;height:180px;right:-76px;bottom:-118px;border:1px solid color-mix(in srgb,var(--social-glow) 25%,transparent);border-radius:50%;box-shadow:0 0 0 18px color-mix(in srgb,var(--social-glow) 4%,transparent),0 0 0 38px color-mix(in srgb,var(--social-glow) 3%,transparent); }
+#social.social-hub-redesign .social-tiktok { --social-glow:#54ddd4; }
+#social.social-hub-redesign .social-instagram { --social-glow:#ce86f4; }
+#social.social-hub-redesign .social-feature-card:hover,#social.social-hub-redesign .social-feature-card:focus-visible { transform:translateY(-4px);border-color:color-mix(in srgb,var(--social-glow) 62%,var(--border,white));box-shadow:0 18px 44px rgba(0,0,0,.2),0 0 30px color-mix(in srgb,var(--social-glow) 10%,transparent); }
+#social.social-hub-redesign .social-feature-card:focus-visible { outline:2px solid var(--social-glow);outline-offset:4px; }
+#social.social-hub-redesign .social-brand-icon { width:64px;height:64px;flex:0 0 64px;border:1px solid color-mix(in srgb,var(--social-glow) 35%,transparent);border-radius:20px;color:var(--social-glow);background:color-mix(in srgb,var(--social-glow) 11%,var(--surface-2,#151a18)); }
+#social.social-hub-redesign .social-brand-icon svg { width:28px;height:28px;fill:currentColor;stroke:none; }
+#social.social-hub-redesign .social-instagram .social-brand-icon svg { fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
+#social.social-hub-redesign .social-instagram .instagram-dot { fill:currentColor;stroke:none; }
+#social.social-hub-redesign .social-card-copy { display:block;min-width:0; }
+#social.social-hub-redesign .social-card-kicker { display:block;margin-bottom:8px;color:var(--social-glow);font-size:9px;font-weight:800;letter-spacing:.14em; }
+#social.social-hub-redesign .social-feature-card strong { display:block;font-size:23px;line-height:1.15;letter-spacing:-.035em; }
+#social.social-hub-redesign .social-feature-card .social-handle { display:block;margin-top:7px;color:var(--muted,#9da4a1);font-size:13px;overflow-wrap:anywhere; }
+#social.social-hub-redesign .social-card-action { display:flex;align-items:center;gap:12px;color:var(--text,#f4f5f5);font-size:10px;font-weight:800;letter-spacing:.08em;white-space:nowrap; }
+#social.social-hub-redesign .social-card-action b { display:grid;place-items:center;width:34px;height:34px;border:1px solid color-mix(in srgb,var(--social-glow) 30%,transparent);border-radius:11px;color:var(--social-glow);font-size:18px;transition:transform .2s ease,background .2s ease; }
+#social.social-hub-redesign .social-feature-card:hover .social-card-action b { transform:translate(2px,-2px);background:color-mix(in srgb,var(--social-glow) 12%,transparent); }
+@media (max-width:760px) { #social.social-hub-redesign .social-intro { align-items:flex-start;flex-direction:column;gap:20px; }#social.social-hub-redesign .social-grid-featured { grid-template-columns:minmax(0,1fr); }#social.social-hub-redesign .social-feature-card { min-height:160px; } }
+@media (max-width:480px) { #social.social-hub-redesign .social-feature-card { grid-template-columns:52px minmax(0,1fr) 32px;gap:12px;padding:18px 15px;border-radius:19px; }#social.social-hub-redesign .social-brand-icon { width:52px;height:52px;flex-basis:52px;border-radius:16px; }#social.social-hub-redesign .social-feature-card strong { font-size:19px; }#social.social-hub-redesign .social-card-action { gap:0; }#social.social-hub-redesign .social-card-action span { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; } }
