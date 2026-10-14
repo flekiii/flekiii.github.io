@@ -20,7 +20,7 @@
 .portal-download-core span{font-size:clamp(18px,3vw,28px);font-weight:900;letter-spacing:-.07em;transform:rotate(8deg)}
 .portal-download-core b{font-size:8px;letter-spacing:.17em;color:var(--pink);transform:rotate(8deg)}
 .portal-float-tag{position:absolute;z-index:2;padding:9px 12px;border:1px solid var(--border);border-radius:11px;background:color-mix(in srgb,var(--surface) 88%,transparent);color:var(--text);font-style:normal;font-size:9px;font-weight:850;letter-spacing:.1em;box-shadow:0 10px 32px #0003;backdrop-filter:blur(10px)}
-.tag-flekora{left:3%;top:26%}.tag-motion{right:2%;top:34%}.tag-veltrix{left:25%;bottom:8%}
+.tag-flekora{left:3%;top:26%}.tag-motion{right:2%;top:34%}
 .portal-app-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:16px}
 .portal-app-card{display:flex;min-width:0;flex-direction:column;align-items:flex-start;padding:19px;border:1px solid var(--border);border-radius:19px;background:var(--surface);transition:transform .2s,border-color .2s,background .2s}
 .portal-app-card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--pink) 55%,var(--border));background:color-mix(in srgb,var(--pink) 5%,var(--surface))}
