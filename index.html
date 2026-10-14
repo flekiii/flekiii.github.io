@@ -18,7 +18,7 @@
   <meta name="twitter:description" content="Building my own digital world.">
   <meta name="twitter:image" content="https://flekiii.github.io/assets/social-preview.png">
   <title>flekiii — Independent Developer</title>
-  <link rel="stylesheet" href="style.css?v=92">
+  <link rel="stylesheet" href="style.css?v=93">
   <link rel="stylesheet" href="portal.css?v=5">
 </head>
 <body>
@@ -26,14 +26,14 @@
   <div class="glow glow-one"></div>
   <div class="glow glow-two"></div>
 
-  <header class="nav">
+  <header class="nav nav-redesign">
     <a class="logo" href="#top">flekiii<span>.</span></a>
 
     <div class="nav-right">
       <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
       <nav id="mainNav">
         <a href="#projects" data-i18n="navProjects">Projects</a><a href="#social" data-i18n="navSocial">Social</a>
-        <a href="#support" data-i18n="navSupport">Support</a>
+        <a href="#support" data-i18n="navSupport">Support</a><a class="nav-downloads" href="./downloads/" data-portal="nav">Downloads</a>
       </nav>
 
       <div class="language-picker" id="languagePicker">
@@ -102,16 +102,32 @@
   </header>
 
   <main id="top">
-    <section class="hero">
-      <div class="eyebrow" data-i18n="heroEyebrow">INDEPENDENT DEVELOPER · 15 YEARS OLD</div>
-      <h1 data-i18n="heroTitle">Building my own<br><span>digital world.</span></h1>
-      <p class="hero-text" data-i18n="heroText">
-        I build software, platforms and tools with a focus on freedom,
-        customization and privacy.
-      </p>
-      <div class="hero-actions">
-        <a class="button secondary" href="#support" data-i18n="heroSupport">❤️ SUPPORT</a>
-        <button class="button secondary hero-share-button" type="button" id="siteShareOpen">SHARE SITE</button>
+    <section class="hero hero-redesign">
+      <div class="hero-copy">
+        <div class="eyebrow" data-i18n="heroEyebrow">INDEPENDENT DEVELOPER · 15 YEARS OLD</div>
+        <h1 data-i18n="heroTitle">Building my own<br><span>digital world.</span></h1>
+        <p class="hero-text" data-i18n="heroText">I build software, platforms and tools with a focus on freedom, customization and privacy.</p>
+        <div class="hero-actions">
+          <a class="button primary hero-support-button" href="#support" data-i18n="heroSupport">❤️ SUPPORT</a>
+          <button class="button secondary hero-share-button" type="button" id="siteShareOpen">SHARE SITE</button>
+        </div>
+        <div class="hero-footnote"><span class="hero-footnote-line"></span><span>INDEPENDENTLY BUILT · MADE WITH CURIOSITY</span></div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-visual-grid"></div>
+        <div class="hero-orbit hero-orbit-outer"></div>
+        <div class="hero-orbit hero-orbit-middle"></div>
+        <div class="hero-orbit hero-orbit-inner"></div>
+        <span class="hero-float-label hero-label-one">SOFTWARE</span>
+        <span class="hero-float-label hero-label-two">IDEAS</span>
+        <span class="hero-float-label hero-label-three">DIGITAL</span>
+        <div class="hero-core">
+          <span class="hero-core-logo">f<span>.</span></span>
+          <span class="hero-core-rule"></span>
+          <span class="hero-core-caption">BUILDING<br>MY OWN WORLD</span>
+        </div>
+        <span class="hero-orbit-dot hero-dot-one"></span>
+        <span class="hero-orbit-dot hero-dot-two"></span>
       </div>
     </section>
 
