@@ -137,13 +137,13 @@
       '<div class="portal-community-grid">' +
         '<a class="portal-card portal-community-card" href="https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml" target="_blank" rel="noopener noreferrer">' +
           '<span class="portal-community-card-top"><span class="portal-community-mark">01</span><span class="portal-community-arrow" aria-hidden="true">↗</span></span>' +
-          '<span class="portal-community-card-copy"><h3 data-portal="bug"></h3><p data-portal="bugText"></p></span><span class="portal-link"><span data-portal="open"></span><b aria-hidden="true">↗</b></span></a>' +
+          '<div class="portal-community-card-copy"><h3 data-portal="bug"></h3><p data-portal="bugText"></p></div><span class="portal-link"><span data-portal="open"></span><b aria-hidden="true">↗</b></span></a>' +
         '<a class="portal-card portal-community-card" href="https://github.com/flekiii/flekiii.github.io/issues/new?labels=enhancement" target="_blank" rel="noopener noreferrer">' +
           '<span class="portal-community-card-top"><span class="portal-community-mark">02</span><span class="portal-community-arrow" aria-hidden="true">↗</span></span>' +
-          '<span class="portal-community-card-copy"><h3 data-portal="idea"></h3><p data-portal="ideaText"></p></span><span class="portal-link"><span data-portal="open"></span><b aria-hidden="true">↗</b></span></a>' +
+          '<div class="portal-community-card-copy"><h3 data-portal="idea"></h3><p data-portal="ideaText"></p></div><span class="portal-link"><span data-portal="open"></span><b aria-hidden="true">↗</b></span></a>' +
         '<a class="portal-card portal-community-card" href="https://github.com/flekiii/flekiii.github.io/discussions" target="_blank" rel="noopener noreferrer">' +
           '<span class="portal-community-card-top"><span class="portal-community-mark">03</span><span class="portal-community-arrow" aria-hidden="true">↗</span></span>' +
-          '<span class="portal-community-card-copy"><h3 data-portal="discuss"></h3><p data-portal="discussText"></p></span><span class="portal-link"><span data-portal="open"></span><b aria-hidden="true">↗</b></span></a>' +
+          '<div class="portal-community-card-copy"><h3 data-portal="discuss"></h3><p data-portal="discussText"></p></div><span class="portal-link"><span data-portal="open"></span><b aria-hidden="true">↗</b></span></a>' +
       '</div></section>';
   const appGrid = shell.querySelector(".portal-app-grid");
   projects.forEach(function (project) {
