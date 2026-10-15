@@ -538,7 +538,28 @@ for (const [language, copy] of Object.entries(downloadsHubText)) Object.assign(t
 
 
 
+const RELEASE_HUB_HOME_TEXT = {
+  en: {projectReleaseHubDesc:"A Linux workspace for GitHub releases, uploads, analytics and verified updates.",statusReleaseHubPreview:"PUBLIC LINUX BETA PREPARING"},
+  uk: {projectReleaseHubDesc:"Робоче середовище для GitHub-релізів, завантаження файлів, аналітики та перевірених оновлень у Linux.",statusReleaseHubPreview:"ПІДГОТОВКА ПУБЛІЧНОЇ LINUX-БЕТИ"},
+  pl: {projectReleaseHubDesc:"Środowisko Linux do wydań GitHub, przesyłania plików, analiz i bezpiecznych aktualizacji.",statusReleaseHubPreview:"PRZYGOTOWANIE PUBLICZNEJ BETY LINUX"},
+  de: {projectReleaseHubDesc:"Linux-Werkzeug für GitHub-Releases, Datei-Uploads, Statistiken und verifizierte Updates.",statusReleaseHubPreview:"ÖFFENTLICHE LINUX-BETA IN VORBEREITUNG"},
+  es: {projectReleaseHubDesc:"Herramienta Linux para lanzamientos en GitHub, archivos, estadísticas y actualizaciones verificadas.",statusReleaseHubPreview:"PREPARANDO BETA PÚBLICA PARA LINUX"},
+  fr: {projectReleaseHubDesc:"Espace Linux pour les versions GitHub, les fichiers, les statistiques et les mises à jour vérifiées.",statusReleaseHubPreview:"BÊTA PUBLIQUE LINUX EN PRÉPARATION"},
+  ja: {projectReleaseHubDesc:"GitHubリリース、ファイル、分析、安全なアップデートを管理するLinuxツール。",statusReleaseHubPreview:"LINUX公開ベータ準備中"}
+};
+for(const [language, copy] of Object.entries(RELEASE_HUB_HOME_TEXT)){ if(translations[language]) Object.assign(translations[language],copy); }
+
 const projectCatalog = {
+  "release-hub": {
+    icon:"⬆", name:"Release Hub", status:"PUBLIC BETA PREPARING", page:"https://flekiii.github.io/release-hub/",
+    en:"A local-first Linux developer workspace for GitHub Release drafts, asset uploads, download analytics, customizable appearance and cryptographically verified updates. Public release builds are being prepared.",
+    uk:"Локальний Linux-інструмент для розробників: чернетки GitHub Releases, завантаження файлів, аналітика, кастомізація інтерфейсу та криптографічно перевірені оновлення. Публічні збірки ще готуються.",
+    pl:"Narzędzie dla programistów Linux do wydań GitHub, przesyłania plików, statystyk i weryfikowanych aktualizacji. Publiczne wydanie w przygotowaniu.",
+    de:"Linux-Entwicklerwerkzeug für GitHub-Releases, Datei-Uploads, Statistiken und verifizierte Updates. Öffentliche Version in Vorbereitung.",
+    es:"Herramienta Linux para desarrolladores: publicaciones GitHub, archivos, analíticas y actualizaciones verificadas. Lanzamiento público en preparación.",
+    fr:"Outil Linux pour développeurs : versions GitHub, fichiers, statistiques et mises à jour vérifiées. Sortie publique en préparation.",
+    ja:"GitHubリリース、ファイル、分析、安全なアップデートを管理するLinux開発ツール。公開版は準備中。"
+  },
   motion: {
     icon: "◉", name: "MOTION", status: "LINUX BETA AVAILABLE",
     page: "https://flekiii.github.io/motion/",
@@ -1523,16 +1544,16 @@ function renderModal(projectId) {
   const project = projectCatalog[projectId];
 
   projectModalTitle.textContent = project.icon + " " + project.name;
-  projectModalText.textContent = project[language];
+  projectModalText.textContent = project[document.documentElement.lang] || project[language];
   renderProjectMedia(projectId);
-  projectModalStatus.textContent = projectId === "motion"
+  projectModalStatus.textContent = projectId === "release-hub" ? (translations[document.documentElement.lang]?.statusReleaseHubPreview || translations.en.statusReleaseHubPreview) : projectId === "motion"
     ? (translations[document.documentElement.lang]?.statusMotionBeta || translations.en.statusMotionBeta)
     : project.status === "DEFERRED UNTIL MAC PURCHASE"
     ? ({en:"DEFERRED UNTIL MAC PURCHASE",uk:"ВІДКЛАДЕНО ДО ПОКУПКИ MAC",pl:"ODŁOŻONE DO ZAKUPU MAC",de:"BIS ZUM MAC-KAUF AUFGESCHOBEN",es:"APLAZADO HASTA COMPRAR UN MAC",fr:"REPORTÉ JUSQU’À L’ACHAT DU MAC",ja:"Mac購入まで延期"}[language] || project.status)
     : (language === "uk" ? (project.status === "IN PROGRESS" ? "В ПРОЦЕСІ" : "У ПЛАНАХ") : project.status);
 
   if (projectModalBug) {
-    const bugUrl = downloadProjects[projectId]?.bugUrl || "";
+    const bugUrl = projectId === "release-hub" ? "https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml&title=%5BRelease%20Hub%5D%20" : (downloadProjects[projectId]?.bugUrl || "");
     projectModalBug.hidden = !bugUrl;
     projectModalBug.setAttribute("aria-hidden", String(!bugUrl));
     projectModalBug.href = bugUrl || "#";
