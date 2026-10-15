@@ -111,7 +111,7 @@
   const hubLabels={"en":["Release Hub","Manage GitHub releases, uploads and updates.","LINUX · PREVIEW","PREPARING","VIEW PREVIEW ↗"],"uk":["Release Hub","Керування GitHub-релізами, файлами та оновленнями.","LINUX · ПРЕВ'Ю","ГОТУЄТЬСЯ","ПЕРЕГЛЯНУТИ ↗"],"pl":["Release Hub","Zarządzanie wydaniami GitHub, plikami i aktualizacjami.","LINUX · PODGLĄD","W PRZYGOTOWANIU","ZOBACZ ↗"],"de":["Release Hub","GitHub-Releases, Dateien und Updates verwalten.","LINUX · VORSCHAU","IN VORBEREITUNG","ANSEHEN ↗"],"es":["Release Hub","Gestiona versiones GitHub, archivos y actualizaciones.","LINUX · VISTA PREVIA","EN PREPARACIÓN","VER ↗"],"fr":["Release Hub","Gérez les versions GitHub, les fichiers et les mises à jour.","LINUX · APERÇU","EN PRÉPARATION","VOIR ↗"],"ja":["Release Hub","GitHubリリース、ファイル、更新を管理します。","LINUX · プレビュー","準備中","詳細を見る ↗"]};
   for(const [lang,row] of Object.entries(hubLabels)){copy[lang].apps.hub=row.slice(0,3);copy[lang].hubPending=row[3];copy[lang].hubAction=row[4];}
   const projects = [
-    {id:"flekora",key:"flekora",mark:"F"},
+    {id:"flekora",key:"flekora",mark:"F",icon:"./flekora-icon.svg"},
     {id:"motion",key:"motion",mark:"M"},
     {id:"fleki-convert",key:"convert",mark:"C",icon:"./fleki-convert-icon.svg"},
     {id:"release-hub",key:"hub",mark:"RH",icon:"./release-hub-icon.svg"},
