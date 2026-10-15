@@ -22,6 +22,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Validate JavaScript and project assets
+        run: |
+          node --check script.js
+          node --check project-page.js
+          test -f release-hub/index.html
+          test -f release-hub-icon.svg
+          test -f fleki-convert-icon.svg
+          grep -q 'data-project="release-hub"' index.html
+          grep -q 'data-project-id="release-hub"' release-hub/index.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
