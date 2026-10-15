@@ -30,6 +30,8 @@ jobs:
         run: |
           node --check script.js
           node --check project-page.js
+          node --check portal.js
+          node --check downloads/downloads.js
           test -f release-hub/index.html
           test -f release-hub-icon.svg
           test -f fleki-convert-icon.svg

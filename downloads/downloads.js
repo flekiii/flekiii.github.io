@@ -72,6 +72,15 @@
         asset(HOME_REPO,"fleki-convert-v1.0.0","fleki-convert-1.0.0-android.apk",48947157,"android",false)
       ]
     }
+    ,{
+      id:"release-hub", name:"Release Hub", symbol:"RH", version:"v0.7.1 · LOCAL PREVIEW",
+      platforms:["linux"], en:"Developer workspace for GitHub releases, uploads, statistics and secure updates. Public beta is being prepared.",
+      uk:"Середовище розробника для GitHub-релізів, завантаження файлів, статистики й безпечних оновлень. Публічна бета готується.",
+      needs:"Linux x86_64 · GTK 3 · dependencies and distro compatibility vary",
+      repo:"flekiii/release-hub-releases",tagPrefix:"v",
+      bug:"https://github.com/flekiii/flekiii.github.io/issues/new?template=bug_report.yml&title=%5BRelease%20Hub%5D%20",
+      assets:[]
+    }
   ];
   const byId = Object.fromEntries(APPS.map(a=>[a.id,a]));
   const STRINGS = {
@@ -147,12 +156,15 @@
     ja:{catTitle:"アプリを",catTitleAccent:"選ぶ。",catIntro:"公開済みアプリの公式ファイル、インストール方法、緊急アンインストールをまとめました。",search:"アプリを検索…",ready:"公開済み",open:"ファイルを見る",backApps:"← アプリ一覧",installTitle:"インストール方法",emergencyTitle:"緊急アンインストール",emergencyQuick:"緊急アンインストール ↓",
       emergencyAndroid:"Android：設定 → アプリ → 対象アプリ → 強制停止 → アンインストール。必要に応じてスマートフォンを再起動してください。",download:"ダウンロード ↓",copy:"コピー",copied:"コピーしました！",filesTitle:"公式ファイル",platformTitle:"OSを選択",navDownloads:"ダウンロード"}
   };
+  const HUB_DOWNLOAD_TEXT={"en":["COMING SOON","PREPARING PUBLIC BETA","Public Linux download is not available yet. Verified files will appear here after the official GitHub release.","RELEASES ON GITHUB ↗","PREVIEW"],"uk":["НЕЗАБАРОМ","ГОТУЄМО ПУБЛІЧНУ БЕТУ","Публічні Linux-файли ще не випущені. Після офіційного GitHub-релізу перевірені збірки з'являться тут.","РЕЛІЗИ НА GITHUB ↗","ПРЕВ'Ю"],"pl":["WKRÓTCE","PUBLICZNA BETA W PRZYGOTOWANIU","Publiczne pliki Linux nie są jeszcze dostępne. Pojawią się tutaj po wydaniu na GitHub.","WYDANIA NA GITHUB ↗","PODGLĄD"],"de":["BALD","ÖFFENTLICHE BETA IN VORBEREITUNG","Öffentliche Linux-Dateien sind noch nicht verfügbar. Nach dem offiziellen GitHub-Release werden sie hier angezeigt.","RELEASES AUF GITHUB ↗","VORSCHAU"],"es":["PRÓXIMAMENTE","PREPARANDO LA BETA PÚBLICA","Todavía no hay archivos públicos de Linux. Aparecerán aquí cuando se publique la versión oficial en GitHub.","VERSIONES EN GITHUB ↗","VISTA PREVIA"],"fr":["BIENTÔT","BÊTA PUBLIQUE EN PRÉPARATION","Les fichiers Linux publics ne sont pas encore disponibles. Ils apparaîtront ici après la publication officielle sur GitHub.","VERSIONS SUR GITHUB ↗","APERÇU"],"ja":["近日公開","公開ベータ準備中","Linuxの公開ファイルはまだありません。GitHubで正式リリース後、このページに表示されます。","GITHUBのリリース ↗","プレビュー"]};
+  for(const [lang,values] of Object.entries(HUB_DOWNLOAD_TEXT)){Object.assign(STRINGS[lang],{hubSoon:values[0],hubPreparing:values[1],hubNoFiles:values[2],hubReleases:values[3],hubPreview:values[4]});}
   let language = "en";
   let filter = "all";
   let current = null;
   let currentOS = "linux";
   let chosenFile = "";
   let releases = Object.create(null);
+  let releaseTags = Object.create(null);
   let started = new Set();
 
   const $ = id => document.getElementById(id);
@@ -204,7 +216,7 @@
     $("fdSearchLabel").textContent = t("searchLabel");
     $("fdSearch").placeholder = t("search");
     $("fdEmpty").textContent = t("none");
-    $("fdReleaseCount").textContent = APPS.length + " " + t("count");
+    updateCount();
     $("fdBackToApps").textContent = t("backApps");
     $("fdReleaseLabel").textContent = t("release");
     $("fdRequirementTag").textContent = t("test");
@@ -240,9 +252,10 @@
   }
   function size(bytes) { return bytes ? (bytes/1048576).toFixed(1) + " MB" : "—"; }
   function iconFor(app, parent) {
-    if (app.id==="flekora") {
+    const iconMap={"flekora":"../flekora-icon.svg","fleki-convert":"../fleki-convert-icon.svg","release-hub":"../release-hub-icon.svg"};
+    if (iconMap[app.id]) {
       const img=el("img");
-      img.src="../flekora-icon.svg";
+      img.src=iconMap[app.id];
       img.alt="";
       img.loading="lazy";
       parent.append(img);
@@ -283,23 +296,26 @@
         const linux=sorted.find(r=>/^v[0-9]/i.test(r.tag_name));
         const android=sorted.find(r=>/^android-v[0-9]/i.test(r.tag_name));
         chosen=[linux,android].filter(Boolean);
-      } else chosen=sorted.filter(r=>r.tag_name.startsWith(app.tagPrefix)).slice(0,1);
+      } else if(app.id==="release-hub") chosen=sorted.slice(0,1);
+      else chosen=sorted.filter(r=>r.tag_name.startsWith(app.tagPrefix)).slice(0,1);
       const list = normalizeRelease(app, chosen);
       if (list.length) {
         // Preserve the last published fallback if GitHub's latest is missing a platform build.
         for (const fallback of app.assets)
           if (!list.some(item=>item.os===fallback.os)) list.push(fallback);
         releases[app.id] = list;
+        releaseTags[app.id] = chosen[0]?.tag_name || app.version;
       }
-      if (current===app.id) {
-        $("fdReleaseStatus").textContent=t("latest");
-        renderFiles();
-      }
+      updateCount();
+      renderCatalog();
+      if (current===app.id) renderDetail();
     } catch (_) {
-      if (current===app.id) $("fdReleaseStatus").textContent=t("fallback");
+      if (current===app.id) $("fdReleaseStatus").textContent=app.id==="release-hub"&&!visibleAssets(app).length?t("hubNoFiles"):t("fallback");
     }
   }
   function visibleAssets(app) { return releases[app.id] || app.assets; }
+  function hubPending(app){return app.id==="release-hub" && !visibleAssets(app).length;}
+  function updateCount(){const released=APPS.filter(a=>visibleAssets(a).length).length;const coming=APPS.length-released;const label=released+" "+t("count");$("fdReleaseCount").textContent=coming?label+" · "+coming+" "+t("hubSoon"):label;}
   function renderCatalog() {
     const cards=$("fdCards");
     cards.replaceChildren();
@@ -312,13 +328,13 @@
     });
     $("fdEmpty").hidden=found.length>0;
     for (const app of found) {
-      const card=el("button","fd-card");
+      const card=el("button","fd-card"+(hubPending(app)?" is-preview":""));
       card.type="button";
       card.dataset.open=app.id;
       card.setAttribute("aria-label",app.name+" · "+t("open"));
       const top=el("div","fd-card-top");
       const icon=el("div","fd-card-icon");iconFor(app,icon);
-      top.append(icon,el("span","fd-card-status",t("ready")));
+      top.append(icon,el("span","fd-card-status",hubPending(app)?t("hubSoon"):t("ready")));
       card.append(top,el("h3","",app.name),el("p","",language==="uk"?app.uk:app.en));
       const foot=el("div","fd-card-foot");
       foot.append(el("span","fd-card-platforms",app.platforms.map(p=>p.toUpperCase()).join(" · ")),el("span","fd-card-arrow","↗"));
@@ -364,7 +380,9 @@
     $("fdDetailTitle").textContent=app.name;
     document.title=app.name+" · Downloads · flekiii";
     $("fdDetailDescription").textContent=language==="uk"?app.uk:app.en;
-    $("fdVersion").textContent=app.version;
+    $("fdVersion").textContent=hubPending(app)?t("hubPreview"):(app.id==="release-hub"?(releaseTags[app.id]||app.version):app.version);
+    $("fdReleaseLabel").textContent=hubPending(app)?t("hubPreparing"):t("release");
+    $("fdRequirementTag").textContent=hubPending(app)?t("hubPreview"):t("test");
     $("fdPlatforms").textContent=app.platforms.map(x=>x.toUpperCase()).join(" · ");
     $("fdRequirementTag").textContent=t("test");
     $("fdProjectPage").href="../"+(app.id==="fleki-convert"?"fleki-convert":app.id)+"/";
@@ -379,7 +397,7 @@
       b.setAttribute("aria-pressed",String(currentOS===os));
       tabs.append(b);
     }
-    $("fdReleaseStatus").textContent=app.repo?(releases[app.id]?t("latest"):t("loading")):t("fallback");
+    $("fdReleaseStatus").textContent=hubPending(app)?t("hubNoFiles"):(app.repo?(releases[app.id]?t("latest"):t("loading")):t("fallback"));
     renderFiles();
     $("fdSharedUninstall").dataset.os=currentOS;
     if (typeof window.flekiRenderUninstall === "function")
@@ -392,7 +410,10 @@
     if(!files.some(f=>f.name===chosenFile))chosenFile=files[0]?.name || "";
     const container=$("fdFiles");
     container.replaceChildren();
-    if(!files.length)container.append(el("p","fd-empty",t("fileMissing")));
+    if(!files.length){
+      container.append(el("p","fd-empty",hubPending(app)?t("hubNoFiles"):t("fileMissing")));
+      if(hubPending(app)){const link=el("a","fd-outline-link",t("hubReleases"));link.href="https://github.com/flekiii/release-hub-releases/releases";link.target="_blank";link.rel="noopener noreferrer";container.append(link);}
+    }
     for(const file of files){
       const item=el("article","fd-file"+(chosenFile===file.name?" is-selected":""));
       const data=el("div","fd-file-data");
@@ -454,7 +475,7 @@
     const file=visibleAssets(app).find(f=>f.name===chosenFile && f.os===currentOS);
     const wrap=$("fdInstallContent");
     wrap.replaceChildren();
-    if(!file){wrap.append(el("p","fd-install-note",t("fileMissing")));return;}
+    if(!file){wrap.append(el("p","fd-install-note",hubPending(app)?t("hubNoFiles"):t("fileMissing")));return;}
     const details=installation(app,file);
     wrap.append(el("div","fd-install-filename",format(file.name)+" · "+file.name),
       el("p","fd-install-note",t(details.kind)));

@@ -135,3 +135,9 @@ html[data-theme$="-light"] .fd-action-primary{color:white}
 .fd-autostart-code{margin-top:13px}
 .fd-autostart-code pre{overflow-x:auto}
 .fd-installation-content>.fd-outline-link{display:inline-block;margin:12px 0}
+
+/* Release Hub preview: no inactive or invented download buttons */
+.fd-card.is-preview{border-style:dashed}
+.fd-card.is-preview .fd-card-status{color:var(--muted);background:var(--surface-2)}
+.fd-card.is-preview .fd-card-arrow{opacity:.65}
+.fd-detail-badge img,.fd-card-icon img{border-radius:9px}

@@ -108,10 +108,13 @@
       bug:"不具合を報告", idea:"機能を提案", discuss:"ディスカッションに参加", open:"開く ↗"
     }
   };
+  const hubLabels={"en":["Release Hub","Manage GitHub releases, uploads and updates.","LINUX · PREVIEW","PREPARING","VIEW PREVIEW ↗"],"uk":["Release Hub","Керування GitHub-релізами, файлами та оновленнями.","LINUX · ПРЕВ'Ю","ГОТУЄТЬСЯ","ПЕРЕГЛЯНУТИ ↗"],"pl":["Release Hub","Zarządzanie wydaniami GitHub, plikami i aktualizacjami.","LINUX · PODGLĄD","W PRZYGOTOWANIU","ZOBACZ ↗"],"de":["Release Hub","GitHub-Releases, Dateien und Updates verwalten.","LINUX · VORSCHAU","IN VORBEREITUNG","ANSEHEN ↗"],"es":["Release Hub","Gestiona versiones GitHub, archivos y actualizaciones.","LINUX · VISTA PREVIA","EN PREPARACIÓN","VER ↗"],"fr":["Release Hub","Gérez les versions GitHub, les fichiers et les mises à jour.","LINUX · APERÇU","EN PRÉPARATION","VOIR ↗"],"ja":["Release Hub","GitHubリリース、ファイル、更新を管理します。","LINUX · プレビュー","準備中","詳細を見る ↗"]};
+  for(const [lang,row] of Object.entries(hubLabels)){copy[lang].apps.hub=row.slice(0,3);copy[lang].hubPending=row[3];copy[lang].hubAction=row[4];}
   const projects = [
     {id:"flekora",key:"flekora",mark:"F"},
     {id:"motion",key:"motion",mark:"M"},
-    {id:"fleki-convert",key:"convert",mark:"C"},
+    {id:"fleki-convert",key:"convert",mark:"C",icon:"./fleki-convert-icon.svg"},
+    {id:"release-hub",key:"hub",mark:"RH",icon:"./release-hub-icon.svg"},
     {id:"orbit",key:"orbit",mark:"O"},
     {id:"power",key:"power",mark:"P"}
   ];
@@ -129,7 +132,7 @@
           '<span class="portal-catalog-note" data-portal="catalogNote"></span></div>' +
         '<div class="portal-download-art" aria-hidden="true"><div class="portal-download-ring portal-ring-one"></div>' +
           '<div class="portal-download-ring portal-ring-two"></div><div class="portal-download-core"><span>flekiii</span><b>DOWNLOADS</b></div>' +
-          '<i class="portal-float-tag tag-flekora">FLEKORA</i><i class="portal-float-tag tag-motion">MOTION</i></div>' +
+          '<i class="portal-float-tag tag-flekora">FLEKORA</i><i class="portal-float-tag tag-motion">MOTION</i><i class="portal-float-tag tag-release-hub">RELEASE HUB</i></div>' +
       '</div><div class="portal-app-grid" aria-label="Available projects"></div></section>' +
     '<section class="portal-section portal-community-section portal-community-redesign" id="community">' +
       '<div class="portal-community-heading"><div><span class="portal-kicker">FLEKIII COMMUNITY</span>' +
@@ -149,8 +152,10 @@
   projects.forEach(function (project) {
     const card = document.createElement("article");
     card.className = "portal-app-card";
+    card.dataset.appId=project.id;
+    const mark=project.icon?'<span class="portal-app-mark"><img src="'+project.icon+'" width="32" height="32" alt="" loading="lazy"></span>':'<span class="portal-app-mark" aria-hidden="true">'+project.mark+'</span>';
     card.innerHTML =
-      '<span class="portal-app-mark" aria-hidden="true">' + project.mark + '</span>' +
+      mark +
       '<div class="portal-app-info"><small data-app-platform="' + project.key + '"></small><h3 data-app-name="' + project.key + '"></h3><p data-app-description="' + project.key + '"></p></div>' +
       '<a class="portal-app-link" href="./downloads/?app=' + project.id + '"><span data-portal="choose"></span><b aria-hidden="true">↗</b></a>';
     appGrid.appendChild(card);
@@ -218,8 +223,10 @@
       node.textContent = app[1];
     });
     shell.querySelectorAll("[data-app-platform]").forEach(function (node) {
-      node.textContent = text.platform + " · " + text.apps[node.dataset.appPlatform][2];
+      node.textContent = node.dataset.appPlatform==="hub" ? text.hubPending+" · "+text.apps.hub[2] : text.platform+" · "+text.apps[node.dataset.appPlatform][2];
     });
+    const hubAction=shell.querySelector('[data-app-id="release-hub"] [data-portal="choose"]');
+    if(hubAction)hubAction.textContent=text.hubAction;
     shell.querySelector('[data-portal="bug"]')?.closest(".portal-card")?.querySelector("p").replaceChildren(bugText[lang]);
     shell.querySelector('[data-portal="idea"]')?.closest(".portal-card")?.querySelector("p").replaceChildren(ideaText[lang]);
     shell.querySelector('[data-portal="discuss"]')?.closest(".portal-card")?.querySelector("p").replaceChildren(discussText[lang]);

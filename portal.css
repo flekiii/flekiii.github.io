@@ -71,3 +71,9 @@
 .portal-community-redesign .portal-community-card:hover .portal-link b{transform:translate(2px,-2px)}
 @media(max-width:850px){.portal-community-redesign .portal-community-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.portal-community-redesign .portal-community-grid{grid-template-columns:1fr}.portal-community-redesign .portal-community-card{min-height:205px;padding:20px}.portal-community-redesign .portal-community-heading{align-items:flex-start}}
+
+/* App artwork and Release Hub on the Downloads map */
+.portal-app-mark img{display:block;width:32px;height:32px;object-fit:contain}
+.portal-app-card[data-app-id="release-hub"] .portal-app-mark{border-color:#cf404a55;background:#1c0e13}
+.tag-release-hub{left:50%;bottom:8%;transform:translateX(-50%);color:#ff777c;border-color:#ba414a65;white-space:nowrap}
+@media(max-width:480px){.tag-release-hub{bottom:2%;padding:7px 9px;font-size:8px}}
