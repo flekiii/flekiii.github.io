@@ -74,24 +74,6 @@ const translations = {
     downloadsChecking: "Checking the latest release…",
     downloadsReady: "Official release loaded.",
     downloadsUnavailable: "A build for this system is not available yet.",
-        goalsTitle: "Support Goals",
-    goalHouseLabel: "TOP PRIORITY",
-    goalHouse: "Buy a house in Uzhhorod",
-    goalHouseText: "Target budget: <span class=\"goal-key\">5,000,000 UAH</span>. The goal is to <span class=\"goal-key\">move out from my parents</span>, have more free time and more freedom to make my own decisions.",
-    goalMacLabel: "SECOND PRIORITY",
-    goalMac: "Mac for Apple development",
-    goalMacText: "Buy a <span class=\"goal-key\">good Mac</span> for building and testing my own <span class=\"goal-key\">macOS and iOS apps</span>. Target budget: <span class=\"goal-key\">≈ 85,000 UAH</span>.",
-    goalPhoneLabel: "CURRENT PRIORITY",
-    goalPhone: "New phone",
-    goalPhoneText: "Get a new <span class=\"goal-key\">iPhone 11 Pro Max</span> or something newer.",
-    goalServers: "Servers",
-    goalServersText: "Build the <span class=\"goal-key\">infrastructure</span> needed to run future <span class=\"goal-key\">services</span>.",
-    goalDomain: "Own domain",
-    goalDomainText: "Get a <span class=\"goal-key\">dedicated domain</span> for a separate <span class=\"goal-key\">main site</span>.",
-    goalNetwork: "TRUST Network certificates",
-    goalNetworkText: "Work toward the <span class=\"goal-key\">certificates</span> and infrastructure needed to officially <span class=\"goal-key\">launch my own network</span>.",
-    goalComputer: "Better computer",
-    goalComputerText: "Upgrade the <span class=\"goal-key\">main development machine</span> for <span class=\"goal-key\">larger builds</span> and future infrastructure.",
     supportEyebrow: "KEEP BUILDING",
     supportTitle: "Support my <span class=\"support-key\">work</span>.",
     supportText: "If you like what I'm building and want to help me keep <span class=\"support-key\">developing</span>, you can <span class=\"support-key\">support the projects</span> directly.",
@@ -174,24 +156,6 @@ projectVpnDesc: "Власний VPN-проєкт, орієнтований на 
     downloadsChecking: "Перевіряю останній реліз…",
     downloadsReady: "Офіційний реліз завантажено.",
     downloadsUnavailable: "Збірка для цієї системи ще недоступна.",
-        goalsTitle: "Цілі підтримки",
-    goalHouseLabel: "ГОЛОВНА ЦІЛЬ",
-    goalHouse: "Купити будинок в Ужгороді",
-    goalHouseText: "Потрібно: <span class=\"goal-key\">5 000 000 грн</span>. Мета — <span class=\"goal-key\">з’їхати від батьків</span>, мати більше вільного часу та більше свободи дій.",
-    goalMacLabel: "ДРУГА ЦІЛЬ",
-    goalMac: "Mac для розробки Apple-додатків",
-    goalMacText: "Купити <span class=\"goal-key\">хороший Mac</span> для створення та тестування власних <span class=\"goal-key\">macOS та iOS-додатків</span>. Орієнтовний бюджет: <span class=\"goal-key\">≈ 85 000 грн</span>.",
-    goalPhoneLabel: "ПОТОЧНА ЦІЛЬ",
-    goalPhone: "Новий телефон",
-    goalPhoneText: "Придбати новий <span class=\"goal-key\">iPhone 11 Pro Max</span> або щось новіше.",
-    goalServers: "Сервери",
-    goalServersText: "Побудувати <span class=\"goal-key\">інфраструктуру</span>, необхідну для роботи майбутніх <span class=\"goal-key\">сервісів</span>.",
-    goalDomain: "Власний домен",
-    goalDomainText: "Отримати <span class=\"goal-key\">власний домен</span> для окремого <span class=\"goal-key\">головного сайту</span>.",
-    goalNetwork: "Сертифікати TRUST Network",
-    goalNetworkText: "Працювати над <span class=\"goal-key\">сертифікатами</span> та інфраструктурою, потрібними для офіційного <span class=\"goal-key\">запуску власної мережі</span>.",
-    goalComputer: "Кращий комп'ютер",
-    goalComputerText: "Покращити <span class=\"goal-key\">основний комп'ютер для розробки</span> для <span class=\"goal-key\">більших збірок</span> та майбутньої інфраструктури.",
     supportEyebrow: "ПРОДОВЖУЮ СТВОРЮВАТИ",
     supportTitle: "Підтримай мою <span class=\"support-key\">роботу</span>.",
     supportText: "Якщо тобі подобається те, що я створюю, і ти хочеш допомогти мені <span class=\"support-key\">продовжувати розробку</span>, ти можеш <span class=\"support-key\">підтримати мої проєкти</span>.",
@@ -245,8 +209,6 @@ translations.pl = {
   downloadWindows:"WINDOWS", downloadLinux:"LINUX", downloadMacOS:"MACOS", downloadBuild:"POBIERZ WERSJĘ",
   downloadBuildChoose:"Wybierz plik do pobrania.", downloadsChecking:"Sprawdzanie najnowszego wydania…",
   downloadsReady:"Oficjalne wydanie załadowane.", downloadsUnavailable:"Wersja dla tego systemu nie jest jeszcze dostępna.",
-  goalsTitle:"Cele wsparcia", goalHouseLabel:"NAJWAŻNIEJSZY CEL", goalHouse:"Kupno domu w Użhorodzie", goalHouseText:"Budżet: <span class=\"goal-key\">5 000 000 UAH</span>. Chcę <span class=\"goal-key\">wyprowadzić się od rodziców</span>, mieć więcej wolnego czasu i większą swobodę działania.", goalMacLabel:"DRUGI PRIORYTET", goalMac:"Mac do tworzenia aplikacji Apple",
-  goalPhoneLabel:"OBECNY PRIORYTET", goalPhone:"Nowy telefon", goalServers:"Serwery", goalDomain:"Własna domena",
   supportEyebrow:"TWORZĘ DALEJ", supportTitle:"Wesprzyj moją <span class=\"support-key\">pracę</span>.",
   supportButton:"WESPRZYJ FLEKIII", supportNote:"Link do wsparcia otwiera skarbonkę Monobank.",
   backTop:"Wróć na górę ↑", footerText:"Stworzone niezależnie.",
@@ -268,8 +230,6 @@ translations.de = {
   downloadBack:"← ZURÜCK", downloadBackToSystems:"← ALLE SYSTEME", downloadBuild:"BUILD HERUNTERLADEN",
   downloadBuildChoose:"Wähle eine Datei zum Herunterladen.", downloadsChecking:"Neueste Version wird geprüft…",
   downloadsReady:"Offizielle Version geladen.", downloadsUnavailable:"Für dieses System ist noch kein Build verfügbar.",
-  goalsTitle:"Unterstützungsziele", goalHouseLabel:"HÖCHSTE PRIORITÄT", goalHouse:"Ein Haus in Uschhorod kaufen", goalHouseText:"Budget: <span class=\"goal-key\">5.000.000 UAH</span>. Ich möchte <span class=\"goal-key\">von meinen Eltern ausziehen</span>, mehr Freizeit und mehr Freiheit bei meinen Entscheidungen haben.", goalMacLabel:"ZWEITE PRIORITÄT", goalMac:"Mac für Apple-Entwicklung",
-  goalPhoneLabel:"AKTUELLE PRIORITÄT", goalPhone:"Neues Smartphone", goalServers:"Server", goalDomain:"Eigene Domain",
   supportEyebrow:"WEITER ENTWICKELN", supportTitle:"Unterstütze meine <span class=\"support-key\">Arbeit</span>.",
   supportButton:"FLEKIII UNTERSTÜTZEN", supportNote:"Der Support-Link öffnet das Monobank-Sparglas.",
   backTop:"Nach oben ↑", footerText:"Unabhängig entwickelt.",
@@ -291,8 +251,6 @@ translations.es = {
   downloadBack:"← VOLVER", downloadBackToSystems:"← TODOS LOS SISTEMAS", downloadBuild:"DESCARGAR VERSIÓN",
   downloadBuildChoose:"Elige un archivo para descargar.", downloadsChecking:"Comprobando la última versión…",
   downloadsReady:"Versión oficial cargada.", downloadsUnavailable:"Todavía no hay una versión disponible para este sistema.",
-  goalsTitle:"Objetivos de apoyo", goalHouseLabel:"MÁXIMA PRIORIDAD", goalHouse:"Comprar una casa en Úzhgorod", goalHouseText:"Presupuesto: <span class=\"goal-key\">5.000.000 UAH</span>. Quiero <span class=\"goal-key\">irme de casa de mis padres</span>, tener más tiempo libre y más libertad para decidir.", goalMacLabel:"SEGUNDA PRIORIDAD", goalMac:"Mac para desarrollar aplicaciones Apple",
-  goalPhoneLabel:"PRIORIDAD ACTUAL", goalPhone:"Teléfono nuevo", goalServers:"Servidores", goalDomain:"Dominio propio",
   supportEyebrow:"SEGUIR CREANDO", supportTitle:"Apoya mi <span class=\"support-key\">trabajo</span>.",
   supportButton:"APOYAR A FLEKIII", supportNote:"El enlace de apoyo abre la hucha de Monobank.",
   backTop:"Volver arriba ↑", footerText:"Creado de forma independiente.",
@@ -314,8 +272,6 @@ translations.fr = {
   downloadBack:"← RETOUR", downloadBackToSystems:"← TOUS LES SYSTÈMES", downloadBuild:"TÉLÉCHARGER",
   downloadBuildChoose:"Choisis un fichier à télécharger.", downloadsChecking:"Vérification de la dernière version…",
   downloadsReady:"Version officielle chargée.", downloadsUnavailable:"Aucune version n'est encore disponible pour ce système.",
-  goalsTitle:"Objectifs de soutien", goalHouseLabel:"PRIORITÉ ABSOLUE", goalHouse:"Acheter une maison à Oujhorod", goalHouseText:"Budget : <span class=\"goal-key\">5 000 000 UAH</span>. Je veux <span class=\"goal-key\">quitter le domicile de mes parents</span>, avoir plus de temps libre et davantage de liberté d’action.", goalMacLabel:"DEUXIÈME PRIORITÉ", goalMac:"Mac pour développer des applications Apple",
-  goalPhoneLabel:"PRIORITÉ ACTUELLE", goalPhone:"Nouveau téléphone", goalServers:"Serveurs", goalDomain:"Domaine personnel",
   supportEyebrow:"CONTINUER À CRÉER", supportTitle:"Soutiens mon <span class=\"support-key\">travail</span>.",
   supportButton:"SOUTENIR FLEKIII", supportNote:"Le lien de soutien ouvre la cagnotte Monobank.",
   backTop:"Retour en haut ↑", footerText:"Créé indépendamment.",
@@ -337,14 +293,67 @@ translations.ja = {
   downloadBack:"← 戻る", downloadBackToSystems:"← すべてのOS", downloadBuild:"ダウンロード",
   downloadBuildChoose:"ダウンロードするファイルを選択してください。", downloadsChecking:"最新リリースを確認中…",
   downloadsReady:"公式リリースを読み込みました。", downloadsUnavailable:"このOS向けのビルドはまだありません。",
-  goalsTitle:"支援目標", goalHouseLabel:"最優先", goalHouse:"ウージュホロドで家を買う", goalHouseText:"予算：<span class=\"goal-key\">5,000,000 UAH</span>。<span class=\"goal-key\">親元を離れて</span>、自由な時間と自分で決められる自由を増やすことが目標です。", goalMacLabel:"第二優先", goalMac:"Appleアプリ開発用のMac",
-  goalPhoneLabel:"現在の優先事項", goalPhone:"新しいスマートフォン", goalServers:"サーバー", goalDomain:"独自ドメイン",
   supportEyebrow:"開発を続ける", supportTitle:"私の<span class=\"support-key\">活動</span>を支援してください。",
   supportButton:"FLEKIIIを支援", supportNote:"支援リンクはMonobankの募金箱を開きます。",
   backTop:"トップへ ↑", footerText:"個人で開発しています。",
   mapTitle:"FLEKIII エコシステム", mapSubtitle:"プロジェクト、プラットフォーム、インフラをひとつにつなげます。"
 };
 
+
+// One shared total for every visitor and language; update raised as funds arrive.
+const FUNDRAISING_GOAL = Object.freeze({ target: 8_000_000, raised: 0 });
+const fundraisingCopy = {
+  en: {
+    fundraisingTitle: "Moving out after 10th grade",
+    fundraisingDescription: "I'm saving to move out of my parents' home after 10th grade.",
+    fundraisingTargetLabel: "TARGET", fundraisingCompleteLabel: "OF THE GOAL",
+    fundraisingRaisedLabel: "RAISED", fundraisingRemainingLabel: "REMAINING",
+    fundraisingCurrency: "UAH", fundraisingProgressText: "{raised} of {target} — {percent}"
+  },
+  uk: {
+    fundraisingTitle: "Переїзд після 10 класу",
+    fundraisingDescription: "Збираю кошти, щоб після 10 класу переїхати від батьків.",
+    fundraisingTargetLabel: "ПОТРІБНО", fundraisingCompleteLabel: "ВІД ЦІЛІ",
+    fundraisingRaisedLabel: "ЗІБРАНО", fundraisingRemainingLabel: "ЗАЛИШИЛОСЯ",
+    fundraisingCurrency: "грн", fundraisingProgressText: "{raised} із {target} — {percent}"
+  },
+  pl: {
+    fundraisingTitle: "Wyprowadzka po 10. klasie",
+    fundraisingDescription: "Zbieram pieniądze, aby po 10. klasie wyprowadzić się od rodziców.",
+    fundraisingTargetLabel: "CEL", fundraisingCompleteLabel: "CELU",
+    fundraisingRaisedLabel: "ZEBRANO", fundraisingRemainingLabel: "POZOSTAŁO",
+    fundraisingCurrency: "UAH", fundraisingProgressText: "{raised} z {target} — {percent}"
+  },
+  de: {
+    fundraisingTitle: "Ausziehen nach der 10. Klasse",
+    fundraisingDescription: "Ich spare, um nach der 10. Klasse von meinen Eltern auszuziehen.",
+    fundraisingTargetLabel: "ZIEL", fundraisingCompleteLabel: "DES ZIELS",
+    fundraisingRaisedLabel: "GESAMMELT", fundraisingRemainingLabel: "NOCH OFFEN",
+    fundraisingCurrency: "UAH", fundraisingProgressText: "{raised} von {target} — {percent}"
+  },
+  es: {
+    fundraisingTitle: "Mudanza después de 10.º curso",
+    fundraisingDescription: "Estoy ahorrando para irme de casa de mis padres después de 10.º curso.",
+    fundraisingTargetLabel: "OBJETIVO", fundraisingCompleteLabel: "DEL OBJETIVO",
+    fundraisingRaisedLabel: "RECAUDADO", fundraisingRemainingLabel: "RESTANTE",
+    fundraisingCurrency: "UAH", fundraisingProgressText: "{raised} de {target} — {percent}"
+  },
+  fr: {
+    fundraisingTitle: "Déménager après la 10e année",
+    fundraisingDescription: "J'économise pour quitter le domicile de mes parents après la 10e année scolaire.",
+    fundraisingTargetLabel: "OBJECTIF", fundraisingCompleteLabel: "DE L'OBJECTIF",
+    fundraisingRaisedLabel: "RÉCOLTÉ", fundraisingRemainingLabel: "RESTANT",
+    fundraisingCurrency: "UAH", fundraisingProgressText: "{raised} sur {target} — {percent}"
+  },
+  ja: {
+    fundraisingTitle: "10年生を終えたら実家を出る",
+    fundraisingDescription: "10年生を終えてから親元を離れて暮らすために、資金を貯めています。",
+    fundraisingTargetLabel: "目標金額", fundraisingCompleteLabel: "達成率",
+    fundraisingRaisedLabel: "集まった金額", fundraisingRemainingLabel: "残りの金額",
+    fundraisingCurrency: "UAH", fundraisingProgressText: "{target}のうち{raised} — {percent}"
+  }
+};
+for (const [language, copy] of Object.entries(fundraisingCopy)) Object.assign(translations[language], copy);
 
 // XONI Mail is now available at its live service URL.
 const xoniMailCopy = {
@@ -1610,6 +1619,31 @@ document.querySelectorAll("[data-modal-close]").forEach((element) => {
   element.addEventListener("click", closeProject);
 });
 
+function updateFundraisingProgress(language) {
+  const bar = document.getElementById("fundraisingBar");
+  if (!bar) return;
+
+  const selected = translations[language] ? language : "en";
+  const strings = translations[selected];
+  const { target, raised } = FUNDRAISING_GOAL;
+  const percent = Math.min(100, Math.max(0, raised / target * 100));
+  const numbers = new Intl.NumberFormat(selected, { maximumFractionDigits: 0 });
+  const amount = (value) => `${numbers.format(value)} ${strings.fundraisingCurrency}`;
+  const percentText = `${new Intl.NumberFormat(selected, { maximumFractionDigits: 3 }).format(percent)}%`;
+
+  document.getElementById("fundraisingTargetAmount").textContent = amount(target);
+  document.getElementById("fundraisingRaisedAmount").textContent = amount(raised);
+  document.getElementById("fundraisingRemainingAmount").textContent = amount(Math.max(0, target - raised));
+  document.getElementById("fundraisingPercent").textContent = percentText;
+  document.getElementById("fundraisingFill").style.width = `${percent}%`;
+  bar.setAttribute("aria-valuemax", String(target));
+  bar.setAttribute("aria-valuenow", String(Math.min(target, Math.max(0, raised))));
+  bar.setAttribute("aria-valuetext", strings.fundraisingProgressText
+    .replace("{raised}", amount(raised))
+    .replace("{target}", amount(target))
+    .replace("{percent}", percentText));
+}
+
 function setLanguage(language) {
   const selected = translations[language] ? language : "en";
 
@@ -1630,6 +1664,7 @@ function setLanguage(language) {
     option.classList.toggle("active", option.dataset.language === selected);
   });
 
+  updateFundraisingProgress(selected);
   localStorage.setItem("flekiii-language", selected);
   updateYear();
   updateDownloadStatus();
