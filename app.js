@@ -18,22 +18,10 @@ donationNote:"Кнопка відкриває сторінку донату Mono
 dragHint:"КРУТИ / ОБЕРТАЙ / ДОСЛІДЖУЙ · 360°",resetCard:"↺ Скинути",
 connect:"БУДЬМО НА ЗВ’ЯЗКУ",contactTitle:'Залишаймося<br><em>на зв’язку.</em>',
 contactText:"Хочеш привітатися? Мене можна знайти на цих платформах.",
-devicesLabel:"МІЙ ЩОДЕННИЙ СЕТАП",
-devicesTitle:'Мої <em>девайси.</em>',
-devicesIntro:"Клавіатура та мишка, якими я користуюся щодня. Покрути 3D-моделі й роздивися їх ближче.",
-keyboardType:"КЛАВІАТУРА",
-keyboardDesc:"Моя компактна механічна клавіатура в червоно-білих кольорах.",
-keyboardSpec1:"Формат 65%",keyboardSpec2:"68 клавіш",
-mouseType:"МИШКА",
-mouseDesc:"Моя дротова чорна ігрова мишка з RGB-підсвіткою.",
-mouseSpec:"8 кнопок",
-devicesGesture:"↻ КРУТИ МИШКОЮ · 360°",
-devicesReset:"Скинути вигляд",
-devicesFootnote:"Інтерактивні 3D-візуалізації моїх девайсів, не офіційні моделі виробників.",
 footerText:"Створено з допитливістю й крапелькою рожевого."
 };
 const orig=new Map();document.querySelectorAll("[data-t]").forEach(el=>orig.set(el,el.innerHTML));
-const rich=new Set(["heroTitle","aboutTitle","supportTitle","contactTitle","devicesTitle"]);
+const rich=new Set(["heroTitle","aboutTitle","supportTitle","contactTitle"]);
 function lang(next){
  const l=next==="uk"?"uk":"en";document.documentElement.lang=l;
  document.querySelectorAll("[data-t]").forEach(el=>{const k=el.dataset.t;
@@ -42,10 +30,6 @@ function lang(next){
  if(rich.has(k))el.innerHTML=ua[k];else el.textContent=ua[k];}});
  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===l)));
  document.title=l==="uk"?"flekiii — Розробник":"flekiii — Independent Developer";
- const keyboard=document.getElementById("keyboard3d");
- const mouse=document.getElementById("mouse3d");
- if(keyboard)keyboard.setAttribute("aria-label",l==="uk"?"Інтерактивна 3D-клавіатура AJAZZ AK680. Перетягуй для обертання, стрілки клавіатури та Home для скидання.":"Interactive 3D AJAZZ AK680 keyboard. Drag to rotate, arrow keys and Home to reset.");
- if(mouse)mouse.setAttribute("aria-label",l==="uk"?"Інтерактивна 3D-мишка GamePro GM300B. Перетягуй для обертання, стрілки клавіатури та Home для скидання.":"Interactive 3D GamePro GM300B mouse. Drag to rotate, arrow keys and Home to reset.");
  const languageCard=document.getElementById("cardStage");
  if(languageCard)languageCard.setAttribute("aria-label",l==="uk"?
  "Інтерактивний концепт 3D-картки. Перетягуй, щоб обертати на 360° в будь-який бік. Стрілки клавіатури також працюють.":
