@@ -30,6 +30,17 @@ function lang(next){
  if(rich.has(k))el.innerHTML=ua[k];else el.textContent=ua[k];}});
  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===l)));
  document.title=l==="uk"?"flekiii — Розробник":"flekiii — Independent Developer";
+ const languageCard=document.getElementById("cardStage");
+ if(languageCard)languageCard.setAttribute("aria-label",l==="uk"?
+ "Інтерактивний концепт 3D-картки. Перетягуй, щоб обертати на 360° в будь-який бік. Стрілки клавіатури також працюють.":
+ "Interactive 3D concept card. Drag to spin in any direction, or use the arrow keys.");
+ try{localStorage.setItem("flekiii-lang",l);}catch{}
+}
+document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>lang(b.dataset.lang)));
+document.getElementById("year").textContent=String(new Date().getFullYear());
+let saved=navigator.language&&navigator.language.toLowerCase().startsWith("uk")?"uk":"en";
+try{saved=localStorage.getItem("flekiii-lang")||saved;}catch{}
+lang(saved);
  const stage=document.getElementById("cardStage");
 const card=document.getElementById("bankCard");
 const reset=document.getElementById("resetCard");
