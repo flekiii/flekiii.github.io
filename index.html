@@ -4,7 +4,7 @@
 <meta name="theme-color" content="#100d16"><meta name="description" content="flekiii — independent developer from Ukraine. Code, curiosity and creativity.">
 <meta property="og:type" content="website"><meta property="og:title" content="flekiii — Developer & Creator"><meta property="og:description" content="Learning, creating, and growing — a personal space by flekiii."><meta property="og:url" content="https://flekiii.github.io/">
 <title>flekiii — Developer & Creator</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=4"><script src="app.js?v=4" defer></script><script type="module" src="jar3d.js?v=4"></script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=5"><script src="app.js?v=5" defer></script><script type="module" src="devices3d.js?v=5"></script><script type="module" src="jar3d.js?v=4"></script>
 </head><body>
 <a href="#main" class="skip">Skip to content</a>
 <!-- Hanging anime-style firefly jar: fixed to the viewport, decorative only -->
@@ -122,6 +122,68 @@
   </div>
 </div></section>
 <section class="section contact" id="contact"><div class="container contact-inner"><h2 data-t="contactTitle">Let's keep<br><em>in touch.</em></h2><p data-t="contactText">Want to say hello? You can find me on these platforms.</p><div class="social"><a href="https://github.com/flekiii" target="_blank" rel="noopener noreferrer">GitHub <span>↗</span></a><a href="https://www.instagram.com/flekideveloper/" target="_blank" rel="noopener noreferrer">Instagram <span>↗</span></a><a href="https://www.tiktok.com/@fleki.truepkg" target="_blank" rel="noopener noreferrer">TikTok <span>↗</span></a></div></div></section>
+<section class="section my-devices" id="my-devices" aria-labelledby="my-devices-title">
+  <div class="container">
+    <div class="devices-heading">
+      <div>
+        <span class="devices-eyebrow" data-t="devicesLabel">MY EVERYDAY SETUP</span>
+        <h2 id="my-devices-title" data-t="devicesTitle">My <em>devices.</em></h2>
+        <p data-t="devicesIntro">The keyboard and mouse I use every day. Grab the 3D models and take a closer look.</p>
+      </div>
+      <div class="devices-heading-orbit" aria-hidden="true"><span>✳</span><span>⌘</span><span>✦</span></div>
+    </div>
+    <div class="devices-grid">
+      <article class="device-panel device-panel-keyboard">
+        <div class="device-panel-top">
+          <span class="device-type" data-t="keyboardType">KEYBOARD</span>
+          <span class="device-count" aria-hidden="true">01 — 02</span>
+        </div>
+        <div class="device-render" data-device="keyboard">
+          <div class="device-render-light" aria-hidden="true"></div>
+          <div class="device-canvas-fallback" aria-hidden="true"><span>⌨</span></div>
+          <canvas class="device-canvas" id="keyboard3d" tabindex="0" aria-label="Interactive 3D AJAZZ AK680 keyboard. Drag to rotate, use arrow keys and Home to reset."></canvas>
+          <div class="device-ground" aria-hidden="true"></div>
+        </div>
+        <div class="device-info">
+          <div>
+            <h3>AJAZZ AK680</h3>
+            <p data-t="keyboardDesc">My compact red-and-white mechanical keyboard.</p>
+          </div>
+          <div class="device-specs"><span data-t="keyboardSpec1">65% layout</span><span data-t="keyboardSpec2">68 keys</span><span>Red / White</span></div>
+        </div>
+        <div class="device-controls">
+          <span class="device-gesture" data-t="devicesGesture"><span aria-hidden="true">↻</span> DRAG TO ROTATE · 360°</span>
+          <button type="button" class="device-reset" data-reset-device="keyboard"><span aria-hidden="true">↺ </span><span data-t="devicesReset">Reset view</span></button>
+        </div>
+      </article>
+      <article class="device-panel device-panel-mouse">
+        <div class="device-panel-top">
+          <span class="device-type" data-t="mouseType">MOUSE</span>
+          <span class="device-count" aria-hidden="true">02 — 02</span>
+        </div>
+        <div class="device-render" data-device="mouse">
+          <div class="device-render-light" aria-hidden="true"></div>
+          <div class="device-canvas-fallback" aria-hidden="true"><span>◖</span></div>
+          <canvas class="device-canvas" id="mouse3d" tabindex="0" aria-label="Interactive 3D GamePro GM300B mouse. Drag to rotate, use arrow keys and Home to reset."></canvas>
+          <div class="device-ground" aria-hidden="true"></div>
+        </div>
+        <div class="device-info">
+          <div>
+            <h3>GamePro GM300B</h3>
+            <p data-t="mouseDesc">My wired black gaming mouse with RGB lighting.</p>
+          </div>
+          <div class="device-specs"><span>RGB</span><span>7200 DPI</span><span data-t="mouseSpec">8 buttons</span></div>
+        </div>
+        <div class="device-controls">
+          <span class="device-gesture" data-t="devicesGesture"><span aria-hidden="true">↻</span> DRAG TO ROTATE · 360°</span>
+          <button type="button" class="device-reset" data-reset-device="mouse"><span aria-hidden="true">↺ </span><span data-t="devicesReset">Reset view</span></button>
+        </div>
+      </article>
+    </div>
+    <p class="devices-footnote" data-t="devicesFootnote">Interactive 3D interpretations of my devices, not official manufacturer models.</p>
+  </div>
+</section>
+
 </main>
 <footer class="footer"><div class="container footer-inner"><a href="#top" class="footer-brand">flekiii<span>.</span></a><span data-t="footerText">Made with curiosity and a little pink.</span><span>© <span id="year">2026</span> flekiii</span></div></footer>
 </body></html>
