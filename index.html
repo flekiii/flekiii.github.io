@@ -4,13 +4,14 @@
 <meta name="theme-color" content="#100d16"><meta name="description" content="flekiii — independent developer from Ukraine. Code, curiosity and creativity.">
 <meta property="og:type" content="website"><meta property="og:title" content="flekiii — Developer & Creator"><meta property="og:description" content="Learning, creating, and growing — a personal space by flekiii."><meta property="og:url" content="https://flekiii.github.io/">
 <title>flekiii — Developer & Creator</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=3"><script src="app.js?v=3" defer></script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=4"><script src="app.js?v=4" defer></script><script type="module" src="jar3d.js?v=4"></script>
 </head><body>
 <a href="#main" class="skip">Skip to content</a>
 <!-- Hanging anime-style firefly jar: fixed to the viewport, decorative only -->
-<div class="firefly-lantern" aria-hidden="true">
+<div class="firefly-lantern" id="fireflyLantern">
   <div class="lantern-cast" ></div>
-  <div class="lantern-scroll" id="lanternScroll">
+  <canvas id="lantern3d" class="lantern3d" tabindex="0" aria-label="Interactive 3D firefly jar and rope. Drag to pull, use arrow keys to move, or Home to reset." title="Pull the jar or its rope"></canvas>
+  <div class="lantern-fallback" aria-hidden="true"><div class="lantern-scroll" id="lanternScroll">
     <div class="lantern-sway">
       <svg class="lantern-svg" viewBox="0 0 180 294" xmlns="http://www.w3.org/2000/svg" role="presentation">
         <defs>
@@ -47,6 +48,7 @@
       </svg>
     </div>
   </div>
+</div>
 </div>
 <header class="header"><div class="container head">
 <a class="brand" href="#top"><b>f<span>.</span></b> flekiii<span class="caret">_</span></a>

@@ -167,3 +167,87 @@ h1 em,.contact h2 em,.support h2 em{background:linear-gradient(94deg,#ff95c8,#ff
 @media(max-width:770px){.firefly-lantern{top:76px;right:1px;width:106px;height:185px}.lantern-cast{top:70px;left:-45px;width:202px;height:168px;filter:blur(12px)}.hero-objects .orbit-ring{opacity:.28}.hero-objects .holo-cube{left:4%;top:22%}.dream-orb{right:5%;bottom:4%}.about-orbit-objects{left:4%;top:170px;opacity:.48}.hero-grid{padding-top:110px}}
 @media(max-width:540px){.firefly-lantern{top:92px;right:-6px;width:93px;height:163px;opacity:.88}.lantern-cast{top:57px;left:-36px;width:175px;height:158px}.hero-objects .holo-cube{width:35px;height:35px;opacity:.35;left:5%;top:27%}.cube-face.cf-front{transform:translateZ(17.5px)}.cube-face.cf-back{transform:rotateY(180deg) translateZ(17.5px)}.cube-face.cf-right{transform:rotateY(90deg) translateZ(17.5px)}.cube-face.cf-left{transform:rotateY(-90deg) translateZ(17.5px)}.cube-face.cf-top{transform:rotateX(90deg) translateZ(17.5px)}.cube-face.cf-bottom{transform:rotateX(-90deg) translateZ(17.5px)}.hero-objects .orbit-ring{display:none}.dream-orb{width:47px;opacity:.42}.about-orbit-objects{opacity:.22;left:7%;top:130px}.card-pearl.pearl-one{width:38px;height:38px}.card-crystal{width:39px;height:47px}.private-top{padding:15px 16px 0}.private-brand{font-size:17px}.private-logo{font-size:18px;margin-right:3px}.private-tag{font-size:7px;padding:5px}.private-center{margin:13px 16px 4px}.private-emblem{width:43px;height:43px}.private-emblem svg{width:30px;height:30px}.private-identity{font-size:7px}.private-number{font-size:clamp(12px,3.4vw,17px);letter-spacing:.09em;padding:0 16px}.private-bottom{padding:8px 16px 14px}.private-holder small{font-size:6px}.private-holder strong{font-size:8px}.private-signature{font-size:14px}.private-signature span{font-size:7px}.private-back-top{padding:14px 16px 10px;font-size:16px}.private-back-top small{font-size:6px}.private-back-stripe{height:30px}.private-back-identity{margin:14px 16px 9px}.private-back-info strong{font-size:10px}.private-back-info small{font-size:7px}.private-back-shield{width:31px;height:31px;font-size:18px}.privacy-benefits{margin:0 16px}.privacy-benefits span{font-size:6px;padding:4px 5px}.private-back-foot{padding:0 16px;bottom:13px;font-size:6px}}
 @media(prefers-reduced-motion:reduce){.lantern-sway,.ff,.ff-aura,.lantern-sparkle,.lantern-cast,.holo-cube,.cube-inner,.dream-orb,.orbit-ring,.micro-spark,.about-crystal,.about-orb,.about-star-small,.card-halo-ring,.card-pearl,.card-crystal,.holo-sheen{animation:none!important}.lantern-scroll{transition:none!important}}
+
+
+/* Wide, comfortable desktop layout. Preserve readable text measures. */
+:root{--max:1460px}
+body{font-size:16px;line-height:1.75;overflow-x:clip}
+.container{width:min(var(--max),calc(100% - clamp(36px,6.4vw,112px)))}
+.head{min-height:84px;gap:52px}
+.head nav{gap:42px}
+.head nav a{font-size:14px}
+.hero-grid{grid-template-columns:minmax(0,1.14fr) minmax(0,.86fr);gap:clamp(28px,5vw,95px);padding-top:116px;padding-bottom:130px}
+.hero-copy{max-width:780px}
+h1{font-size:clamp(68px,6.6vw,114px);line-height:1.08}
+.lead{font-size:clamp(17px,1.28vw,20px);max-width:690px;line-height:1.87;color:#ddc7d9}
+.hero-actions{gap:18px;margin-top:42px}
+.btn{padding-inline:25px;min-height:56px;font-size:14px}
+.hero-graphic{min-height:495px}
+.terminal{width:min(100%,550px)}
+.section{padding-block:clamp(95px,9vw,150px)}
+h2{font-size:clamp(49px,5.7vw,79px);line-height:1.17}
+.about-grid{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:clamp(48px,7vw,126px)}
+.bio{max-width:770px}
+.bio>p{font-size:17px;line-height:1.94;color:#d9c5d5;margin-bottom:24px}
+.bio .bio-lead{font-size:clamp(23px,2vw,30px);line-height:1.6}
+.skills{margin-top:44px}
+.skills>div{grid-template-columns:minmax(160px,.34fr) 1fr;gap:30px;padding-block:21px}
+.skills p{font-size:15px}
+.support-grid{grid-template-columns:minmax(0,1.07fr) minmax(0,.93fr);gap:clamp(36px,6vw,105px)}
+.support-copy{max-width:730px}
+.support-lead{max-width:690px;font-size:clamp(19px,1.58vw,23px);line-height:1.78}
+.support-detail{max-width:690px;font-size:16px;line-height:1.92}
+.donation-note{max-width:630px;font-size:12px;line-height:1.85}
+.support-visual{min-height:505px}
+.card-stage{width:min(100%,560px)}
+.card-rotator{width:min(95%,495px)}
+.contact-inner{max-width:1100px}
+.contact-inner>p:not(.overline){font-size:18px;max-width:620px}
+.social{gap:16px}
+.social a{min-width:205px;padding:18px 21px;font-size:15px}
+.footer{padding-block:29px}
+.footer-inner{font-size:13px}
+/* Real WebGL rope and jar remain fixed during scrolling. SVG is the graceful fallback. */
+.firefly-lantern{position:fixed;z-index:29;top:82px;right:clamp(3px,.9vw,17px);width:195px;height:340px;isolation:isolate;pointer-events:none}
+.firefly-lantern .lantern-cast{top:110px;left:-100px;width:410px;height:325px;opacity:.95;filter:blur(20px)}
+.firefly-lantern .lantern3d{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:3;background:transparent;touch-action:none;pointer-events:none;cursor:grab;outline-offset:-7px}
+.firefly-lantern.is-webgl .lantern3d{pointer-events:auto}
+.firefly-lantern .lantern3d:active{cursor:grabbing}
+.firefly-lantern .lantern-fallback{position:absolute;inset:0;z-index:2;pointer-events:none;transition:opacity .3s}
+.firefly-lantern.is-webgl .lantern-fallback{opacity:0;visibility:hidden}
+.firefly-lantern .lantern-scroll{pointer-events:none}
+.firefly-lantern .lantern-fallback .lantern-svg{width:100%;height:100%}
+@media(max-width:1100px){
+ .head{gap:27px}.head nav{gap:23px}.hero-grid{gap:35px}
+ .firefly-lantern{width:156px;height:280px;top:79px}
+ .firefly-lantern .lantern-cast{width:300px;height:250px;left:-74px;top:88px}
+}
+@media(max-width:770px){
+ .container{width:calc(100% - 44px)}
+ .hero-grid{grid-template-columns:1fr;padding-top:85px;padding-bottom:76px}
+ .hero-copy{max-width:730px}.hero-graphic{min-height:425px}
+ .section{padding-block:94px}
+ .about-grid,.support-grid{grid-template-columns:1fr;gap:35px}
+ .bio{max-width:none}.support-visual{min-height:430px}
+ .firefly-lantern{width:131px;height:239px;top:80px;right:0}
+ .firefly-lantern .lantern-cast{width:270px;height:220px;left:-72px;top:72px}
+}
+@media(max-width:540px){
+ .container{width:calc(100% - 36px)}
+ .head{gap:10px;min-height:75px}.head nav{gap:25px}
+ .head nav a{font-size:12px}
+ .hero-grid{padding-top:82px;padding-bottom:56px}
+ h1{font-size:clamp(49px,11vw,66px)}
+ .lead{font-size:16px;line-height:1.83;max-width:94%}
+ .hero-graphic{min-height:350px}.section{padding-block:81px}
+ h2{font-size:clamp(43px,10vw,59px)}
+ .bio>p{font-size:16px}.bio .bio-lead{font-size:22px}
+ .skills>div{grid-template-columns:1fr;gap:8px;padding-block:17px}.skills p{font-size:14px}
+ .support-visual{min-height:295px}.support-lead{font-size:19px}.support-detail{font-size:15px}
+ .card-stage{width:100%}.card-rotator{width:min(95%,420px)}
+ .contact-inner>p:not(.overline){font-size:16px}
+ .social a{min-width:0}
+ .firefly-lantern{width:105px;height:194px;top:112px;right:-3px}
+ .firefly-lantern .lantern-cast{width:210px;height:175px;left:-55px;top:55px;filter:blur(16px)}
+}
+@media(prefers-reduced-motion:reduce){.firefly-lantern .lantern-cast{animation:none}.firefly-lantern .lantern-fallback *{animation:none!important}}
