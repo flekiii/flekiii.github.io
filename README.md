@@ -1,5 +1,7 @@
-# flekiii — Portfolio
+# flekiii — Personal Portfolio
 
-Personal portfolio of flekiii. [View website](https://flekiii.github.io/).
+A bilingual (English/Ukrainian), responsive personal page built using plain HTML, CSS and JavaScript.
 
-Pure HTML/CSS/JavaScript, English and Ukrainian, responsive design, no tracking scripts. Old website content replaced on main; Git history and Releases retained for recovery.
+Live: https://flekiii.github.io/
+
+Sections: introduction, about, support and contacts. The interactive card is a decorative 3D object (no real card details). Donations open the existing Monobank jar. No payment credentials are collected or handled by the website.
