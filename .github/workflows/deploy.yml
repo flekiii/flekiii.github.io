@@ -1,51 +1,28 @@
-name: Deploy to GitHub Pages
-
+name: Deploy Portfolio
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: pages
   cancel-in-progress: false
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
+    environment: github-pages
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Validate JavaScript and project assets
+      - uses: actions/checkout@v4
+      - name: Validate files
         run: |
-          node --check script.js
-          node --check project-page.js
-          node --check portal.js
-          node --check downloads/downloads.js
-          test -f release-hub/index.html
-          test -f release-hub-icon.svg
-          test -f fleki-convert-icon.svg
-          grep -q 'data-project="release-hub"' index.html
-          grep -q 'data-project-id="release-hub"' release-hub/index.html
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v4
+          node --check app.js
+          test -s index.html
+          test -s styles.css
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
         with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          path: .
+      - uses: actions/deploy-pages@v4
