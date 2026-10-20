@@ -83,3 +83,87 @@ h1 em,.contact h2 em,.support h2 em{background:linear-gradient(94deg,#ff95c8,#ff
 @media(max-width:770px){.support-grid{grid-template-columns:1fr;gap:25px}.support-visual{min-height:405px}.support-lead,.support-detail{max-width:630px}}
 @media(max-width:540px){.support-visual{min-height:290px}.card-stage{aspect-ratio:1.48}.card-face{border-radius:15px}.card-front{padding:18px}.card-brand{font-size:18px}.card-brand b{font-size:11px}.card-edition{font-size:7px}.card-chip-row{margin-top:17px}.card-chip{width:39px;height:29px}.card-chip i{top:6px;left:12px;width:15px;height:16px}.card-contactless{width:23px}.card-dots{font-size:clamp(12px,3.3vw,18px);letter-spacing:.06em}.card-bottom{font-size:8px;margin-top:9px;letter-spacing:.07em}.magnetic-stripe{margin-top:25px;height:42px}.signature{margin:12px 16px 0;padding:8px;font-size:7px}.back-caption>span{font-size:19px}.back-caption strong{font-size:14px}.back-caption small{font-size:8px}.card-controls{gap:12px;font-size:8px}.card-controls button{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.card-rotator{will-change:auto}}
+
+
+/* ---------- Studio refresh: floating anime lantern ---------- */
+.firefly-lantern{position:fixed;right:clamp(10px,2.1vw,38px);top:-4px;width:152px;height:270px;z-index:36;pointer-events:none;isolation:isolate;overflow:visible}
+.lantern-cast{position:absolute;z-index:-1;top:117px;left:-71px;width:295px;height:240px;transform:translateZ(0);background:radial-gradient(ellipse at 50% 44%,rgba(255,239,157,.35),rgba(249,209,132,.16) 24%,rgba(247,177,183,.065) 51%,transparent 71%);filter:blur(17px);mix-blend-mode:screen;animation:lanternLight 3.9s ease-in-out infinite alternate}
+.lantern-scroll{height:100%;width:100%;transform-origin:50% 0;transform:rotate(var(--lantern-scroll,0deg));transition:transform .58s cubic-bezier(.18,.75,.31,1.1)}
+.lantern-sway{height:100%;width:100%;transform-origin:50% 0;animation:lanternSway 6.4s ease-in-out infinite alternate}
+.lantern-svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 9px 9px #1b12274d) drop-shadow(0 0 9px rgba(255,235,148,.28))}
+.ff{transform-box:fill-box;transform-origin:center;animation:fireflyFloat 3.6s ease-in-out infinite alternate;animation-delay:var(--delay)}
+.ff-aura{opacity:.77;animation:fireflyGlow 2.25s ease-in-out infinite alternate;animation-delay:var(--delay)}
+.ff-two{animation-duration:4.2s}.ff-three{animation-duration:3.1s}.ff-four{animation-duration:4.9s}.ff-five{animation-duration:3.5s}
+.lantern-sparkle{transform-box:fill-box;transform-origin:center;animation:twinkle 2.3s ease-in-out infinite alternate}.star-two{animation-delay:-1s}.star-three{animation-delay:-1.75s}
+@keyframes lanternSway{0%{transform:rotate(-4deg)}100%{transform:rotate(5deg)}}
+@keyframes lanternLight{0%{opacity:.72;transform:scale(.94)}100%{opacity:1;transform:scale(1.1)}}
+@keyframes fireflyFloat{0%{transform:translate(calc(var(--dx) * -.55),calc(var(--dy) * -.6)) rotate(-5deg)}100%{transform:translate(var(--dx),var(--dy)) rotate(8deg)}}
+@keyframes fireflyGlow{0%{opacity:.44}100%{opacity:1}}
+@keyframes twinkle{0%{opacity:.3;transform:scale(.7)}100%{opacity:1;transform:scale(1.15)}}
+
+/* ---------- Floating 3D art throughout the portfolio ---------- */
+.hero{isolation:isolate}.hero-grid{position:relative;z-index:2}.hero-objects{position:absolute;inset:0;pointer-events:none;z-index:1;perspective:900px;overflow:hidden}
+.holo-cube{position:absolute;left:6%;top:13%;width:61px;height:61px;perspective:500px;opacity:.68;animation:cubeFloat 12s ease-in-out infinite}
+.cube-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:cubeSpin 16s linear infinite}
+.cube-face{display:block;position:absolute;inset:0;border:1px solid rgba(255,205,237,.7);background:linear-gradient(135deg,#ffa3d11d,#ffa3d105);box-shadow:inset 0 0 30px #ffa3d112,0 0 7px #ff8fcd14;backdrop-filter:blur(1px)}
+.cf-front{transform:translateZ(30.5px)}.cf-back{transform:rotateY(180deg) translateZ(30.5px)}.cf-right{transform:rotateY(90deg) translateZ(30.5px)}.cf-left{transform:rotateY(-90deg) translateZ(30.5px)}.cf-top{transform:rotateX(90deg) translateZ(30.5px)}.cf-bottom{transform:rotateX(-90deg) translateZ(30.5px)}
+.dream-orb{position:absolute;right:9%;bottom:9%;width:73px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 30% 23%,#fff3fbeb,#ebb4fa77 17%,#ac79d09c 48%,#36203b 83%);box-shadow:inset -11px -15px 20px #2b15384d,inset 4px 5px 12px #fff3,0 20px 36px #0005,0 0 48px #ed9ddb3a;animation:orbFloat 7s ease-in-out infinite}
+.orb-reflection{position:absolute;top:14%;left:20%;height:17%;width:30%;border-radius:50%;background:#fffbfead;filter:blur(6px);transform:rotate(-35deg)}
+.orb-core{position:absolute;inset:25%;border:1px solid #fff4;border-radius:50%;transform:rotateY(65deg);box-shadow:0 0 16px #fff3}
+.orbit-ring{position:absolute;right:9%;top:22%;width:127px;height:127px;border-radius:50%;border:9px solid #ffc8e08a;box-shadow:inset 0 0 11px #fff7,0 0 23px #d77aaf41;transform-style:preserve-3d;animation:ringTumble 13s linear infinite;opacity:.53}
+.micro-spark{position:absolute;color:#ffe7f4ad;font-size:24px;text-shadow:0 0 15px #ff95c9aa;animation:orbFloat 6s ease-in-out infinite}.spark-one{top:12%;right:17%}.spark-two{left:41%;bottom:11%;animation-delay:-2s}
+.about{position:relative;overflow:hidden}.about-heading{position:relative;min-height:270px}.about-orbit-objects{position:absolute;left:12%;top:145px;width:225px;height:170px;pointer-events:none;perspective:700px}
+.about-crystal{position:absolute;left:18px;top:28px;width:72px;height:72px;background:linear-gradient(135deg,#ffdfefa8,#bc7abc4c,#8e59807d);clip-path:polygon(50% 0%,90% 23%,100% 67%,50% 100%,4% 73%,9% 18%);box-shadow:0 0 30px #ffa3d123;filter:drop-shadow(3px 10px 5px #0006);animation:orbFloat 6s ease-in-out infinite,crystalTurn 11s linear infinite}
+.about-orb{position:absolute;top:28px;left:140px;width:47px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 25% 22%,#fff5fa,#db95c5 42%,#723d75);box-shadow:inset -5px -6px 8px #36183d88,0 10px 23px #0006;animation:orbFloat 5s ease-in-out infinite reverse}
+.about-star-small{position:absolute;top:113px;left:111px;font-size:27px;color:#ffc6e8;animation:twinkle 2.1s ease-in-out infinite alternate}
+.card-space-objects{position:absolute;inset:0;pointer-events:none;z-index:-1;perspective:1000px}
+.card-halo-ring{position:absolute;left:12%;top:5%;width:79%;height:87%;border:2px solid #ffc2e654;border-radius:50%;box-shadow:0 0 32px #ff9fd033,inset 0 0 26px #ff9fd01a;transform:rotateX(64deg) rotateZ(-24deg);animation:ringTumble 22s linear infinite}
+.card-pearl{position:absolute;border-radius:50%;background:radial-gradient(circle at 28% 25%,#fff7f9,#e1adce 37%,#7a4d90 86%);box-shadow:inset -8px -9px 9px #46234c61,0 9px 22px #0006}
+.pearl-one{width:58px;height:58px;top:5%;left:5%;animation:orbFloat 5.7s ease-in-out infinite}
+.pearl-two{width:27px;height:27px;right:1%;bottom:15%;animation:orbFloat 4.3s ease-in-out infinite reverse}
+.card-crystal{position:absolute;right:4%;top:9%;width:57px;height:69px;background:linear-gradient(130deg,#ffffffad,#f5a5d15e 45%,#a171c099);clip-path:polygon(48% 0,100% 28%,77% 100%,10% 79%,0 25%);filter:drop-shadow(0 12px 10px #0005);animation:crystalTurn 9s ease-in-out infinite}
+@keyframes cubeSpin{to{transform:rotateX(360deg) rotateY(360deg)}}
+@keyframes cubeFloat{0%,100%{translate:0 0}50%{translate:0 -20px}}
+@keyframes orbFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(4px,-19px,0)}}
+@keyframes ringTumble{0%{transform:rotateX(69deg) rotateY(0deg) rotateZ(0deg)}100%{transform:rotateX(429deg) rotateY(360deg) rotateZ(360deg)}}
+@keyframes crystalTurn{0%,100%{rotate:-9deg}50%{rotate:13deg}}
+/* ---------- Private banking concept ---------- */
+.card-stage{touch-action:none}.card-rotator{width:min(95%,450px);aspect-ratio:1.586}
+.private-front{padding:0;display:flex;flex-direction:column;background:radial-gradient(ellipse at 74% 18%,rgba(255,217,248,.25),transparent 50%),linear-gradient(125deg,#101620,#302334 42%,#121420 78%,#090d19);color:#fbf1fa;border:1px solid #f3c3ef80;box-shadow:0 27px 76px #03050eaa,0 0 0 1px #f7cafa35 inset,0 0 40px #fb9ee326}
+.private-front:after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(118deg,transparent 18%,rgba(255,255,255,.09) 28%,transparent 38%,rgba(255,165,228,.08) 65%,transparent 73%);mix-blend-mode:screen}
+.card-grain{position:absolute;inset:0;opacity:.24;pointer-events:none;background:radial-gradient(#fff7 0.45px,transparent .7px);background-size:5px 5px;mask-image:linear-gradient(110deg,#0005,transparent 75%)}
+.holo-sheen{position:absolute;inset:-70%;pointer-events:none;background:linear-gradient(115deg,transparent 36%,rgba(247,182,255,.09) 45%,rgba(167,231,255,.10) 51%,transparent 60%);transform:translateX(-13%) rotate(9deg);animation:holoDrift 8s ease-in-out infinite alternate}
+.circuit-lines{position:absolute;inset:0;width:100%;height:100%;opacity:.8;pointer-events:none}
+.private-top,.private-center,.private-number,.private-bottom{position:relative;z-index:2}
+.private-top{padding:26px 29px 0;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.private-brand{font-size:22px;font-weight:800;letter-spacing:-.06em}.private-logo{color:#ffc5eb;font-size:23px;margin-right:8px}.private-dot{color:#ff9bcf}
+.private-tag{font:750 9px ui-monospace,Consolas,monospace;letter-spacing:.12em;padding:6px 9px;border:1px solid #f6d5f465;border-radius:99px;color:#ffe0f6;white-space:nowrap;background:#ffc5e511}
+.private-center{display:flex;justify-content:space-between;align-items:center;margin:25px 29px 6px}
+.private-emblem{display:grid;place-items:center;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle,#fad3ef23,transparent);border:1px solid #ffc9ed5b;box-shadow:0 0 30px #ffc9ed2c,inset 0 0 20px #ffc9ed19}
+.private-emblem svg{width:43px;height:43px;color:#fcd9ef}
+.private-identity{font:650 10px ui-monospace,Consolas,monospace;letter-spacing:.08em;color:#bba8c5}.private-identity b{color:#ffd0ea;margin-left:3px}
+.private-number{padding:0 29px;margin-top:auto;font:600 22px ui-monospace,Consolas,monospace;letter-spacing:.13em;color:#fbe5f4;text-shadow:0 0 16px #ffc9ee50;white-space:nowrap}
+.private-number span{color:#ccbad2}
+.private-bottom{display:flex;justify-content:space-between;align-items:end;gap:9px;padding:13px 29px 24px}
+.private-holder{display:flex;flex-direction:column;gap:3px}.private-holder small{font:700 8px ui-monospace,monospace;color:#b1a2bb;letter-spacing:.2em}.private-holder strong{font:750 12px ui-monospace,monospace;letter-spacing:.12em}
+.private-signature{display:flex;align-items:center;gap:8px;font-size:19px;color:#ffc8e9}.private-signature span{font:700 9px ui-monospace,Consolas,monospace;color:#dcc8e6;letter-spacing:.08em}
+.card-edge-glint{position:absolute;inset:0;pointer-events:none;border-radius:inherit;box-shadow:inset 1px 1px 2px #ffffff8a,inset -1px -1px 2px #faccff59}
+.private-back{padding:0;display:block;background:radial-gradient(ellipse at 15% 20%,#945e9266,transparent 52%),linear-gradient(140deg,#0c1220,#292036,#15121f);color:#f8eaf4;border:1px solid #f7c9ed70}
+.back-mesh{position:absolute;inset:0;background:repeating-linear-gradient(125deg,transparent 0 13px,#ffc9ed05 14px 15px);pointer-events:none}
+.private-back-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:23px 27px 14px;font-size:21px;font-weight:800;letter-spacing:-.05em}
+.private-back-top small{font:700 9px ui-monospace,Consolas,monospace;letter-spacing:.08em;color:#edd5eb}
+.private-back-stripe{position:relative;height:43px;background:linear-gradient(110deg,#050710,#30293b,#080a12);box-shadow:inset 0 2px 3px #0006,inset 0 -1px 2px #ffcfed25}
+.private-back-identity{display:flex;justify-content:space-between;gap:14px;margin:25px 27px 14px;align-items:center}
+.private-back-info{display:flex;flex-direction:column;gap:5px}.private-back-info small{font:650 9px ui-monospace,Consolas,monospace;letter-spacing:.13em;color:#d7b6d2}.private-back-info strong{font-size:14px;font-weight:750;letter-spacing:.02em}
+.private-back-shield{display:grid;place-items:center;border:1px solid #f7c2e582;background:#ffc9f119;border-radius:13px;width:42px;height:42px;font-size:24px;color:#ffc1e6}
+.privacy-benefits{display:flex;gap:6px;flex-wrap:wrap;margin:0 27px}
+.privacy-benefits span{padding:6px 8px;font:700 9px ui-monospace,Consolas,monospace;letter-spacing:.05em;border:1px solid #ddc3df43;border-radius:6px;background:#fff1}
+.private-back-foot{display:flex;justify-content:space-between;gap:12px;padding:0 27px;position:absolute;bottom:21px;left:0;right:0;font:650 8px ui-monospace,Consolas,monospace;letter-spacing:.11em;color:#cbb5d0}
+@keyframes holoDrift{from{transform:translateX(-28%) rotate(9deg)}to{transform:translateX(31%) rotate(9deg)}}
+.card-controls{margin-top:10px}.support-visual .card-stage{z-index:2}
+/* Remove numerical section labels and tighten whitespace naturally */
+.hero-end{display:none}.about-heading{min-height:auto}
+@media(max-width:1100px){.firefly-lantern{width:128px;height:230px;right:5px}.lantern-cast{top:95px;left:-61px;width:255px;height:205px}.private-top{padding:22px 22px 0}.private-center{margin:19px 22px 5px}.private-number{padding:0 22px;font-size:19px}.private-bottom{padding:11px 22px 19px}}
+@media(max-width:770px){.firefly-lantern{top:76px;right:1px;width:106px;height:185px}.lantern-cast{top:70px;left:-45px;width:202px;height:168px;filter:blur(12px)}.hero-objects .orbit-ring{opacity:.28}.hero-objects .holo-cube{left:4%;top:22%}.dream-orb{right:5%;bottom:4%}.about-orbit-objects{left:4%;top:170px;opacity:.48}.hero-grid{padding-top:110px}}
+@media(max-width:540px){.firefly-lantern{top:92px;right:-6px;width:93px;height:163px;opacity:.88}.lantern-cast{top:57px;left:-36px;width:175px;height:158px}.hero-objects .holo-cube{width:35px;height:35px;opacity:.35;left:5%;top:27%}.cube-face.cf-front{transform:translateZ(17.5px)}.cube-face.cf-back{transform:rotateY(180deg) translateZ(17.5px)}.cube-face.cf-right{transform:rotateY(90deg) translateZ(17.5px)}.cube-face.cf-left{transform:rotateY(-90deg) translateZ(17.5px)}.cube-face.cf-top{transform:rotateX(90deg) translateZ(17.5px)}.cube-face.cf-bottom{transform:rotateX(-90deg) translateZ(17.5px)}.hero-objects .orbit-ring{display:none}.dream-orb{width:47px;opacity:.42}.about-orbit-objects{opacity:.22;left:7%;top:130px}.card-pearl.pearl-one{width:38px;height:38px}.card-crystal{width:39px;height:47px}.private-top{padding:15px 16px 0}.private-brand{font-size:17px}.private-logo{font-size:18px;margin-right:3px}.private-tag{font-size:7px;padding:5px}.private-center{margin:13px 16px 4px}.private-emblem{width:43px;height:43px}.private-emblem svg{width:30px;height:30px}.private-identity{font-size:7px}.private-number{font-size:clamp(12px,3.4vw,17px);letter-spacing:.09em;padding:0 16px}.private-bottom{padding:8px 16px 14px}.private-holder small{font-size:6px}.private-holder strong{font-size:8px}.private-signature{font-size:14px}.private-signature span{font-size:7px}.private-back-top{padding:14px 16px 10px;font-size:16px}.private-back-top small{font-size:6px}.private-back-stripe{height:30px}.private-back-identity{margin:14px 16px 9px}.private-back-info strong{font-size:10px}.private-back-info small{font-size:7px}.private-back-shield{width:31px;height:31px;font-size:18px}.privacy-benefits{margin:0 16px}.privacy-benefits span{font-size:6px;padding:4px 5px}.private-back-foot{padding:0 16px;bottom:13px;font-size:6px}}
+@media(prefers-reduced-motion:reduce){.lantern-sway,.ff,.ff-aura,.lantern-sparkle,.lantern-cast,.holo-cube,.cube-inner,.dream-orb,.orbit-ring,.micro-spark,.about-crystal,.about-orb,.about-star-small,.card-halo-ring,.card-pearl,.card-crystal,.holo-sheen{animation:none!important}.lantern-scroll{transition:none!important}}
