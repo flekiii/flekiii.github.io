@@ -438,3 +438,62 @@ main{position:relative;z-index:1}
  .matrix-digit{display:none!important}
  .card-rotator{will-change:auto}
 }
+
+
+
+/* =========================================================================
+   v15: shared per-character number rain on every readable site label.
+   All layout remains intact and text stays accessible to screen readers.
+   ========================================================================= */
+.rain-inline{display:inline;white-space:inherit}
+.rain-accessible{
+  position:absolute!important;width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;
+  white-space:nowrap!important;border:0!important;
+}
+.rain-visual{display:inline}
+.rain-word{display:inline-block;white-space:nowrap}
+.rain-char{
+  position:relative;display:inline-block;
+  white-space:pre;
+}
+.rain-glyph{display:inline-block;white-space:pre}
+.rain-char::before,.rain-char::after{
+  position:absolute;pointer-events:none;z-index:5;
+  left:50%;top:0;
+  color:#81caff;opacity:0;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-size:.66em;font-weight:800;line-height:1;
+  text-shadow:0 0 7px #4db2ffb5,0 0 17px #8ccaff66;
+  transform:translate(-50%,-72px);
+}
+.rain-char::before{content:attr(data-digit-a)}
+.rain-char::after{content:attr(data-digit-b);color:#b2e5ff}
+.rain-active .rain-char::before{
+  animation:rain-digit-down .71s cubic-bezier(.19,.67,.21,1) both;
+  animation-delay:var(--rain-delay,0ms);
+}
+.rain-active .rain-char::after{
+  animation:rain-digit-down .66s cubic-bezier(.22,.70,.25,1) both;
+  animation-delay:calc(var(--rain-delay,0ms) + 95ms);
+}
+.rain-active .rain-glyph{
+  animation:rain-glyph-resolve .43s cubic-bezier(.17,.73,.3,1) both;
+  animation-delay:calc(var(--rain-delay,0ms) + 420ms);
+}
+@keyframes rain-digit-down{
+  0%{opacity:0;transform:translate(-50%,-94px) scale(.65)}
+  13%{opacity:.93}
+  72%{opacity:.80}
+  100%{opacity:0;transform:translate(-50%,4px) scale(.96)}
+}
+@keyframes rain-glyph-resolve{
+  0%,35%{opacity:0;filter:blur(3px);transform:translateY(-3px)}
+  81%{opacity:.9;filter:blur(.8px);transform:translateY(0)}
+  100%{opacity:1;filter:blur(0);transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .rain-active .rain-char::before,.rain-active .rain-char::after{animation:none!important;display:none!important}
+  .rain-active .rain-glyph{animation:none!important;opacity:1!important;filter:none!important;transform:none!important}
+}

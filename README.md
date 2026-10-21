@@ -2,13 +2,15 @@
 
 Live: https://flekiii.github.io/
 
-A fully cosmic, bilingual (Ukrainian/English) personal site.
+A bilingual (Ukrainian/English) personal portfolio styled as an uninterrupted cosmic scene.
 
-- **3D solar system:** textured Earth slowly rotates; a procedurally cratered Moon travels around it and a glowing Sun sits farther away. Drag, touch, keyboard arrows and Home control the view.
-- **Pure text profile:** only `fleki` — no photo.
-- **Realistic hanging lantern:** a physically based glass-and-metal WebGL jar with fireflies. It is tethered to a visible ceiling mount by a dynamic braided SVG rope that curves and extends to the jar wherever it is dragged. Its position is saved in the browser; double-click or Home resets it.
-- **Continuous cosmic design:** starfields, luminous dark panels and a compact centered bottom navigation dock. No white content areas or artificial black spacer below the footer.
-- **Developer interests, skills and optional support:** a fictional 360° card that remains nonselectable when spun, plus contact links.
-- **Personal statement:** “хочу створити свій вільний світ” forms from falling digits when scrolled into view.
+## Features
 
-Built using HTML, CSS, vanilla JavaScript and Three.js. Reduced-motion support, responsive layouts and keyboard access are included. No fabricated experience or project/client listings.
+- **Every visible inscription uses falling-digit text reveal**, from the minimalist \`fleki\` wordmark to navigation, descriptions, skill tags, card labels and links. Each letter resolves from descending digits. The animation resets after a text block scrolls out of the viewport and replays when it enters again, including the special “хочу створити свій вільний світ” statement. Changing languages refreshes all inscriptions.
+- **3D solar system:** Textured rotating Earth, orbiting cratered Moon and glowing distant Sun. Drag/touch or use keyboard to explore.
+- **Ceiling-tethered firefly lantern:** Physically based glass-and-metal model, responsive dynamic rope with a ceiling mount. Drag anywhere and its position is saved; double-click or Home resets it.
+- **Simple personal wordmark:** \`fleki\`, no portrait.
+- **Compact, rounded bottom navigation** and cosmic sections throughout. No artificial empty footer band.
+- **Skills, interests, optional support and contact links**, plus a nonselectable interactive fictional privacy card.
+
+The site is static HTML, CSS and JavaScript, and uses Three.js for the WebGL effects. Accessibility: number-stream visuals are hidden from assistive tech while full original text stays accessible; reduced-motion settings disable animation. No fabricated work history or project listings.
