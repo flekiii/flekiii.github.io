@@ -20,6 +20,8 @@ jobs:
         run: |
           node --check app.js
           node --check jar3d.js
+          node --check earth3d.js
+          test -s earth3d.js
           test -s index.html
           test -s jar3d.js
           test -s styles.css

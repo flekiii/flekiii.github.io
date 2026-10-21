@@ -2,12 +2,13 @@
 "use strict";
 const uk={
 skipLink:"Перейти до основного вмісту",
-navAbout:"Про мене",navWork:"Чим займаюсь",navSkills:"Навички",navContact:"Контакти",navCTA:"Написати ↗",
+navAbout:"Про мене",navWork:"Напрямки",navSkills:"Навички",navContact:"Контакти",navCTA:"Написати ↗",
 heroEyebrow:"НЕЗАЛЕЖНИЙ РОЗРОБНИК · УКРАЇНА",
 heroTitle:'Привіт, я flekiii.<br>Створюю <em>цифрові продукти.</em>',
 heroText:"Розробляю застосунки, проєктую продумані інтерфейси та вивчаю створення ігор. Для мене важливо, як усе виглядає, працює й відчувається.",
 heroPrimary:"Чим я займаюсь",heroSecondary:"Більше про мене",
 heroNote:"Щодня створюю, навчаюсь і вдосконалююсь.",
+earthTitle:"Дім. Земля. Моя точка відліку.",planetHint:"ТЯГНИ, ЩОБ КРУТИТИ · АВТООБЕРТАННЯ",
 profileLabel:"ПРОФІЛЬ РОЗРОБНИКА",profileStatus:"АКТИВНИЙ",
 profileRole:"Розробка програм і творчих проєктів",profileLocation:"КРАЇНА",profileEnvironment:"СЕРЕДОВИЩЕ",
 heroScroll:"ГОРТАЙ НИЖЧЕ",
@@ -69,6 +70,89 @@ let initial=navigator.language?.toLowerCase().startsWith("uk")?"uk":"en";
 try{initial=localStorage.getItem("flekiii-lang")||initial;}catch{}
 setLanguage(initial);
 document.getElementById("year").textContent=String(new Date().getFullYear());
+// Drag the hanging lantern to any viewport position. Store positions per browser.
+const lantern=document.getElementById("fireflyLantern");
+const lanternHandle=document.getElementById("lantern3d");
+if(lantern && lanternHandle){
+ let moving=false,pointerId=null,grabX=0,grabY=0;
+ let moved=false,downX=0,downY=0;
+ const storageKey="flekiii-lantern-position-v2";
+ const clamp=(x,y)=>{
+   const w=lantern.offsetWidth,h=lantern.offsetHeight;
+   return {
+     x:Math.max(2,Math.min(innerWidth-w-2,x)),
+     y:Math.max(2,Math.min(innerHeight-h-2,y))
+   };
+ };
+ function applyPosition(x,y,persist=true){
+   const point=clamp(x,y);
+   lantern.style.left=point.x+"px";
+   lantern.style.top=point.y+"px";
+   lantern.style.right="auto";
+   lantern.classList.add("custom-position");
+   if(persist){
+     try{localStorage.setItem(storageKey,JSON.stringify(point));}catch{}
+   }
+ }
+ function resetPosition(){
+   lantern.style.left="";
+   lantern.style.top="";
+   lantern.style.right="";
+   lantern.classList.remove("custom-position");
+   try{localStorage.removeItem(storageKey);}catch{}
+ }
+ try{
+   const saved=JSON.parse(localStorage.getItem(storageKey)||"null");
+   if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y))applyPosition(saved.x,saved.y,false);
+ }catch{}
+ lanternHandle.addEventListener("pointerdown",e=>{
+   if(e.pointerType==="mouse"&&e.button!==0)return;
+   pointerId=e.pointerId;
+   const rect=lantern.getBoundingClientRect();
+   grabX=e.clientX-rect.left;grabY=e.clientY-rect.top;
+   downX=e.clientX;downY=e.clientY;
+   moving=true;moved=false;
+   lantern.classList.add("is-moving");
+   lanternHandle.setPointerCapture(e.pointerId);
+   e.preventDefault();
+ });
+ lanternHandle.addEventListener("pointermove",e=>{
+   if(!moving||e.pointerId!==pointerId)return;
+   if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>3)moved=true;
+   applyPosition(e.clientX-grabX,e.clientY-grabY,!moving);
+   e.preventDefault();
+ });
+ const stop=e=>{
+   if(e.pointerId!==pointerId)return;
+   moving=false;pointerId=null;
+   lantern.classList.remove("is-moving");
+   if(moved){
+     const r=lantern.getBoundingClientRect();
+     applyPosition(r.left,r.top,true);
+   }
+   if(lanternHandle.hasPointerCapture(e.pointerId))lanternHandle.releasePointerCapture(e.pointerId);
+ };
+ lanternHandle.addEventListener("pointerup",stop);
+ lanternHandle.addEventListener("pointercancel",stop);
+ lanternHandle.addEventListener("lostpointercapture",()=>{moving=false;pointerId=null;lantern.classList.remove("is-moving");});
+ lanternHandle.addEventListener("dblclick",resetPosition);
+ lanternHandle.addEventListener("keydown",e=>{
+   if(e.key==="Home"){resetPosition();e.preventDefault();return;}
+   const r=lantern.getBoundingClientRect(),step=e.shiftKey?32:15;
+   if(e.key==="ArrowLeft")applyPosition(r.left-step,r.top);
+   else if(e.key==="ArrowRight")applyPosition(r.left+step,r.top);
+   else if(e.key==="ArrowUp")applyPosition(r.left,r.top-step);
+   else if(e.key==="ArrowDown")applyPosition(r.left,r.top+step);
+   else return;
+   e.preventDefault();
+ });
+ addEventListener("resize",()=>{
+   if(!lantern.classList.contains("custom-position"))return;
+   const r=lantern.getBoundingClientRect();
+   applyPosition(r.left,r.top);
+ },{passive:true});
+}
+
 const stage=document.getElementById("cardStage"),card=document.getElementById("bankCard"),reset=document.getElementById("resetCard");
 if(!stage||!card||!reset)return;
 const reduced=matchMedia("(prefers-reduced-motion: reduce)");
@@ -76,7 +160,10 @@ const home={x:-10,y:18},angle={x:home.x,y:home.y},speed={x:0,y:0};
 let active=null,dragging=false,lastX=0,lastY=0,lastTime=0,idle=0,lastFrame=0,rafId=0;
 function draw(ix=0,iy=0){card.style.transform="rotateX("+(angle.x+ix).toFixed(2)+"deg) rotateY("+(angle.y+iy).toFixed(2)+"deg)";}
 function resetView(){angle.x=home.x;angle.y=home.y;speed.x=speed.y=0;idle=0;draw();}
+stage.addEventListener("selectstart",e=>e.preventDefault());
+stage.addEventListener("dragstart",e=>e.preventDefault());
 stage.addEventListener("pointerdown",e=>{
+ e.preventDefault();
  if(e.pointerType==="mouse"&&e.button!==0)return;
  active=e.pointerId;dragging=true;
  lastX=e.clientX;lastY=e.clientY;lastTime=e.timeStamp;

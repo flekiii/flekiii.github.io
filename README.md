@@ -1,20 +1,16 @@
 # flekiii — Developer Portfolio
 
-A clean, editorial portfolio for a young independent developer from Ukraine.
+Personal developer portfolio: https://flekiii.github.io/
 
-**Live site:** https://flekiii.github.io/
+The site supports English and Ukrainian, with an interactive opening scene:
 
-## Sections
+- **3D Earth:** A dark starfield, slowly spinning planet, real planetary surface texture, subtle clouds and an atmosphere. Drag with a mouse or finger; arrow keys and Home are supported. Falls back to a CSS globe if WebGL is unavailable.
+- **Anime-inspired personal card:** Original in-page SVG art and minimal profile information. Illustration is stylized artwork, not an actual photograph.
+- **Floating bottom dock:** A centered rounded menu with About, What I do, Skills, Contact and EN/UA.
+- **Draggable firefly jar:** Place it anywhere in the viewport; location is stored in the browser. Double-click or Home to reset. SVG fallback if WebGL is unavailable.
+- **Detailed fictional privacy card:** Interactive 360-degree rotation with material texture, chip, hologram and signature. Pointer input no longer selects text.
+- **Portfolio information:** Personal introduction, areas of work, skills, optional support, and contact links.
 
-- **Introduction:** name, development focus and a clear link to the rest of the website.
-- **About:** a short personal introduction and confirmed basic facts.
-- **What I do:** software, web/interface design, game development.
-- **Skills:** technologies used or being explored.
-- **Support:** an optional Monobank link and an interactive, fictional privacy-card concept.
-- **Contact:** social profiles.
+No invented clients, job history, projects list or device showroom. The bank card is fictional and is not a payment instrument.
 
-The site has Ukrainian and English localization, responsive layouts, accessible navigation and reduced-motion accommodations. The 3D firefly jar from earlier releases is preserved in a smaller, subtle presentation and includes a fallback for devices without WebGL.
-
-No invented clients, employment history, testimonials, achievements or finished project case studies have been added. Existing Git history and Releases are preserved.
-
-Built with HTML, CSS, vanilla JavaScript and Three.js (jar only); published with GitHub Pages.
+Built with HTML, CSS, vanilla JavaScript and Three.js for the two 3D elements. The design includes keyboard access and reduced-motion support.

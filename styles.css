@@ -280,3 +280,235 @@ h2{font-size:clamp(43px,4.45vw,72px);line-height:1.16;letter-spacing:-.074em;fon
  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
  .card-rotator{will-change:auto}
 }
+
+
+/* ============================================================================
+   v10 — Earth hero, anime-inspired profile, floating rounded bottom dock
+   ============================================================================ */
+:root{--cosmos:#070b16;--cosmos-ink:#f1f5ff;--cosmos-muted:#a8b7d3;--cosmos-rose:#ff90b4}
+html{scroll-padding-top:30px}
+body{padding-bottom:105px}
+body,button,a{-webkit-tap-highlight-color:transparent}
+.button,.button-dark,.button-text,.header-contact,.contact-links a,.card-controls button,.skill-pills span{border-radius:999px}
+.profile-card,.expertise-icon{border-radius:25px}
+.logo,.header-contact{display:none!important}
+/* Fixed center dock: natural content width, not a full-width footer bar */
+.site-header{
+ position:fixed;top:auto;bottom:max(19px,env(safe-area-inset-bottom));left:50%;
+ transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);
+ z-index:95;border-radius:999px;border:1px solid #ffffff32;
+ background:rgba(14,17,29,.88);backdrop-filter:blur(22px) saturate(1.45);
+ box-shadow:0 12px 36px #02041083,0 0 0 1px #080c19aa inset;
+}
+.site-header .header-inner{
+ display:flex;align-items:center;justify-content:center;gap:10px;
+ width:max-content;max-width:100%;min-height:0;padding:8px 11px;
+ flex-wrap:nowrap;margin:0;
+}
+.dock-home{display:grid;place-items:center;flex:0 0 auto;width:42px;height:40px;
+ border-radius:999px;color:#f5f6ff;font-size:22px;line-height:1;font-weight:830;letter-spacing:-.08em}
+.dock-home span{color:#fff}
+.dock-home:hover{background:#ffffff17}
+.site-header .desktop-nav{
+ display:flex;flex:0 1 auto;align-items:center;justify-content:center;gap:3px;
+ order:initial;width:auto;margin:0;padding:0;border:0;
+}
+.site-header .desktop-nav a{
+ display:grid;place-items:center;min-height:40px;min-width:0;padding:9px 14px;
+ font-size:12px;line-height:1.1;font-weight:720;white-space:nowrap;
+ color:#c7cede;border-radius:999px;transition:background .18s,color .18s;
+}
+.site-header .desktop-nav a:hover,.site-header .desktop-nav a.active{
+ color:#fff;background:#ffffff1b
+}
+.site-header .nav-actions{display:flex;align-items:center;gap:0;order:initial;margin:0;padding-left:9px;border-left:1px solid #ffffff27}
+.site-header .lang-switch{display:flex;gap:2px;align-items:center;color:#ffffff77;font-size:11px}
+.site-header .lang-switch button{width:35px;height:36px;padding:0;
+ background:transparent;border:0;color:#8491a8;border-radius:999px;font-size:10px;line-height:1;font-weight:760}
+.site-header .lang-switch button[aria-pressed="true"]{background:#f0f3ff;color:#111525}
+.site-header .lang-switch button:hover{color:#fff}
+.site-header .lang-switch button[aria-pressed="true"]:hover{color:#111525}
+/* Cosmic hero, isolated from light portfolio sections */
+.earth-hero{
+ background:
+ radial-gradient(ellipse at 21% 45%,#255db321,transparent 50%),
+ radial-gradient(ellipse at 87% 33%,#db598b1b,transparent 48%),
+ linear-gradient(130deg,#070b16 5%,#0b1025 53%,#120d24 100%);
+ color:var(--cosmos-ink);overflow:hidden;isolation:isolate;
+ padding:58px 0 14px;min-height:min(920px,100svh);
+}
+.earth-hero .hero-layout{
+ position:relative;z-index:3;
+ grid-template-columns:minmax(0,1.23fr) minmax(340px,.77fr);
+ gap:clamp(28px,5.6vw,102px);align-items:center;
+ padding-top:24px;padding-bottom:45px;
+ min-height:min(740px,85svh);
+}
+.cosmic-nebula{position:absolute;z-index:0;pointer-events:none;border-radius:50%;filter:blur(65px);opacity:.74}
+.cosmic-nebula-a{width:500px;height:500px;background:radial-gradient(circle,#284ba94b,transparent 70%);left:-13%;top:9%}
+.cosmic-nebula-b{width:460px;height:460px;background:radial-gradient(circle,#a650ae28,transparent 72%);right:-11%;top:3%}
+.cosmic-stars{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.cosmic-stars span{display:block;position:absolute;background:#e9f2ff;border-radius:50%;width:1px;height:1px;box-shadow:0 0 6px #d5e8ff65}
+.cosmic-stars:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%,transparent 40%,#0005)}
+.planet-zone{position:relative;display:flex;flex-direction:column;justify-content:center;min-width:0;width:100%}
+.earth-stage{position:relative;z-index:2;width:min(100%,710px);height:clamp(380px,46vw,635px);
+ display:grid;place-items:center;isolation:isolate;touch-action:pan-y}
+.earth-stage:before{content:"";position:absolute;z-index:-2;inset:5%;
+ background:radial-gradient(circle at 47% 50%,#3087d51c,transparent 61%);filter:blur(18px)}
+.earth-backlight{position:absolute;z-index:-2;left:14%;top:13%;width:72%;height:76%;
+ background:radial-gradient(circle,#419feb3a 0%,#245bcc13 45%,transparent 71%);filter:blur(24px)}
+.orbit-ring{position:absolute;z-index:0;pointer-events:none;inset:13% 2%;border-radius:50%;
+ border:1px solid #a3b8e624;transform:rotate(-28deg) scaleY(.62);
+ box-shadow:inset 0 0 30px #284d9331}
+.orbit-ring-two{inset:21% 10%;transform:rotate(32deg) scaleY(.57);
+ border-style:dashed;border-color:#f3dcfa33}
+#earthCanvas{position:absolute;z-index:5;inset:0;width:100%;height:100%;display:block;
+ cursor:grab;touch-action:none;outline-offset:-14px}
+#earthCanvas.dragging{cursor:grabbing}
+.earth-fallback{position:absolute;z-index:2;left:50%;top:50%;
+ width:min(76%,460px);aspect-ratio:1;border-radius:50%;
+ transform:translate(-50%,-50%);overflow:hidden;pointer-events:none;
+ background:
+ radial-gradient(circle at 27% 28%,#ffffff2d,transparent 27%),
+ radial-gradient(circle at 70% 58%,transparent 39%,#020916d9 87%),
+ url('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg');
+ background-size:100% 100%,100% 100%,200% 100%;background-position:center,center,30% 50%;
+ box-shadow:inset -31px -14px 65px #010613cb,0 0 30px #4a91ec62,0 0 90px #3560b737;
+ transition:opacity .35s,visibility .35s
+}
+.earth-stage.earth-ready .earth-fallback{opacity:0;visibility:hidden}
+.earth-small-star{position:absolute;z-index:2;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 15px #c1d7ff,0 0 35px #78b4ff}
+.earth-small-star-a{left:13%;top:25%}.earth-small-star-b{right:13%;bottom:23%}
+.planet-metadata{display:flex;align-items:center;justify-content:space-between;gap:20px;
+ width:min(100%,710px);padding:8px 20px 0;color:#b7c1d9;
+ font:690 10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.11em}
+.planet-meta-id{display:inline-flex;align-items:center;gap:10px;color:#e2e9fb}
+.planet-meta-id i{width:8px;height:8px;border-radius:50%;background:#7dbdff;box-shadow:0 0 10px #68b5ff8a}
+.planet-gesture{text-align:right}
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* Anime-inspired profile: restrained manga line-art, not a childish profile card */
+.anime-profile.profile-card{
+ width:100%;max-width:455px;min-height:550px;margin:0 auto;
+ padding:25px 25px 24px;display:flex;flex-direction:column;overflow:hidden;
+ border:1px solid #8290b444;border-radius:29px;
+ background:linear-gradient(165deg,#1b2643,#121a31 57%,#111626);
+ color:#f4f6ff;box-shadow:0 25px 70px #0008,0 1px 0 #ffffff19 inset;
+ position:relative;isolation:isolate;
+}
+.anime-profile.profile-card:before{content:"";position:absolute;z-index:-1;inset:0;
+ background:radial-gradient(ellipse at 55% 31%,#bb718a35,transparent 55%),
+ linear-gradient(110deg,#ffffff09,transparent 45%);}
+.anime-profile.profile-card:after{content:"";height:2px;bottom:0;
+ background:linear-gradient(90deg,transparent,#bd82a9aa,transparent);}
+.anime-profile .profile-card-top{position:relative;z-index:3;font-size:9px;letter-spacing:.11em;color:#b6c3da}
+.anime-profile .profile-status{background:#ffffff0a;border:1px solid #ffffff1c;border-radius:999px;
+ padding:7px 10px;color:#d3dde8;gap:7px}
+.anime-profile .profile-status i{height:6px;width:6px;display:block;background:#81c5a5;border-radius:50%}
+.anime-art{position:relative;flex:1;min-height:265px;margin:13px -4px 0;overflow:hidden;
+ border-radius:19px;background:
+ radial-gradient(circle at 69% 22%,#c598aa5a,transparent 33%),
+ linear-gradient(165deg,#364663,#23304b 55%,#18243a);}
+.anime-art:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:repeating-linear-gradient(0deg,#fff0 0 15px,#e4eef908 16px);}
+.anime-art-glow{position:absolute;inset:4% 4% 0;background:radial-gradient(circle at 63% 30%,#ebb7ad53,transparent 55%);filter:blur(22px)}
+.anime-character{position:absolute;z-index:2;inset:0;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 5px 12px #080d1c72)}
+.anime-art-label{position:absolute;z-index:4;left:15px;bottom:13px;padding:5px 8px;
+ background:#111a2dc7;border:1px solid #ffffff2b;border-radius:7px;color:#dce0eb;
+ font:650 8px/1.4 ui-monospace,Consolas,monospace;letter-spacing:.09em}
+.anime-profile .profile-info{margin:20px 0 16px;gap:4px}
+.anime-profile .profile-name{color:#fff;font-size:30px;font-weight:820}
+.anime-profile .profile-name span{color:#ec97af}
+.anime-profile .profile-info>span:last-child{color:#b9c3d6;font-size:13px}
+.anime-profile .profile-divider{display:none}
+.anime-profile .profile-details{border-top:1px solid #ffffff24;padding-top:17px;gap:14px}
+.anime-profile .profile-details small{color:#8090ad;font-size:9px;letter-spacing:.09em}
+.anime-profile .profile-details strong{color:#eff2fd;font-size:13px}
+.earth-hero .hero-bottom{position:relative;z-index:2;color:#8594b6;font-size:10px;padding-top:10px}
+.earth-hero .hero-bottom a{color:#d2defd}
+/* Card becomes a physical object: no text selection or native browser dragging. */
+#cardStage,#cardStage *{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none}
+#cardStage{touch-action:none;cursor:grab}
+#cardStage.dragging{cursor:grabbing}
+.card-face{border-radius:24px;border:1px solid #f0e7ee94;box-shadow:0 31px 65px #0b0c1959,0 0 0 1px #fff4 inset}
+.bank-front{background:
+ radial-gradient(circle at 18% -13%,#dbc5d55e,transparent 48%),
+ radial-gradient(ellipse at 100% 85%,#945b885d,transparent 48%),
+ linear-gradient(130deg,#595367,#353246 38%,#211d32 75%,#40324d);
+}
+.bank-back{background:radial-gradient(ellipse at 70% 25%,#b39fbd66,transparent 47%),linear-gradient(125deg,#27283b,#4c4560 53%,#25263b)}
+.bank-texture{opacity:.62;mix-blend-mode:soft-light;
+ background:repeating-linear-gradient(135deg,#ffffff09 0 1px,transparent 1px 5px),
+ repeating-linear-gradient(45deg,#0c10201a 0 1px,transparent 2px 9px)}
+.bank-reflection{background:radial-gradient(ellipse at var(--glint-x,32%) var(--glint-y,20%),#ffffff6d,transparent 34%),
+ linear-gradient(123deg,transparent 18%,#ffffff24 34%,transparent 52%,#060b2140 92%);
+ mix-blend-mode:screen}
+.bank-security-pattern{position:absolute;z-index:0;inset:0;pointer-events:none;opacity:.35;
+ background:radial-gradient(ellipse at 45% 58%,transparent 50%,#e8aac41a 54%,transparent 55%),
+ repeating-radial-gradient(circle at 85% 25%,transparent 0 12px,#c3b0d422 13px,transparent 14px 25px)}
+.bank-hologram{position:absolute;right:30px;top:100px;z-index:1;
+ height:42px;width:42px;display:grid;place-items:center;border-radius:8px;
+ transform:rotate(-13deg);font-size:29px;color:#fff9;
+ background:conic-gradient(from 10deg,#90c5d3,#d9a7e9,#f0cdb0,#93d9c4,#b3a7ea,#90c5d3);
+ border:1px solid #fffb;box-shadow:inset 0 0 0 3px #ffffff32,0 3px 10px #0004;
+}
+.bank-printed-details{display:flex;justify-content:space-between;gap:10px;margin-top:5px;
+ font:650 7px/1.4 ui-monospace,Consolas,monospace;letter-spacing:.1em;color:#d7cddd;opacity:.8;position:relative;z-index:2}
+.bank-fine-print{margin:11px 27px 0;color:#c7c5d1;font:690 7px ui-monospace,Consolas,monospace;letter-spacing:.07em;position:relative;z-index:2}
+.bank-back-serial{position:absolute;right:28px;top:202px;color:#d0c5db;font:630 7px ui-monospace,Consolas,monospace;letter-spacing:.1em;z-index:2}
+.bank-chip{border-radius:9px;box-shadow:inset 0 0 0 2px #8b704d,0 4px 9px #0007}
+.bank-top strong,.bank-number,.bank-bottom strong{text-shadow:0 1px 2px #0006}
+.card-controls button{border-radius:999px;padding:10px 17px}
+/* Lamp can be moved freely. Whole WebGL canvas remains the hit surface. */
+.firefly-lantern .lantern3d{pointer-events:auto!important;cursor:grab!important}
+.firefly-lantern.is-moving .lantern3d{cursor:grabbing!important}
+.firefly-lantern{z-index:89;user-select:none;-webkit-user-select:none;touch-action:none}
+.firefly-lantern.custom-position{transition:none}
+/* Responsive */
+@media(max-width:1020px){
+ .earth-hero .hero-layout{grid-template-columns:minmax(0,1fr) minmax(280px,.75fr);gap:18px}
+ .earth-stage{height:clamp(360px,48vw,550px)}
+ .anime-profile.profile-card{min-height:500px}
+ .anime-art{min-height:230px}
+}
+@media(max-width:790px){
+ .earth-hero{padding-top:25px}
+ .earth-hero .hero-layout{grid-template-columns:1fr;gap:34px;padding-top:10px}
+ .earth-stage{width:100%;height:clamp(340px,75vw,530px);margin:auto}
+ .planet-zone{max-width:690px;margin:auto}
+ .anime-profile.profile-card{max-width:475px;min-height:0;min-height:500px;margin:0 auto}
+ .earth-hero .hero-bottom{padding-bottom:95px}
+}
+@media(max-width:600px){
+ body{padding-bottom:91px}
+ .site-header{bottom:max(13px,env(safe-area-inset-bottom));max-width:calc(100% - 16px)}
+ .site-header .header-inner{gap:2px;padding:6px 7px;justify-content:center}
+ .dock-home{width:29px;height:36px;font-size:18px}
+ .site-header .desktop-nav{gap:1px}
+ .site-header .desktop-nav a{min-height:36px;padding:8px 9px;font-size:10px}
+ .site-header .nav-actions{padding-left:5px}
+ .site-header .lang-switch{gap:0}
+ .site-header .lang-switch button{width:27px;height:31px;font-size:9px}
+ .earth-hero{padding-top:4px}
+ .earth-hero .hero-layout{gap:14px;padding-bottom:25px}
+ .earth-stage{height:clamp(315px,86vw,450px)}
+ .earth-fallback{width:76%}
+ .planet-metadata{font-size:8px;letter-spacing:.05em;padding:0 4px}
+ .anime-profile.profile-card{width:min(100%,425px);min-height:480px;padding:19px;border-radius:24px}
+ .anime-art{min-height:250px}
+ .anime-profile .profile-details{padding-top:13px}
+ .earth-hero .hero-bottom{padding-bottom:90px;font-size:8px}
+ .bank-hologram{width:26px;height:26px;top:66px;right:16px;font-size:19px}
+ .bank-printed-details{font-size:5px}
+ .bank-fine-print{font-size:5px;margin:6px 15px 0}
+ .bank-back-serial{right:15px;top:122px;font-size:5px}
+}
+@media(max-width:380px){
+ .site-header .header-inner{padding:5px;gap:1px}
+ .dock-home{width:24px;font-size:16px}
+ .site-header .desktop-nav a{padding:8px 6px;font-size:9.5px}
+ .site-header .lang-switch button{width:23px;font-size:9px}
+ .anime-art{min-height:225px}
+}
+@media(prefers-reduced-motion:reduce){
+ .firefly-lantern .lantern-fallback *{animation:none!important}
+}

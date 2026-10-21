@@ -211,41 +211,8 @@ if (canvas && container) {
       }
     }
 
-    let pointer=null,dragging=false,beginX=0,beginY=0,originalX=0,originalY=0,dx=0,dy=0;
-    canvas.addEventListener("pointerdown",e=>{
-      if(e.pointerType==="mouse"&&e.button!==0)return;
-      pointer=e.pointerId;dragging=true;
-      beginX=e.clientX;beginY=e.clientY;originalX=pos.x;originalY=pos.y;
-      dx=dy=0;vel.set(0,0);
-      canvas.setPointerCapture(e.pointerId);
-      canvas.style.cursor="grabbing";
-      e.preventDefault();
-    });
-    canvas.addEventListener("pointermove",e=>{
-      if(!dragging||e.pointerId!==pointer)return;
-      const rect=canvas.getBoundingClientRect();
-      dx=e.movementX||0;dy=e.movementY||0;
-      goal.set(originalX+(e.clientX-beginX)*3.6/Math.max(60,rect.width),
-        originalY-(e.clientY-beginY)*6/Math.max(80,rect.height));
-      constrain(goal);pos.copy(goal);vel.set(0,0);
-      draw(performance.now()/1000);
-    });
-    const finish=e=>{
-      if(e.pointerId!==pointer)return;
-      pointer=null;dragging=false;vel.set(dx*.0018,-dy*.0018);
-      canvas.style.cursor="grab";
-      if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId);
-    };
-    canvas.addEventListener("pointerup",finish);
-    canvas.addEventListener("pointercancel",finish);
-    canvas.addEventListener("lostpointercapture",()=>{pointer=null;dragging=false;canvas.style.cursor="grab";});
-    canvas.addEventListener("keydown",e=>{
-      const step=.15;
-      if(e.key==="ArrowLeft")pos.x-=step;else if(e.key==="ArrowRight")pos.x+=step;
-      else if(e.key==="ArrowUp")pos.y+=step;else if(e.key==="ArrowDown")pos.y-=step;
-      else if(e.key==="Home"){pos.copy(rest);vel.set(0,0);}else return;
-      constrain(pos);e.preventDefault();draw(performance.now()/1000);
-    });
+    // The entire jar is now movable in screen coordinates (see app.js).
+    let dragging=false;
 
     function draw(t){
       jar.position.set(pos.x,pos.y,0);

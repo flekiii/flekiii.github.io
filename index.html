@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#faf9f7">
+<meta name="theme-color" content="#070b16">
 <meta name="description" content="flekiii — independent developer from Ukraine. Apps, interfaces and game development.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="flekiii — Developer Portfolio">
@@ -11,15 +11,15 @@
 <meta property="og:url" content="https://flekiii.github.io/">
 <title>flekiii — Developer Portfolio</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="stylesheet" href="styles.css?v=9">
-<script src="app.js?v=9" defer></script>
-<script src="jar3d.js?v=9" type="module"></script>
+<link rel="stylesheet" href="styles.css?v=10">
+<script src="app.js?v=10" defer></script>
+<script src="jar3d.js?v=10" type="module"></script><script src="earth3d.js?v=10" type="module"></script>
 </head>
 <body>
 <a class="skip-link" href="#main" data-t="skipLink">Skip to main content</a>
 <div class="firefly-lantern" id="fireflyLantern">
   <div class="lantern-cast" ></div>
-  <canvas id="lantern3d" class="lantern3d" tabindex="0" aria-label="Interactive 3D firefly jar and rope. Drag to pull, use arrow keys to move, or Home to reset." title="Pull the jar or its rope"></canvas>
+  <canvas id="lantern3d" class="lantern3d" tabindex="0" aria-label="Interactive 3D firefly jar and rope. Drag to pull, use arrow keys to move, or Home to reset." title="Drag the lantern anywhere"></canvas>
   <div class="lantern-fallback" aria-hidden="true"><div class="lantern-scroll" id="lanternScroll">
     <div class="lantern-sway">
       <svg class="lantern-svg" viewBox="0 0 180 294" xmlns="http://www.w3.org/2000/svg" role="presentation">
@@ -60,8 +60,8 @@
 </div>
 </div>
 <header class="site-header" id="top">
-  <div class="container header-inner">
-    <a href="#top" class="logo" aria-label="flekiii home">flekiii<span>.</span></a>
+  <div class="header-inner">
+    <a href="#top" class="dock-home" aria-label="Home" title="Home"><span>f.</span></a>
     <nav class="desktop-nav" aria-label="Main navigation">
       <a href="#about" data-t="navAbout">About</a>
       <a href="#expertise" data-t="navWork">What I do</a>
@@ -70,36 +70,85 @@
     </nav>
     <div class="nav-actions">
       <div class="lang-switch" role="group" aria-label="Site language">
-        <button data-lang="en" type="button" aria-pressed="true">EN</button><span>/</span>
+        <button data-lang="en" type="button" aria-pressed="true">EN</button>
         <button data-lang="uk" type="button" aria-pressed="false">UA</button>
       </div>
-      <a href="#contact" class="header-contact" data-t="navCTA">Let's talk <span aria-hidden="true">↗</span></a>
     </div>
   </div>
 </header>
 
 <main id="main">
-<section class="hero" aria-labelledby="hero-title">
+<section class="hero earth-hero" aria-labelledby="planet-title">
+  <div class="cosmic-nebula cosmic-nebula-a" aria-hidden="true"></div>
+  <div class="cosmic-nebula cosmic-nebula-b" aria-hidden="true"></div>
+  <div class="cosmic-stars" aria-hidden="true"></div>
   <div class="container hero-layout">
-    <div class="hero-main">
-      <p class="overline"><span class="availability-dot"></span><span data-t="heroEyebrow">INDEPENDENT DEVELOPER · UKRAINE</span></p>
-      <h1 id="hero-title" data-t="heroTitle">Hi, I'm flekiii.<br>I create <em>digital things.</em></h1>
-      <p class="hero-description" data-t="heroText">I develop applications, design thoughtful interfaces and explore game development. I care about how things look, work and feel.</p>
-      <div class="hero-buttons">
-        <a href="#expertise" class="button button-dark"><span data-t="heroPrimary">Explore my work</span><span aria-hidden="true">↗</span></a>
-        <a href="#about" class="button button-text"><span data-t="heroSecondary">More about me</span><span aria-hidden="true">↓</span></a>
+    <div class="planet-zone">
+      <h1 id="planet-title" class="visually-hidden" data-t="earthTitle">Home. Earth. My starting point.</h1>
+      <div class="earth-stage">
+        <div class="earth-backlight" aria-hidden="true"></div>
+        <div class="orbit-ring orbit-ring-one" aria-hidden="true"></div>
+        <div class="orbit-ring orbit-ring-two" aria-hidden="true"></div>
+        <div class="earth-fallback" aria-hidden="true"></div>
+        <canvas id="earthCanvas" tabindex="0" aria-label="Interactive 3D planet Earth. Drag to rotate or use arrow keys. Home resets view." title="Drag to spin planet Earth"></canvas>
+        <div class="earth-small-star earth-small-star-a" aria-hidden="true"></div>
+        <div class="earth-small-star earth-small-star-b" aria-hidden="true"></div>
       </div>
-      <div class="hero-signature"><span class="signature-line"></span><span data-t="heroNote">Building, learning and improving every day.</span></div>
+      <div class="planet-metadata">
+        <span class="planet-meta-id"><i></i> EARTH / HOME</span>
+        <span class="planet-gesture" data-t="planetHint">DRAG TO ROTATE · AUTO-SPIN ON</span>
+      </div>
     </div>
-    <aside class="profile-card" aria-label="Creator profile summary">
-      <div class="profile-card-top"><span data-t="profileLabel">DEVELOPER PROFILE</span><span class="profile-status"><span></span> <span data-t="profileStatus">ACTIVE</span></span></div>
-      <div class="profile-mark" aria-hidden="true"><span>f</span><i>.</i></div>
-      <div class="profile-info"><span class="profile-name">flekiii</span><span data-t="profileRole">Software & creative development</span></div>
-      <div class="profile-divider"></div>
-      <div class="profile-details"><div><small data-t="profileLocation">LOCATION</small><strong>Ukraine</strong></div><div><small data-t="profileEnvironment">ENVIRONMENT</small><strong>NixOS / Linux</strong></div></div>
+    <aside class="profile-card anime-profile" aria-label="Creator profile summary">
+      <div class="profile-card-top">
+        <span data-t="profileLabel">DEVELOPER PROFILE</span>
+        <span class="profile-status"><i></i><span data-t="profileStatus">ACTIVE</span></span>
+      </div>
+      <div class="anime-art" role="img" aria-label="Stylized anime-inspired illustrated developer in a hoodie with a nighttime skyline">
+        <div class="anime-art-glow"></div>
+        <svg class="anime-character" viewBox="0 0 360 280" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="hoodieFill" x1="0" y1="0" x2=".9" y2="1">
+              <stop stop-color="#444960"/><stop offset=".65" stop-color="#262b3d"/><stop offset="1" stop-color="#151927"/>
+            </linearGradient>
+            <linearGradient id="hairFill" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#3d3343"/><stop offset="1" stop-color="#151923"/>
+            </linearGradient>
+            <linearGradient id="cityFade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#64738b"/><stop offset="1" stop-color="#252d40"/></linearGradient>
+          </defs>
+          <g opacity=".48">
+            <path d="M0 218h30v-50h27v50h23v-80h32v80h33v-42h29v42h32v-64h29v64h25v-40h34v40h46v62H0z" fill="url(#cityFade)"/>
+            <path d="M5 232h350" stroke="#a3b2c9" stroke-width="2" opacity=".2"/>
+            <g fill="#d8c0b7"><rect x="36" y="184" width="5" height="5"/><rect x="90" y="154" width="5" height="5"/><rect x="104" y="176" width="5" height="5"/><rect x="243" y="174" width="5" height="5"/><rect x="285" y="199" width="5" height="5"/></g>
+          </g>
+          <circle cx="274" cy="68" r="39" fill="#a9bddb" opacity=".12"/>
+          <circle cx="274" cy="68" r="23" fill="#c3d0de" opacity=".44"/>
+          <path d="M42 280c3-56 32-96 90-104l92-3c67 8 91 50 95 107Z" fill="url(#hoodieFill)" stroke="#8c8da2" stroke-width="3"/>
+          <path d="M117 177c14 45 39 75 61 89l-23 14-42-54-15-35Z" fill="#191e2e" stroke="#545c73" stroke-width="2.4"/>
+          <path d="M235 179c-15 45-34 68-58 88l25 13 42-57 15-28Z" fill="#191e2e" stroke="#545c73" stroke-width="2.4"/>
+          <path d="M137 166l4 34 39 40 39-40 2-37" fill="#d49e8c" stroke="#463948" stroke-width="3"/>
+          <path d="M119 111c0-44 21-69 60-69 47 0 64 32 62 74l-9 48c-10 31-36 53-53 53-20 0-42-22-51-53Z" fill="#e0b4a2" stroke="#5c4a55" stroke-width="3"/>
+          <path d="M116 131c-23-70 16-121 69-116 43-10 74 33 62 84l-13 49-7-32-14-13-24-25-34 26-24 13-10 31Z" fill="url(#hairFill)" stroke="#4d4956" stroke-width="3"/>
+          <path d="M122 100c12-45 48-53 62-50-11 18-21 27-50 38 35-5 49-17 65-31 9 19 22 31 36 39" fill="none" stroke="#746575" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+          <path d="M139 146c9-7 19-7 28-3m27-1c9-5 21-5 30 2" fill="none" stroke="#503d49" stroke-width="3" stroke-linecap="round"/>
+          <path d="M143 153c8 4 15 4 21 1m35 0c9 4 17 3 24-2" fill="none" stroke="#393849" stroke-width="2.3" stroke-linecap="round"/>
+          <path d="M174 182q8 5 16 0" fill="none" stroke="#995e66" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M177 164l-4 10 8 3" fill="none" stroke="#ad7d76" stroke-width="2.3" stroke-linecap="round"/>
+          <path d="M85 281c13-39 24-61 41-72m152 72c-10-39-19-58-39-76" fill="none" stroke="#626a83" stroke-width="4" opacity=".54"/>
+          <path d="M161 240l16 16 16-16" stroke="#9b8290" stroke-width="3" fill="none"/>
+          <path d="M177 257v23" stroke="#d16480" stroke-width="4"/>
+          <path d="M13 263h68m200 0h69" stroke="#c5adba" stroke-width="2" opacity=".3"/>
+        </svg>
+        <span class="anime-art-label" aria-hidden="true">FLEKIII / PERSONAL SPACE</span>
+      </div>
+      <div class="profile-info"><strong class="profile-name">flekiii<span>.</span></strong><span data-t="profileRole">Software & creative development</span></div>
+      <div class="profile-details">
+        <div><small data-t="profileLocation">LOCATION</small><strong>Ukraine</strong></div>
+        <div><small data-t="profileEnvironment">ENVIRONMENT</small><strong>NixOS / Linux</strong></div>
+      </div>
     </aside>
   </div>
-  <div class="container hero-bottom"><span data-t="heroScroll">SCROLL TO EXPLORE</span><a href="#about" aria-label="Jump to about">↓</a><span>© 2026 FLEKIII</span></div>
+  <div class="container hero-bottom"><span data-t="heroScroll">EXPLORE THE PORTFOLIO</span><a href="#about" aria-label="Jump to about">↓</a><span>FLEKIII / 2026</span></div>
 </section>
 
 <section class="section about" id="about">
@@ -171,17 +220,17 @@
       <div id="cardStage" class="card-stage" tabindex="0" role="group" aria-label="Interactive fictional bank card. Drag or use arrow keys to rotate; Home to reset.">
         <div id="bankCard" class="card-rotator">
           <div class="card-face bank-front">
-            <div class="bank-texture"></div><div class="bank-reflection"></div>
+            <div class="bank-texture"></div><div class="bank-reflection"></div><div class="bank-security-pattern" aria-hidden="true"></div><div class="bank-hologram" aria-hidden="true">◈</div>
             <div class="bank-top"><strong>flekiii<span>.</span></strong><small>PRIVATE / CONCEPT</small></div>
             <div class="bank-middle"><div class="bank-chip"><i></i></div><svg class="contactless" viewBox="0 0 30 30" aria-hidden="true"><path d="M5 10Q11 15 5 20 M11 6Q20 15 11 24 M17 2Q29 15 17 28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-            <div class="bank-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; 0000</div>
+            <div class="bank-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; 0000</div><div class="bank-printed-details"><span>01 / STUDIO EDITION</span><span>VALID THRU &nbsp; 12 / 34</span></div>
             <div class="bank-bottom"><div><small>CARDHOLDER</small><strong>FLEKIII</strong></div><span>PRIVACY BY DESIGN</span></div>
           </div>
           <div class="card-face bank-back">
             <div class="bank-texture"></div><div class="bank-reflection"></div>
-            <div class="bank-back-top"><strong>flekiii<span>.</span></strong><small>CONCEPT CARD / 01</small></div><div class="bank-stripe"></div>
+            <div class="bank-back-top"><strong>flekiii<span>.</span></strong><small>CONCEPT CARD / 01</small></div><div class="bank-stripe"></div><div class="bank-fine-print" aria-hidden="true">CONCEPT CARD · DESIGN STUDY · PRIVATE IDENTITY</div>
             <div class="bank-signature"><span>AUTHORIZED HOLDER</span><b>•••</b></div>
-            <div class="bank-back-caption">DESIGNED FOR SIMPLICITY AND CONTROL.</div>
+            <div class="bank-back-caption">DESIGNED FOR SIMPLICITY AND CONTROL.</div><div class="bank-back-serial">SERIES 001  ·  FLEKIII STUDIO</div>
             <div class="bank-back-footer"><span>NOT A PAYMENT CARD</span><span>01 / CONCEPT</span></div>
           </div>
         </div>
