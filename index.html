@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#100d16"><meta name="description" content="flekiii — independent developer from Ukraine. Code, curiosity and creativity.">
+<meta name="theme-color" content="#251b1c"><meta name="description" content="flekiii — independent developer from Ukraine. Code, curiosity and creativity.">
 <meta property="og:type" content="website"><meta property="og:title" content="flekiii — Developer & Creator"><meta property="og:description" content="Learning, creating, and growing — a personal space by flekiii."><meta property="og:url" content="https://flekiii.github.io/">
 <title>flekiii — Developer & Creator</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=4"><script src="app.js?v=4" defer></script><script type="module" src="jar3d.js?v=4"></script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=6"><script src="app.js?v=6" defer></script><script type="module" src="jar3d.js?v=6"></script>
 </head><body>
 <a href="#main" class="skip">Skip to content</a>
-<!-- Hanging anime-style firefly jar: fixed to the viewport, decorative only -->
+<!-- Draggable 3D hand-painted firefly jar; fixed above the cozy studio. -->
 <div class="firefly-lantern" id="fireflyLantern">
   <div class="lantern-cast" ></div>
   <canvas id="lantern3d" class="lantern3d" tabindex="0" aria-label="Interactive 3D firefly jar and rope. Drag to pull, use arrow keys to move, or Home to reset." title="Pull the jar or its rope"></canvas>
@@ -57,43 +57,51 @@
 </div></header>
 <main id="main">
 <section class="hero" id="top">
-<div class="hero-objects" aria-hidden="true">
-  <div class="holo-cube"><div class="cube-inner"><i class="cube-face cf-front"></i><i class="cube-face cf-back"></i><i class="cube-face cf-right"></i><i class="cube-face cf-left"></i><i class="cube-face cf-top"></i><i class="cube-face cf-bottom"></i></div></div>
-  <div class="dream-orb"><span class="orb-reflection"></span><span class="orb-core"></span></div>
-  <div class="orbit-ring"></div>
-  <div class="micro-spark spark-one">✧</div><div class="micro-spark spark-two">✦</div>
-</div><div class="container hero-grid">
+<div class="container hero-grid">
 <div class="hero-copy">
 <p class="kicker"><span class="online"></span><span data-t="heroKicker">INDEPENDENT DEVELOPER · UKRAINE</span></p>
-<h1 data-t="heroTitle">Turning ideas<br><em>into reality.</em></h1>
-<p class="lead" data-t="heroLead">Hey, I'm flekiii. I'm 15, from Ukraine, and I love learning about technology, code, creativity and beautiful interfaces.</p>
+<h1 data-t="heroTitle">A cozy place<br><em>for ideas.</em></h1>
+<p class="lead" data-t="heroLead">Hey, I'm flekiii. Welcome to my little corner of the internet — a warm space for curiosity, code, and things made with care.</p>
 <div class="hero-actions"><a class="btn primary" href="#support"><span data-t="explore">Support me</span><span aria-hidden="true">↗</span></a><a class="btn secondary" href="#about"><span data-t="contactMe">About me</span><span aria-hidden="true">↗</span></a></div>
 <div class="stats"><div><strong>15</strong><small data-t="age">years old</small></div><i></i><div><strong>UA</strong><small data-t="country">Ukraine</small></div><i></i><div><strong>∞</strong><small data-t="ideas">ideas ahead</small></div></div>
 </div>
-<div class="hero-graphic" aria-hidden="true">
-<div class="glow"></div><div class="terminal">
-<div class="terminal-head"><span class="dots"><i></i><i></i><i></i></span><span>~/flekiii/portfolio</span><span class="live">● LIVE</span></div>
-<div class="terminal-main"><div class="big-f">f<span>.</span></div><div class="rule"></div><div class="code"><span>const</span> creator = {<br>&nbsp;&nbsp;name: <em>"flekiii"</em>,<br>&nbsp;&nbsp;role: <em>"developer"</em>,<br>&nbsp;&nbsp;drive: <em>"create"</em><br>};<b class="caret">▌</b></div></div><div class="terminal-footer"><span>BUILD / EXPERIMENT / REPEAT</span><span>✳</span></div>
-</div><div class="float-chip chip-a">✦ &nbsp; ALWAYS CREATING</div><div class="float-chip chip-b">↗ &nbsp; THINK DIFFERENT</div>
+<div class="hero-graphic cozy-stage" aria-hidden="true">
+  <div class="cozy-room">
+    <div class="cozy-wall">
+      <div class="cozy-window"><div class="window-sky"><div class="sunset-sun"></div><div class="sky-hill hill-far"></div><div class="sky-hill hill-near"></div><div class="sky-cloud cloud-one"></div><div class="sky-cloud cloud-two"></div></div><div class="window-cross"></div><div class="window-curtain left-curtain"></div><div class="window-curtain right-curtain"></div></div>
+      <div class="wall-fairy-lights"><span>✧</span><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="cozy-wall-note">one idea<br>at a time <span>♡</span></div>
+      <div class="wall-frame"><span>✿</span></div>
+    </div>
+    <div class="cozy-desk-top"></div><div class="cozy-desk-front"></div>
+    <div class="cozy-monitor"><div class="cozy-monitor-bezel"><div class="monitor-window-bar"><span></span><span></span><span></span><b>flekiii / home</b></div><div class="monitor-greeting">hello, world<span>♥</span></div><div class="monitor-lines"><i></i><i></i><i></i></div><div class="monitor-flower">✿</div></div><div class="monitor-neck"></div><div class="monitor-foot"></div></div>
+    <div class="cozy-keyboard"><span></span><span></span><span></span><span></span></div>
+    <div class="cozy-cup"><div class="cup-tea"></div><div class="cup-handle"></div><div class="cup-heart">♡</div><div class="steam steam-a"></div><div class="steam steam-b"></div></div>
+    <div class="cozy-pot"><div class="plant-leaves"><i></i><i></i><i></i><i></i><i></i></div><div class="plant-pot"></div></div>
+    <div class="cozy-book book-one"></div><div class="cozy-book book-two"></div>
+    <div class="cozy-candle"><span></span></div>
+    <div class="cozy-desk-light"></div>
+  </div>
+  <div class="cozy-caption">a little corner of the internet <span>♡</span></div>
 </div></div>
 </section>
-<section class="section about" id="about"><div class="container about-grid"><div><h2 data-t="aboutTitle">Curious mind.<br><em>Builder at heart.</em></h2><div class="about-star" aria-hidden="true">✳</div><div class="about-orbit-objects" aria-hidden="true"><div class="about-crystal"></div><div class="about-orb"></div><div class="about-star-small">✧</div></div></div><div class="bio"><p class="bio-lead" data-t="bioLead">I'm flekiii, a 15-year-old independent developer from Ukraine who loves learning and creating.</p><p data-t="bioText">I like making ideas real: experimenting with interfaces, building desktop apps, learning game development and figuring out how things work under the hood. I keep discovering something new every day.</p><div class="skills"><div><span data-t="skillDev">DEVELOPMENT</span><p>JavaScript · Dart · Flutter · Rust</p></div><div><span data-t="skillTools">TOOLS & PLATFORMS</span><p>Linux · GitHub · VS Code</p></div><div><span data-t="skillGames">GAME CREATION</span><p>Unity · Unreal Engine · C#</p></div><div><span data-t="skillFocus">CURRENT FOCUS</span><p data-t="focus">Learning, creativity and technology</p></div></div></div></div></section>
+<section class="section about" id="about"><div class="container about-grid"><div><h2 data-t="aboutTitle">A little about<br><em>my world.</em></h2><div class="about-home-detail" aria-hidden="true"><span class="sketch-flower">✿</span><span class="sketch-heart">♡</span><span class="sketch-stroke"></span></div></div><div class="bio"><p class="bio-lead" data-t="bioLead">I'm flekiii, a 15-year-old independent developer from Ukraine who loves learning and creating.</p><p data-t="bioText">I like making ideas real: experimenting with interfaces, building desktop apps, learning game development and figuring out how things work under the hood. I keep discovering something new every day.</p><div class="skills"><div><span data-t="skillDev">DEVELOPMENT</span><p>JavaScript · Dart · Flutter · Rust</p></div><div><span data-t="skillTools">TOOLS & PLATFORMS</span><p>Linux · GitHub · VS Code</p></div><div><span data-t="skillGames">GAME CREATION</span><p>Unity · Unreal Engine · C#</p></div><div><span data-t="skillFocus">CURRENT FOCUS</span><p data-t="focus">Learning, creativity and technology</p></div></div></div></div></section>
 <section class="section support" id="support">
 <div class="container support-grid">
   <div class="support-copy">
     
-    <h2 data-t="supportTitle">Support my<br><em>journey.</em></h2>
+    <h2 data-t="supportTitle">A little kindness<br><em>goes a long way.</em></h2>
     <p class="support-lead" data-t="supportLead">If you like what I do and want to support my learning and future ideas, even a small donation means a lot to me. ♡</p>
-    <p class="support-detail" data-t="supportDetail">Your support helps me keep learning, experimenting and growing. No pressure — I'm grateful you're here.</p>
+    <p class="support-detail" data-t="supportDetail">A warm thank-you for helping me learn, build and explore. No pressure at all — I'm glad you stopped by.</p>
     <a class="btn donate" href="https://send.monobank.ua/jar/91HH8iY31q" target="_blank" rel="noopener noreferrer"><span data-t="donate">Support via Monobank</span><span aria-hidden="true">↗</span></a>
-    <p class="donation-note" data-t="donationNote">The button opens Monobank's donation page. The 3D card is a fictional privacy-banking concept, not a real payment card.</p>
+    <p class="donation-note" data-t="donationNote">The button opens Monobank's donation page. The card is a visual concept, not an issued payment card. Donations open Monobank.</p>
   </div>
   <div class="support-visual">
-    <div class="card-aura" aria-hidden="true"></div><div class="card-space-objects" aria-hidden="true"><div class="card-halo-ring"></div><div class="card-pearl pearl-one"></div><div class="card-pearl pearl-two"></div><div class="card-crystal"></div></div>
+    <div class="card-aura" aria-hidden="true"></div><div class="card-linen-shadow" aria-hidden="true"></div>
     <div id="cardStage" class="card-stage" tabindex="0" role="group" aria-label="Interactive privacy-bank concept card. Drag in any direction to spin it 360 degrees. Use arrow keys or Home to reset.">
       <div id="bankCard" class="card-rotator">
   <div class="card-face card-front private-front">
-    <div class="card-grain"></div><div class="holo-sheen"></div>
+    <div class="card-grain"></div><div class="holo-sheen"></div><div class="card-photo-texture"></div><div class="card-shimmer"></div>
     <svg class="circuit-lines" viewBox="0 0 440 278" preserveAspectRatio="none" aria-hidden="true">
       <path d="M-12 205H94L139 158H202M439 52H325L285 94H232M310 287V207L347 171H455M92 -13V64L132 104H199M-2 108H45L73 136H142" fill="none" stroke="#ffe4f9" stroke-width=".8" opacity=".38"/>
       <circle cx="202" cy="158" r="3" fill="#ffb9e2" opacity=".65"/><circle cx="232" cy="94" r="3" fill="#ffe4f9" opacity=".65"/><circle cx="142" cy="136" r="2.5" fill="#ffe4f9" opacity=".5"/>
@@ -101,17 +109,17 @@
     </svg>
     <div class="private-top"><span class="private-brand"><span class="private-logo">◈</span> flekiii<span class="private-dot">.</span></span><span class="private-tag">PRIVATE / CONCEPT</span></div>
     <div class="private-center">
-      <div class="private-emblem"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 5 51 13v17c0 14-10 23-19 29C23 53 13 44 13 30V13L32 5Z" fill="none" stroke="currentColor" stroke-width="2.3"/><rect x="24" y="29" width="16" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M27 29v-5a5 5 0 0 1 10 0v5" fill="none" stroke="currentColor" stroke-width="2.3"/><circle cx="32" cy="35" r="1.7" fill="currentColor"/></svg></div>
+      <div class="private-emblem"><div class="real-chip"><i class="chip-contact center-pin"></i><i class="chip-contact left-pin"></i><i class="chip-contact right-pin"></i></div><svg class="real-contactless" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 11 Q12 16 6 21 M12 7 Q20 16 12 25 M18 4 Q28 16 18 28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
       <span class="private-identity">IDENTITY: <b>HIDDEN</b></span>
     </div>
-    <div class="private-number">•••• <span>••••</span> <span>••••</span> 0000</div>
+    <div class="private-number">•••• <span>••••</span> <span>••••</span> 0000</div><div class="card-issue-row"><span>CARD · 01 / CONCEPT</span><span>VALID ALWAYS ♡</span></div>
     <div class="private-bottom"><div class="private-holder"><small>CARDHOLDER</small><strong>YOU, PRIVATELY.</strong></div><div class="private-signature">✳ <span>YOUR SPACE</span></div></div>
-    <div class="card-edge-glint"></div>
+    <div class="card-foil" aria-hidden="true"><span>✧</span></div><div class="card-edge-glint"></div>
   </div>
   <div class="card-face card-back private-back">
-    <div class="card-grain"></div><div class="back-mesh"></div>
+    <div class="card-grain"></div><div class="back-mesh"></div><div class="card-photo-texture"></div>
     <div class="private-back-top"><span>flekiii<span class="private-dot">.</span></span><small>PRIVATE • CONCEPT CARD</small></div>
-    <div class="private-back-stripe"></div>
+    <div class="private-back-stripe"></div><div class="back-signature-pad"><span>AUTHORIZED USER · PRIVATE IDENTITY</span><b>•••</b></div>
     <div class="private-back-identity"><div class="private-back-info"><small>VISIBLE TO YOU</small><strong>EVERYTHING UNDER CONTROL.</strong></div><div class="private-back-shield">◈</div></div>
     <div class="privacy-benefits"><span>◦ PRIVACY</span><span>◦ SIMPLICITY</span><span>◦ FREEDOM</span></div>
     <div class="private-back-foot"><span>NO REAL ACCOUNT DETAILS</span><span>CONCEPT / 01</span></div>
@@ -121,7 +129,7 @@
     <div class="card-controls"><span data-t="dragHint">DRAG / SPIN / EXPLORE · 360°</span><button id="resetCard" type="button" data-t="resetCard">↺ Reset</button></div>
   </div>
 </div></section>
-<section class="section contact" id="contact"><div class="container contact-inner"><h2 data-t="contactTitle">Let's keep<br><em>in touch.</em></h2><p data-t="contactText">Want to say hello? You can find me on these platforms.</p><div class="social"><a href="https://github.com/flekiii" target="_blank" rel="noopener noreferrer">GitHub <span>↗</span></a><a href="https://www.instagram.com/flekideveloper/" target="_blank" rel="noopener noreferrer">Instagram <span>↗</span></a><a href="https://www.tiktok.com/@fleki.truepkg" target="_blank" rel="noopener noreferrer">TikTok <span>↗</span></a></div></div></section>
+<section class="section contact" id="contact"><div class="container contact-inner"><h2 data-t="contactTitle">Come say<br><em>hello.</em></h2><p data-t="contactText">Want to say hello? You can find me on these platforms.</p><div class="social"><a href="https://github.com/flekiii" target="_blank" rel="noopener noreferrer">GitHub <span>↗</span></a><a href="https://www.instagram.com/flekideveloper/" target="_blank" rel="noopener noreferrer">Instagram <span>↗</span></a><a href="https://www.tiktok.com/@fleki.truepkg" target="_blank" rel="noopener noreferrer">TikTok <span>↗</span></a></div></div></section>
 </main>
-<footer class="footer"><div class="container footer-inner"><a href="#top" class="footer-brand">flekiii<span>.</span></a><span data-t="footerText">Made with curiosity and a little pink.</span><span>© <span id="year">2026</span> flekiii</span></div></footer>
+<footer class="footer"><div class="container footer-inner"><a href="#top" class="footer-brand">flekiii<span>.</span></a><span data-t="footerText">A little home on the internet. ♡</span><span>© <span id="year">2026</span> flekiii</span></div></footer>
 </body></html>

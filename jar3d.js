@@ -17,14 +17,14 @@ if (canvas && container) {
     renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
     renderer.outputColorSpace=THREE.SRGBColorSpace;
     renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure=1.35;
+    renderer.toneMappingExposure=1.26;
     const scene=new THREE.Scene();
     const camera=new THREE.OrthographicCamera(-1.8,1.8,3.05,-3.05,.1,30);
     camera.position.set(0,0,10);camera.lookAt(0,0,0);
-    scene.add(new THREE.AmbientLight(0xffe7f8,2.3));
-    const key=new THREE.DirectionalLight(0xfff4ef,3.1);
+    scene.add(new THREE.AmbientLight(0xffead8,2.0));
+    const key=new THREE.DirectionalLight(0xffd9b9,3.0);
     key.position.set(-3,5,7);scene.add(key);
-    const rim=new THREE.PointLight(0xffa5df,24,7,2);
+    const rim=new THREE.PointLight(0xffc8a1,18,7,2);
     rim.position.set(1.8,0,-1);scene.add(rim);
 
     const jar=new THREE.Group();
@@ -33,41 +33,125 @@ if (canvas && container) {
     jar.position.set(pos.x,pos.y,0);scene.add(jar);
     const anchor=new THREE.Vector3(0,2.98,0);
 
-    const glass=new THREE.MeshPhysicalMaterial({
-      color:0xe6d3ed,transparent:true,opacity:.32,depthWrite:false,
-      side:THREE.DoubleSide,roughness:.095,metalness:.03,clearcoat:1,
-      clearcoatRoughness:.06,transmission:.12,thickness:.14
+    // Hand-painted, gently quantized game-style lighting instead of photoreal metal.
+    const ramp=new Uint8Array([90,155,220,255]);
+    const toonGradient=new THREE.DataTexture(ramp,4,1,THREE.RedFormat);
+    toonGradient.minFilter=THREE.NearestFilter;
+    toonGradient.magFilter=THREE.NearestFilter;
+    toonGradient.needsUpdate=true;
+    const paint=(color)=>new THREE.MeshToonMaterial({color,gradientMap:toonGradient});
+    const glass=new THREE.MeshPhongMaterial({
+      color:0xf5dcca,transparent:true,opacity:.38,depthWrite:false,
+      side:THREE.DoubleSide,shininess:116,specular:0xfff7e9
     });
-    const metal=new THREE.MeshStandardMaterial({color:0xcda5b7,metalness:.73,roughness:.23});
-    const gold=new THREE.MeshStandardMaterial({color:0xffdec8,metalness:.66,roughness:.28});
+    const metal=paint(0xc47c8b); // pink hand-painted screw lid
+    const gold=paint(0xffd591);  // warm stylized brass
     const profile=[
-      [.30,-1.04],[.46,-1.04],[.57,-.98],[.63,-.86],[.67,-.56],
-      [.67,.47],[.63,.72],[.55,.86],[.52,.91],[.52,1.02],[.49,1.08]
+      [.29,-1.08],[.49,-1.08],[.65,-1.0],[.71,-.88],[.75,-.60],
+      [.75,.36],[.70,.64],[.60,.86],[.53,.92],[.52,1.02],[.49,1.08]
     ].map(p=>new THREE.Vector2(...p));
-    const body=new THREE.Mesh(new THREE.LatheGeometry(profile,48),glass);
+    const jarGeometry=new THREE.LatheGeometry(profile,36);
+    const ink=new THREE.Mesh(jarGeometry,new THREE.MeshBasicMaterial({
+      color:0x745564,side:THREE.BackSide,transparent:true,opacity:.49,depthWrite:false
+    }));
+    ink.scale.set(1.055,1.018,1.055);ink.renderOrder=1;jar.add(ink);
+    const body=new THREE.Mesh(jarGeometry,glass);
     body.renderOrder=3;jar.add(body);
     function hoop(radius,tube,y,mat){
       const m=new THREE.Mesh(new THREE.TorusGeometry(radius,tube,7,48),mat);
       m.rotation.x=Math.PI/2;m.position.y=y;jar.add(m);
     }
-    hoop(.61,.023,-.95,glass);hoop(.53,.023,.91,gold);
-    const lid=new THREE.Mesh(new THREE.CylinderGeometry(.615,.58,.21,48),metal);
+    hoop(.67,.034,-.95,gold);hoop(.54,.036,.91,gold);
+    const lid=new THREE.Mesh(new THREE.CylinderGeometry(.622,.59,.24,20),metal);
     lid.position.y=1.07;jar.add(lid);
-    hoop(.602,.019,1.16,gold);hoop(.59,.015,1.02,gold);
-    const top=new THREE.Mesh(new THREE.CylinderGeometry(.52,.52,.026,48),gold);
+    hoop(.616,.032,1.17,gold);hoop(.602,.024,1.01,gold);
+    const top=new THREE.Mesh(new THREE.CylinderGeometry(.54,.54,.045,20),gold);
     top.position.y=1.188;jar.add(top);
     const loop=new THREE.Mesh(new THREE.TorusGeometry(.15,.039,10,28),gold);
     loop.position.y=1.34;jar.add(loop);
-    const knot=new THREE.Mesh(new THREE.SphereGeometry(.068,12,8),metal);
+    const knot=new THREE.Mesh(new THREE.SphereGeometry(.082,12,8),gold);
     knot.position.y=1.48;jar.add(knot);
 
     // Colored glints and a second transparent layer make the glass feel rounded.
-    const glint=new THREE.Mesh(new THREE.CylinderGeometry(.686,.686,.78,32,1,true,2.60,.14),
+    const glint=new THREE.Mesh(new THREE.CylinderGeometry(.757,.751,.72,24,1,true,2.60,.18),
       new THREE.MeshBasicMaterial({color:0xfff5ff,transparent:true,opacity:.21,depthWrite:false,side:THREE.DoubleSide}));
-    glint.position.y=-.03;jar.add(glint);
+    glint.position.y=-.05;jar.add(glint);
     const base=new THREE.Mesh(new THREE.CylinderGeometry(.54,.52,.024,40),
       new THREE.MeshPhysicalMaterial({color:0xffdbb6,transparent:true,opacity:.2,depthWrite:false}));
     base.position.y=-.97;jar.add(base);
+
+
+    // Vintage illustration label: canvas painted locally; no external texture assets.
+    const stickerCanvas=document.createElement("canvas");
+    stickerCanvas.width=512;stickerCanvas.height=256;
+    const pen=stickerCanvas.getContext("2d");
+    pen.clearRect(0,0,512,256);
+    pen.fillStyle="#fff0cc";
+    pen.strokeStyle="#ab7288";pen.lineWidth=13;
+    pen.beginPath();pen.roundRect(30,35,452,185,28);pen.fill();pen.stroke();
+    pen.setLineDash([9,13]);pen.strokeStyle="#e8a1a7";pen.lineWidth=4;
+    pen.beginPath();pen.roundRect(48,52,416,150,20);pen.stroke();
+    pen.setLineDash([]);
+    pen.fillStyle="#b87087";pen.textAlign="center";
+    pen.font="bold 57px system-ui";pen.fillText("little lights",256,133);
+    pen.font="600 24px system-ui";pen.fillText("keep the magic ♡",256,170);
+    const stickerTexture=new THREE.CanvasTexture(stickerCanvas);
+    stickerTexture.colorSpace=THREE.SRGBColorSpace;
+    const sticker=new THREE.Mesh(
+      new THREE.PlaneGeometry(.90,.46),
+      new THREE.MeshBasicMaterial({map:stickerTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide})
+    );
+    sticker.position.set(0,-.46,.775);
+    sticker.rotation.x=-.08;sticker.renderOrder=5;jar.add(sticker);
+
+    // Hand-painted enamel lid dashes and stamped rivets give the jar a crafted prop look.
+    const lidDetail=paint(0x9d5069);
+    for(let i=0;i<16;i++){
+      const angle=i*Math.PI*2/16;
+      const dash=new THREE.Mesh(new THREE.BoxGeometry(.10,.034,.026),lidDetail);
+      dash.position.set(Math.sin(angle)*.613,1.07,Math.cos(angle)*.613);
+      dash.rotation.y=angle;
+      jar.add(dash);
+    }
+
+    const charmCord=new THREE.Mesh(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+        new THREE.Vector3(.53,1.01,.12),
+        new THREE.Vector3(.72,.80,.12),
+        new THREE.Vector3(.73,.61,.12)
+      ]),14,.026,6,false),
+      paint(0xc79b72)
+    );
+    jar.add(charmCord);
+    const charm=new THREE.Group();charm.position.set(.73,.55,.12);
+    for(let i=0;i<5;i++){
+      const theta=i*Math.PI*2/5;
+      const petal=new THREE.Mesh(new THREE.SphereGeometry(.078,9,7),paint(0xf4a8b8));
+      petal.scale.set(.8,1.2,.48);
+      petal.position.set(Math.sin(theta)*.10,Math.cos(theta)*.10,.025);
+      petal.rotation.z=-theta;charm.add(petal);
+    }
+    charm.add(new THREE.Mesh(new THREE.SphereGeometry(.060,10,8),paint(0xffe89f)));
+    jar.add(charm);
+
+    // Tiny firefly home: leaves, pebbles and painted stars along the bottom.
+    const leafMat=paint(0x9eac79),stoneMat=paint(0xf1bcaa),starMat=new THREE.MeshBasicMaterial({color:0xffedb6});
+    for(let i=0;i<5;i++){
+      const phase=i*2.39996;
+      const stone=new THREE.Mesh(new THREE.SphereGeometry(.10+(i%2)*.025,9,6),stoneMat);
+      stone.scale.set(1,.38,.75);
+      stone.position.set(Math.sin(phase)*.35,-.99,Math.cos(phase)*.27);jar.add(stone);
+      const leaf=new THREE.Mesh(new THREE.SphereGeometry(.16,9,7),leafMat);
+      leaf.scale.set(.45,1,.25);
+      leaf.position.set(Math.sin(phase)*.29,-.83,Math.cos(phase)*.23);
+      leaf.rotation.z=phase;jar.add(leaf);
+    }
+    for(let i=0;i<6;i++){
+      const p=i*2.4;
+      const sparkle=new THREE.Mesh(new THREE.OctahedronGeometry(.028+(i%3)*.010),starMat);
+      sparkle.position.set(Math.sin(p)*.35,-.68+i*.22,Math.cos(p)*.25);
+      jar.add(sparkle);
+    }
 
     const glowCanvas=document.createElement("canvas");
     glowCanvas.width=glowCanvas.height=64;
@@ -80,14 +164,17 @@ if (canvas && container) {
     ctx.fillStyle=grad;ctx.fillRect(0,0,64,64);
     const glow=new THREE.SpriteMaterial({map:new THREE.CanvasTexture(glowCanvas),
       color:0xffe9a7,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
-    const wingMat=new THREE.MeshBasicMaterial({color:0xfff6ec,side:THREE.DoubleSide,transparent:true,opacity:.72,depthWrite:false});
+    const wingMat=new THREE.MeshBasicMaterial({color:0xfff9d5,side:THREE.DoubleSide,transparent:true,opacity:.88,depthWrite:false});
     const lightMat=new THREE.MeshBasicMaterial({color:0xfff2b0});
     const bugs=[
       [-.23,.46,.17,0], [.26,.14,-.15,1.4], [-.28,-.36,.22,2.8],
       [.24,-.59,.12,4.3], [.08,-.10,.29,5.2]
     ].map(([x,y,z,phase],i)=>{
       const g=new THREE.Group();g.position.set(x,y,z);
-      g.add(new THREE.Mesh(new THREE.SphereGeometry(.034,8,6),lightMat));
+      const abdomen=new THREE.Mesh(new THREE.SphereGeometry(.061,10,8),lightMat);
+      abdomen.scale.set(.72,.95,.72);g.add(abdomen);
+      const dot=new THREE.Mesh(new THREE.SphereGeometry(.013,7,6),new THREE.MeshBasicMaterial({color:0x755b4a}));
+      dot.position.set(.021,.008,.045);g.add(dot);
       for(const direction of [-1,1]){
         const wing=new THREE.Mesh(new THREE.SphereGeometry(.067,8,6),wingMat);
         wing.scale.set(1.0,.21,.40);
@@ -99,14 +186,14 @@ if (canvas && container) {
       sprite.scale.set(radius,radius,1);g.add(sprite);
       jar.add(g);return {g,x,y,z,phase,i};
     });
-    const bugLamp=new THREE.PointLight(0xffe6a2,5.7,3.5);
+    const bugLamp=new THREE.PointLight(0xffe6a2,7.3,3.6);
     bugLamp.position.set(0,-.15,.35);jar.add(bugLamp);
-    const ambientGold=new THREE.PointLight(0xffe3a6,6.5,3.8);
+    const ambientGold=new THREE.PointLight(0xffdd95,8.4,4.1);
     scene.add(ambientGold);
 
     // Genuine tubular 3D rope. Shape updates continuously between fixed anchor and moving lid.
-    const ropeMaterial=new THREE.MeshStandardMaterial({color:0xd3adae,roughness:.88,metalness:.03});
-    const threadMaterial=new THREE.MeshStandardMaterial({color:0x8a657c,roughness:.86});
+    const ropeMaterial=paint(0xffdfaf);
+    const threadMaterial=paint(0xb78c7e);
     const rope=new THREE.Mesh(new THREE.BufferGeometry(),ropeMaterial);
     const thread=new THREE.Mesh(new THREE.BufferGeometry(),threadMaterial);
     scene.add(rope,thread);
@@ -120,14 +207,14 @@ if (canvas && container) {
       const curve=new THREE.CatmullRomCurve3([
         anchor.clone(),anchor.clone().lerp(mid,.45),mid,mid.clone().lerp(end,.6),end
       ],false,"centripetal");
-      const newGeometry=new THREE.TubeGeometry(curve,22,.034,6,false);
+      const newGeometry=new THREE.TubeGeometry(curve,22,.043,7,false);
       rope.geometry.dispose();rope.geometry=newGeometry;
       const side=new THREE.Vector3(.014,0,.021);
       const braided=new THREE.CatmullRomCurve3([
         anchor.clone().add(side),anchor.clone().lerp(mid,.48).add(side),
         mid.clone().add(side),mid.clone().lerp(end,.6).add(side),end.clone().add(side)
       ]);
-      const newThread=new THREE.TubeGeometry(braided,22,.009,5,false);
+      const newThread=new THREE.TubeGeometry(braided,22,.014,5,false);
       thread.geometry.dispose();thread.geometry=newThread;
     }
     function constrain(v){

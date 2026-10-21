@@ -14,7 +14,7 @@ supportLabel:"ТРОХИ ПІДТРИМКИ",supportTitle:'Підтримай<br
 supportLead:"Якщо тобі подобається те, чим я займаюся, і ти хочеш підтримати моє навчання та майбутні ідеї — навіть невеликий донат для мене дуже важливий. ♡",
 supportDetail:"Твоя підтримка допомагає мені більше вчитися, експериментувати й розвиватися. Без жодного тиску — я вже радий, що ти тут.",
 donate:"Підтримати через Monobank",
-donationNote:"Кнопка відкриває сторінку донату Monobank. Це вигаданий концепт приватної банківської картки, не справжній платіжний засіб.",
+donationNote:"Ця картка — художній концепт, а не справжня банківська картка. Донат відкривається на сторінці Monobank.",
 dragHint:"КРУТИ / ОБЕРТАЙ / ДОСЛІДЖУЙ · 360°",resetCard:"↺ Скинути",
 connect:"БУДЬМО НА ЗВ’ЯЗКУ",contactTitle:'Залишаймося<br><em>на зв’язку.</em>',
 contactText:"Хочеш привітатися? Мене можна знайти на цих платформах.",
@@ -54,6 +54,18 @@ if(stage&&card&&reset){
   const render=(idleX=0,idleY=0)=>{
     card.style.transform="rotateX("+(angle.x+idleX).toFixed(3)+"deg) rotateY("+(angle.y+idleY).toFixed(3)+"deg)";
   };
+  // A small changing studio-light reflection follows the pointer on the card.
+  stage.addEventListener("pointermove",e=>{
+    const rect=stage.getBoundingClientRect();
+    const x=Math.max(0,Math.min(100,(e.clientX-rect.left)/Math.max(1,rect.width)*100));
+    const y=Math.max(0,Math.min(100,(e.clientY-rect.top)/Math.max(1,rect.height)*100));
+    card.style.setProperty("--glint-x",x.toFixed(1)+"%");
+    card.style.setProperty("--glint-y",y.toFixed(1)+"%");
+  });
+  stage.addEventListener("pointerleave",()=>{
+    card.style.setProperty("--glint-x","30%");
+    card.style.setProperty("--glint-y","20%");
+  });
   stage.addEventListener("pointerdown",e=>{
     if(e.pointerType==="mouse" && e.button!==0)return;
     activePointer=e.pointerId;lastX=e.clientX;lastY=e.clientY;lastTime=e.timeStamp;
