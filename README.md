@@ -1,20 +1,20 @@
-# flekiii — Creator & Developer
+# flekiii — Developer Portfolio
 
-A personal, independent developer homepage for flekiii: a 15-year-old creator from Ukraine.
+A clean, editorial portfolio for a young independent developer from Ukraine.
 
-**Live:** https://flekiii.github.io/
+**Live site:** https://flekiii.github.io/
 
-## Experience
+## Sections
 
-- High-contrast developer-first UI, dark graphite with a red accent by default.
-- Optional red, pink or blue accent palette, saved locally in the browser.
-- Ukrainian and English versions.
-- Interactive code editor preview: about.ts, stack.json, ideas.md, plus copy-to-clipboard.
-- Quick navigation via the header command shortcut or Ctrl/Cmd+K.
-- About, process, support and contact; no showcase of named projects or devices.
-- Original 3D hanging firefly jar made with Three.js; draggable, with SVG fallback.
-- Interactive fictional bank card rendered with CSS perspective. There are no real card numbers, CVV, personal banking details or payment handling on this website. External donation page only.
+- **Introduction:** name, development focus and a clear link to the rest of the website.
+- **About:** a short personal introduction and confirmed basic facts.
+- **What I do:** software, web/interface design, game development.
+- **Skills:** technologies used or being explored.
+- **Support:** an optional Monobank link and an interactive, fictional privacy-card concept.
+- **Contact:** social profiles.
 
-The site uses static HTML/CSS/JS and Three.js from a CDN for the jar. Reduced-motion preferences are supported, and visual effects are kept lightweight for older GPUs.
+The site has Ukrainian and English localization, responsive layouts, accessible navigation and reduced-motion accommodations. The 3D firefly jar from earlier releases is preserved in a smaller, subtle presentation and includes a fallback for devices without WebGL.
 
-This redesign does not delete the repository's Git history or GitHub Releases.
+No invented clients, employment history, testimonials, achievements or finished project case studies have been added. Existing Git history and Releases are preserved.
+
+Built with HTML, CSS, vanilla JavaScript and Three.js (jar only); published with GitHub Pages.
