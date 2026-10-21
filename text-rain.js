@@ -1,128 +1,162 @@
-/* flekiii / v15 — repeated number-rain reveal for every piece of visible text.
-   Each glyph is visually animated but the original sentence remains accessible. */
+/* Number rainfall for EVERY visible portfolio inscription.
+   Uses the same matrix-char / matrix-digit markup as the original statement.
+   Replays on each viewport re-entry without breaking link/button behavior. */
 (() => {
   "use strict";
-  const rootSelectors=["main",".site-header"];
-  const skip="script,style,noscript,template,svg,canvas,input,textarea,select,pre,code,option,[aria-hidden='true'],.visually-hidden,.matrix-heading,.rain-inline,[data-no-rain]";
-  const motion=matchMedia("(prefers-reduced-motion: reduce)");
-  const letter=/[\p{L}\p{N}]/u;
-  const splitter=(typeof Intl!=="undefined" && typeof Intl.Segmenter==="function")?
-    new Intl.Segmenter(undefined,{granularity:"grapheme"}):null;
-  const segments=value=>splitter?Array.from(splitter.segment(value),item=>item.segment):Array.from(value);
+
+  const selector = [
+    ".site-header .dock-home",
+    ".site-header .desktop-nav a",
+    ".site-header .lang-switch button",
+    ".profile-wordmark",
+    ".expertise .section-heading h2",
+    ".expertise-item .expertise-index",
+    ".expertise-item h3",
+    ".expertise-item p",
+    ".skills-intro h2",
+    ".skills-intro p",
+    ".skill-group h3",
+    ".skill-pills span",
+    ".support-message .section-label",
+    ".support-message h2",
+    ".support-message p:not(.section-label)",
+    ".support-message .button span:first-child",
+    ".card-controls button",
+    ".contact-kicker",
+    ".contact-content h2",
+    ".contact-content > p:not(.contact-kicker)",
+    ".contact-links a span:first-child",
+    ".bank-top strong", ".bank-top small",
+    ".bank-back-top strong", ".bank-back-top small",
+    ".bank-printed-details span", ".bank-bottom small", ".bank-bottom strong",
+    ".bank-bottom > span", ".bank-number",
+    ".bank-back-caption", ".bank-back-serial", ".bank-back-footer span",
+    ".bank-fine-print", ".bank-signature span"
+  ].join(",");
+
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)");
+  const grapheme=(typeof Intl!=="undefined"&&Intl.Segmenter)
+    ? new Intl.Segmenter(undefined,{granularity:"grapheme"})
+    : null;
+  const split=s=>grapheme?Array.from(grapheme.segment(s),part=>part.segment):Array.from(s);
+  const alnum=/[\p{L}\p{N}]/u;
+  const originals=new WeakMap();
+  let wrappers=[];
   let observer=null;
-  let visible=new WeakSet();
-  let generation=0;
-  const originalText=new WeakMap();
-  let activeBlocks=[];
+  let inView=new WeakSet();
 
-  function nodeAllowed(textNode){
-    const parent=textNode.parentElement;
-    if(!parent||!textNode.nodeValue||!letter.test(textNode.nodeValue))return false;
-    if(parent.closest(skip))return false;
-    return !!parent.closest("main, .site-header");
-  }
+  function wrap(node,target,ordinal){
+    const text=node.nodeValue;
+    const container=document.createElement("span");
+    container.className="rain-inline";
+    const sr=document.createElement("span");
+    sr.className="rain-readable";
+    sr.textContent=text;
+    const visible=document.createElement("span");
+    visible.className="rain-visual";
+    visible.setAttribute("aria-hidden","true");
 
-  function buildText(textNode,order){
-    const raw=textNode.nodeValue;
-    const visual=document.createElement("span");
-    visual.className="rain-visual";
-    visual.setAttribute("aria-hidden","true");
-
-    const tokens=raw.match(/\s+|[^\s]+/gu)||[];
-    let letterIndex=0;
-    for(const token of tokens){
+    const longText=target.matches("p");
+    const stride=longText?12:target.matches("h2")?36:24;
+    let index=0;
+    const pieces=text.match(/\s+|[^\s]+/gu)||[];
+    for(const token of pieces){
       if(/^\s+$/u.test(token)){
-        visual.appendChild(document.createTextNode(token));continue;
+        visible.appendChild(document.createTextNode(token));
+        continue;
       }
       const word=document.createElement("span");
       word.className="rain-word";
-      for(const char of segments(token)){
-        if(!letter.test(char)){
-          word.appendChild(document.createTextNode(char));continue;
+      for(const ch of split(token)){
+        if(!alnum.test(ch)){
+          word.appendChild(document.createTextNode(ch));
+          continue;
         }
         const glyph=document.createElement("span");
-        glyph.className="rain-char";
-        const offset=Math.min(1000,letterIndex*29);
-        glyph.style.setProperty("--rain-delay",offset+"ms");
-        const n=(order*11+letterIndex*7+2)%10;
-        glyph.dataset.digitA=String(n);
-        glyph.dataset.digitB=String((n+3)%10);
-
-        const original=document.createElement("span");
-        original.className="rain-glyph";
-        original.textContent=char;
-        glyph.appendChild(original);
+        glyph.className="matrix-char";
+        glyph.textContent=ch;
+        glyph.style.setProperty("--stagger",Math.min(1500,index*stride)+"ms");
+        // Four real falling digit glyphs just like the "free world" heading.
+        for(let i=0;i<4;i++){
+          const digit=document.createElement("span");
+          digit.className="matrix-digit";
+          digit.textContent=String((ordinal*13+index*7+i*3+5)%10);
+          digit.style.setProperty("--rain-delay",(i*85)+"ms");
+          digit.setAttribute("aria-hidden","true");
+          glyph.appendChild(digit);
+        }
         word.appendChild(glyph);
-        letterIndex++;
+        index++;
       }
-      visual.appendChild(word);
+      visible.appendChild(word);
     }
-    const wrapper=document.createElement("span");
-    wrapper.className="rain-inline";
-    // Do not make assistive tech read individual digits/character nodes.
-    const accessible=document.createElement("span");
-    accessible.className="rain-accessible";
-    accessible.textContent=raw;
-    wrapper.appendChild(accessible);
-    wrapper.appendChild(visual);
-    originalText.set(wrapper,raw);
-    textNode.replaceWith(wrapper);
-    return wrapper;
+    container.append(sr,visible);
+    originals.set(container,text);
+    node.replaceWith(container);
+    wrappers.push(container);
   }
 
-  function onVisibility(entries){
-    for(const entry of entries){
-      const el=entry.target;
-      const inView=entry.isIntersecting&&entry.intersectionRatio>.01;
-      if(inView){
-        if(visible.has(el))continue;
-        visible.add(el);
-        if(motion.matches)continue;
-        // Removing the class out of view resets the CSS animations.
-        // A reflow starts them again on *every* new entry.
-        el.classList.remove("rain-active");
-        void el.offsetWidth;
-        el.classList.add("rain-active");
-      }else if(visible.has(el)){
-        visible.delete(el);
-        el.classList.remove("rain-active");
-      }
-    }
-  }
-
-  function cleanUp(){
+  function reset(){
     observer?.disconnect();
     observer=null;
-    for(const wrapper of activeBlocks){
-      if(!wrapper.isConnected)continue;
-      wrapper.replaceWith(document.createTextNode(originalText.get(wrapper)||""));
+    for(const item of wrappers){
+      if(item.isConnected)item.replaceWith(document.createTextNode(originals.get(item)||""));
     }
-    activeBlocks=[];
-    visible=new WeakSet();
+    wrappers=[];
+    inView=new WeakSet();
+  }
+
+  function reveal(entries){
+    for(const entry of entries){
+      const target=entry.target;
+      // Low threshold also supports long paragraphs and small mobile screens.
+      const showing=entry.isIntersecting&&entry.intersectionRatio>.01;
+      if(showing){
+        if(inView.has(target))continue;
+        inView.add(target);
+        target.classList.remove("matrix-start");
+        // Restart every CSS transition/animation after a full exit.
+        void target.offsetWidth;
+        target.classList.add("matrix-start");
+      }else if(inView.has(target)){
+        inView.delete(target);
+        target.classList.remove("matrix-start");
+      }
+    }
   }
 
   function rebuild(){
-    cleanUp();
-    const roots=rootSelectors.map(sel=>document.querySelector(sel)).filter(Boolean);
-    const candidates=[];
-    for(const root of roots){
-      const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+    reset();
+    if(reduce.matches)return; // keep unmodified semantic text for reduced motion
+    const targets=Array.from(document.querySelectorAll(selector));
+    let ordinal=0;
+    for(const target of targets){
+      if(target.closest("[data-no-rain], [aria-hidden='true']"))continue;
+      const textNodes=[];
+      const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT,{
         acceptNode(node){
-          return nodeAllowed(node)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+          return node.nodeValue&&alnum.test(node.nodeValue)
+            ? NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
         }
       });
-      while(walker.nextNode())candidates.push(walker.currentNode);
+      while(walker.nextNode())textNodes.push(walker.currentNode);
+      if(!textNodes.length)continue;
+      for(const node of textNodes)wrap(node,target,ordinal++);
     }
-    candidates.forEach((node,index)=>activeBlocks.push(buildText(node,index)));
-    const canObserve="IntersectionObserver" in window;
-    if(!canObserve||motion.matches)return;
-    observer=new IntersectionObserver(onVisibility,{
-      rootMargin:"-6% 0px -9% 0px",threshold:[0,.02,.3]
+    if(!("IntersectionObserver" in window)){
+      for(const target of targets)target.classList.add("matrix-start");
+      return;
+    }
+    observer=new IntersectionObserver(reveal,{
+      rootMargin:"-4% 0px -6% 0px",threshold:[0,.02,.25]
     });
-    for(const wrapper of activeBlocks)observer.observe(wrapper);
-    generation++;
+    for(const target of targets){
+      if(target.querySelector(".rain-inline"))observer.observe(target);
+    }
   }
+
   document.addEventListener("fleki:languagechange",rebuild);
-  motion.addEventListener?.("change",rebuild);
+  reduce.addEventListener?.("change",rebuild);
+  // app.js has already chosen the UA/EN text before this defer script runs.
   rebuild();
 })();

@@ -26,7 +26,7 @@ jobs:
           test -s earth3d.js
           test -s tether.js
           test -s text-rain.js
-          grep -q 'text-rain.js?v=15' index.html
+          grep -q 'text-rain.js?v=16' index.html
           test -s index.html
           test -s jar3d.js
           test -s styles.css
