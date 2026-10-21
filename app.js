@@ -73,24 +73,12 @@ function buildMatrix(language){
 if(matrixHeading){
  if("IntersectionObserver" in window){
   const reveal=new IntersectionObserver(entries=>{
-   for(const entry of entries){
-    if(entry.isIntersecting&&entry.intersectionRatio>.01){
-     if(matrixVisible)continue;
-     matrixVisible=true;
-     matrixHeading.classList.remove("matrix-start");
-     void matrixHeading.offsetWidth;
-     matrixHeading.classList.add("matrix-start");
-    }else if(matrixVisible){
-     matrixVisible=false;
-     matrixHeading.classList.remove("matrix-start");
-    }
+   if(entries.some(e=>e.isIntersecting)){
+    matrixVisible=true;matrixHeading.classList.add("matrix-start");reveal.disconnect();
    }
-  },{rootMargin:"-5% 0px -10% 0px",threshold:[0,.12]});
+  },{rootMargin:"0px 0px -12% 0px",threshold:.22});
   reveal.observe(matrixHeading);
- }else {
-  matrixVisible=true;
-  matrixHeading.classList.add("matrix-start");
- }
+ }else matrixVisible=true;
 }
 matrixReduced.addEventListener?.("change",()=>{
  buildMatrix(document.documentElement.lang==="uk"?"uk":"en");
@@ -115,7 +103,6 @@ function setLanguage(raw){
   "Інтерактивна 3D-картка. Перетягуй або використовуй стрілки клавіатури для обертання. Home скидає положення.":
   "Interactive fictional bank card. Drag or use arrow keys to rotate; Home resets.");
  try{localStorage.setItem("flekiii-lang",language);}catch{}
- document.dispatchEvent(new CustomEvent("fleki:languagechange",{detail:{language}}));
 }
 buttons.forEach(btn=>btn.addEventListener("click",()=>setLanguage(btn.dataset.lang)));
 let initial=navigator.language?.toLowerCase().startsWith("uk")?"uk":"en";
