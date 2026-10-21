@@ -108,7 +108,7 @@ buttons.forEach(btn=>btn.addEventListener("click",()=>setLanguage(btn.dataset.la
 let initial=navigator.language?.toLowerCase().startsWith("uk")?"uk":"en";
 try{initial=localStorage.getItem("flekiii-lang")||initial;}catch{}
 setLanguage(initial);
-document.getElementById("year").textContent=String(new Date().getFullYear());
+
 
 document.querySelectorAll('a[href="#top"]').forEach(link=>{
  link.addEventListener("click",event=>{

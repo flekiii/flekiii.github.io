@@ -64,10 +64,12 @@ if(canvas && host){
     scene.add(moon);
     const moonlight=new THREE.DirectionalLight(0xffefdd,1.5);
     moonlight.position.set(-4,2.5,5);scene.add(moonlight);
+    // Keep the Moon's apparent orbit outside Earth's visible disk at every angle,
+    // including the far side: prevents its silhouette entering the planet.
     const orbitPoints=[];
     for(let i=0;i<=160;i++){
       const th=i/160*Math.PI*2;
-      orbitPoints.push(new THREE.Vector3(Math.cos(th)*2.26,Math.sin(th)*1.34,Math.sin(th+.4)*.45));
+      orbitPoints.push(new THREE.Vector3(Math.cos(th)*2.45,Math.sin(th)*2.2,Math.sin(th+.4)*0.28));
     }
     const orbitTrack=new THREE.Line(
       new THREE.BufferGeometry().setFromPoints(orbitPoints),
@@ -138,7 +140,7 @@ if(canvas && host){
       clouds.rotation.y=t*.008;
       // The Moon moves around the Earth rather than rotating in place.
       const moonPhase=t*.31+.42;
-      moon.position.set(Math.cos(moonPhase)*2.26,Math.sin(moonPhase)*1.34,Math.sin(moonPhase+.4)*.45);
+      moon.position.set(Math.cos(moonPhase)*2.45,Math.sin(moonPhase)*2.2,Math.sin(moonPhase+.4)*0.28);
       moon.rotation.y=t*.07;
       corona.material.rotation=reduced.matches?0:Math.sin(t*.16)*.012;
       corona.scale.setScalar(4.7+(reduced.matches?0:Math.sin(t*.8)*.08));
