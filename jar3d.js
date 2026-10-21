@@ -41,11 +41,11 @@ if (canvas && container) {
     toonGradient.needsUpdate=true;
     const paint=(color)=>new THREE.MeshToonMaterial({color,gradientMap:toonGradient});
     const glass=new THREE.MeshPhongMaterial({
-      color:0xf5dcca,transparent:true,opacity:.38,depthWrite:false,
+      color:0xe2e5d9,transparent:true,opacity:.34,depthWrite:false,
       side:THREE.DoubleSide,shininess:116,specular:0xfff7e9
     });
-    const metal=paint(0xc47c8b); // pink hand-painted screw lid
-    const gold=paint(0xffd591);  // warm stylized brass
+    const metal=paint(0x868078); // matte metal screw lid
+    const gold=paint(0xc7ae84); // muted brass
     const profile=[
       [.29,-1.08],[.49,-1.08],[.65,-1.0],[.71,-.88],[.75,-.60],
       [.75,.36],[.70,.64],[.60,.86],[.53,.92],[.52,1.02],[.49,1.08]
@@ -86,15 +86,15 @@ if (canvas && container) {
     stickerCanvas.width=512;stickerCanvas.height=256;
     const pen=stickerCanvas.getContext("2d");
     pen.clearRect(0,0,512,256);
-    pen.fillStyle="#fff0cc";
-    pen.strokeStyle="#ab7288";pen.lineWidth=13;
+    pen.fillStyle="#dcd1b5";
+    pen.strokeStyle="#77716b";pen.lineWidth=13;
     pen.beginPath();pen.roundRect(30,35,452,185,28);pen.fill();pen.stroke();
-    pen.setLineDash([9,13]);pen.strokeStyle="#e8a1a7";pen.lineWidth=4;
+    pen.setLineDash([9,13]);pen.strokeStyle="#96907e";pen.lineWidth=4;
     pen.beginPath();pen.roundRect(48,52,416,150,20);pen.stroke();
     pen.setLineDash([]);
-    pen.fillStyle="#b87087";pen.textAlign="center";
-    pen.font="bold 57px system-ui";pen.fillText("little lights",256,133);
-    pen.font="600 24px system-ui";pen.fillText("keep the magic ♡",256,170);
+    pen.fillStyle="#49464b";pen.textAlign="center";
+    pen.font="bold 53px ui-monospace, monospace";pen.fillText("FIREFLY / 01",256,133);
+    pen.font="600 23px ui-monospace, monospace";pen.fillText("COLLECTED LIGHT / STUDIO",256,170);
     const stickerTexture=new THREE.CanvasTexture(stickerCanvas);
     stickerTexture.colorSpace=THREE.SRGBColorSpace;
     const sticker=new THREE.Mesh(
@@ -105,7 +105,7 @@ if (canvas && container) {
     sticker.rotation.x=-.08;sticker.renderOrder=5;jar.add(sticker);
 
     // Hand-painted enamel lid dashes and stamped rivets give the jar a crafted prop look.
-    const lidDetail=paint(0x9d5069);
+    const lidDetail=paint(0x555253);
     for(let i=0;i<16;i++){
       const angle=i*Math.PI*2/16;
       const dash=new THREE.Mesh(new THREE.BoxGeometry(.10,.034,.026),lidDetail);
@@ -114,28 +114,17 @@ if (canvas && container) {
       jar.add(dash);
     }
 
-    const charmCord=new THREE.Mesh(
-      new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
-        new THREE.Vector3(.53,1.01,.12),
-        new THREE.Vector3(.72,.80,.12),
-        new THREE.Vector3(.73,.61,.12)
-      ]),14,.026,6,false),
-      paint(0xc79b72)
-    );
-    jar.add(charmCord);
-    const charm=new THREE.Group();charm.position.set(.73,.55,.12);
-    for(let i=0;i<5;i++){
-      const theta=i*Math.PI*2/5;
-      const petal=new THREE.Mesh(new THREE.SphereGeometry(.078,9,7),paint(0xf4a8b8));
-      petal.scale.set(.8,1.2,.48);
-      petal.position.set(Math.sin(theta)*.10,Math.cos(theta)*.10,.025);
-      petal.rotation.z=-theta;charm.add(petal);
-    }
-    charm.add(new THREE.Mesh(new THREE.SphereGeometry(.060,10,8),paint(0xffe89f)));
-    jar.add(charm);
+    // Leather pull tag and metal rivet — subdued outdoor gear styling.
+    const strap=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+      new THREE.Vector3(.53,1.01,.12),new THREE.Vector3(.72,.80,.12),new THREE.Vector3(.73,.61,.12)
+    ]),14,.027,6,false),paint(0x8f6f5e));jar.add(strap);
+    const metalTag=new THREE.Mesh(new THREE.BoxGeometry(.20,.28,.06),paint(0x545055));
+    metalTag.position.set(.73,.52,.12);metalTag.rotation.z=.13;jar.add(metalTag);
+    const rivet=new THREE.Mesh(new THREE.SphereGeometry(.047,9,6),gold);
+    rivet.position.set(.73,.61,.17);jar.add(rivet);
 
     // Tiny firefly home: leaves, pebbles and painted stars along the bottom.
-    const leafMat=paint(0x9eac79),stoneMat=paint(0xf1bcaa),starMat=new THREE.MeshBasicMaterial({color:0xffedb6});
+    const leafMat=paint(0x748574),stoneMat=paint(0xa89f92);
     for(let i=0;i<5;i++){
       const phase=i*2.39996;
       const stone=new THREE.Mesh(new THREE.SphereGeometry(.10+(i%2)*.025,9,6),stoneMat);
@@ -146,13 +135,6 @@ if (canvas && container) {
       leaf.position.set(Math.sin(phase)*.29,-.83,Math.cos(phase)*.23);
       leaf.rotation.z=phase;jar.add(leaf);
     }
-    for(let i=0;i<6;i++){
-      const p=i*2.4;
-      const sparkle=new THREE.Mesh(new THREE.OctahedronGeometry(.028+(i%3)*.010),starMat);
-      sparkle.position.set(Math.sin(p)*.35,-.68+i*.22,Math.cos(p)*.25);
-      jar.add(sparkle);
-    }
-
     const glowCanvas=document.createElement("canvas");
     glowCanvas.width=glowCanvas.height=64;
     const ctx=glowCanvas.getContext("2d");
@@ -192,8 +174,8 @@ if (canvas && container) {
     scene.add(ambientGold);
 
     // Genuine tubular 3D rope. Shape updates continuously between fixed anchor and moving lid.
-    const ropeMaterial=paint(0xffdfaf);
-    const threadMaterial=paint(0xb78c7e);
+    const ropeMaterial=paint(0xcdbb9a);
+    const threadMaterial=paint(0x847464);
     const rope=new THREE.Mesh(new THREE.BufferGeometry(),ropeMaterial);
     const thread=new THREE.Mesh(new THREE.BufferGeometry(),threadMaterial);
     scene.add(rope,thread);

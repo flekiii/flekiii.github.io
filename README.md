@@ -1,16 +1,16 @@
-# flekiii — A Cozy Personal Homepage
+# flekiii — Independent Developer
 
-A warm, personal website in English and Ukrainian, built with HTML, CSS, JavaScript and a small Three.js 3D scene.
+A minimal, professional personal website, built with HTML, CSS and JavaScript and published using GitHub Pages.
 
-Live: https://flekiii.github.io/
+Website: https://flekiii.github.io/
 
-## What's here
+## Design
 
-- A home-studio-inspired landing section with a window, desk, tea, plant and warm lighting.
-- A handcrafted, draggable 3D firefly jar, with stylized game-like shading, braided rope and friendly details. SVG fallback if WebGL is not available.
-- A realistic-looking fictional privacy card that rotates, with printing, metallic chip, signatures and a foil effect. **No real card data** is used.
-- A personal introduction, an optional Monobank support link and social links.
+- Warm charcoal interface, restrained copper/rose accents, expansive layout, practical typography.
+- A workspace-themed hero featuring a carefully styled code editor.
+- About, optional support, and contact sections, with Ukrainian and English translations.
+- A matte, realistic-looking **fictional** bank-card concept with 360° pointer and keyboard interaction. No actual payment credentials are shown.
+- A single hand-painted style interactive 3D firefly lantern, built using Three.js. Retains a lightweight SVG fallback and reduced-motion support.
+- No device showcase, project catalog, childish icon decorations, or dependency on a UI framework.
 
-No device showcase and no portfolio project catalog. The Git history and existing GitHub Releases remain untouched.
-
-Assets are generated with code; no proprietary game models are used. Animations respect reduced-motion preferences.
+GitHub history and release assets are not modified by the site design.

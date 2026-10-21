@@ -1,143 +1,138 @@
 (() => {
 "use strict";
-const ua={
-navAbout:"Про мене",navSupport:"Підтримати",navContact:"Контакти",
-heroKicker:"НЕЗАЛЕЖНИЙ РОЗРОБНИК · УКРАЇНА",
-heroTitle:'Перетворюю ідеї<br><em>на реальність.</em>',
-heroLead:"Привіт, я flekiii. Мені 15, я з України й люблю досліджувати технології, код, творчість і красиві інтерфейси.",
-explore:"Підтримати мене",contactMe:"Про мене",age:"років",country:"Україна",ideas:"ідей попереду",scroll:"ПІДТРИМАТИ МІЙ ШЛЯХ ↓",
-aboutLabel:"ХТО Я",aboutTitle:'Допитливий розум.<br><em>Люблю створювати.</em>',
-bioLead:"Я flekiii — 15-річний незалежний розробник з України, який любить навчатися та творити.",
-bioText:"Мені подобається втілювати ідеї: експериментувати з інтерфейсами, писати програми, вивчати створення ігор і розбиратися, як усе працює зсередини. Щодня дізнаюся щось нове.",
-skillDev:"РОЗРОБКА",skillTools:"ІНСТРУМЕНТИ",skillGames:"СТВОРЕННЯ ІГОР",skillFocus:"ЗАРАЗ У ФОКУСІ",focus:"Навчання, творчість і технології",
-supportLabel:"ТРОХИ ПІДТРИМКИ",supportTitle:'Підтримай<br><em>мій шлях.</em>',
-supportLead:"Якщо тобі подобається те, чим я займаюся, і ти хочеш підтримати моє навчання та майбутні ідеї — навіть невеликий донат для мене дуже важливий. ♡",
-supportDetail:"Твоя підтримка допомагає мені більше вчитися, експериментувати й розвиватися. Без жодного тиску — я вже радий, що ти тут.",
+const ua = {
+brandCaption:"НЕЗАЛЕЖНИЙ РОЗРОБНИК",
+navAbout:"Про мене",navSupport:"Підтримка",navContact:"Контакти",
+heroEyebrow:"РОЗРОБНИК · УКРАЇНА",
+heroTitle:'Створюю програми<br><em>з увагою до деталей.</em>',
+heroLead:"Я flekiii — незалежний розробник. Поєдную програмування, продуманий дизайн та інтерактивні технології.",
+heroLearn:"Більше про мене",heroReach:"Зв'язатися",
+metaPlatform:"NixOS / KDE Plasma",metaFocus:"Програми · Дизайн · Ігри",
+studioNote:"Спокійний простір, щоб думати й створювати.",
+aboutEyebrow:"ПРО МЕНЕ",
+aboutTitle:'Допитливий за характером.<br><em>Уважний до деталей.</em>',
+aboutLead:"Я розробник з України. Мені подобається створювати корисні, продумані й якісні речі.",
+aboutText:"Вивчаю технології, досліджую дизайн інтерфейсів і розробляю програми. Для мене важливо все: як продукт працює, який має вигляд і наскільки ним зручно користуватися.",
+disciplineCode:"РОЗРОБКА",disciplinePlatform:"СЕРЕДОВИЩЕ",disciplineInteractive:"ІНТЕРАКТИВНЕ",
+supportEyebrow:"НЕЗАЛЕЖНА РОЗРОБКА",
+supportTitle:'Підтримати<br><em>мою роботу.</em>',
+supportLead:"Якщо хочеш підтримати моє навчання й майбутні ідеї, можеш зробити внесок. Це допомагає мені продовжувати створювати нове.",
 donate:"Підтримати через Monobank",
-donationNote:"Ця картка — художній концепт, а не справжня банківська картка. Донат відкривається на сторінці Monobank.",
-dragHint:"КРУТИ / ОБЕРТАЙ / ДОСЛІДЖУЙ · 360°",resetCard:"↺ Скинути",
-connect:"БУДЬМО НА ЗВ’ЯЗКУ",contactTitle:'Залишаймося<br><em>на зв’язку.</em>',
-contactText:"Хочеш привітатися? Мене можна знайти на цих платформах.",
-footerText:"Створено з допитливістю й крапелькою рожевого."
+supportNote:"Оплата відкривається на Monobank. Інтерактивна картка — лише візуальний концепт, без справжніх платіжних даних.",
+cardHint:"ПОКРУТИ КАРТКУ / 360°",resetCard:"Скинути вигляд ↺",
+contactEyebrow:"КОНТАКТИ",
+contactTitle:'Залишаймося<br><em>на зв’язку.</em>',
+contactLead:"Для спілкування, запитань або просто привітання мене можна знайти тут.",
+footerMade:"Незалежний розробник. Україна."
 };
-const orig=new Map();document.querySelectorAll("[data-t]").forEach(el=>orig.set(el,el.innerHTML));
-const rich=new Set(["heroTitle","aboutTitle","supportTitle","contactTitle"]);
-function lang(next){
- const l=next==="uk"?"uk":"en";document.documentElement.lang=l;
- document.querySelectorAll("[data-t]").forEach(el=>{const k=el.dataset.t;
- if(l==="en")el.innerHTML=orig.get(el);
- else if(Object.prototype.hasOwnProperty.call(ua,k)){
- if(rich.has(k))el.innerHTML=ua[k];else el.textContent=ua[k];}});
- document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===l)));
- document.title=l==="uk"?"flekiii — Розробник":"flekiii — Independent Developer";
- const languageCard=document.getElementById("cardStage");
- if(languageCard)languageCard.setAttribute("aria-label",l==="uk"?
- "Інтерактивний концепт 3D-картки. Перетягуй, щоб обертати на 360° в будь-який бік. Стрілки клавіатури також працюють.":
- "Interactive 3D concept card. Drag to spin in any direction, or use the arrow keys.");
- try{localStorage.setItem("flekiii-lang",l);}catch{}
-}
-document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>lang(b.dataset.lang)));
-document.getElementById("year").textContent=String(new Date().getFullYear());
-let saved=navigator.language&&navigator.language.toLowerCase().startsWith("uk")?"uk":"en";
-try{saved=localStorage.getItem("flekiii-lang")||saved;}catch{}
-lang(saved);
- const stage=document.getElementById("cardStage");
-const card=document.getElementById("bankCard");
-const reset=document.getElementById("resetCard");
-const reduced=window.matchMedia("(prefers-reduced-motion: reduce)");
-if(stage&&card&&reset){
-  const home={x:-13,y:22},angle={x:home.x,y:home.y};
-  const momentum={x:0,y:0};
-  let activePointer=null, lastX=0,lastY=0, lastTime=0,dragging=false;
-  let animationStarted=false,offset=0, lastTick=0, idleTime=0;
-  const visible=()=>stage.getBoundingClientRect().bottom>0 && stage.getBoundingClientRect().top<window.innerHeight;
-  const render=(idleX=0,idleY=0)=>{
-    card.style.transform="rotateX("+(angle.x+idleX).toFixed(3)+"deg) rotateY("+(angle.y+idleY).toFixed(3)+"deg)";
-  };
-  // A small changing studio-light reflection follows the pointer on the card.
-  stage.addEventListener("pointermove",e=>{
-    const rect=stage.getBoundingClientRect();
-    const x=Math.max(0,Math.min(100,(e.clientX-rect.left)/Math.max(1,rect.width)*100));
-    const y=Math.max(0,Math.min(100,(e.clientY-rect.top)/Math.max(1,rect.height)*100));
-    card.style.setProperty("--glint-x",x.toFixed(1)+"%");
-    card.style.setProperty("--glint-y",y.toFixed(1)+"%");
-  });
-  stage.addEventListener("pointerleave",()=>{
-    card.style.setProperty("--glint-x","30%");
-    card.style.setProperty("--glint-y","20%");
-  });
-  stage.addEventListener("pointerdown",e=>{
-    if(e.pointerType==="mouse" && e.button!==0)return;
-    activePointer=e.pointerId;lastX=e.clientX;lastY=e.clientY;lastTime=e.timeStamp;
-    dragging=true;momentum.x=0;momentum.y=0;idleTime=0;
-    stage.classList.add("dragging");stage.setPointerCapture(e.pointerId);
-    render(); 
-  });
-  stage.addEventListener("pointermove",e=>{
-    if(!dragging||e.pointerId!==activePointer)return;
-    const dx=e.clientX-lastX,dy=e.clientY-lastY;
-    const dt=Math.max(8,e.timeStamp-lastTime);
-    angle.y+=dx*1.35; angle.x-=dy*1.35;
-    momentum.y=Math.max(-8,Math.min(8,dx*1.35*16/dt));
-    momentum.x=Math.max(-8,Math.min(8,-dy*1.35*16/dt));
-    lastX=e.clientX;lastY=e.clientY;lastTime=e.timeStamp;
-    render();
-  });
-  const release=e=>{
-    if(e.pointerId!==activePointer)return;
-    dragging=false;activePointer=null;stage.classList.remove("dragging");
-    if(stage.hasPointerCapture(e.pointerId))stage.releasePointerCapture(e.pointerId);
-    idleTime=0;
-  };
-  stage.addEventListener("pointerup",release);stage.addEventListener("pointercancel",release);
-  stage.addEventListener("lostpointercapture",()=>{dragging=false;activePointer=null;stage.classList.remove("dragging")});
-  stage.addEventListener("keydown",e=>{
-    if(e.key==="ArrowLeft")angle.y-=24;
-    else if(e.key==="ArrowRight")angle.y+=24;
-    else if(e.key==="ArrowUp")angle.x-=24;
-    else if(e.key==="ArrowDown")angle.x+=24;
-    else if(e.key==="Home"){angle.x=home.x;angle.y=home.y;momentum.x=momentum.y=0;}
-    else return;
-    e.preventDefault();idleTime=0;render();
-  });
-  reset.addEventListener("click",()=>{angle.x=home.x;angle.y=home.y;momentum.x=momentum.y=0;idleTime=0;render()});
-  stage.addEventListener("dblclick",()=>{angle.x=home.x;angle.y=home.y;momentum.x=momentum.y=0;idleTime=0;render()});
-  function animate(t){
-    if(!animationStarted)return;
-    const dt=Math.min(40,Math.max(1,t-(lastTick||t)));lastTick=t;
-    if(document.hidden||!visible()){requestAnimationFrame(animate);return;}
-    if(!dragging){
-      if(Math.abs(momentum.x)+Math.abs(momentum.y)>.04){
-        angle.x+=momentum.x*dt/16;angle.y+=momentum.y*dt/16;
-        const damping=Math.pow(.91,dt/16);
-        momentum.x*=damping;momentum.y*=damping;
-        idleTime=0;
-      } else {
-        idleTime+=dt;
-      }
-      let amp=Math.min(1,idleTime/550);
-      const sec=t/1000;
-      render(Math.sin(sec*.92)*8*amp,Math.sin(sec*.73+.8)*17*amp);
+const source = new Map();
+document.querySelectorAll("[data-t]").forEach(el=>source.set(el,el.innerHTML));
+const rich = new Set(["heroTitle","aboutTitle","supportTitle","contactTitle"]);
+const stages=document.querySelectorAll("[data-lang]");
+function setLanguage(next){
+  const code=next==="uk"?"uk":"en";
+  document.documentElement.lang=code;
+  document.querySelectorAll("[data-t]").forEach(el=>{
+    const key=el.dataset.t;
+    if(code==="en"){el.innerHTML=source.get(el)||"";}
+    else if(Object.hasOwn(ua,key)){
+      if(rich.has(key))el.innerHTML=ua[key];
+      else el.textContent=ua[key];
     }
-    requestAnimationFrame(animate);
-  }
-  function sync(){
-    if(reduced.matches){animationStarted=false;render();return;}
-    if(!animationStarted){animationStarted=true;lastTick=0;requestAnimationFrame(animate);}
-  }
-  sync();reduced.addEventListener?.("change",sync);
+  });
+  stages.forEach(btn=>btn.setAttribute("aria-pressed",String(btn.dataset.lang===code)));
+  document.title=code==="uk"?"flekiii — Незалежний розробник":"flekiii — Independent Developer";
+  const card=document.getElementById("cardStage");
+  if(card)card.setAttribute("aria-label",code==="uk"?
+    "Інтерактивна 3D-картка. Перетягуй для обертання. Стрілки повертають, Home скидає.":
+    "Interactive concept bank card. Drag to rotate. Arrow keys rotate and Home resets.");
+  try{localStorage.setItem("flekiii-lang",code);}catch{}
 }
-const lantern=document.getElementById("lanternScroll");
-if(lantern){
-  let previous=window.scrollY,restoreTimer=0;
-  window.addEventListener("scroll",()=>{
-    if(reduced.matches)return;
-    const next=window.scrollY;
-    const delta=next-previous;previous=next;
-    const swing=Math.max(-9,Math.min(9,delta*.32));
-    lantern.style.setProperty("--lantern-scroll",swing.toFixed(2)+"deg");
-    window.clearTimeout(restoreTimer);
-    restoreTimer=window.setTimeout(()=>lantern.style.setProperty("--lantern-scroll","0deg"),180);
-  },{passive:true});
+stages.forEach(button=>button.addEventListener("click",()=>setLanguage(button.dataset.lang)));
+let language=navigator.language?.toLowerCase().startsWith("uk")?"uk":"en";
+try{language=localStorage.getItem("flekiii-lang")||language;}catch{}
+setLanguage(language);
+document.getElementById("year").textContent=String(new Date().getFullYear());
+const stage=document.getElementById("cardStage"),card=document.getElementById("bankCard");
+const reset=document.getElementById("resetCard");
+if(!stage||!card||!reset)return;
+const reduced=matchMedia("(prefers-reduced-motion: reduce)");
+const initial={x:-12,y:24},rotation={x:initial.x,y:initial.y},speed={x:0,y:0};
+let active=null,dragging=false,lastX=0,lastY=0,lastTime=0,atRest=0,frameHandle=0,lastFrame=0;
+const render=(x=0,y=0)=>{
+  card.style.transform="rotateX("+(rotation.x+x).toFixed(3)+"deg) rotateY("+(rotation.y+y).toFixed(3)+"deg)";
+};
+function resetView(){
+  rotation.x=initial.x;rotation.y=initial.y;speed.x=speed.y=0;atRest=0;render();
 }
+stage.addEventListener("pointerdown",e=>{
+  if(e.pointerType==="mouse" && e.button!==0)return;
+  active=e.pointerId;dragging=true;lastX=e.clientX;lastY=e.clientY;lastTime=e.timeStamp;
+  speed.x=speed.y=0;atRest=0;stage.classList.add("dragging");
+  stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener("pointermove",e=>{
+  const r=stage.getBoundingClientRect();
+  const x=Math.max(0,Math.min(100,(e.clientX-r.left)/Math.max(1,r.width)*100));
+  const y=Math.max(0,Math.min(100,(e.clientY-r.top)/Math.max(1,r.height)*100));
+  card.style.setProperty("--glint-x",x.toFixed(2)+"%");
+  card.style.setProperty("--glint-y",y.toFixed(2)+"%");
+  if(!dragging || e.pointerId!==active)return;
+  const dx=e.clientX-lastX,dy=e.clientY-lastY;
+  const dt=Math.max(8,e.timeStamp-lastTime);
+  rotation.y+=dx*1.24;rotation.x-=dy*1.24;
+  speed.y=Math.max(-6,Math.min(6,dx*1.24*16/dt));
+  speed.x=Math.max(-6,Math.min(6,-dy*1.24*16/dt));
+  lastX=e.clientX;lastY=e.clientY;lastTime=e.timeStamp;
+  render();
+});
+function release(e){
+  if(e.pointerId!==active)return;
+  dragging=false;active=null;atRest=0;stage.classList.remove("dragging");
+  if(stage.hasPointerCapture(e.pointerId))stage.releasePointerCapture(e.pointerId);
+}
+stage.addEventListener("pointerup",release);
+stage.addEventListener("pointercancel",release);
+stage.addEventListener("lostpointercapture",()=>{dragging=false;active=null;stage.classList.remove("dragging");});
+stage.addEventListener("pointerleave",()=>{
+  card.style.setProperty("--glint-x","29%");
+  card.style.setProperty("--glint-y","20%");
+});
+stage.addEventListener("keydown",e=>{
+  if(e.key==="ArrowLeft")rotation.y-=20;
+  else if(e.key==="ArrowRight")rotation.y+=20;
+  else if(e.key==="ArrowUp")rotation.x-=20;
+  else if(e.key==="ArrowDown")rotation.x+=20;
+  else if(e.key==="Home")resetView();
+  else return;
+  e.preventDefault();atRest=0;render();
+});
+reset.addEventListener("click",resetView);
+stage.addEventListener("dblclick",resetView);
+const visible=()=>{const r=stage.getBoundingClientRect();return r.bottom>=0&&r.top<=innerHeight;};
+function frame(now){
+  if(reduced.matches)return;
+  frameHandle=requestAnimationFrame(frame);
+  if(document.hidden||!visible()){lastFrame=now;return;}
+  const dt=Math.min(40,Math.max(1,now-(lastFrame||now)));lastFrame=now;
+  if(dragging)return;
+  if(Math.abs(speed.x)+Math.abs(speed.y)>.035){
+    rotation.x+=speed.x*dt/16;
+    rotation.y+=speed.y*dt/16;
+    speed.x*=Math.pow(.88,dt/16);speed.y*=Math.pow(.88,dt/16);
+    atRest=0;
+  }else{
+    atRest+=dt;
+  }
+  const calm=Math.min(1,atRest/1300);
+  const s=now/1000;
+  render(Math.sin(s*.48)*2.5*calm,Math.sin(s*.37+.8)*5*calm);
+}
+function syncMotion(){
+  cancelAnimationFrame(frameHandle);lastFrame=0;
+  if(reduced.matches)render();
+  else frameHandle=requestAnimationFrame(frame);
+}
+syncMotion();
+reduced.addEventListener?.("change",syncMotion);
 })();
