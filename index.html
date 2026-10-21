@@ -1,22 +1,15 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#1b1a1b">
-<meta name="description" content="flekiii — independent developer based in Ukraine. Software, design and thoughtful digital experiences.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="flekiii — Independent Developer">
-<meta property="og:description" content="A personal space for software, design and technology.">
-<meta property="og:url" content="https://flekiii.github.io/">
-<title>flekiii — Independent Developer</title>
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="stylesheet" href="styles.css?v=7">
-<script src="app.js?v=7" defer></script>
-<script type="module" src="jar3d.js?v=7"></script>
-</head>
-<body>
-<a href="#main" class="skip">Skip to content</a>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0c12">
+<meta name="description" content="flekiii — 15-year-old independent developer from Ukraine. Code, ideas, design and freedom to create.">
+<meta property="og:type" content="website"><meta property="og:title" content="flekiii — Creator & Developer">
+<meta property="og:description" content="I build what I imagine. Software and ideas by flekiii."><meta property="og:url" content="https://flekiii.github.io/">
+<title>flekiii — Creator & Developer</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=8">
+<script src="app.js?v=8" defer></script><script type="module" src="jar3d.js?v=8"></script>
+</head><body data-accent="red">
+<a href="#main" class="skip" data-t="skip">Skip to content</a>
 <div class="firefly-lantern" id="fireflyLantern">
   <div class="lantern-cast" ></div>
   <canvas id="lantern3d" class="lantern3d" tabindex="0" aria-label="Interactive 3D firefly jar and rope. Drag to pull, use arrow keys to move, or Home to reset." title="Pull the jar or its rope"></canvas>
@@ -59,129 +52,69 @@
   </div>
 </div>
 </div>
-<header class="header">
-  <div class="container header-inner">
-    <a class="brand" href="#top" aria-label="flekiii homepage"><span class="brand-symbol">f.</span><span class="brand-name">flekiii<small data-t="brandCaption">INDEPENDENT DEVELOPER</small></span></a>
-    <nav class="nav-links" aria-label="Main navigation">
-      <a href="#about" data-t="navAbout">About</a>
-      <a href="#support" data-t="navSupport">Support</a>
-      <a href="#contact" data-t="navContact">Contact</a>
-    </nav>
-    <div class="languages" role="group" aria-label="Language">
-      <button type="button" data-lang="en" aria-pressed="true">EN</button>
-      <span aria-hidden="true">/</span>
-      <button type="button" data-lang="uk" aria-pressed="false">UA</button>
-    </div>
-  </div>
-</header>
+
+<header class="header" id="top"><div class="container header-inner">
+<a class="brand" href="#top" aria-label="Home"><b>f<span>.</span></b><span>flekiii<small>DEV / CREATOR</small></span></a>
+<nav aria-label="Main navigation" class="main-nav"><a href="#about" data-t="navAbout">About</a><a href="#approach" data-t="navProcess">Process</a><a href="#support" data-t="navSupport">Support</a><a href="#contact" data-t="navContact">Contact</a></nav>
+<div class="header-controls"><div class="accent-picker" role="group" aria-label="Accent color">
+<button type="button" data-accent-choice="red" aria-label="Red accent" aria-pressed="true"></button><button type="button" data-accent-choice="pink" aria-label="Pink accent" aria-pressed="false"></button><button type="button" data-accent-choice="blue" aria-label="Blue accent" aria-pressed="false"></button></div>
+<div class="languages" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><span>/</span><button type="button" data-lang="uk" aria-pressed="false">UA</button></div>
+<button class="command-trigger" type="button" id="commandTrigger" title="Quick navigation (Ctrl+K)" aria-label="Open quick navigation">⌘ K</button></div>
+</div></header>
 <main id="main">
-  <section class="hero" id="top">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="status-pulse"></span><span data-t="heroEyebrow">DEVELOPER · BASED IN UKRAINE</span></p>
-        <h1 data-t="heroTitle">Software built<br>with <em>intention.</em></h1>
-        <p class="hero-description" data-t="heroLead">I'm flekiii, an independent developer. I work at the intersection of code, thoughtful design and interactive experiences.</p>
-        <div class="hero-actions">
-          <a href="#about" class="button button-primary"><span data-t="heroLearn">More about me</span><span aria-hidden="true">↗</span></a>
-          <a href="#contact" class="button button-outline"><span data-t="heroReach">Get in touch</span><span aria-hidden="true">↗</span></a>
-        </div>
-        <div class="hero-meta"><span data-t="metaPlatform">NixOS / KDE Plasma</span><span class="meta-separator"></span><span data-t="metaFocus">Software · Design · Games</span></div>
-      </div>
-      <div class="workspace" aria-label="Illustrated developer workspace">
-        <div class="workspace-ambient"></div>
-        <div class="workspace-frame">
-          <div class="workspace-head">
-            <span class="workspace-dots"><i></i><i></i><i></i></span>
-            <span class="workspace-path">~/workspace / about.js</span>
-            <span class="workspace-head-right">JS</span>
-          </div>
-          <div class="workspace-body">
-            <div class="workspace-gutter"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span></div>
-            <div class="workspace-code">
-              <div><span class="syntax-keyword">const</span> <span class="syntax-name">developer</span> <span class="syntax-sign">=</span> {</div>
-              <div class="indent"><span class="syntax-prop">name:</span> <span class="syntax-string">"flekiii"</span>,</div>
-              <div class="indent"><span class="syntax-prop">location:</span> <span class="syntax-string">"Ukraine"</span>,</div>
-              <div class="indent"><span class="syntax-prop">focus:</span> [</div>
-              <div class="indent-double"><span class="syntax-string">"software"</span>,</div>
-              <div class="indent-double"><span class="syntax-string">"design"</span>,</div>
-              <div class="indent-double"><span class="syntax-string">"interactive"</span></div>
-              <div class="indent">]</div>
-              <div>};<span class="editor-cursor">▍</span></div>
-            </div>
-          </div>
-          <div class="workspace-status"><span class="workspace-branch"><span aria-hidden="true">⑂</span> main</span><span>NixOS</span><span>UTF-8</span><span>JavaScript</span></div>
-        </div>
-        <div class="workspace-surface"></div>
-        <div class="workspace-note"><span class="note-mark"></span><span data-t="studioNote">A quiet place to think and build.</span></div>
-        <div class="workspace-lamp"><i></i></div>
-      </div>
-    </div>
-  </section>
-  <section class="section about" id="about">
-    <div class="container about-layout">
-      <div class="section-intro">
-        <p class="section-eyebrow" data-t="aboutEyebrow">ABOUT ME</p>
-        <h2 data-t="aboutTitle">Curious by nature.<br><em>Focused on craft.</em></h2>
-        <div class="about-line" aria-hidden="true"></div>
-      </div>
-      <div class="about-content">
-        <p class="about-lead" data-t="aboutLead">I'm a developer from Ukraine who enjoys making things that feel considered, useful and well built.</p>
-        <p data-t="aboutText">I spend my time learning technologies, exploring interface design and building software. I care about the details — how something works, how it looks and how it feels to use.</p>
-        <div class="disciplines">
-          <div class="discipline"><span data-t="disciplineCode">DEVELOPMENT</span><p>JavaScript · Dart · Flutter · Rust</p></div>
-          <div class="discipline"><span data-t="disciplinePlatform">ENVIRONMENT</span><p>NixOS · GitHub · VS Code</p></div>
-          <div class="discipline"><span data-t="disciplineInteractive">INTERACTIVE</span><p>Unity · Unreal Engine · C#</p></div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="section support" id="support">
-    <div class="container support-layout">
-      <div class="support-copy">
-        <p class="section-eyebrow" data-t="supportEyebrow">INDEPENDENT DEVELOPMENT</p>
-        <h2 data-t="supportTitle">Support the<br><em>work behind it.</em></h2>
-        <p class="support-lead" data-t="supportLead">If you'd like to support my learning and future work, you can leave a contribution. Every bit helps me keep creating.</p>
-        <a class="button button-primary donate" href="https://send.monobank.ua/jar/91HH8iY31q" target="_blank" rel="noopener noreferrer"><span data-t="donate">Support via Monobank</span><span aria-hidden="true">↗</span></a>
-        <p class="support-note" data-t="supportNote">The payment opens on Monobank. The interactive card is only a visual concept — no real card details are displayed.</p>
-      </div>
-      <div class="support-art">
-        <div class="card-backdrop" aria-hidden="true"></div>
-        <div id="cardStage" class="card-stage" tabindex="0" role="group" aria-label="Interactive concept bank card. Drag to rotate in any direction. Arrow keys rotate; Home resets.">
-          <div id="bankCard" class="card-rotator">
-            <div class="card-face bank-front">
-              <div class="card-surface-grain"></div><div class="card-surface-reflection"></div>
-              <div class="bank-top"><span class="bank-brand">flekiii<span class="bank-brand-dot">.</span></span><span class="bank-top-label">PRIVATE / CONCEPT</span></div>
-              <div class="bank-middle"><div class="bank-chip" aria-hidden="true"><span></span><i></i></div><svg class="bank-contactless" viewBox="0 0 34 34" aria-hidden="true"><path d="M7 12 Q12 17 7 22 M13 8 Q21 17 13 26 M19 4 Q30 17 19 30" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg></div>
-              <div class="bank-number" aria-hidden="true">•••• &nbsp; •••• &nbsp; •••• &nbsp; 0000</div>
-              <div class="bank-bottom"><div><small>CARDHOLDER</small><strong>FLEKIII</strong></div><span class="bank-edition">DESIGNED FOR PRIVACY</span></div>
-              <div class="bank-edge"></div>
-            </div>
-            <div class="card-face bank-back">
-              <div class="card-surface-grain"></div><div class="card-surface-reflection"></div>
-              <div class="bank-back-top"><strong>flekiii<span class="bank-brand-dot">.</span></strong><span>CONCEPT CARD / 01</span></div>
-              <div class="bank-stripe"></div>
-              <div class="bank-signature"><span>AUTHORIZED HOLDER</span><b>•••</b></div>
-              <div class="bank-back-info"><span>SIMPLICITY / CONTROL / PRIVACY</span><strong>Designed to feel effortless.</strong></div>
-              <div class="bank-back-bottom"><span>NOT A VALID PAYMENT INSTRUMENT</span><span>flekiii © 2026</span></div>
-              <div class="bank-edge"></div>
-            </div>
-          </div>
-        </div>
-        <div class="card-controls"><span data-t="cardHint">DRAG TO ROTATE / 360°</span><button id="resetCard" type="button" data-t="resetCard">Reset view ↺</button></div>
-      </div>
-    </div>
-  </section>
-  <section class="section contact" id="contact">
-    <div class="container contact-layout">
-      <div><p class="section-eyebrow" data-t="contactEyebrow">CONTACT</p><h2 data-t="contactTitle">Let's stay<br><em>connected.</em></h2><p class="contact-lead" data-t="contactLead">For conversations, questions or just to say hello, you can find me here.</p></div>
-      <div class="social-links">
-        <a href="https://github.com/flekiii" target="_blank" rel="noopener noreferrer"><span>GitHub</span><span aria-hidden="true">↗</span></a>
-        <a href="https://www.instagram.com/flekideveloper/" target="_blank" rel="noopener noreferrer"><span>Instagram</span><span aria-hidden="true">↗</span></a>
-        <a href="https://www.tiktok.com/@fleki.truepkg" target="_blank" rel="noopener noreferrer"><span>TikTok</span><span aria-hidden="true">↗</span></a>
-      </div>
-    </div>
-  </section>
-</main>
-<footer class="footer"><div class="container footer-inner"><a class="footer-brand" href="#top">flekiii<span>.</span></a><span data-t="footerMade">Independent developer. Based in Ukraine.</span><span>© <span id="year">2026</span> flekiii</span></div></footer>
-</body>
-</html>
+<section class="hero"><div class="hero-grid" aria-hidden="true"></div><div class="container hero-layout">
+<div class="hero-copy"><div class="eyebrow"><span class="led"></span><span data-t="heroOverline">INDEPENDENT DEVELOPER / UKRAINE</span><span class="age-badge">15 YO</span></div>
+<h1 data-t="heroTitle">I build what<br>I <em>imagine.</em></h1>
+<p class="hero-lead" data-t="heroLead">I'm flekiii. I write code, experiment with games and create interfaces my own way. No rigid playbook — just ideas and the drive to make them real.</p>
+<div class="hero-actions"><a class="btn btn-primary" href="#about"><span data-t="heroExplore">Explore my world</span><span>↗</span></a><a class="btn btn-outline" href="#contact"><span data-t="heroTalk">Get in touch</span><span>↗</span></a></div>
+<div class="hero-subline" data-t="heroBottom">CODE. CREATE. LEARN. REPEAT. — NO RULEBOOK NEEDED.</div>
+</div>
+<div class="dev-visual"><div class="dev-halo" aria-hidden="true"></div>
+<div class="dev-window"><div class="dev-window-top"><div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div><span>~/flekiii/workspace</span><span class="window-status">● LIVE</span></div>
+<div class="dev-window-tabs" role="tablist" aria-label="Code tabs">
+<button type="button" data-code-tab="about" role="tab" aria-selected="true">about.ts</button><button type="button" data-code-tab="stack" role="tab" aria-selected="false">stack.json</button><button type="button" data-code-tab="ideas" role="tab" aria-selected="false">ideas.md</button>
+<button id="copyCode" class="copy-code" type="button" title="Copy code" aria-label="Copy code">⧉</button></div>
+<div class="dev-body" role="tabpanel"><pre class="line-numbers" id="lineNumbers" aria-hidden="true"></pre><pre class="dev-code"><code id="codeDisplay"></code></pre></div>
+<div class="mini-terminal"><div class="mini-terminal-title">TERMINAL <span>＋</span></div><div><span class="terminal-prompt">$</span> <span data-t="terminalStatus">ready to create something new</span><b class="blink">▋</b></div></div>
+<div class="dev-status"><span>⑂ main</span><span data-t="editorReady">● READY</span><span>UTF-8</span></div></div>
+<div class="dev-label label-top">↗ BUILD / BREAK / LEARN</div><div class="dev-label label-bottom" data-t="devBottomLabel">INDEPENDENT BY DESIGN</div>
+</div></div><div class="container hero-foot"><span data-t="scrollPrompt">SCROLL TO EXPLORE</span><a href="#about">↓</a><span>2026 / FLEKIII</span></div></section>
+<div class="marquee" aria-hidden="true"><div>CODE <i></i> DESIGN <i></i> EXPERIMENT <i></i> BUILD <i></i> REPEAT <i></i> CODE <i></i> DESIGN <i></i> EXPERIMENT <i></i> BUILD <i></i> REPEAT <i></i></div></div>
+<section class="section about" id="about"><div class="container">
+<div class="section-eyebrow"><span data-t="aboutEyebrow">THE PERSON BEHIND THE CODE</span><span>/ FLEKIII.DEV</span></div>
+<div class="about-layout"><div><h2 data-t="aboutTitle">Not following<br>a blueprint.<br><em>Making my own.</em></h2><p class="signature">— flekiii</p></div>
+<div class="about-copy"><p class="about-lead" data-t="aboutLead">I'm 15, from Ukraine. Technology fascinates me because I can turn an idea into something people can actually use.</p><p data-t="aboutText">I enjoy building applications, exploring game development and designing interfaces. I learn by doing — trying things, figuring out what breaks and making them better.</p>
+<div class="facts"><div><span data-t="ageLabel">AGE</span><strong>15</strong></div><div><span data-t="locationLabel">BASED IN</span><strong>UKRAINE</strong></div><div><span data-t="osLabel">MY OS</span><strong>NixOS</strong></div></div></div></div>
+<div class="stack"><div><strong data-t="toolkitTitle">MY TOOLKIT</strong><small data-t="toolkitCaption">TOOLS I WORK WITH</small></div><div class="stack-items"><span>JavaScript</span><span>Dart / Flutter</span><span>Rust</span><span>Unity</span><span>Unreal Engine</span><span>Linux</span><span>GitHub</span><span>VS Code</span></div></div>
+</div></section>
+<section class="section approach" id="approach"><div class="container">
+<div class="section-eyebrow"><span data-t="processEyebrow">HOW I THINK / HOW I BUILD</span><span>/ ALWAYS IN PROGRESS</span></div>
+<div class="approach-heading"><h2 data-t="approachTitle">Curiosity first.<br><em>Execution next.</em></h2><p data-t="approachLead">No complicated formula. I find an idea, build something real, then improve it.</p></div>
+<div class="approach-cards">
+<article class="approach-card"><span class="card-index">A / EXPLORE</span><div class="approach-icon">?</div><h3 data-t="approachA">Find the idea</h3><p data-t="approachADesc">Ask questions, explore possibilities and imagine how things could work differently.</p></article>
+<article class="approach-card"><span class="card-index">B / CREATE</span><div class="approach-icon code-icon">&lt;/&gt;</div><h3 data-t="approachB">Make it real</h3><p data-t="approachBDesc">Open the editor, write code, prototype and see what actually works.</p></article>
+<article class="approach-card"><span class="card-index">C / ITERATE</span><div class="approach-icon">↗</div><h3 data-t="approachC">Keep improving</h3><p data-t="approachCDesc">Polish the details, fix the rough parts and turn lessons into better work.</p></article>
+</div><div class="manifesto"><b>&gt;_</b><span data-t="manifesto">I don't need permission to learn something new.</span><strong>F.</strong></div>
+</div></section>
+<section class="section support" id="support"><div class="container">
+<div class="section-eyebrow"><span data-t="supportEyebrow">INDEPENDENT CREATION / SUPPORT</span><span>/ OPTIONAL</span></div>
+<div class="support-layout"><div class="support-copy"><h2 data-t="supportTitle">Back the<br><em>next idea.</em></h2><p class="support-lead" data-t="supportLead">If you like what I'm making, you can support my learning and future experiments. No subscription, no pressure — just a way to help me keep creating.</p>
+<a class="btn btn-primary" href="https://send.monobank.ua/jar/91HH8iY31q" target="_blank" rel="noopener noreferrer"><span data-t="donate">Support via Monobank</span><span>↗</span></a>
+<p class="donation-note" data-t="donationNote">Payment opens on Monobank. The interactive card is a fictional design, not a real payment card.</p></div>
+<div class="support-visual"><div class="card-aura" aria-hidden="true"></div>
+<div id="cardStage" class="card-stage" tabindex="0" role="group" aria-label="Interactive 3D concept card, drag or use arrow keys to rotate. Home resets.">
+<div id="bankCard" class="card-rotator"><div class="card-face bank-front"><div class="bank-texture"></div><div class="bank-reflection"></div>
+<div class="bank-top"><strong>flekiii<span>.</span></strong><small>PRIVATE / CONCEPT</small></div>
+<div class="bank-middle"><div class="bank-chip"><i></i></div><svg viewBox="0 0 30 30" class="contactless" aria-hidden="true"><path d="M5 10Q11 15 5 20 M11 6Q20 15 11 24 M17 2Q29 15 17 28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+<div class="bank-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; 0000</div><div class="bank-bottom"><div><small>CARDHOLDER</small><strong>FLEKIII</strong></div><span>PRIVACY IS FREEDOM</span></div></div>
+<div class="card-face bank-back"><div class="bank-texture"></div><div class="bank-reflection"></div>
+<div class="bank-back-top"><strong>flekiii<span>.</span></strong><small>PRIVATE / CONCEPT</small></div><div class="bank-stripe"></div><div class="bank-signature"><span>AUTHORIZED HOLDER</span><b>•••</b></div>
+<div class="bank-back-caption">DESIGNED FOR SIMPLICITY AND CONTROL.</div><div class="bank-back-footer"><span>NOT A REAL PAYMENT CARD</span><span>CONCEPT / 01</span></div></div></div></div>
+<div class="card-controls"><span data-t="dragHint">DRAG TO ROTATE / 360°</span><button id="resetCard" type="button" data-t="resetCard">RESET ↺</button></div></div></div></div></section>
+<section class="section contact" id="contact"><div class="container"><div class="section-eyebrow"><span data-t="contactEyebrow">OPEN CONNECTIONS</span><span>/ GET IN TOUCH</span></div>
+<div class="contact-layout"><div><h2 data-t="contactTitle">Let's make<br><em>something happen.</em></h2><p class="contact-lead" data-t="contactLead">Got an idea, a question or just want to say hi? Find me on these platforms.</p></div>
+<div class="social-links"><a href="https://github.com/flekiii" target="_blank" rel="noopener noreferrer"><span>GitHub</span><span>↗</span></a><a href="https://www.instagram.com/flekiiiii/" target="_blank" rel="noopener noreferrer"><span>Instagram</span><span>↗</span></a><a href="https://www.tiktok.com/@fleki.truepkg" target="_blank" rel="noopener noreferrer"><span>TikTok</span><span>↗</span></a></div></div></div></section>
+</main><footer class="footer"><div class="container footer-inner"><a href="#top" class="footer-brand">flekiii<span>.</span></a><p data-t="footerText">Independent by choice. Creating my own path.</p><span>© <span id="year">2026</span> flekiii</span><a href="#top" data-t="backToTop">BACK TO TOP ↑</a></div></footer>
+<div class="command-overlay" id="commandOverlay" hidden><div class="command-dialog" role="dialog" aria-modal="true" aria-label="Quick navigation">
+<div class="command-input-row"><span>⌕</span><input type="search" id="commandInput" autocomplete="off" placeholder="Search sections..." aria-label="Search sections"><button type="button" id="commandClose">ESC</button></div><div id="commandResults" class="command-results"></div><div class="command-help" data-t="commandHelp">CTRL+K / QUICK NAVIGATION</div></div></div>
+</body></html>

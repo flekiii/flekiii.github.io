@@ -1,57 +1,110 @@
 (() => {
 "use strict";
-const ua = {
-brandCaption:"НЕЗАЛЕЖНИЙ РОЗРОБНИК",
-navAbout:"Про мене",navSupport:"Підтримка",navContact:"Контакти",
-heroEyebrow:"РОЗРОБНИК · УКРАЇНА",
-heroTitle:'Створюю програми<br><em>з увагою до деталей.</em>',
-heroLead:"Я flekiii — незалежний розробник. Поєдную програмування, продуманий дизайн та інтерактивні технології.",
-heroLearn:"Більше про мене",heroReach:"Зв'язатися",
-metaPlatform:"NixOS / KDE Plasma",metaFocus:"Програми · Дизайн · Ігри",
-studioNote:"Спокійний простір, щоб думати й створювати.",
-aboutEyebrow:"ПРО МЕНЕ",
-aboutTitle:'Допитливий за характером.<br><em>Уважний до деталей.</em>',
-aboutLead:"Я розробник з України. Мені подобається створювати корисні, продумані й якісні речі.",
-aboutText:"Вивчаю технології, досліджую дизайн інтерфейсів і розробляю програми. Для мене важливо все: як продукт працює, який має вигляд і наскільки ним зручно користуватися.",
-disciplineCode:"РОЗРОБКА",disciplinePlatform:"СЕРЕДОВИЩЕ",disciplineInteractive:"ІНТЕРАКТИВНЕ",
-supportEyebrow:"НЕЗАЛЕЖНА РОЗРОБКА",
-supportTitle:'Підтримати<br><em>мою роботу.</em>',
-supportLead:"Якщо хочеш підтримати моє навчання й майбутні ідеї, можеш зробити внесок. Це допомагає мені продовжувати створювати нове.",
-donate:"Підтримати через Monobank",
-supportNote:"Оплата відкривається на Monobank. Інтерактивна картка — лише візуальний концепт, без справжніх платіжних даних.",
-cardHint:"ПОКРУТИ КАРТКУ / 360°",resetCard:"Скинути вигляд ↺",
-contactEyebrow:"КОНТАКТИ",
-contactTitle:'Залишаймося<br><em>на зв’язку.</em>',
-contactLead:"Для спілкування, запитань або просто привітання мене можна знайти тут.",
-footerMade:"Незалежний розробник. Україна."
+const uk={
+skip:"До основного вмісту",navAbout:"Про мене",navProcess:"Підхід",navSupport:"Підтримати",navContact:"Контакти",
+heroOverline:"НЕЗАЛЕЖНИЙ РОЗРОБНИК / УКРАЇНА",
+heroTitle:'Створюю те,<br>що <em>уявляю.</em>',
+heroLead:"Я flekiii. Пишу код, експериментую з іграми й створюю інтерфейси по-своєму. Без готових шаблонів — лише ідеї та бажання їх втілити.",
+heroExplore:"Пізнати мій світ",heroTalk:"Зв’язатися",
+heroBottom:"КОД. ТВОРЧІСТЬ. НАВЧАННЯ. РОЗВИТОК. — БЕЗ ШАБЛОНІВ.",
+terminalStatus:"готовий створювати щось нове",editorReady:"● ГОТОВИЙ",devBottomLabel:"НЕЗАЛЕЖНИЙ ЗА ВИБОРОМ",
+scrollPrompt:"ГОРТАЙ НИЖЧЕ",aboutEyebrow:"ХТО СТОЇТЬ ЗА КОДОМ",
+aboutTitle:'Не йду за<br>шаблоном.<br><em>Створюю свій.</em>',
+aboutLead:"Мені 15 років, я з України. Технології захоплюють мене тим, що дозволяють перетворити ідею на щось, чим люди справді можуть користуватися.",
+aboutText:"Люблю створювати програми, досліджувати розробку ігор і проєктувати інтерфейси. Вчуся на практиці: експериментую, виправляю помилки та вдосконалюю результат.",
+ageLabel:"ВІК",locationLabel:"КРАЇНА",osLabel:"МОЯ ОС",
+toolkitTitle:"МОЇ ІНСТРУМЕНТИ",toolkitCaption:"те, з чим працюю",
+processEyebrow:"ЯК ДУМАЮ / ЯК СТВОРЮЮ",
+approachTitle:'Спочатку цікавість.<br><em>Потім реалізація.</em>',
+approachLead:"Без складних формул. Знаходжу ідею, втілюю її та роблю кращою.",
+approachA:"Знайти ідею",approachADesc:"Ставити запитання, досліджувати можливості та знаходити нові рішення.",
+approachB:"Втілити її",approachBDesc:"Відкрити редактор, написати код, протестувати й отримати робочий прототип.",
+approachC:"Покращувати",approachCDesc:"Шліфувати деталі, виправляти помилки та вдосконалювати результат.",
+manifesto:"Мені не потрібен дозвіл, щоб навчитися чогось нового.",
+supportEyebrow:"НЕЗАЛЕЖНА ТВОРЧІСТЬ / ПІДТРИМКА",
+supportTitle:'Підтримай<br><em>наступну ідею.</em>',
+supportLead:"Подобається те, що я створюю? Можеш підтримати моє навчання й майбутні експерименти. Без підписок і тиску — це допомагає рухатися вперед.",
+donate:"Підтримати через Monobank",donationNote:"Оплата відкривається на Monobank. Інтерактивна картка — вигаданий концепт, а не справжній платіжний засіб.",
+dragHint:"КРУТИ КАРТКУ / 360°",resetCard:"СКИНУТИ ↺",
+contactEyebrow:"ВІДКРИТИЙ ДО СПІЛКУВАННЯ",
+contactTitle:'Можемо створити<br><em>щось цікаве.</em>',
+contactLead:"Є ідея, запитання або просто хочеш привітатися? Шукай мене тут.",
+footerText:"Незалежний за вибором. Створюю власний шлях.",backToTop:"ДОГОРИ ↑",commandHelp:"CTRL+K / ШВИДКИЙ ПЕРЕХІД"
 };
-const source = new Map();
-document.querySelectorAll("[data-t]").forEach(el=>source.set(el,el.innerHTML));
-const rich = new Set(["heroTitle","aboutTitle","supportTitle","contactTitle"]);
-const stages=document.querySelectorAll("[data-lang]");
-function setLanguage(next){
-  const code=next==="uk"?"uk":"en";
-  document.documentElement.lang=code;
-  document.querySelectorAll("[data-t]").forEach(el=>{
-    const key=el.dataset.t;
-    if(code==="en"){el.innerHTML=source.get(el)||"";}
-    else if(Object.hasOwn(ua,key)){
-      if(rich.has(key))el.innerHTML=ua[key];
-      else el.textContent=ua[key];
-    }
-  });
-  stages.forEach(btn=>btn.setAttribute("aria-pressed",String(btn.dataset.lang===code)));
-  document.title=code==="uk"?"flekiii — Незалежний розробник":"flekiii — Independent Developer";
-  const card=document.getElementById("cardStage");
-  if(card)card.setAttribute("aria-label",code==="uk"?
-    "Інтерактивна 3D-картка. Перетягуй для обертання. Стрілки повертають, Home скидає.":
-    "Interactive concept bank card. Drag to rotate. Arrow keys rotate and Home resets.");
-  try{localStorage.setItem("flekiii-lang",code);}catch{}
+const originals=new Map();
+document.querySelectorAll("[data-t]").forEach(el=>originals.set(el,el.innerHTML));
+const rich=new Set(["heroTitle","aboutTitle","approachTitle","supportTitle","contactTitle"]);
+let language="en",activeFile="about";
+const files={
+about:'// about.ts\nconst creator = {\n  name: "flekiii",\n  age: 15,\n  from: "Ukraine",\n  mindset: "independent",\n  passion: "building"\n};\n\nexport default creator;',
+stack:'{\n  "os": "NixOS",\n  "languages": ["JS", "Dart", "Rust"],\n  "engines": ["Unity", "Unreal"],\n  "editor": "VS Code",\n  "mode": "always learning"\n}',
+ideas:'# ideas.md\n\n- Imagine something new\n- Create a prototype\n- Keep improving\n\nBuild > wait.'
+};
+function showFile(name){
+ if(!Object.hasOwn(files,name))return;
+ activeFile=name;
+ document.getElementById("codeDisplay").textContent=files[name];
+ document.getElementById("lineNumbers").textContent=files[name].split("\n").map((_,i)=>String(i+1).padStart(2,"0")).join("\n");
+ document.querySelectorAll("[data-code-tab]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.codeTab===name)));
 }
-stages.forEach(button=>button.addEventListener("click",()=>setLanguage(button.dataset.lang)));
-let language=navigator.language?.toLowerCase().startsWith("uk")?"uk":"en";
-try{language=localStorage.getItem("flekiii-lang")||language;}catch{}
-setLanguage(language);
+document.querySelectorAll("[data-code-tab]").forEach(b=>b.addEventListener("click",()=>showFile(b.dataset.codeTab)));
+showFile("about");
+document.getElementById("copyCode").addEventListener("click",async()=>{
+ const btn=document.getElementById("copyCode");
+ try{await navigator.clipboard.writeText(files[activeFile]);btn.title=language==="uk"?"Скопійовано":"Copied";}catch{btn.title="Select and copy text";}
+ setTimeout(()=>btn.title="Copy code",1500);
+});
+const overlay=document.getElementById("commandOverlay"),input=document.getElementById("commandInput"),results=document.getElementById("commandResults");
+let previousFocus=null;
+const destinations=[["about","About","Про мене"],["approach","Process","Мій підхід"],["support","Support","Підтримка"],["contact","Contact","Контакти"]];
+function showResults(){
+ const q=input.value.trim().toLowerCase();results.replaceChildren();
+ let matched=0;
+ for(const item of destinations){
+  if(!item.join(" ").toLowerCase().includes(q))continue;
+  matched++;
+  const button=document.createElement("button");
+  button.type="button";button.className="command-option";button.textContent=(language==="uk"?item[2]:item[1])+"  ↗";
+  button.addEventListener("click",()=>{closeCommands();document.getElementById(item[0]).scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"});});
+  results.appendChild(button);
+ }
+ if(!matched){const p=document.createElement("p");p.textContent=language==="uk"?"Нічого не знайдено":"No results";results.appendChild(p);}
+}
+function openCommands(){previousFocus=document.activeElement;overlay.hidden=false;input.value="";showResults();input.focus();}
+function closeCommands(){overlay.hidden=true;previousFocus?.focus?.();}
+document.getElementById("commandTrigger").addEventListener("click",openCommands);
+document.getElementById("commandClose").addEventListener("click",closeCommands);
+overlay.addEventListener("click",e=>{if(e.target===overlay)closeCommands();});
+input.addEventListener("input",showResults);
+input.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();results.querySelector("button")?.click();}});
+document.addEventListener("keydown",e=>{
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();overlay.hidden?openCommands():closeCommands();}
+ if(e.key==="Escape"&&!overlay.hidden){e.preventDefault();closeCommands();}
+});
+function setLanguage(value){
+ language=value==="uk"?"uk":"en";document.documentElement.lang=language;
+ document.querySelectorAll("[data-t]").forEach(el=>{
+  const key=el.dataset.t;
+  if(language==="en")el.innerHTML=originals.get(el);
+  else if(Object.hasOwn(uk,key)){if(rich.has(key))el.innerHTML=uk[key];else el.textContent=uk[key];}
+ });
+ document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===language)));
+ input.placeholder=language==="uk"?"Пошук розділів...":"Search sections...";
+ document.title=language==="uk"?"flekiii — Розробник та творець":"flekiii — Creator & Developer";
+ showResults();
+ try{localStorage.setItem("flekiii-lang",language);}catch{}
+}
+document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>setLanguage(b.dataset.lang)));
+function setAccent(value){
+ const a=["red","pink","blue"].includes(value)?value:"red";
+ document.body.dataset.accent=a;
+ document.querySelectorAll("[data-accent-choice]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.accentChoice===a)));
+ try{localStorage.setItem("flekiii-accent",a);}catch{}
+}
+document.querySelectorAll("[data-accent-choice]").forEach(b=>b.addEventListener("click",()=>setAccent(b.dataset.accentChoice)));
+let firstLang=navigator.language?.toLowerCase().startsWith("uk")?"uk":"en",firstAccent="red";
+try{firstLang=localStorage.getItem("flekiii-lang")||firstLang;firstAccent=localStorage.getItem("flekiii-accent")||firstAccent;}catch{}
+setAccent(firstAccent);setLanguage(firstLang);
 document.getElementById("year").textContent=String(new Date().getFullYear());
 const stage=document.getElementById("cardStage"),card=document.getElementById("bankCard");
 const reset=document.getElementById("resetCard");
