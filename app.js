@@ -70,6 +70,14 @@ let initial=navigator.language?.toLowerCase().startsWith("uk")?"uk":"en";
 try{initial=localStorage.getItem("flekiii-lang")||initial;}catch{}
 setLanguage(initial);
 document.getElementById("year").textContent=String(new Date().getFullYear());
+
+document.querySelectorAll('a[href="#top"]').forEach(link=>{
+ link.addEventListener("click",event=>{
+  event.preventDefault();
+  window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"});
+ });
+});
+
 // Drag the hanging lantern to any viewport position. Store positions per browser.
 const lantern=document.getElementById("fireflyLantern");
 const lanternHandle=document.getElementById("lantern3d");
