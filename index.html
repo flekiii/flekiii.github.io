@@ -11,15 +11,27 @@
 <meta property="og:url" content="https://flekiii.github.io/">
 <title>flekiii — Developer Portfolio</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="stylesheet" href="styles.css?v=11">
-<script src="app.js?v=11" defer></script>
-<script src="jar3d.js?v=10" type="module"></script><script src="earth3d.js?v=10" type="module"></script>
+<link rel="stylesheet" href="styles.css?v=12">
+<script src="app.js?v=12" defer></script>
+<script src="jar3d.js?v=12" type="module"></script><script src="tether.js?v=12" defer></script><script src="earth3d.js?v=12" type="module"></script>
 </head>
 <body>
 <a class="skip-link" href="#main" data-t="skipLink">Skip to main content</a>
+<svg id="lanternTether" class="lantern-tether" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+<defs>
+ <linearGradient id="cordShade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#544436"/><stop offset=".27" stop-color="#a78b6e"/><stop offset=".53" stop-color="#f5debc"/><stop offset=".82" stop-color="#a08460"/><stop offset="1" stop-color="#443629"/></linearGradient>
+ <filter id="cordShadow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4"/></filter>
+ <radialGradient id="mountMetal"><stop stop-color="#f2d4ac"/><stop offset=".5" stop-color="#807b7c"/><stop offset="1" stop-color="#272a36"/></radialGradient>
+</defs>
+<path id="tetherShadow" fill="none" stroke="#06070c" stroke-opacity=".78" stroke-width="8" filter="url(#cordShadow)"/>
+<path id="tetherCord" fill="none" stroke="url(#cordShade)" stroke-width="5.8" stroke-linecap="round"/>
+<path id="tetherBraided" fill="none" stroke="#f5ddb8" stroke-width="1.15" stroke-opacity=".74" stroke-linecap="round" stroke-dasharray="2 6"/>
+<path id="tetherStitch" fill="none" stroke="#523e32" stroke-width=".85" stroke-opacity=".64" stroke-linecap="round" stroke-dasharray="1 7" stroke-dashoffset="4"/>
+<g id="tetherMount"><rect x="-19" y="-11" width="38" height="22" rx="8" fill="#242b3a" stroke="#959caa" stroke-width="1.5"/><circle r="7" fill="url(#mountMetal)" stroke="#b1a6a0"/><circle r="2" fill="#2a2b31"/><circle cx="-13" r="1.6" fill="#b1a89a"/><circle cx="13" r="1.6" fill="#b1a89a"/></g>
+</svg>
 <div class="firefly-lantern" id="fireflyLantern">
   <div class="lantern-cast" ></div>
-  <canvas id="lantern3d" class="lantern3d" tabindex="0" aria-label="Interactive 3D firefly jar and rope. Drag to pull, use arrow keys to move, or Home to reset." title="Drag the lantern anywhere"></canvas>
+  <canvas id="lantern3d" class="lantern3d" tabindex="0" aria-label="Draggable hanging firefly lantern. Drag to reposition. Home resets." title="Drag the lantern anywhere"></canvas>
   <div class="lantern-fallback" aria-hidden="true"><div class="lantern-scroll" id="lanternScroll">
     <div class="lantern-sway">
       <svg class="lantern-svg" viewBox="0 0 180 294" xmlns="http://www.w3.org/2000/svg" role="presentation">
@@ -99,16 +111,7 @@
         <span class="planet-gesture" data-t="planetHint">DRAG TO ROTATE · AUTO-SPIN ON</span>
       </div>
     </div>
-    <aside class="profile-card anime-profile" aria-label="Creator profile summary">
-      <div class="custom-profile-photo">
-        <img src="assets/profile-yui.webp" width="400" height="400" alt="Anime illustration of a brown-haired girl wearing a pink hoodie" loading="eager" fetchpriority="high" decoding="async">
-      </div>
-      <div class="profile-info"><strong class="profile-name">flekiii<span>.</span></strong><span data-t="profileRole">Software & creative development</span></div>
-      <div class="profile-details">
-        <div><small data-t="profileLocation">LOCATION</small><strong>Ukraine</strong></div>
-        <div><small data-t="profileEnvironment">ENVIRONMENT</small><strong>NixOS / Linux</strong></div>
-      </div>
-    </aside>
+    <aside class="profile-card text-profile" aria-label="fleki"><div class="profile-inner"><div class="profile-wordmark">fleki</div></div></aside>
   </div>
   <div class="container hero-bottom"><span data-t="heroScroll">EXPLORE THE PORTFOLIO</span><a href="#about" aria-label="Jump to about">↓</a><span>FLEKIII / 2026</span></div>
 </section>

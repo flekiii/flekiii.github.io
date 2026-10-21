@@ -1,19 +1,14 @@
-# flekiii — Personal Portfolio
+# flekiii — Cosmic Developer Portfolio
 
-Personal website: https://flekiii.github.io/
+Live: https://flekiii.github.io/
 
-A bilingual (Ukrainian/English) portfolio for an independent developer from Ukraine.
+A fully cosmic, bilingual (Ukrainian/English) personal site.
 
-## Features
+- **3D solar system:** textured Earth slowly rotates; a procedurally cratered Moon travels around it and a glowing Sun sits farther away. Drag, touch, keyboard arrows and Home control the view.
+- **Pure text profile:** only `fleki` — no photo.
+- **Realistic hanging lantern:** a physically based glass-and-metal WebGL jar with fireflies. It is tethered to a visible ceiling mount by a dynamic braided SVG rope that curves and extends to the jar wherever it is dragged. Its position is saved in the browser; double-click or Home resets it.
+- **Continuous cosmic design:** starfields, luminous dark panels and a compact centered bottom navigation dock. No white content areas or artificial black spacer below the footer.
+- **Developer interests, skills and optional support:** a fictional 360° card that remains nonselectable when spun, plus contact links.
+- **Personal statement:** “хочу створити свій вільний світ” forms from falling digits when scrolled into view.
 
-- Interactive rotating Earth with a dark starfield in the hero.
-- **User-selected anime profile image**, stored as an optimized local WebP asset, with the profile name and environment below it.
-- A short personal statement: “хочу створити свій вільний світ” / “I want to create my own free world”. Each character resolves from falling number trails on entering the viewport, with reduced-motion support.
-- A compact rounded navigation dock at the bottom, plus skills, development areas and contact links.
-- A draggable 3D firefly jar with a saved position and fallback for limited graphics.
-- A fictional interactive concept bank card and optional external Monobank support link.
-- Cosmic night-sky backgrounds at the About message and bottom Contact/Footer areas, including the intentionally spacious lower section.
-
-No made-up work history, client testimonials or project listings.
-
-Built with HTML, CSS, vanilla JavaScript and Three.js. Responsive layouts and reduced-motion preferences are supported.
+Built using HTML, CSS, vanilla JavaScript and Three.js. Reduced-motion support, responsive layouts and keyboard access are included. No fabricated experience or project/client listings.

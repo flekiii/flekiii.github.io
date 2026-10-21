@@ -17,44 +17,36 @@ if (canvas && container) {
     renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
     renderer.outputColorSpace=THREE.SRGBColorSpace;
     renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure=1.26;
+    renderer.toneMappingExposure=1.13;
     const scene=new THREE.Scene();
     const camera=new THREE.OrthographicCamera(-1.8,1.8,3.05,-3.05,.1,30);
     camera.position.set(0,0,10);camera.lookAt(0,0,0);
-    scene.add(new THREE.AmbientLight(0xffead8,2.0));
-    const key=new THREE.DirectionalLight(0xffd9b9,3.0);
+    scene.add(new THREE.AmbientLight(0xf0edf7,1.45));
+    const key=new THREE.DirectionalLight(0xfff3e6,3.4);
     key.position.set(-3,5,7);scene.add(key);
-    const rim=new THREE.PointLight(0xffc8a1,18,7,2);
+    const rim=new THREE.PointLight(0xc2d9ff,12,7,2);
     rim.position.set(1.8,0,-1);scene.add(rim);
 
     const jar=new THREE.Group();
     const rest=new THREE.Vector2(0,-.68);
     const pos=rest.clone(),vel=new THREE.Vector2(),goal=rest.clone();
     jar.position.set(pos.x,pos.y,0);scene.add(jar);
-    const anchor=new THREE.Vector3(0,2.98,0);
+    // Tether now lives in a full-screen SVG anchored to the ceiling. The WebGL canvas renders only the jar.
 
-    // Hand-painted, gently quantized game-style lighting instead of photoreal metal.
-    const ramp=new Uint8Array([90,155,220,255]);
-    const toonGradient=new THREE.DataTexture(ramp,4,1,THREE.RedFormat);
-    toonGradient.minFilter=THREE.NearestFilter;
-    toonGradient.magFilter=THREE.NearestFilter;
-    toonGradient.needsUpdate=true;
-    const paint=(color)=>new THREE.MeshToonMaterial({color,gradientMap:toonGradient});
-    const glass=new THREE.MeshPhongMaterial({
-      color:0xe2e5d9,transparent:true,opacity:.34,depthWrite:false,
-      side:THREE.DoubleSide,shininess:116,specular:0xfff7e9
+    // Physically based materials, subtle spectral reflection and translucent hand-made glass.
+    const paint=(color,metalness=0,roughness=.72)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
+    const glass=new THREE.MeshPhysicalMaterial({
+      color:0xe5f0fc,metalness:0,roughness:.12,transmission:.56,thickness:.24,
+      ior:1.47,transparent:true,opacity:.58,depthWrite:false,side:THREE.DoubleSide,
+      clearcoat:1,clearcoatRoughness:.05
     });
-    const metal=paint(0x868078); // matte metal screw lid
-    const gold=paint(0xc7ae84); // muted brass
+    const metal=paint(0x8f8982,.83,.27);
+    const gold=paint(0xbda16c,.87,.23);
     const profile=[
       [.29,-1.08],[.49,-1.08],[.65,-1.0],[.71,-.88],[.75,-.60],
       [.75,.36],[.70,.64],[.60,.86],[.53,.92],[.52,1.02],[.49,1.08]
     ].map(p=>new THREE.Vector2(...p));
-    const jarGeometry=new THREE.LatheGeometry(profile,36);
-    const ink=new THREE.Mesh(jarGeometry,new THREE.MeshBasicMaterial({
-      color:0x745564,side:THREE.BackSide,transparent:true,opacity:.49,depthWrite:false
-    }));
-    ink.scale.set(1.055,1.018,1.055);ink.renderOrder=1;jar.add(ink);
+    const jarGeometry=new THREE.LatheGeometry(profile,64);
     const body=new THREE.Mesh(jarGeometry,glass);
     body.renderOrder=3;jar.add(body);
     function hoop(radius,tube,y,mat){
@@ -62,22 +54,22 @@ if (canvas && container) {
       m.rotation.x=Math.PI/2;m.position.y=y;jar.add(m);
     }
     hoop(.67,.034,-.95,gold);hoop(.54,.036,.91,gold);
-    const lid=new THREE.Mesh(new THREE.CylinderGeometry(.622,.59,.24,20),metal);
+    const lid=new THREE.Mesh(new THREE.CylinderGeometry(.622,.59,.24,48),metal);
     lid.position.y=1.07;jar.add(lid);
     hoop(.616,.032,1.17,gold);hoop(.602,.024,1.01,gold);
-    const top=new THREE.Mesh(new THREE.CylinderGeometry(.54,.54,.045,20),gold);
+    const top=new THREE.Mesh(new THREE.CylinderGeometry(.54,.54,.045,48),gold);
     top.position.y=1.188;jar.add(top);
     const loop=new THREE.Mesh(new THREE.TorusGeometry(.15,.039,10,28),gold);
     loop.position.y=1.34;jar.add(loop);
-    const knot=new THREE.Mesh(new THREE.SphereGeometry(.082,12,8),gold);
+    const knot=new THREE.Mesh(new THREE.SphereGeometry(.069,20,16),gold);
     knot.position.y=1.48;jar.add(knot);
 
     // Colored glints and a second transparent layer make the glass feel rounded.
-    const glint=new THREE.Mesh(new THREE.CylinderGeometry(.757,.751,.72,24,1,true,2.60,.18),
-      new THREE.MeshBasicMaterial({color:0xfff5ff,transparent:true,opacity:.21,depthWrite:false,side:THREE.DoubleSide}));
+    const glint=new THREE.Mesh(new THREE.CylinderGeometry(.757,.751,.72,48,1,true,2.60,.18),
+      new THREE.MeshBasicMaterial({color:0xf8feff,transparent:true,opacity:.27,depthWrite:false,side:THREE.DoubleSide}));
     glint.position.y=-.05;jar.add(glint);
     const base=new THREE.Mesh(new THREE.CylinderGeometry(.54,.52,.024,40),
-      new THREE.MeshPhysicalMaterial({color:0xffdbb6,transparent:true,opacity:.2,depthWrite:false}));
+      new THREE.MeshPhysicalMaterial({color:0xf3ebda,metalness:.02,roughness:.08,transparent:true,opacity:.35,depthWrite:false}));
     base.position.y=-.97;jar.add(base);
 
 
@@ -105,7 +97,7 @@ if (canvas && container) {
     sticker.rotation.x=-.08;sticker.renderOrder=5;jar.add(sticker);
 
     // Hand-painted enamel lid dashes and stamped rivets give the jar a crafted prop look.
-    const lidDetail=paint(0x555253);
+    const lidDetail=paint(0x49494d,.8,.36);
     for(let i=0;i<16;i++){
       const angle=i*Math.PI*2/16;
       const dash=new THREE.Mesh(new THREE.BoxGeometry(.10,.034,.026),lidDetail);
@@ -124,7 +116,7 @@ if (canvas && container) {
     rivet.position.set(.73,.61,.17);jar.add(rivet);
 
     // Tiny firefly home: leaves, pebbles and painted stars along the bottom.
-    const leafMat=paint(0x748574),stoneMat=paint(0xa89f92);
+    const leafMat=paint(0x455b48,.02,.96),stoneMat=paint(0x8c7f6e,.04,.95);
     for(let i=0;i<5;i++){
       const phase=i*2.39996;
       const stone=new THREE.Mesh(new THREE.SphereGeometry(.10+(i%2)*.025,9,6),stoneMat);
@@ -173,44 +165,6 @@ if (canvas && container) {
     const ambientGold=new THREE.PointLight(0xffdd95,8.4,4.1);
     scene.add(ambientGold);
 
-    // Genuine tubular 3D rope. Shape updates continuously between fixed anchor and moving lid.
-    const ropeMaterial=paint(0xcdbb9a);
-    const threadMaterial=paint(0x847464);
-    const rope=new THREE.Mesh(new THREE.BufferGeometry(),ropeMaterial);
-    const thread=new THREE.Mesh(new THREE.BufferGeometry(),threadMaterial);
-    scene.add(rope,thread);
-    const topFastener=new THREE.Mesh(new THREE.SphereGeometry(.085,12,10),gold);
-    topFastener.position.copy(anchor);scene.add(topFastener);
-    function updateRope(t){
-      const end=jar.localToWorld(new THREE.Vector3(0,1.49,0));
-      const mid=anchor.clone().lerp(end,.52);
-      mid.x+=Math.sin(t*.65)*.04;
-      mid.y-=.048+Math.abs(end.x)*.065;
-      const curve=new THREE.CatmullRomCurve3([
-        anchor.clone(),anchor.clone().lerp(mid,.45),mid,mid.clone().lerp(end,.6),end
-      ],false,"centripetal");
-      const newGeometry=new THREE.TubeGeometry(curve,22,.043,7,false);
-      rope.geometry.dispose();rope.geometry=newGeometry;
-      const side=new THREE.Vector3(.014,0,.021);
-      const braided=new THREE.CatmullRomCurve3([
-        anchor.clone().add(side),anchor.clone().lerp(mid,.48).add(side),
-        mid.clone().add(side),mid.clone().lerp(end,.6).add(side),end.clone().add(side)
-      ]);
-      const newThread=new THREE.TubeGeometry(braided,22,.014,5,false);
-      thread.geometry.dispose();thread.geometry=newThread;
-    }
-    function constrain(v){
-      v.x=THREE.MathUtils.clamp(v.x,-1.10,1.10);
-      v.y=THREE.MathUtils.clamp(v.y,-1.38,.63);
-      // Rope cannot stretch beyond its visual length.
-      const delta=new THREE.Vector2(v.x,v.y+1.49-anchor.y);
-      const length=delta.length();
-      if(length>3.60){
-        delta.multiplyScalar(3.60/length);
-        v.set(delta.x,anchor.y+delta.y-1.49);
-      }
-    }
-
     // The entire jar is now movable in screen coordinates (see app.js).
     let dragging=false;
 
@@ -226,7 +180,6 @@ if (canvas && container) {
           b.g.rotation.z=Math.sin(t*9+b.phase)*.35;
         });
       }
-      updateRope(t);
       renderer.render(scene,camera);
     }
     function simulate(dt,t){
@@ -238,13 +191,12 @@ if (canvas && container) {
       vel.y+=(targetY-pos.y)*.021*n;
       vel.multiplyScalar(Math.pow(.942,n));
       pos.addScaledVector(vel,n);
-      constrain(pos);
     }
     function resize(){
       const width=Math.max(1,canvas.clientWidth);
       const height=Math.max(1,canvas.clientHeight);
       renderer.setSize(width,height,false);
-      const worldHeight=6.13;
+      const worldHeight=3.90;
       camera.left=-worldHeight*width/height/2;camera.right=worldHeight*width/height/2;
       camera.top=worldHeight/2;camera.bottom=-worldHeight/2;
       camera.updateProjectionMatrix();
