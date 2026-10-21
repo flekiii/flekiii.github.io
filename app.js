@@ -3,30 +3,16 @@
 const uk={
 skipLink:"Перейти до основного вмісту",
 navAbout:"Про мене",navWork:"Напрямки",navSkills:"Навички",navContact:"Контакти",navCTA:"Написати ↗",
-heroEyebrow:"НЕЗАЛЕЖНИЙ РОЗРОБНИК · УКРАЇНА",
-heroTitle:'Привіт, я flekiii.<br>Створюю <em>цифрові продукти.</em>',
-heroText:"Розробляю застосунки, проєктую продумані інтерфейси та вивчаю створення ігор. Для мене важливо, як усе виглядає, працює й відчувається.",
-heroPrimary:"Чим я займаюсь",heroSecondary:"Більше про мене",
-heroNote:"Щодня створюю, навчаюсь і вдосконалююсь.",
 earthTitle:"Дім. Земля. Моя точка відліку.",planetHint:"ТЯГНИ, ЩОБ КРУТИТИ · АВТООБЕРТАННЯ",
-profileLabel:"ПРОФІЛЬ РОЗРОБНИКА",profileStatus:"АКТИВНИЙ",
 profileRole:"Розробка програм і творчих проєктів",profileLocation:"КРАЇНА",profileEnvironment:"СЕРЕДОВИЩЕ",
 heroScroll:"ГОРТАЙ НИЖЧЕ",
-aboutEyebrow:"01 / ПРО МЕНЕ",
-aboutTitle:'Розробник, який<br><em>любить створювати.</em>',
-aboutStatement:"Мені 15 років, я з України. Мене мотивують допитливість і свобода втілювати власні ідеї.",
-aboutBody:"Від написання коду до експериментів із дизайном та ігровими рушіями — мені цікавий увесь шлях від задуму до корисного результату. Я постійно навчаюсь і вдосконалюю свої навички.",
-factAge:"ВІК",factCountry:"КРАЇНА",factOS:"ОПЕРАЦІЙНА СИСТЕМА",
-expertiseEyebrow:"02 / ЧИМ ЗАЙМАЮСЬ",
 expertiseTitle:'Те, що мені <em>подобається створювати.</em>',
-expertiseIntro:"Напрямки, які я досліджую, практикую й розвиваю.",
 serviceApps:"Програми та застосунки",
 serviceAppsDesc:"Створюю застосунки, вивчаю нові технології та працюю над корисними й зручними цифровими продуктами.",
 serviceWeb:"Сайти та інтерфейси",
 serviceWebDesc:"Проєктую та розробляю адаптивні інтерфейси, приділяючи увагу деталям і зручності використання.",
 serviceGames:"Розробка ігор",
 serviceGamesDesc:"Вивчаю ігрові рушії, системи взаємодії, ігрову логіку та створення світів.",
-skillsEyebrow:"03 / НАВИЧКИ ТА ІНСТРУМЕНТИ",
 skillsTitle:'Технології, з якими<br><em>я працюю.</em>',
 skillsIntro:"Інструменти й технології, які я використовую, вивчаю та випробовую. Цей список постійно зростає.",
 skillsDev:"Програмування",skillsGame:"Створення ігор",skillsWorkflow:"Робоче середовище",
@@ -34,9 +20,6 @@ supportEyebrow:"ПІДТРИМКА",
 supportTitle:'Підтримати <em>мій розвиток.</em>',
 supportBody:"Я продовжую вчитися й створювати нове. Якщо хочеш підтримати мене, можеш зробити внесок через Monobank. Це цілком добровільно.",
 donate:"Підтримати через Monobank",
-supportDisclaimer:"Ця інтерактивна картка — лише дизайн-концепт, а не справжня платіжна картка.",
-cardHint:"ПОКРУТИ КАРТКУ / 360°",cardReset:"СКИНУТИ ↺",
-contactEyebrow:"04 / КОНТАКТИ",
 contactKicker:"МАЄШ ІДЕЮ АБО ХОЧЕШ ПОСПІЛКУВАТИСЯ?",
 contactTitle:'Будьмо на зв’язку<span>.</span>',
 contactBody:"Я завжди радий новим знайомствам, цікавим ідеям і можливості дізнатися щось нове.",
@@ -44,8 +27,63 @@ footerText:"Незалежний розробник з України.",backToTo
 };
 const source=new Map();
 document.querySelectorAll("[data-t]").forEach(el=>source.set(el,el.innerHTML));
-const rich=new Set(["heroTitle","aboutTitle","expertiseTitle","skillsTitle","supportTitle","contactTitle"]);
+const rich=new Set(["expertiseTitle","skillsTitle","supportTitle","contactTitle"]);
 const buttons=[...document.querySelectorAll("[data-lang]")];
+// Each letter forms as a small stream of falling numbers before resolving.
+// Build only once when scrolled into view; changing language replays the effect.
+const matrixHeading=document.getElementById("matrixHeading");
+const matrixReduced=matchMedia("(prefers-reduced-motion: reduce)");
+let matrixVisible=false;
+function buildMatrix(language){
+ if(!matrixHeading)return;
+ const phrase=language==="uk"?matrixHeading.dataset.uk:matrixHeading.dataset.en;
+ matrixHeading.classList.remove("matrix-start");
+ matrixHeading.replaceChildren();
+ matrixHeading.setAttribute("aria-label",phrase);
+ if(matrixReduced.matches){matrixHeading.textContent=phrase;return;}
+ const fragment=document.createDocumentFragment();
+ let charIndex=0;
+ const words=phrase.split(/\s+/u);
+ words.forEach(word=>{
+  const wrapper=document.createElement("span");
+  wrapper.className="matrix-word";
+  wrapper.setAttribute("aria-hidden","true");
+  for(const char of word){
+   const letter=document.createElement("span");
+   letter.className="matrix-char";
+   letter.textContent=char;
+   letter.style.setProperty("--stagger",(charIndex*68)+"ms");
+   // Number trails start above the final glyph and dissolve as it appears.
+   for(let j=0;j<4;j++){
+     const digit=document.createElement("span");
+     digit.className="matrix-digit";
+     digit.setAttribute("aria-hidden","true");
+     digit.style.setProperty("--rain-delay",(j*85)+"ms");
+     digit.textContent=String((charIndex*7+j*3+5)%10);
+     letter.appendChild(digit);
+   }
+   wrapper.appendChild(letter);
+   charIndex++;
+  }
+  fragment.appendChild(wrapper);
+ });
+ matrixHeading.appendChild(fragment);
+ if(matrixVisible)requestAnimationFrame(()=>matrixHeading.classList.add("matrix-start"));
+}
+if(matrixHeading){
+ if("IntersectionObserver" in window){
+  const reveal=new IntersectionObserver(entries=>{
+   if(entries.some(e=>e.isIntersecting)){
+    matrixVisible=true;matrixHeading.classList.add("matrix-start");reveal.disconnect();
+   }
+  },{rootMargin:"0px 0px -12% 0px",threshold:.22});
+  reveal.observe(matrixHeading);
+ }else matrixVisible=true;
+}
+matrixReduced.addEventListener?.("change",()=>{
+ buildMatrix(document.documentElement.lang==="uk"?"uk":"en");
+});
+
 function setLanguage(raw){
  const language=raw==="uk"?"uk":"en";
  document.documentElement.lang=language;
@@ -59,6 +97,7 @@ function setLanguage(raw){
  }
  buttons.forEach(btn=>btn.setAttribute("aria-pressed",String(btn.dataset.lang===language)));
  document.title=language==="uk"?"flekiii — Портфоліо розробника":"flekiii — Developer Portfolio";
+ buildMatrix(language);
  const card=document.getElementById("cardStage");
  card?.setAttribute("aria-label",language==="uk"?
   "Інтерактивна 3D-картка. Перетягуй або використовуй стрілки клавіатури для обертання. Home скидає положення.":

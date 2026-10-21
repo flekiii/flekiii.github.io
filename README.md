@@ -1,16 +1,19 @@
-# flekiii — Developer Portfolio
+# flekiii — Personal Portfolio
 
-Personal developer portfolio: https://flekiii.github.io/
+Personal website: https://flekiii.github.io/
 
-The site supports English and Ukrainian, with an interactive opening scene:
+A bilingual (Ukrainian/English) portfolio for an independent developer from Ukraine.
 
-- **3D Earth:** A dark starfield, slowly spinning planet, real planetary surface texture, subtle clouds and an atmosphere. Drag with a mouse or finger; arrow keys and Home are supported. Falls back to a CSS globe if WebGL is unavailable.
-- **Anime-inspired personal card:** Original in-page SVG art and minimal profile information. Illustration is stylized artwork, not an actual photograph.
-- **Floating bottom dock:** A centered rounded menu with About, What I do, Skills, Contact and EN/UA.
-- **Draggable firefly jar:** Place it anywhere in the viewport; location is stored in the browser. Double-click or Home to reset. SVG fallback if WebGL is unavailable.
-- **Detailed fictional privacy card:** Interactive 360-degree rotation with material texture, chip, hologram and signature. Pointer input no longer selects text.
-- **Portfolio information:** Personal introduction, areas of work, skills, optional support, and contact links.
+## Features
 
-No invented clients, job history, projects list or device showroom. The bank card is fictional and is not a payment instrument.
+- Interactive rotating Earth with a dark starfield in the hero.
+- **User-selected anime profile image**, stored as an optimized local WebP asset, with the profile name and environment below it.
+- A short personal statement: “хочу створити свій вільний світ” / “I want to create my own free world”. Each character resolves from falling number trails on entering the viewport, with reduced-motion support.
+- A compact rounded navigation dock at the bottom, plus skills, development areas and contact links.
+- A draggable 3D firefly jar with a saved position and fallback for limited graphics.
+- A fictional interactive concept bank card and optional external Monobank support link.
+- Cosmic night-sky backgrounds at the About message and bottom Contact/Footer areas, including the intentionally spacious lower section.
 
-Built with HTML, CSS, vanilla JavaScript and Three.js for the two 3D elements. The design includes keyboard access and reduced-motion support.
+No made-up work history, client testimonials or project listings.
+
+Built with HTML, CSS, vanilla JavaScript and Three.js. Responsive layouts and reduced-motion preferences are supported.
