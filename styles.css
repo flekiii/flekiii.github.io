@@ -120,7 +120,7 @@ h1,h2,h3,p{margin-top:0}
  width:min(100%,690px);padding:0 11px;color:#b8c7de;
  font:690 10px/1.5 ui-monospace,Consolas,monospace;letter-spacing:.08em}
 .planet-meta-id{display:flex;align-items:center;gap:10px;color:#eaf3ff}
-.planet-meta-id i{height:8px;width:8px;background:#79b9f9;border-radius:50%;box-shadow:0 0 12px #79b9f9}
+.planet-meta-id i{display:block;height:8px;width:8px;background:#79b9f9;border-radius:50%;box-shadow:0 0 0 4px #79b9f927,0 0 15px #79b9f9cc,0 0 30px #79b9f977}
 .planet-gesture{text-align:right}
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
