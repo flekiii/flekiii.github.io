@@ -77,3 +77,48 @@
 #page-profile .social-status{font-weight:800;letter-spacing:.5px}
 @media(max-width:820px){#page-profile .social-account-layout>.social-split{grid-template-columns:1fr}}
 @media(max-width:640px){#page-profile .social-account-layout{padding:16px}#page-profile .social-account-layout>.social-split>section,#page-profile .social-account-layout>.social-split>aside{padding:19px}}
+
+
+/* Fleki's Wrld ID: new sign-in and registration experience */
+#page-profile .social-account-layout:has(.auth-experience){padding:0;overflow:hidden}
+.auth-experience{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,.78fr);min-height:575px}
+.auth-main{padding:37px clamp(22px,4vw,48px);min-width:0}
+.auth-kicker{font-size:10px;letter-spacing:2.2px;font-weight:800;color:var(--accent2)}
+.auth-heading{display:flex;align-items:center;gap:16px;margin:23px 0 27px}
+.auth-logo{display:grid;place-items:center;width:62px;height:62px;border-radius:21px;background:var(--grad);color:#241330;font:800 34px "Space Grotesk",sans-serif;box-shadow:0 7px 24px #9c65f43d}
+.auth-heading h2{font:700 32px/1.12 "Space Grotesk";letter-spacing:-1.25px;margin:0}
+.auth-heading p{margin:7px 0 0;font-size:13px;color:var(--muted);line-height:1.5}
+.auth-switcher{display:grid;grid-template-columns:repeat(2,1fr);padding:4px;gap:4px;background:var(--panel2);border:1px solid var(--line);border-radius:13px;margin-bottom:21px}
+.auth-switcher button{padding:10px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-size:12px;font-weight:800}
+.auth-switcher button.active{background:var(--panel);color:var(--text);box-shadow:0 2px 10px var(--shadow)}
+.auth-fields{display:grid;gap:15px}
+.auth-fields label{display:grid;gap:7px;font-size:12px;font-weight:800}
+.auth-fields .social-input{background:var(--panel2);padding:14px 14px;font-size:13px;min-height:48px}
+.auth-input-wrap{position:relative;display:block}
+.auth-input-wrap input{padding-right:72px!important}
+.auth-show-password{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:0;color:var(--accent2);font-size:11px;font-weight:800;padding:8px}
+.auth-submit{justify-content:center;width:100%;min-height:49px;border-radius:13px;margin-top:3px;font-size:13px;box-shadow:0 6px 25px #c77eff23}
+.auth-submit span{font-size:17px}
+.auth-divider{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:11px;margin:26px 0 19px}
+.auth-divider:before,.auth-divider:after{content:"";height:1px;background:var(--line);flex:1}
+.auth-provider-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.auth-provider{display:flex;align-items:center;gap:11px;text-align:left;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--text);font-size:12px;font-weight:750;transition:transform .15s,border-color .15s}
+.auth-provider:not(:disabled):hover{border-color:var(--accent);transform:translateY(-2px)}
+.auth-provider:disabled{opacity:.73;cursor:not-allowed}
+.auth-provider-icon{width:28px;height:28px;flex:0 0 28px;border-radius:9px;display:grid;place-items:center;background:var(--panel);font-size:16px;font-weight:800}
+.auth-provider-icon.google{color:#4285f4}.auth-provider-icon.apple{color:var(--text)}.auth-provider-icon.github{color:var(--accent2)}.auth-provider-icon.discord{color:#8390ff}
+.auth-provider-status{margin-left:auto;font-size:10px;font-weight:800;color:var(--muted)}
+.auth-provider.ready .auth-provider-status{color:var(--accent2);font-size:15px}
+.auth-provider-note{font-size:11px!important;color:var(--muted)!important;line-height:1.6!important;margin:17px 0 0}
+.auth-welcome{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:38px;min-height:480px;background:radial-gradient(ellipse at 61% 23%,#b674e97f,transparent 52%),radial-gradient(ellipse at 86% 80%,#f889cb40,transparent 50%),linear-gradient(148deg,#21162f,#4a285f 58%,#2b193f);color:#fff}
+.auth-welcome:before{content:"";position:absolute;left:12%;top:-28%;width:390px;height:390px;border:1px solid #ffdef999;border-radius:50%;box-shadow:0 0 0 43px #efb0ff13,0 0 0 95px #ffd8fb0c,0 0 100px #e08cf94f;z-index:-1}
+.auth-welcome-symbol{position:absolute;top:18%;left:50%;transform:translateX(-50%);font-size:108px;color:#ffb7eb;text-shadow:0 0 58px #e788ffa0}
+.auth-welcome-content{position:relative;z-index:2}
+.auth-welcome-content h3{font:700 clamp(30px,3vw,44px)/1.07 "Space Grotesk";letter-spacing:-1.8px;margin:14px 0}
+.auth-welcome-content h3 em{font-style:normal;color:#ffd4ef}
+.auth-welcome-content p{font-size:13px;color:#f3e1fa;line-height:1.7}
+.auth-welcome-points{margin-top:27px;display:grid;gap:12px;color:#f9e6ff;font-size:12px;font-weight:700}
+.auth-welcome-orbit{position:absolute;width:145px;height:145px;right:-70px;bottom:23%;border:1px solid #ffdbff70;border-radius:50%;pointer-events:none}
+.auth-bottom-hint{max-width:760px;margin:19px auto 0;color:var(--muted);font-size:11px;line-height:1.65;text-align:center;padding:0 22px}
+@media(max-width:900px){.auth-experience{grid-template-columns:1fr}.auth-main{padding:26px 26px 32px}.auth-welcome{min-height:240px;padding:28px}.auth-welcome-symbol{font-size:65px;top:12%;left:80%}.auth-welcome:before{left:58%;top:-50%}.auth-welcome-content{max-width:550px}.auth-welcome-content h3{font-size:32px}}
+@media(max-width:580px){.auth-main{padding:23px 17px}.auth-heading h2{font-size:25px}.auth-logo{width:51px;height:51px;border-radius:16px;font-size:28px}.auth-provider-grid{grid-template-columns:1fr}.auth-welcome{min-height:270px}.auth-welcome-content h3{font-size:29px}}
