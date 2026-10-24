@@ -68,7 +68,7 @@ async function endpoints(req,env,path,ip){
   if(row.mfa_secret&&!authorized(u))return bad("Verify existing 2FA.",403);
   if(!await verifyTotp(await unseal(row.mfa_pending,env),String(code||"")))return bad("Invalid code.",401);
   const recovery=Array.from({length:8},()=>b64(bytes(9)).toUpperCase());
-  await db.batch([stmt(db,"UPDATE users SET mfa_secret=mfa_pending,mfa_pending=NULL WHERE id=?",u.id),stmt(db,"DELETE FROM recovery_codes WHERE user_id=?",u.id),...await Promise.all(recovery.map(async code=>stmt(db,"INSERT INTO recovery_codes(user_id,code_hash) VALUES(?,?)",u.id,await hash(code)))),stmt(db,"UPDATE sessions SET mfa_verified=1 WHERE token_hash=?",u.token_hash)]);
+  await db.batch([stmt(db,"UPDATE users SET mfa_secret=mfa_pending,mfa_pending=NULL WHERE id=?",u.id),stmt(db,"DELETE FROM recovery_codes WHERE user_id=?",u.id),...await Promise.all(recovery.map(async code=>stmt(db,"INSERT INTO recovery_codes(user_id,code_hash) VALUES(?,?)",u.id,await hash(code)))),stmt(db,"UPDATE sessions SET mfa_verified=0 WHERE user_id=?",u.id),stmt(db,"UPDATE sessions SET mfa_verified=1 WHERE token_hash=?",u.token_hash)]);
   return j({verified:true,recovery_codes:recovery});
  }
  if(is("POST","/mfa/verify")){
