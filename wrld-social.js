@@ -1,12 +1,13 @@
 /* Fleki's Wrld — Cloudflare D1 community client (independent of other projects). */
 const API="https://flekis-wrld-api.flekideveloper.workers.dev";
-const root=document.getElementById("wrld-community-root"),alerts=document.getElementById("wrld-notifications-root");
+const root=document.getElementById("wrld-community-root"),alerts=document.getElementById("wrld-notifications-root"),accountRoot=document.getElementById("wrld-account-root");
 const esc=x=>String(x??"").replace(/[&<>"']/g,k=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[k]));
 const time=x=>new Date(x).toLocaleString("en",{dateStyle:"short",timeStyle:"short"});
 const S={token:sessionStorage.getItem("fw-token")||"",user:null,tab:"global",mode:"login",friends:[],blocks:[],contactPins:[],messages:[],pins:[],dm:[],dmPins:[],notifications:[],people:[],query:"",peer:null,secret:null,recovery:null,error:""};
 let pending=false;
 const button=(t,act,id="")=>'<button type="button" class="social-mini" data-action="'+esc(act)+'" data-id="'+esc(id)+'">'+esc(t)+'</button>';
-const msg=x=>{S.error=x;const n=document.getElementById("fw-feedback");if(n)n.textContent=x};
+const msg=x=>{S.error=x;for(const id of ["fw-feedback","fw-profile-feedback"]){const n=document.getElementById(id);if(n)n.textContent=x}};
+const openProfile=()=>{const link=document.querySelector("#dock [data-go=\"profile\"]");if(link)link.click();};
 async function api(path,method="GET",body=null){
  const headers={Accept:"application/json"};if(S.token)headers.Authorization="Bearer "+S.token;if(body!==null)headers["Content-Type"]="application/json";
  const response=await fetch(API+path,{method,headers,body:body===null?undefined:JSON.stringify(body),cache:"no-store",mode:"cors"});
@@ -15,7 +16,7 @@ async function api(path,method="GET",body=null){
  return data;
 }
 function verified(){return !!S.user?.mfa_verified}
-function ensure2fa(){if(!S.user){S.tab="account";render();msg("Sign in first.");return false}if(!verified()){S.tab="account";render();msg("Verified authenticator 2FA is required.");return false}return true}
+function ensure2fa(){if(!S.user){openProfile();msg("Sign in first.");return false}if(!verified()){openProfile();msg("Verified authenticator 2FA is required.");return false}return true}
 function userRow(u,actions){return '<div class="social-person"><div class="social-person-main"><strong>'+esc(u.display_name||u.name||u.username)+'</strong><small>@'+esc(u.username)+'</small></div><div class="social-person-actions">'+actions+'</div></div>'}
 function account(){
  if(!S.user)return '<h3>Sign in or create an account</h3><p class="social-muted">No real name, phone or email required. Username and password only.</p><div class="social-controls">'+button("Sign in","mode","login")+button("Create account","mode","register")+'</div><form id="fw-auth" class="social-form" style="margin-top:18px"><label>Username<input class="social-input" name="username" pattern="[a-z][a-z0-9_]{2,23}" maxlength="24" required autocomplete="username"></label>'+
@@ -37,12 +38,12 @@ function showMessages(records,pins){
 }
 function compose(id,placeholder){return '<form class="social-compose" id="'+id+'"><textarea class="social-textarea" name="content" maxlength="2000" placeholder="'+esc(placeholder)+'" required></textarea><button class="btn primary" type="submit" '+(verified()?"":"disabled")+'>Send →</button></form>'}
 function globalChat(){
- if(!S.user)return '<h3>Global chat</h3><p class="social-muted">A shared room for every verified member.</p>'+button("Join the world","tab","account");
+ if(!S.user)return '<h3>Global chat</h3><p class="social-muted">A shared room for every verified member.</p>'+button("Join the world","openprofile");
  return '<div class="social-split"><section><div class="social-chat-top"><h3># Global chat</h3>'+button("Refresh","refresh")+'</div><div class="social-chat-list">'+showMessages(S.messages,S.pins)+'</div>'+compose("fw-global","Message everyone…")+'</section><aside class="social-card"><h3>Community rules</h3><p>Be kind and protect privacy. Harassment, threats, scams and spam are not welcome.</p><p>Use Block or Report on harmful messages. Pins are visible only to you.</p><p>Posting requires verified 2FA and has a cooldown.</p></aside></div>';
 }
 const other=f=>f.user_low===S.user.id?{id:f.user_high,username:f.high_username,display_name:f.high_name}:{id:f.user_low,username:f.low_username,display_name:f.low_name};
 function friends(){
- if(!S.user)return '<h3>Friends</h3>'+button("Sign in","tab","account");
+ if(!S.user)return '<h3>Friends</h3>'+button("Sign in","openprofile");
  const accepted=S.friends.filter(f=>f.status==="accepted"),pending=S.friends.filter(f=>f.status==="pending");
  return '<div class="social-split"><section><h3>Find members</h3><form class="social-form" id="fw-search"><label>Username<input class="social-input" name="q" minlength="2" maxlength="35" value="'+esc(S.query)+'" placeholder="Search" required></label><button class="btn" type="submit">Search →</button></form>'+S.people.map(u=>userRow(u,button("Add friend","add",u.id)+button("Block","block",u.id))).join("")+'</section>'+
  '<aside class="social-card"><h3>Friends ('+accepted.length+')</h3>'+ (accepted.map(f=>userRow(other(f),button("Message","peer",other(f).id)+button("Remove","unfriend",f.id))).join("")||'<p class="social-muted">No friends yet.</p>')+
@@ -50,7 +51,7 @@ function friends(){
  '<h3>Blocked</h3>'+(S.blocks.map(b=>userRow(b,button("Unblock","unblock",b.blocked))).join("")||'<p class="social-muted">Nobody blocked.</p>')+'</aside></div>';
 }
 function direct(){
- if(!S.user)return '<h3>Private conversations</h3>'+button("Sign in","tab","account");
+ if(!S.user)return '<h3>Private conversations</h3>'+button("Sign in","openprofile");
  const peers=S.friends.filter(f=>f.status==="accepted").map(other);
  peers.sort((a,b)=>Number(S.contactPins.includes(b.id))-Number(S.contactPins.includes(a.id)));
  return '<div class="social-split"><aside><h3>Friends</h3>'+ (peers.map(p=>'<div class="social-person">'+button(p.display_name,"peer",p.id)+button(S.contactPins.includes(p.id)?"Unpin":"Pin","pincontact",p.id)+'</div>').join("")||'<p class="social-muted">No friends yet.</p>')+'</aside><section><h3>'+(S.peer?"Chat with "+esc(peers.find(p=>p.id===S.peer)?.display_name||"friend"):"Choose a friend")+'</h3>'+(S.peer?'<div class="social-chat-list">'+showMessages(S.dm,S.dmPins)+'</div>'+compose("fw-dm","Message this friend…"):'<p class="social-message">Select a friend to view the conversation.</p>')+'</section></div>';
@@ -61,9 +62,10 @@ function renderNotifications(){
  alerts.innerHTML='<div class="social-wrap"><div class="social-bar"><strong>Notifications</strong>'+button("Mark all read","readall")+'</div><div class="social-card">'+(!S.user?'<p>Sign in to see notifications.</p>':S.notifications.map(n=>'<div class="social-person"><div><strong>'+esc(n.display_name||n.username||"Member")+'</strong><p class="social-muted">'+esc(verbs[n.kind]||"New activity")+' · '+esc(time(n.created_at))+'</p></div>'+(n.read_at?'<span class="social-muted">Read</span>':button("Mark read","read",n.id))+'</div>').join("")||'<p>Nothing new yet.</p>')+'</div></div>';
 }
 function render(){
- if(!root)return;
- const tabs=[["global","Global chat"],["friends","Friends"],["direct","Messages"],["account","Profile & 2FA"]];
- root.innerHTML='<div class="social-wrap"><div class="social-bar"><div class="social-id"><span class="social-avatar">✦</span><div><strong>Fleki’s Wrld Community</strong><small>'+(S.user?"@"+esc(S.user.username)+" · "+(verified()?"2FA verified":"2FA required"):"Create your account to join")+'</small></div></div>'+button("Refresh","refresh")+'</div><p class="social-feedback" id="fw-feedback" role="status">'+esc(S.error)+'</p><nav class="social-tabs">'+tabs.map(x=>'<button type="button" class="social-tab '+(S.tab===x[0]?"active":"")+'" data-action="tab" data-id="'+x[0]+'">'+x[1]+'</button>').join("")+'</nav><div class="social-layout">'+(S.tab==="global"?globalChat():S.tab==="friends"?friends():S.tab==="direct"?direct():account())+'</div></div>';
+ if(!root||!accountRoot)return;
+ const tabs=[["global","Global chat"],["friends","Friends"],["direct","Messages"]];
+ root.innerHTML='<div class="social-wrap"><div class="social-bar"><div class="social-id"><span class="social-avatar">✦</span><div><strong>Fleki’s Wrld Community</strong><small>'+(S.user?"@"+esc(S.user.username)+" · "+(verified()?"2FA verified":"2FA required"):"Connect with the world")+'</small></div></div><div class="social-controls">'+button(S.user?"My profile":"Sign in / Register","openprofile")+button("Refresh","refresh")+'</div></div><p class="social-feedback" id="fw-feedback" role="status">'+esc(S.error)+'</p><nav class="social-tabs" aria-label="Community sections">'+tabs.map(x=>'<button type="button" class="social-tab '+(S.tab===x[0]?"active":"")+'" data-action="tab" data-id="'+x[0]+'">'+x[1]+'</button>').join("")+'</nav><div class="social-layout">'+(S.tab==="global"?globalChat():S.tab==="friends"?friends():direct())+'</div></div>';
+ accountRoot.innerHTML='<div class="social-wrap social-account-wrap"><div class="social-bar"><div class="social-id"><span class="social-avatar">'+(S.user?esc(S.user.username.slice(0,1).toUpperCase()):"✦")+'</span><div><strong>'+(S.user?esc(S.user.display_name):"Welcome to Fleki’s Wrld")+'</strong><small>'+(S.user?"@"+esc(S.user.username)+" · "+(verified()?"2FA verified":"Security setup required"):"A dedicated home for your account and security")+'</small></div></div><span class="social-status">'+(!S.user?"NOT SIGNED IN":verified()?"2FA ACTIVE":"2FA REQUIRED")+'</span></div><p class="social-feedback" id="fw-profile-feedback" role="status">'+esc(S.error)+'</p><div class="social-layout social-account-layout">'+account()+'</div></div>';
  renderNotifications();
 }
 async function reload(){
@@ -74,12 +76,13 @@ async function reload(){
  if(S.peer){try{const dm=await api("/messages?peer="+encodeURIComponent(S.peer));S.dm=dm.messages;S.dmPins=dm.pins}catch{S.peer=null;S.dm=[];S.dmPins=[]}}
 }
 async function action(op,id){
- if(op==="tab"){S.tab=id;return render()}
+ if(op==="tab"){if(id==="account")return openProfile();S.tab=id;return render()}
+ if(op==="openprofile"){openProfile();return}
  if(op==="mode"){S.mode=id;return render()}
  if(op==="saved"){S.recovery=null;return render()}
  if(op==="copy"){await navigator.clipboard.writeText(S.secret.secret);return msg("Copied setup key.")}
  if(op==="refresh"){await reload();return render()}
- if(op==="logout"){try{await api("/auth/logout","POST",{})}finally{S.token="";S.user=null;S.peer=null;sessionStorage.removeItem("fw-token");S.tab="account";render()}return}
+ if(op==="logout"){try{await api("/auth/logout","POST",{})}finally{S.token="";S.user=null;S.peer=null;sessionStorage.removeItem("fw-token");render()}return}
  if(op==="enroll"){S.secret=await api("/mfa/enroll","POST",{});return render()}
  if(op==="peer"){S.peer=id;S.tab="direct";await reload();return render()}
  if(op==="block"){if(!confirm("Block this member and hide their posts?"))return;await api("/blocks","POST",{target_id:id})}
@@ -100,7 +103,7 @@ document.addEventListener("submit",async e=>{
  const form=e.target;if(!form.id.startsWith("fw-"))return;e.preventDefault();if(pending)return;pending=true;
  const values=Object.fromEntries(new FormData(form));
  try{
-  if(form.id==="fw-auth"){const r=await api(S.mode==="register"?"/auth/register":"/auth/login","POST",values);S.token=r.token;sessionStorage.setItem("fw-token",r.token);S.tab="account";await reload()}
+  if(form.id==="fw-auth"){const r=await api(S.mode==="register"?"/auth/register":"/auth/login","POST",values);S.token=r.token;sessionStorage.setItem("fw-token",r.token);await reload();openProfile()}
   else if(form.id==="fw-activate"){const r=await api("/mfa/activate","POST",values);S.secret=null;S.recovery=r.recovery_codes;await reload()}
   else if(form.id==="fw-verify"){await api("/mfa/verify","POST",values);await reload()}
   else if(form.id==="fw-profile"){if(ensure2fa()){await api("/profile","PUT",values);await reload()}}
@@ -110,6 +113,6 @@ document.addEventListener("submit",async e=>{
   render();
  }catch(err){msg(err.message)}finally{pending=false}
 });
-window.addEventListener("wrld:profile",()=>{S.tab="account";render()});
+window.addEventListener("wrld:profile",()=>openProfile());
 (async()=>{try{await api("/health");if(S.token)await reload()}catch(err){msg("API unavailable: "+err.message)}render()})();
-setInterval(async()=>{if(S.token&&!pending){try{await reload();const typing=document.activeElement?.closest("#wrld-community-root form");if(!typing&&(S.tab==="global"||S.tab==="direct"))render();else renderNotifications()}catch{}}},12000);
+setInterval(async()=>{if(S.token&&!pending){try{await reload();const typing=document.activeElement?.closest("#wrld-community-root form, #wrld-account-root form");if(!typing&&(S.tab==="global"||S.tab==="direct"))render();else renderNotifications()}catch{}}},12000);
