@@ -112,4 +112,4 @@ document.addEventListener("submit",async e=>{
 });
 window.addEventListener("wrld:profile",()=>{S.tab="account";render()});
 (async()=>{try{await api("/health");if(S.token)await reload()}catch(err){msg("API unavailable: "+err.message)}render()})();
-setInterval(async()=>{if(S.token&&!pending){try{await reload();if(S.tab==="global"||S.tab==="direct")render();else renderNotifications()}catch{}}},12000);
+setInterval(async()=>{if(S.token&&!pending){try{await reload();const typing=document.activeElement?.closest("#wrld-community-root form");if(!typing&&(S.tab==="global"||S.tab==="direct"))render();else renderNotifications()}catch{}}},12000);
