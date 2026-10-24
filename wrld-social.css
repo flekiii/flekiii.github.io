@@ -122,3 +122,11 @@
 .auth-bottom-hint{max-width:760px;margin:19px auto 0;color:var(--muted);font-size:11px;line-height:1.65;text-align:center;padding:0 22px}
 @media(max-width:900px){.auth-experience{grid-template-columns:1fr}.auth-main{padding:26px 26px 32px}.auth-welcome{min-height:240px;padding:28px}.auth-welcome-symbol{font-size:65px;top:12%;left:80%}.auth-welcome:before{left:58%;top:-50%}.auth-welcome-content{max-width:550px}.auth-welcome-content h3{font-size:32px}}
 @media(max-width:580px){.auth-main{padding:23px 17px}.auth-heading h2{font-size:25px}.auth-logo{width:51px;height:51px;border-radius:16px;font-size:28px}.auth-provider-grid{grid-template-columns:1fr}.auth-welcome{min-height:270px}.auth-welcome-content h3{font-size:29px}}
+
+
+/* Launcher for the independent authenticator, separate from the Wrld sign-in origin. */
+.authenticator-launch{display:flex;align-items:center;gap:12px;margin:22px 0 15px;border-radius:15px;background:var(--panel2);border:1px solid var(--line);padding:13px;color:var(--text);text-decoration:none;transition:border-color .2s,transform .2s}
+.authenticator-launch:hover{border-color:var(--accent);transform:translateY(-2px)}
+.authenticator-launch-mark{display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;border-radius:14px;background:var(--grad);color:#2a1538;font-size:25px}
+.authenticator-launch strong{display:block;font-size:13px;margin-bottom:5px}
+.authenticator-launch small{display:block;font-size:11px;line-height:1.5;color:var(--muted)}
