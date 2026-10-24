@@ -6,6 +6,7 @@ const from64=value=>Uint8Array.from(atob(value.replace(/-/g,"+").replace(/_/g,"/
 const rand=n=>crypto.getRandomValues(new Uint8Array(n));
 const ALPHABET="ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 let key=null, vault=null, busy=false, lastActive=0, installPrompt=null, currentVault=null, timer=null, warnTimeout=null;
+let qrStream=null,qrTimer=null,scanning=false;
 function notice(text){
  const n=$("notice");n.textContent=text;
  if(warnTimeout)clearTimeout(warnTimeout);
@@ -47,6 +48,7 @@ async function encryptVault(){
  return blob;
 }
 function lock(){
+ stopCamera();
  key=null;vault=null;currentVault=null;lastActive=0;
  clearInterval(timer);timer=null;
  $("unlocked").hidden=true;$("locked").hidden=false;
@@ -160,7 +162,7 @@ async function addAccount(e){
   base32ToBytes(a.secret);
   if(vault.accounts.some(x=>x.secret===a.secret&&x.issuer===a.issuer))throw Error("This account is already saved.");
   vault.accounts.push({...a,id:crypto.randomUUID(),added_at:Date.now()});
-  await encryptVault();$("addForm").reset();$("addForm").hidden=true;touch();renderCards();notice("Account added securely.");
+  await encryptVault();stopCamera();$("addForm").reset();$("addForm").hidden=true;touch();renderCards();notice("Account added securely.");
  }catch(e){notice(e.message)}
  finally{busy=false}
 }
@@ -179,12 +181,42 @@ async function importBackup(file){
  if(!confirm("Replace the vault on this device with the imported encrypted backup? You will need the backup's original password."))return;
  localStorage.setItem(STORAGE,JSON.stringify(blob));lock();notice("Encrypted backup imported. Unlock with its original password.");
 }
+
+function stopCamera(){
+ scanning=false;if(qrTimer)clearInterval(qrTimer);qrTimer=null;
+ if(qrStream){qrStream.getTracks().forEach(track=>track.stop());qrStream=null}
+ const video=$("qrVideo");video.srcObject=null;video.hidden=true;
+ $("stopScan").hidden=true;$("scanQr").hidden=false;
+}
+async function startCamera(){
+ if(!("BarcodeDetector" in window)||!navigator.mediaDevices?.getUserMedia){notice("Your browser does not support offline QR scanning. Copy the setup key manually instead.");return}
+ try{
+  const formats=await BarcodeDetector.getSupportedFormats();
+  if(!formats.includes("qr_code")){notice("QR scanning isn't supported in this browser. Paste the setup key instead.");return}
+  const detector=new BarcodeDetector({formats:["qr_code"]});
+  qrStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false});
+  const video=$("qrVideo");video.srcObject=qrStream;video.hidden=false;
+  $("scanQr").hidden=true;$("stopScan").hidden=false;
+  await video.play();scanning=true;
+  qrTimer=setInterval(async()=>{
+   if(!scanning||video.readyState<2)return;
+   try{
+    const codes=await detector.detect(video);
+    const raw=codes.find(c=>String(c.rawValue||"").startsWith("otpauth://totp/"))?.rawValue;
+    if(raw){$("accountSecret").value=raw;stopCamera();touch();notice("QR code detected. Check the account details, then save.")}
+   }catch{}
+  },500);
+ }catch(e){stopCamera();notice(e?.name==="NotAllowedError"?"Camera permission was denied. Use the manual key instead.":"Camera unavailable. Paste the setup key manually.")}
+}
+
 function bind(){
  $("vault-form").addEventListener("submit",login);
  $("lockBtn").addEventListener("click",()=>{lock();notice("Vault locked.")});
  const toggle=()=>{$("addForm").hidden=!$("addForm").hidden; if(!$("addForm").hidden)$("accountIssuer").focus();touch()};
  $("addToggle").addEventListener("click",toggle);$("addEmpty").addEventListener("click",toggle);
- $("cancelAdd").addEventListener("click",()=>{$("addForm").hidden=true;touch()});
+ $("cancelAdd").addEventListener("click",()=>{stopCamera();$("addForm").hidden=true;touch()});
+ $("scanQr").addEventListener("click",startCamera);
+ $("stopScan").addEventListener("click",stopCamera);
  $("addForm").addEventListener("submit",addAccount);
  $("backupBtn").addEventListener("click",exportBackup);
  $("importBtn").addEventListener("click",()=>$("fileInput").click());
