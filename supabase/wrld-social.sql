@@ -155,7 +155,7 @@ alter table public.wrld_notifications enable row level security;
 
 -- Each table is inaccessible to guests. Grant only the required Data API privileges.
 revoke all on public.wrld_profiles, public.wrld_blocks, public.wrld_friends,
- public.wrld_messages, public.wrld_pins, public.wrld_notifications from anon;
+ public.wrld_messages, public.wrld_pins, public.wrld_notifications from public, anon, authenticated;
 grant select, update on public.wrld_profiles to authenticated;
 grant select, insert, delete on public.wrld_blocks to authenticated;
 grant select, insert, update, delete on public.wrld_friends to authenticated;
