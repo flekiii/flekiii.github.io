@@ -1,44 +1,43 @@
 # Fleki's Wrld
 
-A community-first world for games, software, services, digital creations, and people.
+Live website: https://flekiii.github.io/
 
-**Website:** https://flekiii.github.io/
+## Community backend
 
-## What is prepared
+Fleki's Wrld has its own independent Cloudflare stack:
+- **Worker API**: https://flekis-wrld-api.flekideveloper.workers.dev
+- **D1 database**: `flekis-wrld-social`, EU residency.
+- **Frontend**: `wrld-social.js`, `wrld-social.css`, integrated into `index.html`.
+- **Worker implementation**: `backend/worker.js`.
+- **Schema**: `backend/d1-schema.sql`.
 
-- Responsive Community and Notifications tabs, matching the site's dark/light themes.
-- Account registration and login UI, separate from other projects.
-- Member profiles with usernames, display names and bios.
-- Global community chat, friends, friend requests, private messages.
-- Block/unblock users and individually pin messages.
-- Notifications for friend requests, accepted invitations and direct messages.
-- TOTP authenticator enrollment and login verification.
-- Database row-level permissions to require **verified 2FA (JWT AAL2)** for posting messages and creating/accepting friend requests, pinning messages and editing profiles.
+The social features do **not** share an authentication database with XONI Mail, AURVEX or other projects.
 
-This is **not a live social network yet**. The site deliberately displays a Coming soon / setup state until an independent backend is configured. No fake members, posts or notifications are displayed.
+### Features
 
-## Launching the social backend
+- Account registration without mandatory email/phone/real name.
+- Salted PBKDF2-SHA256 password hashes; random session tokens hashed in D1.
+- Authenticator TOTP and eight one-use recovery codes, hashed in the database.
+- Mandatory server-verified 2FA to send messages, add/accept friends, pin messages, and edit profiles.
+- Global group chat, accepted-friend direct messages, friend requests, member search.
+- Private message/participant visibility checks, blocking both ways, own-message deletion, message reports.
+- Personal message/contact pins.
+- Notifications for friendship and direct messages, with mark-read and regular polling.
+- Dark/light themes and bottom dock navigation inherited from the site.
 
-Use a **new, dedicated Supabase project** for Fleki's Wrld. **Do not use XONI Mail or AURVEX ID**, and do not put passwords or service-role keys in browser code.
+### Important security and operational notes
 
-1. Create a separate Supabase project under a free-compatible plan and verify the cost before approving any paid resource.
-2. In the Supabase SQL editor of that project, review and run `supabase/wrld-social.sql`. It contains the tables, indexes, private functions, triggers, row-level policies, TOTP requirement and a basic posting cooldown.
-3. In Supabase Auth configure email signups, email confirmation and the redirect URL `https://flekiii.github.io/`. Enable TOTP verification for users. Configure SMTP/rate limits as needed before inviting users.
-4. Fill in **only public** `url` and `publishableKey` in `wrld-config.js`. Never commit service-role or secret keys. The site loads the connected backend automatically.
-5. Test with **two fresh accounts** and two authenticator apps. Verify that one-factor sessions can read but cannot post, message, pin, edit a profile or send/accept friend requests. Verify that `aal2` can.
-6. Verify both block directions, no DMs without an accepted friendship, ownership checks for profile and notifications, and the public-chat rate limit.
-7. Run Supabase security/performance advisors before opening signups. Add moderation/reporting processes, backups and stronger spam protections before a wider public launch.
+- Session bearer tokens live in browser `sessionStorage`, not cookies. Closing the tab may sign users out.
+- TOTP secrets are accessible only through backend/database privileges and are stored in D1 (Cloudflare-managed encryption at rest); **application-layer encryption for TOTP seeds was not enabled** because the connected tool couldn't provision a Worker secret. Hardening this is a priority.
+- **Direct messages are not end-to-end encrypted.**
+- No email is collected; account password reset is not available. Save credentials and recovery codes securely.
+- Rate limits are present but modest. Abuse moderation, deletion request tools, backups, and load tests should be improved before a large public launch.
+- GitHub Pages and Workers deployments should be smoke-tested using two real test accounts after DNS propagation.
+- D1 and Workers free quotas apply. See https://developers.cloudflare.com/workers/platform/pricing/.
 
-### Files in use
+### Deployment
 
-- `index.html`: main world navigation and layout.
-- `wrld-social.js`: social client UI and actions.
-- `wrld-social.css`: community styles.
-- `wrld-config.js`: public configuration, intentionally empty.
-- `supabase/wrld-social.sql`: dedicated social database schema, not yet applied.
+The GitHub repo contains the Worker code and the D1 schema; the active Cloudflare Worker and D1 resources were created through the connected Cloudflare account. Updating `backend/worker.js` on GitHub **does not auto-deploy** the Worker unless CI is later added.
 
-### Privacy and limits
+Do not add secrets to this repository. Keep Workers and D1 free quotas monitored.
 
-Registration uses email + password (no mandatory real name or phone). Username, display name and bio are visible to signed-in members. The server stores chat content; **private messages are not end-to-end encrypted**. Supabase TOTP does not guarantee recovery codes: users should add a backup factor. Message pinning is personal, not global moderation.
-
-The frontend depends on Supabase Auth and PostgreSQL RLS. Merely hiding a button does not confer security; database permissions are the real enforcement layer.
