@@ -1,0 +1,1 @@
+{"name":"Fleki Authenticator","short_name":"Fleki Auth","description":"Encrypted offline two-factor authenticator","id":"/","start_url":"/","scope":"/","display":"standalone","background_color":"#0e0e15","theme_color":"#100f17","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
