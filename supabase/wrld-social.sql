@@ -171,8 +171,9 @@ grant execute on function wrld_private.is_blocked(uuid,uuid),wrld_private.is_fri
 create policy "Members can find profiles" on public.wrld_profiles
 for select to authenticated using (true);
 create policy "Members update own profile" on public.wrld_profiles
-for update to authenticated using (user_id = (select auth.uid()))
-with check (user_id = (select auth.uid()));
+for update to authenticated
+using (user_id = (select auth.uid()) and (select auth.jwt()->>'aal') = 'aal2')
+with check (user_id = (select auth.uid()) and (select auth.jwt()->>'aal') = 'aal2');
 
 create policy "See own block list" on public.wrld_blocks
 for select to authenticated using (blocker_id = (select auth.uid()));
@@ -250,3 +251,21 @@ begin
   end if;
  end if;
 end $$;
+
+-- Additional abuse protection: message limits are enforced in Postgres, not just the UI.
+-- This is a basic 3-second cooldown, not a substitute for moderation and provider rate limits.
+create or replace function wrld_private.rate_limit_message()
+returns trigger language plpgsql security definer set search_path = ''
+as $$
+begin
+  if exists(
+    select 1 from public.wrld_messages
+    where author_id = new.author_id and created_at > now() - interval '3 seconds'
+  ) then
+    raise exception 'Please wait 3 seconds before sending another message';
+  end if;
+  return new;
+end $$;
+revoke all on function wrld_private.rate_limit_message() from public, anon, authenticated;
+create trigger wrld_message_rate_limit before insert on public.wrld_messages
+for each row execute function wrld_private.rate_limit_message();
