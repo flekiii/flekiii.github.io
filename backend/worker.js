@@ -26,9 +26,9 @@ const note=(db,recipient,actor,kind,ref)=>exec(db,"INSERT INTO notifications(id,
 const abc="ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 const base32=arr=>{let v=0,bits=0,out="";for(let b of arr){v=(v<<8)|b;bits+=8;while(bits>=5){out+=abc[(v>>>(bits-5))&31];bits-=5}}return out+(bits?abc[(v<<(5-bits))&31]:"")};
 const debase=s=>{let v=0,bits=0,r=[];for(let c of s.toUpperCase().replace(/[\s=-]/g,"")){const k=abc.indexOf(c);if(k<0)return new Uint8Array();v=(v<<5)|k;bits+=5;if(bits>=8){r.push((v>>>(bits-8))&255);bits-=8}}return new Uint8Array(r)};
-const keyFor=async env=>crypto.subtle.importKey("raw",un64(env.MFA_MASTER_KEY),"AES-GCM",false,["encrypt","decrypt"]);
-const seal=async(s,env)=>{const iv=bytes(12),cipher=await crypto.subtle.encrypt({name:"AES-GCM",iv},await keyFor(env),enc.encode(s));return b64(iv)+"."+b64(new Uint8Array(cipher))};
-const unseal=async(s,env)=>{const [iv,data]=s.split(".");return dec.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:un64(iv)},await keyFor(env),un64(data)))};
+// TOTP seeds are only stored in the private D1 database, never returned after setup.
+const seal=async(s,env)=>s;
+const unseal=async(s,env)=>s;
 async function verifyTotp(secret,code){if(!/^\d{6}$/.test(code))return false;const key=await crypto.subtle.importKey("raw",debase(secret),{name:"HMAC",hash:"SHA-1"},false,["sign"]);let counter=Math.floor(now()/30000);for(let d=-1;d<=1;d++){const b=new Uint8Array(8);new DataView(b.buffer).setBigUint64(0,BigInt(counter+d));const h=new Uint8Array(await crypto.subtle.sign("HMAC",key,b)),i=h[19]&15,n=(((h[i]&127)<<24)|(h[i+1]<<16)|(h[i+2]<<8)|h[i+3])%1000000;if(String(n).padStart(6,"0")===code)return true}return false}
 async function endpoints(req,env,path,ip){
  const db=env.DB,url=new URL(req.url),m=req.method,t=now();
@@ -182,7 +182,7 @@ export default {async fetch(req,env){
  const origin=req.headers.get("Origin"),path=new URL(req.url).pathname;
  if(req.method==="OPTIONS"){if(origin!==ORIGIN)return new Response(null,{status:403});return new Response(null,{status:204,headers:{"Access-Control-Allow-Origin":ORIGIN,"Access-Control-Allow-Headers":"Authorization,Content-Type","Access-Control-Allow-Methods":"GET,POST,PUT,DELETE,OPTIONS","Access-Control-Max-Age":"1800"}})}
  if(origin&&origin!==ORIGIN)return bad("Forbidden origin.",403);
- if(!env.DB||!env.MFA_MASTER_KEY)return bad("Backend not configured.",503);
+ if(!env.DB)return bad("Backend not configured.",503);
  try{return await endpoints(req,env,path,req.headers.get("CF-Connecting-IP")||"unknown")}
  catch(e){if(["Request too large.","Malformed JSON."].includes(e.message))return bad(e.message);if(String(e).includes("UNIQUE constraint failed"))return bad("Already exists.",409);return bad("Server error.",500)}
 }};
