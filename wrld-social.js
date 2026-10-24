@@ -1,271 +1,115 @@
-/* Fleki's Wrld social client: Auth + TOTP 2FA + public chat + friendships + DMs + pins + blocks.
-   Connect a separate Supabase project in wrld-config.js and apply supabase/wrld-social.sql.
-   All privileged writes are enforced by Postgres RLS, not by these UI checks. */
-const cRoot = document.getElementById('wrld-community-root');
-const nRoot = document.getElementById('wrld-notifications-root');
-const state = {db:null,user:null,profile:null,aal:'aal1',tab:'global',signup:false,peer:null,
-  messages:[],friends:[],blocks:[],pins:new Set(),people:new Map(),notices:[],
-  enrollment:null,authNote:'',draft:'',directory:[],directoryQuery:'',channel:null,mode:'login'};
-const e = x => String(x ?? '').replace(/[&<>"']/g, a => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[a]));
-const dt = str => {const d=new Date(str);return Number.isNaN(d.getTime())?'':d.toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});};
-const name = id => {const p=state.people.get(id);return p?(p.display_name||p.username):'Member';};
-const nick = id => {const p=state.people.get(id);return p?'@'+p.username:'Member';};
-const initial = id => (name(id).trim()[0]||'?').toUpperCase();
-const me = () => state.user?.id;
-const ready = () => !!state.db;
-const is2fa = () => state.aal === 'aal2';
-const blocked = id => state.blocks.some(b=>b.blocked_id===id);
-const friendWith = id => state.friends.find(f=>f.status==='accepted'&&(f.sender_id===id||f.receiver_id===id));
-const btn = (label,act,cls='') => '<button type="button" class="social-mini '+cls+'" data-social="'+act+'">'+label+'</button>';
-let feedbackTimer=null;
-function feedback(msg,fail=false){
-  for(const root of [cRoot,nRoot]){const el=root?.querySelector('.social-feedback');if(el){el.textContent=msg;el.classList.toggle('error',fail);}}
-  clearTimeout(feedbackTimer);feedbackTimer=setTimeout(()=>{document.querySelectorAll('.social-feedback').forEach(el=>el.textContent='');},7500);
+/* Fleki's Wrld — Cloudflare D1 community client (independent of other projects). */
+const API="https://flekis-wrld-api.flekideveloper.workers.dev";
+const root=document.getElementById("wrld-community-root"),alerts=document.getElementById("wrld-notifications-root");
+const esc=x=>String(x??"").replace(/[&<>"']/g,k=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[k]));
+const time=x=>new Date(x).toLocaleString("en",{dateStyle:"short",timeStyle:"short"});
+const S={token:sessionStorage.getItem("fw-token")||"",user:null,tab:"global",mode:"login",friends:[],blocks:[],contactPins:[],messages:[],pins:[],dm:[],dmPins:[],notifications:[],people:[],query:"",peer:null,secret:null,recovery:null,error:""};
+let pending=false;
+const button=(t,act,id="")=>'<button type="button" class="social-mini" data-action="'+esc(act)+'" data-id="'+esc(id)+'">'+esc(t)+'</button>';
+const msg=x=>{S.error=x;const n=document.getElementById("fw-feedback");if(n)n.textContent=x};
+async function api(path,method="GET",body=null){
+ const headers={Accept:"application/json"};if(S.token)headers.Authorization="Bearer "+S.token;if(body!==null)headers["Content-Type"]="application/json";
+ const response=await fetch(API+path,{method,headers,body:body===null?undefined:JSON.stringify(body),cache:"no-store",mode:"cors"});
+ const data=await response.json().catch(()=>({error:"Invalid server response."}));
+ if(!response.ok){if(response.status===401&&path!=="/auth/login"){S.token="";sessionStorage.removeItem("fw-token");S.user=null}throw Error(data.error||"Server error "+response.status)}
+ return data;
 }
-function errorOf(err){return err?.message||'Something went wrong. Please try again.';}
-function ensure2fa(){if(is2fa())return true;state.tab='security';renderCommunity();feedback('Set up or verify your authenticator before messaging, pinning or adding friends.',true);return false;}
-function profileChip(id){return '<span class="social-avatar" aria-hidden="true">'+e(initial(id))+'</span>';}
-function featureCards(){return '<div class="social-feature-grid">'+[
- ['🌐 Global chat','A shared conversation space for everyone with an account.'],
- ['👥 Friends and DMs','Find members, send friend requests and message friends privately.'],
- ['🛡️ Mandatory 2FA','An authenticator code is required for every message and friend request.'],
- ['🔒 Safety controls','Block members, manage your personal pinned messages and get notifications.']
- ].map(x=>'<article class="social-feature"><h4>'+x[0]+'</h4><p>'+x[1]+'</p></article>').join('')+'</div>';}
-function renderDisconnected(root,title){
- const notification=root===nRoot;
- root.innerHTML='<div class="social-wrap"><div class="social-bar"><div class="social-id"><span class="social-avatar">✦</span><div><strong>'+title+'</strong><small>Fleki’s Wrld · A space for everyone</small></div></div><span class="social-status">Coming soon</span></div>'+
- '<section class="social-card"><div class="overline">THE NEXT CHAPTER</div><h3>'+(notification?'Stay connected to the Wrld.':'Your community is taking shape.')+'</h3>'+
- '<p>'+(notification?'Notifications for friend requests, new conversations and updates will appear here when accounts are ready.':'A shared chat, friends, personal profiles and secure accounts are on the way. Messaging and friend requests will require verified 2FA.')+'</p>'+
- '<div class="social-message">Registration and messaging are not open yet. No sample accounts or fabricated conversations are shown.</div>'+
- '<div style="height:17px"></div>'+featureCards()+
- '<div style="height:19px"></div><a class="btn primary" href="https://discord.gg/aMmRhCHd4j" target="_blank" rel="noopener noreferrer">Join the Discord community ↗</a></section>'+
- '<div class="social-feedback" role="status"></div></div>';
+function verified(){return !!S.user?.mfa_verified}
+function ensure2fa(){if(!S.user){S.tab="account";render();msg("Sign in first.");return false}if(!verified()){S.tab="account";render();msg("Verified authenticator 2FA is required.");return false}return true}
+function userRow(u,actions){return '<div class="social-person"><div class="social-person-main"><strong>'+esc(u.display_name||u.name||u.username)+'</strong><small>@'+esc(u.username)+'</small></div><div class="social-person-actions">'+actions+'</div></div>'}
+function account(){
+ if(!S.user)return '<h3>Sign in or create an account</h3><p class="social-muted">No real name, phone or email required. Username and password only.</p><div class="social-controls">'+button("Sign in","mode","login")+button("Create account","mode","register")+'</div><form id="fw-auth" class="social-form" style="margin-top:18px"><label>Username<input class="social-input" name="username" pattern="[a-z][a-z0-9_]{2,23}" maxlength="24" required autocomplete="username"></label>'+
+ (S.mode==="register"?'<label>Display name<input class="social-input" name="display_name" maxlength="60" required></label>':"")+
+ '<label>Password<input class="social-input" name="password" type="password" minlength="'+(S.mode==="register"?"12":"1")+'" maxlength="128" required></label><button class="btn primary" type="submit">'+(S.mode==="register"?"Register":"Sign in")+' →</button></form><div class="social-message">Account recovery by email is not available. Use a password manager and save 2FA recovery codes.</div>';
+ let authPart="";
+ if(S.secret)authPart='<div class="social-message warn"><strong>Save your authenticator key</strong><p>Enter this key manually in Aegis, Google Authenticator or 2FAS:</p><div class="social-mfa-secret">'+esc(S.secret.secret)+'</div>'+button("Copy setup key","copy")+'<form id="fw-activate" class="social-form"><label>Current 6-digit code<input class="social-input" name="code" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required></label><button class="btn primary" type="submit">Enable 2FA</button></form></div>';
+ else if(!S.user.mfa_enabled)authPart='<p>2FA must be enabled before sending messages or friend requests.</p>'+button("Set up authenticator","enroll");
+ else if(!verified())authPart='<form class="social-form" id="fw-verify"><label>Authenticator code or recovery code<input class="social-input" name="code" maxlength="20" required></label><button class="btn primary" type="submit">Verify 2FA</button></form>';
+ else authPart='<p>✓ Verified session. You can post, message friends and edit your profile.</p>'+button("Replace authenticator","enroll");
+ return '<div class="social-split"><section><h3>Your profile</h3><p>Username: <strong>@'+esc(S.user.username)+'</strong></p><form id="fw-profile" class="social-form"><label>Display name<input class="social-input" name="display_name" value="'+esc(S.user.display_name)+'" maxlength="60" required></label><label>Bio<textarea class="social-textarea" name="bio" maxlength="350">'+esc(S.user.bio)+'</textarea></label><button class="btn primary" type="submit" '+(verified()?"":"disabled")+'>Save</button></form></section><aside class="social-card"><h3>Two-factor authentication</h3>'+authPart+
+ (S.recovery?'<div class="social-message warn"><strong>Save these one-time recovery codes now!</strong><div class="social-mfa-secret">'+S.recovery.map(esc).join("<hr>")+'</div>'+button("I saved them","saved")+'</div>':"")+'<p class="social-muted">Private messages are stored on the server and are not end-to-end encrypted.</p>'+button("Log out","logout")+'</aside></div>';
 }
-function renderAuth(){
- cRoot.innerHTML='<div class="social-wrap"><div class="social-bar"><div class="social-id"><span class="social-avatar">✦</span><div><strong>Join Fleki’s Wrld</strong><small>One account for your community space</small></div></div><span class="social-status">2FA required to interact</span></div><div class="social-split"><section class="social-card"><div class="overline">YOUR ACCOUNT</div><h3>'+ (state.signup?'Create an account':'Welcome back')+'</h3><p>'+ (state.signup?'Sign up with an email and password. Confirm your email if asked, then turn on 2FA to start chatting.':'Sign in to see messages, friends and personal notifications.') +'</p><form id="wrld-auth-form" class="social-form"><label>Email<input class="social-input" name="email" type="email" required autocomplete="email"></label><label>Password<input class="social-input" name="password" type="password" minlength="8" required autocomplete="'+(state.signup?'new-password':'current-password')+'"></label><button class="btn primary" type="submit">'+(state.signup?'Create account':'Sign in')+' →</button></form><div style="height:14px"></div><button class="social-action" data-social="switch-auth">'+(state.signup?'Already have an account? Sign in':'New here? Create an account')+'</button><p class="social-help">'+e(state.authNote)+'</p><div class="social-feedback" role="status" aria-live="polite"></div></section><div class="social-card"><div class="overline">EVERYONE BELONGS</div><h3>Connect with more confidence.</h3><p>Read the community after signing in. To send messages, add friends or pin messages, verify a second factor using an authenticator app.</p>'+featureCards()+'</div></div></div>';
+function showMessages(records,pins){
+ if(!S.user)return '<p class="social-message">Sign in to read.</p>';
+ if(!records.length)return '<p class="social-message">No messages yet.</p>';
+ const sorted=[...records].sort((a,b)=>Number(pins.includes(b.id))-Number(pins.includes(a.id))||a.created_at-b.created_at);
+ return sorted.map(m=>'<article class="social-chat-item '+(m.author===S.user.id?"mine":"")+'"><div class="social-chat-meta"><strong>'+esc(m.display_name||m.username)+'</strong><span class="social-muted">'+esc(time(m.created_at))+'</span>'+(pins.includes(m.id)?"📌":"")+'</div><p>'+esc(m.content)+'</p><div class="social-person-actions">'+button(pins.includes(m.id)?"Unpin":"Pin","pin",m.id)+ (m.author===S.user.id?button("Delete","delete",m.id):button("Block","block",m.author)+button("Report","report",m.id))+'</div></article>').join("");
 }
-function renderTop(){
- return '<div class="social-bar"><div class="social-id">'+profileChip(me())+'<div><strong>'+e(state.profile?.display_name||'Traveler')+'</strong><small>'+e(state.profile?'@'+state.profile.username:'Signed in')+'</small></div></div><div class="social-controls"><span class="social-status">'+(is2fa()?'✓ 2FA verified':'⚠ 2FA required')+'</span>'+btn('Account','profile')+btn('Sign out','signout')+'</div></div>';
+function compose(id,placeholder){return '<form class="social-compose" id="'+id+'"><textarea class="social-textarea" name="content" maxlength="2000" placeholder="'+esc(placeholder)+'" required></textarea><button class="btn primary" type="submit" '+(verified()?"":"disabled")+'>Send →</button></form>'}
+function globalChat(){
+ if(!S.user)return '<h3>Global chat</h3><p class="social-muted">A shared room for every verified member.</p>'+button("Join the world","tab","account");
+ return '<div class="social-split"><section><div class="social-chat-top"><h3># Global chat</h3>'+button("Refresh","refresh")+'</div><div class="social-chat-list">'+showMessages(S.messages,S.pins)+'</div>'+compose("fw-global","Message everyone…")+'</section><aside class="social-card"><h3>Community rules</h3><p>Be kind and protect privacy. Harassment, threats, scams and spam are not welcome.</p><p>Use Block or Report on harmful messages. Pins are visible only to you.</p><p>Posting requires verified 2FA and has a cooldown.</p></aside></div>';
 }
-function renderTabs(){const tabs=[['global','Global chat'],['friends','Friends & DMs'],['profile','My profile'],['security','2FA security']];
- return '<div class="social-tabs" role="tablist" aria-label="Community"><!---->'+tabs.map(t=>'<button class="social-tab '+(state.tab===t[0]?'active':'')+'" role="tab" aria-selected="'+(state.tab===t[0])+'" data-social="tab:'+t[0]+'">'+t[1]+'</button>').join('')+'</div>';
+const other=f=>f.user_low===S.user.id?{id:f.user_high,username:f.high_username,display_name:f.high_name}:{id:f.user_low,username:f.low_username,display_name:f.low_name};
+function friends(){
+ if(!S.user)return '<h3>Friends</h3>'+button("Sign in","tab","account");
+ const accepted=S.friends.filter(f=>f.status==="accepted"),pending=S.friends.filter(f=>f.status==="pending");
+ return '<div class="social-split"><section><h3>Find members</h3><form class="social-form" id="fw-search"><label>Username<input class="social-input" name="q" minlength="2" maxlength="35" value="'+esc(S.query)+'" placeholder="Search" required></label><button class="btn" type="submit">Search →</button></form>'+S.people.map(u=>userRow(u,button("Add friend","add",u.id)+button("Block","block",u.id))).join("")+'</section>'+
+ '<aside class="social-card"><h3>Friends ('+accepted.length+')</h3>'+ (accepted.map(f=>userRow(other(f),button("Message","peer",other(f).id)+button("Remove","unfriend",f.id))).join("")||'<p class="social-muted">No friends yet.</p>')+
+ '<h3>Requests</h3>'+ (pending.map(f=>userRow(other(f),f.requester===S.user.id?button("Cancel","unfriend",f.id):button("Accept","accept",f.id)+button("Decline","decline",f.id))).join("")||'<p class="social-muted">No requests.</p>')+
+ '<h3>Blocked</h3>'+(S.blocks.map(b=>userRow(b,button("Unblock","unblock",b.blocked))).join("")||'<p class="social-muted">Nobody blocked.</p>')+'</aside></div>';
 }
-function messageView(){
- let peer=state.peer, title=peer?'Chat with '+e(name(peer)):'Global chat';
- let list=state.messages.map(m=>({ ...m, pinned:state.pins.has(m.id)})).sort((a,b)=>Number(b.pinned)-Number(a.pinned)||(new Date(a.created_at)-new Date(b.created_at)));
- let messageRows=list.map(m=>'<article class="social-chat-item '+(m.author_id===me()?'mine':'')+'">'+
- '<div class="social-chat-meta"><strong>'+e(name(m.author_id))+'</strong><time>'+e(dt(m.created_at))+'</time>'+(m.pinned?'<span class="social-pinned">📌 Pinned</span>':'')+'</div>'+
- '<p>'+e(m.body)+'</p><div class="social-chat-actions">'+
- '<button class="social-action" data-social="pin:'+m.id+'">'+(m.pinned?'Unpin':'📌 Pin')+'</button>'+
- (m.author_id===me()?'<button class="social-action" data-social="delete-msg:'+m.id+'">Delete</button>':'')+
- (m.author_id!==me()&&!blocked(m.author_id)?'<button class="social-action" data-social="block:'+m.author_id+'">Block member</button>':'')+'</div></article>').join('');
- return '<div class="social-chat-top"><div><h3>'+title+'</h3><p>'+(peer?'Private conversation between friends':'The public room for the whole community')+'</p></div>'+(peer?btn('← Back to friends','dm-back'):'<span class="chip">Shared channel</span>')+'</div>'+
- '<div class="social-chat-list" id="social-messages" role="log" aria-live="polite">'+(messageRows||'<p class="social-muted">No messages yet. Be the first to start a conversation.</p>')+'</div>'+
- (!is2fa()?'<div class="social-message warn">🔐 Enable or verify 2FA before sending a message.</div><div style="height:10px"></div>':'')+
- '<form id="wrld-compose" class="social-compose"><textarea name="body" id="social-compose-body" class="social-textarea" maxlength="2000" placeholder="'+(peer?'Message your friend...':'Say hello to the world...')+'" required>'+e(state.draft)+'</textarea><button class="btn primary" type="submit">Send ↗</button></form><div class="social-feedback" role="status" aria-live="polite"></div>';
+function direct(){
+ if(!S.user)return '<h3>Private conversations</h3>'+button("Sign in","tab","account");
+ const peers=S.friends.filter(f=>f.status==="accepted").map(other);
+ peers.sort((a,b)=>Number(S.contactPins.includes(b.id))-Number(S.contactPins.includes(a.id)));
+ return '<div class="social-split"><aside><h3>Friends</h3>'+ (peers.map(p=>'<div class="social-person">'+button(p.display_name,"peer",p.id)+button(S.contactPins.includes(p.id)?"Unpin":"Pin","pincontact",p.id)+'</div>').join("")||'<p class="social-muted">No friends yet.</p>')+'</aside><section><h3>'+(S.peer?"Chat with "+esc(peers.find(p=>p.id===S.peer)?.display_name||"friend"):"Choose a friend")+'</h3>'+(S.peer?'<div class="social-chat-list">'+showMessages(S.dm,S.dmPins)+'</div>'+compose("fw-dm","Message this friend…"):'<p class="social-message">Select a friend to view the conversation.</p>')+'</section></div>';
 }
-function friendshipActions(id){
- const f=state.friends.find(row=>row.sender_id===id||row.receiver_id===id);
- if(blocked(id))return btn('Unblock','unblock:'+id);
- if(!f)return btn('Add friend','add:'+id)+(btn('Block','block:'+id,'danger'));
- if(f.status==='accepted')return btn('Message','dm:'+id)+btn('Remove','remove-friend:'+f.id)+btn('Block','block:'+id,'danger');
- if(f.status==='pending'&&f.receiver_id===me())return btn('Accept','accept:'+f.id)+btn('Decline','decline:'+f.id);
- if(f.status==='pending')return '<span class="chip">Request sent</span>'+btn('Cancel','remove-friend:'+f.id);
- return btn('Clear declined request','remove-friend:'+f.id);
+function renderNotifications(){
+ if(!alerts)return;
+ const verbs={friend_request:"sent a friend request",friend_accepted:"accepted your friend request",direct_message:"sent a private message"};
+ alerts.innerHTML='<div class="social-wrap"><div class="social-bar"><strong>Notifications</strong>'+button("Mark all read","readall")+'</div><div class="social-card">'+(!S.user?'<p>Sign in to see notifications.</p>':S.notifications.map(n=>'<div class="social-person"><div><strong>'+esc(n.display_name||n.username||"Member")+'</strong><p class="social-muted">'+esc(verbs[n.kind]||"New activity")+' · '+esc(time(n.created_at))+'</p></div>'+(n.read_at?'<span class="social-muted">Read</span>':button("Mark read","read",n.id))+'</div>').join("")||'<p>Nothing new yet.</p>')+'</div></div>';
 }
-function personCard(id){const p=state.people.get(id);if(!p||id===me())return '';
- return '<div class="social-person"><div class="social-person-info">'+profileChip(id)+'<div><strong>'+e(p.display_name||p.username)+'</strong><small>'+e('@'+p.username)+'</small></div></div><div class="social-person-actions">'+friendshipActions(id)+'</div></div>';
+function render(){
+ if(!root)return;
+ const tabs=[["global","Global chat"],["friends","Friends"],["direct","Messages"],["account","Profile & 2FA"]];
+ root.innerHTML='<div class="social-wrap"><div class="social-bar"><div class="social-id"><span class="social-avatar">✦</span><div><strong>Fleki’s Wrld Community</strong><small>'+(S.user?"@"+esc(S.user.username)+" · "+(verified()?"2FA verified":"2FA required"):"Create your account to join")+'</small></div></div>'+button("Refresh","refresh")+'</div><p class="social-feedback" id="fw-feedback" role="status">'+esc(S.error)+'</p><nav class="social-tabs">'+tabs.map(x=>'<button type="button" class="social-tab '+(S.tab===x[0]?"active":"")+'" data-action="tab" data-id="'+x[0]+'">'+x[1]+'</button>').join("")+'</nav><div class="social-layout">'+(S.tab==="global"?globalChat():S.tab==="friends"?friends():S.tab==="direct"?direct():account())+'</div></div>';
+ renderNotifications();
 }
-function friendsView(){
- const related=state.friends.filter(f=>f.status!=='declined');const peers=[...new Set(related.map(f=>f.sender_id===me()?f.receiver_id:f.sender_id))].filter(id=>!blocked(id));
- const found=state.directory.filter(x=>x.user_id!==me()&&!blocked(x.user_id));
- return '<div class="social-chat-top"><div><h3>Friends and people</h3><p>Find members, accept requests and start private conversations.</p></div><span class="chip">2FA required for friend requests</span></div>'+
- '<label class="social-help" for="social-people-query">Find a member by username</label><input id="social-people-query" class="social-input" value="'+e(state.directoryQuery)+'" placeholder="Search usernames..." maxlength="24">'+
- '<div class="social-small-list" id="social-search-results">'+(state.directoryQuery?(found.map(x=>personCard(x.user_id)).join('')||'<p class="social-muted">No members found.</p>'):'<p class="social-muted">Enter a username to find someone.</p>')+'</div>'+
- '<h4 class="social-section-title">Your friends and requests</h4><div class="social-small-list">'+(peers.map(personCard).join('')||'<p class="social-muted">No friends or requests yet.</p>')+'</div>'+
- '<h4 class="social-section-title">Blocked accounts</h4><div class="social-small-list">'+(state.blocks.map(b=>personCard(b.blocked_id)).join('')||'<p class="social-muted">Your block list is empty.</p>')+'</div>'+
- '<div class="social-feedback" role="status" aria-live="polite"></div>';
+async function reload(){
+ if(!S.token)return;
+ S.user=(await api("/me")).user;
+ const [f,m,n]=await Promise.all([api("/friends"),api("/messages"),api("/notifications")]);
+ S.friends=f.friends;S.blocks=f.blocks;S.contactPins=f.contact_pins;S.messages=m.messages;S.pins=m.pins;S.notifications=n.notifications;
+ if(S.peer){try{const dm=await api("/messages?peer="+encodeURIComponent(S.peer));S.dm=dm.messages;S.dmPins=dm.pins}catch{S.peer=null;S.dm=[];S.dmPins=[]}}
 }
-function profileView(){const p=state.profile||{};
- return '<div class="overline">YOUR SPACE</div><h3>Edit your profile</h3><p class="social-muted">Only your nickname, display name and bio are shown to other members. Your email stays private.</p>'+
- '<form class="social-form" id="wrld-profile-form"><label>Username<input class="social-input" name="username" pattern="[a-z0-9_]{3,24}" maxlength="24" required value="'+e(p.username||'')+'"></label>'+
- '<label>Display name<input class="social-input" name="display_name" maxlength="45" required value="'+e(p.display_name||'')+'"></label>'+
- '<label>About you<textarea class="social-textarea" name="bio" maxlength="350">'+e(p.bio||'')+'</textarea></label><button class="btn primary" type="submit">Save profile</button></form>'+
- '<div class="social-feedback" role="status" aria-live="polite"></div>';
+async function action(op,id){
+ if(op==="tab"){S.tab=id;return render()}
+ if(op==="mode"){S.mode=id;return render()}
+ if(op==="saved"){S.recovery=null;return render()}
+ if(op==="copy"){await navigator.clipboard.writeText(S.secret.secret);return msg("Copied setup key.")}
+ if(op==="refresh"){await reload();return render()}
+ if(op==="logout"){try{await api("/auth/logout","POST",{})}finally{S.token="";S.user=null;S.peer=null;sessionStorage.removeItem("fw-token");S.tab="account";render()}return}
+ if(op==="enroll"){S.secret=await api("/mfa/enroll","POST",{});return render()}
+ if(op==="peer"){S.peer=id;S.tab="direct";await reload();return render()}
+ if(op==="block"){if(!confirm("Block this member and hide their posts?"))return;await api("/blocks","POST",{target_id:id})}
+ else if(op==="unblock")await api("/blocks/"+encodeURIComponent(id),"DELETE");
+ else if(op==="add"){if(!ensure2fa())return;await api("/friends/request","POST",{target_id:id})}
+ else if(op==="accept"||op==="decline"){if(!ensure2fa())return;await api("/friends/respond","POST",{id,accept:op==="accept"})}
+ else if(op==="unfriend"){if(!ensure2fa())return;await api("/friends/remove","POST",{id})}
+ else if(op==="pin"){if(!ensure2fa())return;if(S.pins.includes(id)||S.dmPins.includes(id))await api("/pins/remove","POST",{message_id:id});else await api("/pins","POST",{message_id:id})}
+ else if(op==="pincontact"){if(!ensure2fa())return;await api(S.contactPins.includes(id)?"/pins/remove":"/pins","POST",{contact_id:id})}
+ else if(op==="delete"){if(!ensure2fa())return;if(!confirm("Delete this message?"))return;await api("/messages/"+encodeURIComponent(id),"DELETE")}
+ else if(op==="report"){const reason=prompt("Reason for reporting this message");if(reason)await api("/reports","POST",{message_id:id,reason});msg("Report sent.");return}
+ else if(op==="read")await api("/notifications/read","POST",{id});
+ else if(op==="readall")await api("/notifications/read","POST",{id:"all"});
+ await reload();render();
 }
-function securityView(){
- const en=state.enrollment;
- let qr=en?.totp?.qr_code;
- return '<div class="overline">ACCOUNT SECURITY</div><h3>Two-factor authentication</h3>'+
- '<p class="social-muted">Fleki’s Wrld requires time-based one-time passwords (TOTP) to send any message, add friends or pin a message. Your authenticator verifies codes through the authentication provider.</p>'+
- '<div class="social-message '+(is2fa()?'':'warn')+'">'+(is2fa()?'✓ This session is verified with 2FA. You can now interact.':'⚠ This session is not verified with 2FA. Reading remains available.')+'</div>'+
- (is2fa()?'<p class="social-help">Keep access to your authenticator. Add a backup authenticator in your account settings when the backend supports it.</p>':
- en?'<div class="social-divider"></div><p class="social-muted">Scan this code in your authenticator app, or enter the secret manually. Never share the secret.</p>'+
- (qr&&/^data:image\/svg\+xml[;,]/.test(qr)?'<img class="social-mfa-qr" src="'+e(qr)+'" alt="2FA authenticator QR code">':'')+
- '<div class="social-mfa-secret">'+e(en.totp?.secret||'')+'</div><form class="social-form" id="wrld-2fa-form"><label>6-digit authenticator code<input name="code" class="social-input" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required></label><button type="submit" class="btn primary">Confirm 2FA</button></form>':
- '<div class="social-divider"></div><p class="social-muted">If you already have 2FA enabled, enter your code. Otherwise set up a new authenticator.</p><div class="actions">'+btn('Set up authenticator','enroll')+'</div><form class="social-form" id="wrld-2fa-form"><label>Authenticator code<input name="code" class="social-input" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required></label><button class="btn primary" type="submit">Verify existing 2FA</button></form>')+
- '<div class="social-feedback" role="status" aria-live="polite"></div>';
-}
-function renderCommunity(){
- if(!cRoot)return;
- if(!ready())return renderDisconnected(cRoot,'Fleki’s Wrld Community');
- if(!state.user)return renderAuth();
- cRoot.innerHTML='<div class="social-wrap">'+renderTop()+renderTabs()+'<section class="social-layout">'+
- (state.tab==='global'?messageView():state.tab==='friends'?(state.peer?messageView():friendsView()):state.tab==='profile'?profileView():securityView())+
- '</section></div>';
- const list=cRoot.querySelector('#social-messages');if(list)list.scrollTop=list.scrollHeight;
-}
-function renderNotices(){
- if(!nRoot)return;
- if(!ready())return renderDisconnected(nRoot,'Your notifications');
- if(!state.user){nRoot.innerHTML='<div class="social-card"><h3>Sign in to see notifications</h3><p>Friend requests, accepted friendships and private messages will show up here.</p><button class="btn primary" data-social="sign-in-community">Go to Community →</button></div>';return;}
- nRoot.innerHTML='<div class="social-wrap"><div class="social-bar"><div class="social-id">'+profileChip(me())+'<div><strong>Notification center</strong><small>'+state.notices.filter(n=>!n.is_read).length+' unread updates</small></div></div>'+btn('Mark all read','read-all')+'</div><div>'+
- (state.notices.map(n=>'<article class="social-notice '+(n.is_read?'':'unread')+'"><div><strong>'+e(n.title)+'</strong><p>'+e(n.actor_id?name(n.actor_id):'System')+'</p><time>'+e(dt(n.created_at))+'</time></div><div class="social-notice-actions">'+(!n.is_read?btn('Mark read','read:'+n.id):'')+btn(n.kind==='direct_message'?'Open chat':'View friends','notice-open:'+n.kind+':'+(n.actor_id||''))+'</div></article>').join('')||'<div class="social-card"><h3>All caught up ✦</h3><p>No notifications yet. New friend requests and private messages will appear here.</p></div>')+
- '</div><div class="social-feedback" role="status" aria-live="polite"></div></div>';
- const badge=document.querySelector('[data-go="notifications"]');
- if(badge){badge.querySelector('.social-unread')?.remove();if(state.notices.some(n=>!n.is_read))badge.insertAdjacentHTML('beforeend','<span class="social-unread" aria-label="Unread notifications"></span>');}
-}
-async function expect(result){if(result.error)throw result.error;return result.data;}
-async function loadPeople(ids){
- if(!ready()||!state.user)return;
- const fresh=[...new Set(ids.filter(Boolean))].filter(id=>!state.people.has(id));
- for(let i=0;i<fresh.length;i+=50){
-  const data=await expect(await state.db.from('wrld_profiles').select('user_id,username,display_name,bio').in('user_id',fresh.slice(i,i+50)));
-  for(const p of data||[])state.people.set(p.user_id,p);
- }
-}
-async function loadFriends(){if(!state.user)return;const uid=me();
- const data=await expect(await state.db.from('wrld_friends').select('id,sender_id,receiver_id,status,created_at').or('sender_id.eq.'+uid+',receiver_id.eq.'+uid).order('created_at',{ascending:false}));
- state.friends=data||[];await loadPeople(state.friends.flatMap(f=>[f.sender_id,f.receiver_id]));}
-async function loadBlocks(){if(!state.user)return;const data=await expect(await state.db.from('wrld_blocks').select('blocker_id,blocked_id').eq('blocker_id',me()));state.blocks=data||[];await loadPeople(state.blocks.map(b=>b.blocked_id));}
-async function loadMessages(){if(!state.user)return;
- let query=state.db.from('wrld_messages').select('id,author_id,recipient_id,body,created_at').order('created_at',{ascending:false}).limit(75);
- if(state.peer)query=query.or('and(author_id.eq.'+me()+',recipient_id.eq.'+state.peer+'),and(author_id.eq.'+state.peer+',recipient_id.eq.'+me()+')');
- else query=query.is('recipient_id',null);
- const data=await expect(await query);state.messages=(data||[]).reverse();
- await loadPeople(state.messages.map(m=>m.author_id));
- const ids=state.messages.map(m=>m.id);if(!ids.length){state.pins=new Set();return;}
- const pins=await expect(await state.db.from('wrld_pins').select('message_id').eq('user_id',me()).in('message_id',ids));
- state.pins=new Set((pins||[]).map(p=>p.message_id));
-}
-async function loadNotices(){if(!state.user)return;const data=await expect(await state.db.from('wrld_notifications').select('id,recipient_id,actor_id,kind,title,is_read,created_at').eq('recipient_id',me()).order('created_at',{ascending:false}).limit(60));
- state.notices=data||[];await loadPeople(state.notices.map(n=>n.actor_id));}
-async function lookupPeople(){
- if(!state.user)return;
- const q=state.directoryQuery.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
- if(!q){state.directory=[];renderCommunity();return;}
- const data=await expect(await state.db.from('wrld_profiles').select('user_id,username,display_name,bio').ilike('username',q+'%').limit(15));
- state.directory=data||[];for(const p of state.directory)state.people.set(p.user_id,p);renderCommunity();
-}
-let findTimer=null;
-async function refreshIdentity(){
- if(!ready())return;
+document.addEventListener("click",async e=>{const target=e.target.closest("[data-action]");if(!target||pending)return;pending=true;try{await action(target.dataset.action,target.dataset.id||"")}catch(err){msg(err.message)}finally{pending=false}});
+document.addEventListener("submit",async e=>{
+ const form=e.target;if(!form.id.startsWith("fw-"))return;e.preventDefault();if(pending)return;pending=true;
+ const values=Object.fromEntries(new FormData(form));
  try{
-  const userData=await expect(await state.db.auth.getUser());
-  const user=userData?.user||null, changed=me()!==user?.id;
-  state.user=user;
-  if(!user){state.profile=null;state.aal='aal1';state.friends=[];state.blocks=[];state.messages=[];state.notices=[];state.enrollment=null;state.peer=null;stopRealtime();renderCommunity();renderNotices();return;}
-  const aal=await expect(await state.db.auth.mfa.getAuthenticatorAssuranceLevel());state.aal=aal?.currentLevel||'aal1';
-  const p=await expect(await state.db.from('wrld_profiles').select('user_id,username,display_name,bio').eq('user_id',user.id).maybeSingle());
-  state.profile=p;if(p)state.people.set(p.user_id,p);
-  if(changed){state.tab='global';state.peer=null;state.people.clear();if(p)state.people.set(p.user_id,p);}
-  await Promise.all([loadFriends(),loadBlocks(),loadNotices()]);
-  if(state.tab==='global'||state.peer)await loadMessages();
-  if(changed)connectRealtime();renderCommunity();renderNotices();
- }catch(ex){console.error('Wrld auth refresh:',ex);feedback(errorOf(ex),true);renderCommunity();renderNotices();}
-}
-function stopRealtime(){if(state.channel){state.db?.removeChannel(state.channel);state.channel=null;}}
-function connectRealtime(){
- stopRealtime();if(!ready()||!state.user)return;
- state.channel=state.db.channel('fleki-wrld-social-'+me())
- .on('postgres_changes',{event:'*',schema:'public',table:'wrld_messages'},async()=>{try{if(state.tab==='global'||state.peer){await loadMessages();renderCommunity();}}catch(ex){console.warn(ex)}})
- .on('postgres_changes',{event:'*',schema:'public',table:'wrld_friends'},async()=>{try{await loadFriends();renderCommunity();}catch(ex){console.warn(ex)}})
- .on('postgres_changes',{event:'*',schema:'public',table:'wrld_notifications'},async()=>{try{await loadNotices();renderNotices();}catch(ex){console.warn(ex)}})
- .subscribe();
-}
-async function signInOrUp(form){
- const data=new FormData(form);const email=String(data.get('email')||'').trim(),password=String(data.get('password')||'');
- const res=state.signup?await state.db.auth.signUp({email,password}):await state.db.auth.signInWithPassword({email,password});
- await expect(res);
- state.authNote=state.signup?'Account submitted. Check your email if verification is required.':'Signed in. Set up or verify your 2FA.';
- form.reset();await refreshIdentity();if(!state.user){renderAuth();feedback(state.authNote);}
-}
-async function setupMfa(){
- const factors=await expect(await state.db.auth.mfa.listFactors());const active=(factors?.totp||[]).find(f=>f.status==='verified');
- if(active){state.tab='security';renderCommunity();feedback('2FA already enrolled. Enter a current code to verify this session.');return;}
- state.enrollment=await expect(await state.db.auth.mfa.enroll({factorType:'totp',friendlyName:"Fleki's Wrld"}));
- renderCommunity();feedback('Scan the QR code and verify with your 6-digit code.');
-}
-async function verifyMfa(code){
- let factorId=state.enrollment?.id;
- if(!factorId){const factors=await expect(await state.db.auth.mfa.listFactors());factorId=(factors?.totp||[]).find(f=>f.status==='verified')?.id;}
- if(!factorId)throw Error('Set up your authenticator first.');
- await expect(await state.db.auth.mfa.challengeAndVerify({factorId,code}));
- state.enrollment=null;await refreshIdentity();state.tab='security';renderCommunity();feedback('2FA verified. You can now send messages and friend requests.');
-}
-async function sendMessage(form){if(!ensure2fa())return;
- const body=String(new FormData(form).get('body')||'').trim();if(!body||body.length>2000)return;
- if(state.peer&&!friendWith(state.peer))throw Error('Private messages require an accepted friendship.');
- await expect(await state.db.from('wrld_messages').insert({author_id:me(),recipient_id:state.peer||null,body}));
- state.draft='';await loadMessages();renderCommunity();feedback('Message sent.');
-}
-async function saveProfile(form){const formData=new FormData(form);
- const username=String(formData.get('username')||'').toLowerCase().trim();
- if(!/^[a-z0-9_]{3,24}$/.test(username))throw Error('Username must be 3–24 letters, numbers or underscores.');
- const payload={username,display_name:String(formData.get('display_name')||'').trim(),bio:String(formData.get('bio')||'').trim()};
- await expect(await state.db.from('wrld_profiles').update(payload).eq('user_id',me()));
- state.people.delete(me());await refreshIdentity();feedback('Profile updated.');
-}
-async function socialAction(action){
- const parts=action.split(':'),type=parts[0],id=parts[1];
- if(type==='switch-auth'){state.signup=!state.signup;state.authNote='';renderCommunity();return;}
- if(type==='sign-in-community'){document.querySelector('[data-go="chat"]')?.click();return;}
- if(type==='signout'){await expect(await state.db.auth.signOut());return;}
- if(type==='tab'){state.tab=id;state.peer=null;state.draft='';if(id==='global')await loadMessages();renderCommunity();return;}
- if(type==='profile'){state.tab='profile';state.peer=null;renderCommunity();return;}
- if(type==='dm-back'){state.peer=null;state.tab='friends';state.draft='';renderCommunity();return;}
- if(type==='enroll'){await setupMfa();return;}
- if(type==='notice-open'){const kind=id,actor=parts[2];state.tab='friends';state.peer=(kind==='direct_message'&&actor)?actor:null;state.draft='';if(state.peer)await loadMessages();renderCommunity();document.querySelector('[data-go="chat"]')?.click();return;}
- if(type==='read-all'){await expect(await state.db.from('wrld_notifications').update({is_read:true}).eq('recipient_id',me()).eq('is_read',false));await loadNotices();renderNotices();return;}
- if(type==='read'){await expect(await state.db.from('wrld_notifications').update({is_read:true}).eq('id',id).eq('recipient_id',me()));await loadNotices();renderNotices();return;}
- if(type==='dm'){if(blocked(id))throw Error('Unblock this user first.');state.peer=id;state.tab='friends';state.draft='';await loadMessages();renderCommunity();return;}
- if(type==='add'){if(!ensure2fa())return;await expect(await state.db.from('wrld_friends').insert({sender_id:me(),receiver_id:id}));await loadFriends();renderCommunity();feedback('Friend request sent.');return;}
- if(type==='accept'||type==='decline'){if(!ensure2fa())return;await expect(await state.db.from('wrld_friends').update({status:type==='accept'?'accepted':'declined'}).eq('id',id));await loadFriends();renderCommunity();feedback('Request updated.');return;}
- if(type==='remove-friend'){await expect(await state.db.from('wrld_friends').delete().eq('id',id));await loadFriends();state.peer=null;renderCommunity();return;}
- if(type==='block'){await expect(await state.db.from('wrld_blocks').insert({blocker_id:me(),blocked_id:id}));const f=state.friends.find(f=>f.sender_id===id||f.receiver_id===id);if(f)await state.db.from('wrld_friends').delete().eq('id',f.id);await Promise.all([loadBlocks(),loadFriends()]);if(state.peer===id)state.peer=null;renderCommunity();feedback('Member blocked.');return;}
- if(type==='unblock'){await expect(await state.db.from('wrld_blocks').delete().eq('blocker_id',me()).eq('blocked_id',id));await loadBlocks();renderCommunity();feedback('Member unblocked.');return;}
- if(type==='pin'){if(!ensure2fa())return;const n=Number(id);if(state.pins.has(n))await expect(await state.db.from('wrld_pins').delete().eq('user_id',me()).eq('message_id',n));else await expect(await state.db.from('wrld_pins').insert({user_id:me(),message_id:n}));await loadMessages();renderCommunity();return;}
- if(type==='delete-msg'){await expect(await state.db.from('wrld_messages').delete().eq('author_id',me()).eq('id',Number(id)));await loadMessages();renderCommunity();return;}
-}
-document.addEventListener('click',async event=>{
- const b=event.target.closest('[data-social]');if(!b)return;
- event.preventDefault();if(b.disabled)return;b.disabled=true;
- try{await socialAction(b.dataset.social);}catch(ex){feedback(errorOf(ex),true);console.warn(ex);}finally{if(b.isConnected)b.disabled=false;}
+  if(form.id==="fw-auth"){const r=await api(S.mode==="register"?"/auth/register":"/auth/login","POST",values);S.token=r.token;sessionStorage.setItem("fw-token",r.token);S.tab="account";await reload()}
+  else if(form.id==="fw-activate"){const r=await api("/mfa/activate","POST",values);S.secret=null;S.recovery=r.recovery_codes;await reload()}
+  else if(form.id==="fw-verify"){await api("/mfa/verify","POST",values);await reload()}
+  else if(form.id==="fw-profile"){if(ensure2fa()){await api("/profile","PUT",values);await reload()}}
+  else if(form.id==="fw-search"){S.query=values.q;S.people=(await api("/users?q="+encodeURIComponent(values.q))).users}
+  else if(form.id==="fw-global"){if(ensure2fa()){await api("/messages","POST",{content:values.content});await reload()}}
+  else if(form.id==="fw-dm"){if(ensure2fa()&&S.peer){await api("/messages","POST",{content:values.content,recipient:S.peer});await reload()}}
+  render();
+ }catch(err){msg(err.message)}finally{pending=false}
 });
-document.addEventListener('submit',async event=>{
- const form=event.target;if(!['wrld-auth-form','wrld-compose','wrld-profile-form','wrld-2fa-form'].includes(form.id))return;
- event.preventDefault();const submit=form.querySelector('[type="submit"]');if(submit)submit.disabled=true;
- try{
-  if(form.id==='wrld-auth-form')await signInOrUp(form);
-  if(form.id==='wrld-compose')await sendMessage(form);
-  if(form.id==='wrld-profile-form')await saveProfile(form);
-  if(form.id==='wrld-2fa-form')await verifyMfa(String(new FormData(form).get('code')||'').trim());
- }catch(ex){feedback(errorOf(ex),true);console.warn(ex);}finally{if(submit?.isConnected)submit.disabled=false;}
-});
-document.addEventListener('input',event=>{
- if(event.target.id==='social-compose-body')state.draft=event.target.value;
- if(event.target.id==='social-people-query'){state.directoryQuery=event.target.value;clearTimeout(findTimer);findTimer=setTimeout(()=>lookupPeople().catch(err=>feedback(errorOf(err),true)),330);}
-});
-window.addEventListener('wrld:profile',()=>{state.tab='profile';state.peer=null;renderCommunity();});
-async function boot(){
- renderCommunity();renderNotices();
- const conf=window.WRLD_SOCIAL_CONFIG||{};
- if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(conf.url||'')||!conf.publishableKey)return;
- try{
-  const imported=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
-  state.db=imported.createClient(conf.url,conf.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-  state.db.auth.onAuthStateChange((_event,_session)=>{setTimeout(()=>refreshIdentity(),0);});
-  await refreshIdentity();
- }catch(ex){console.warn('Fleki Wrld social backend:',ex);state.db=null;renderCommunity();renderNotices();}
-}
-boot();
+window.addEventListener("wrld:profile",()=>{S.tab="account";render()});
+(async()=>{try{await api("/health");if(S.token)await reload()}catch(err){msg("API unavailable: "+err.message)}render()})();
+setInterval(async()=>{if(S.token&&!pending){try{await reload();if(S.tab==="global"||S.tab==="direct")render();else renderNotifications()}catch{}}},12000);
