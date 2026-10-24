@@ -1,5 +1,5 @@
 /* Offline-first Fleki Authenticator. Never cache vault data or user secrets. */
-const CACHE="fleki-auth-static-v1";
+const CACHE="fleki-auth-static-v2";
 const ASSETS=["/","/index.html","/style.css","/app.js","/icon.svg","/manifest.webmanifest"];
 self.addEventListener("install",event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
