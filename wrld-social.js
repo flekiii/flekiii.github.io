@@ -120,5 +120,5 @@ document.addEventListener("submit",async e=>{
  }catch(err){msg(err.message)}finally{pending=false}
 });
 window.addEventListener("wrld:profile",()=>openProfile());
-(async()=>{try{await api("/health");try{S.providers=(await api("/auth/providers")).providers||S.providers}catch{}if(S.token)await reload()}catch(err){msg("API unavailable: "+err.message)}render()})();
+(async()=>{try{await api("/health");try{S.providers=(await api("/auth/providers")).providers||S.providers}catch{}let incoming=null;try{incoming=JSON.parse(sessionStorage.getItem("fw-oauth-pending")||"null");sessionStorage.removeItem("fw-oauth-pending")}catch{}if(incoming?.key==="oauth_ticket"){const r=await api("/auth/oauth/redeem","POST",{ticket:incoming.value});S.token=r.token;sessionStorage.setItem("fw-token",r.token);msg("Connected with your external account. Set up Fleki’s Wrld 2FA to unlock social features.")}else if(incoming?.key==="oauth_error"){msg("External sign-in could not be completed: "+incoming.value.replace(/_/g," "))}if(S.token)await reload()}catch(err){msg("Sign-in or API error: "+err.message)}render()})();
 setInterval(async()=>{if(S.token&&!pending){try{await reload();const typing=document.activeElement?.closest("#wrld-community-root form, #wrld-account-root form");if(!typing&&(S.tab==="global"||S.tab==="direct"))render();else renderNotifications()}catch{}}},12000);
