@@ -1,0 +1,57 @@
+/* Fleki's Wrld social UI. Uses the site theme variables. */
+.social-wrap{display:grid;gap:16px;margin-bottom:18px}
+.social-bar,.social-card,.social-layout,.social-modal{background:var(--panel);border:1px solid var(--line);border-radius:18px}
+.social-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;flex-wrap:wrap}
+.social-id{display:flex;align-items:center;gap:12px;min-width:0}
+.social-avatar{background:linear-gradient(145deg,#ffcae9,#bfa3ff);border:1px solid #cca1d3;border-radius:14px;display:grid;place-items:center;color:#302044;font-weight:800;width:44px;height:44px;flex-shrink:0}
+.social-id strong{font-size:14px}.social-id small{color:var(--muted);font-size:12px;display:block;margin-top:3px}
+.social-status{font-size:11px;color:var(--accent);padding:8px 11px;border:1px solid var(--line);border-radius:40px}
+.social-controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.social-card{padding:22px}.social-card h3{font:700 22px "Space Grotesk";letter-spacing:-.5px;margin:5px 0}.social-card p,.social-muted{font-size:13px;line-height:1.6;color:var(--muted)}
+.social-message{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:13px 15px;font-size:13px;line-height:1.5;color:var(--muted)}
+.social-message.warn{border-color:#bd946c79;color:var(--text)}
+.social-tabs{display:flex;gap:6px;flex-wrap:wrap;padding:6px;border:1px solid var(--line);border-radius:15px;background:var(--panel);width:max-content;max-width:100%}
+.social-tab{background:transparent;border:0;padding:11px 15px;color:var(--muted);font-size:13px;font-weight:700;border-radius:11px}
+.social-tab.active,.social-tab:hover{color:var(--text);background:var(--panel2)}
+.social-layout{padding:20px;min-height:310px}
+.social-split{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(270px,1fr);gap:16px}
+.social-form{display:grid;gap:13px;max-width:460px}.social-form label{font-size:12px;font-weight:700;display:grid;gap:7px}
+.social-input,.social-textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:12px 13px;outline:none;font-size:14px}
+.social-input:focus,.social-textarea:focus{border-color:var(--accent)}
+.social-textarea{resize:vertical;min-height:80px}.social-form .btn{justify-content:center;width:max-content}
+.social-mfa-badge{font-size:12px;font-weight:800;color:var(--accent)}
+.social-mfa-qr{width:min(235px,70vw);height:auto;background:white;border-radius:12px;padding:12px;display:block;margin:12px 0}
+.social-mfa-secret{font:600 12px monospace;word-break:break-all;color:var(--text);padding:13px;border:1px dashed var(--line);border-radius:10px;background:var(--bg)}
+.social-chat-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.social-chat-top h3{margin:0 0 4px;font:700 21px "Space Grotesk"}
+.social-chat-top p{color:var(--muted);font-size:12px;margin:0}
+.social-chat-list{display:flex;flex-direction:column;gap:11px;max-height:460px;min-height:150px;overflow-y:auto;margin:20px 0;padding:5px 3px}
+.social-chat-item{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:12px 14px;max-width:96%}
+.social-chat-item.mine{border-color:color-mix(in srgb,var(--accent) 50%,var(--line));margin-left:6%}
+.social-chat-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:7px}
+.social-chat-meta strong{font-size:12px}.social-chat-meta time{font-size:10px;color:var(--muted)}
+.social-chat-item p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;margin:0 0 8px;line-height:1.6}
+.social-chat-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.social-action{border:0;background:transparent;color:var(--muted);font-size:11px;font-weight:700;padding:3px}
+.social-action:hover{color:var(--accent)}.social-pinned{font-size:11px;color:var(--accent)}
+.social-compose{display:flex;gap:10px;align-items:flex-end}.social-compose .social-textarea{flex:1;min-height:52px;max-height:140px}
+.social-compose .btn{min-height:50px}
+.social-small-list{display:grid;gap:9px;margin-top:15px;max-height:480px;overflow:auto}
+.social-person{display:flex;align-items:center;justify-content:space-between;gap:13px;padding:12px;border-radius:13px;border:1px solid var(--line);background:var(--panel2)}
+.social-person-info{display:flex;align-items:center;gap:10px;min-width:0}.social-person strong{font-size:13px;display:block;overflow:hidden;text-overflow:ellipsis}.social-person small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.social-person-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.social-mini{border:1px solid var(--line);background:var(--panel);padding:8px 10px;border-radius:10px;color:var(--text);font-size:11px;font-weight:700}.social-mini:hover{border-color:var(--accent)}
+.social-mini.danger{color:#f89b9b}.social-mini:disabled{opacity:.55;cursor:not-allowed}
+.social-section-title{font:700 16px "Space Grotesk";margin:18px 0 8px}
+.social-notice{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+.social-notice.unread{border-left:3px solid var(--accent)}.social-notice strong{font-size:13px}
+.social-notice p{font-size:12px;color:var(--muted);margin:5px 0}.social-notice time{font-size:11px;color:var(--muted)}
+.social-notice-actions{display:flex;gap:8px;flex-wrap:wrap}
+.social-feedback{font-size:12px;min-height:22px;color:var(--accent);padding:4px 0}.social-feedback.error{color:#ff9b9b}
+.social-help{font-size:12px;color:var(--muted)}.social-help a{color:var(--accent)}
+.social-divider{height:1px;background:var(--line);margin:18px 0}
+.social-unread{display:inline-block;width:7px;height:7px;margin-left:3px;border-radius:50%;background:#f58fdd;vertical-align:middle;box-shadow:0 0 0 3px #f58fdd22}
+.social-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.social-feature{padding:20px;border:1px solid var(--line);background:var(--panel2);border-radius:14px}
+.social-feature h4{margin:0 0 7px;font-size:14px}.social-feature p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+@media(max-width:850px){.social-split{grid-template-columns:1fr}}
+@media(max-width:640px){.social-layout{padding:14px}.social-chat-item{max-width:100%}.social-chat-item.mine{margin-left:0}.social-compose{flex-direction:column;align-items:stretch}.social-person{flex-direction:column;align-items:stretch}.social-person-actions{justify-content:flex-start}.social-feature-grid{grid-template-columns:1fr}}
