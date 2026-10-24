@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#100f17"><meta name="description" content="Fleki Authenticator — encrypted offline two-factor codes."><meta name="robots" content="noindex,nofollow"><link rel="icon" type="image/svg+xml" href="/icon.svg"><link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/style.css"><title>Fleki Authenticator</title></head>
+<body>
+<header class="top"><div class="brand"><span class="brand-icon">✦</span><div><strong>Fleki <span>Authenticator</span></strong><small>PRIVATE · OFFLINE · YOURS</small></div></div><div class="header-actions"><span class="offline"><span class="dot"></span><span id="connection">Offline-ready</span></span><button id="installBtn" class="subtle" hidden>Install app</button></div></header>
+<main>
+<section id="locked" class="center-stage">
+ <div class="hero-mark"><span>✦</span></div><div class="eyebrow">YOUR KEYS. YOUR CONTROL.</div>
+ <h1>Security that <em>stays yours.</em></h1><p class="lede">Generate two-factor codes without sending secrets to a server. Your accounts are encrypted with your vault password on this device.</p>
+ <form id="vault-form" class="entry"><h2 id="vault-title">Unlock your vault</h2>
+ <label>Vault password<input id="vault-password" name="password" type="password" minlength="10" autocomplete="off" placeholder="Enter vault password" required></label>
+ <label id="confirm-row" hidden>Confirm password<input id="vault-confirm" type="password" minlength="10" autocomplete="off" placeholder="Repeat vault password"></label>
+ <button type="submit" class="primary" id="vault-submit">Unlock vault <span>→</span></button>
+ <p id="vault-hint">Your vault password is never sent to Fleki’s Wrld.</p></form>
+ <div class="info-strip"><span>🔒 AES-GCM encrypted</span><span>◎ Offline TOTP</span><span>✦ Separate from Wrld</span></div>
+</section>
+<section id="unlocked" hidden class="workspace">
+ <div class="workspace-head"><div><div class="eyebrow">ENCRYPTED ON THIS DEVICE</div><h1>Your codes <em>in one place.</em></h1><p>One-time codes change automatically every 30 seconds.</p></div><div class="head-tools"><button class="subtle" id="backupBtn">Export backup</button><button class="subtle" id="importBtn">Import backup</button><button class="subtle" id="lockBtn">Lock</button></div></div>
+ <div class="actions"><button id="addToggle" class="primary small">+ Add account</button><span class="privacy">Nothing leaves your device.</span></div>
+ <form id="addForm" class="add-panel" hidden>
+ <div class="add-top"><h2>Add an authenticator</h2><button type="button" id="cancelAdd" class="x">✕</button></div>
+ <label>Service name<input id="accountIssuer" placeholder="Fleki’s Wrld, GitHub, Discord…" maxlength="60" required></label>
+ <label>Account label (optional)<input id="accountLabel" placeholder="Your username" maxlength="90"></label>
+ <label>Setup key or otpauth:// link<textarea id="accountSecret" placeholder="Paste the base32 key shown during 2FA setup" rows="2" required spellcheck="false"></textarea></label>
+ <p>Use the setup key shown in Fleki’s Wrld → Profile → 2FA. Never share this key with anyone.</p>
+ <button type="submit" class="primary">Save encrypted account <span>↗</span></button>
+ </form>
+ <div id="accounts" class="accounts"></div>
+ <div id="empty" class="empty"><span class="empty-icon">✧</span><h3>No accounts yet</h3><p>Add Fleki’s Wrld or another service to start generating your own 2FA codes.</p><button id="addEmpty" class="subtle">Add first account →</button></div>
+ <p class="footer-note">Protect your backup and password. If you lose both, your authenticator secrets cannot be recovered.</p>
+</section>
+<p id="notice" role="status" aria-live="polite"></p></main>
+<input id="fileInput" type="file" accept="application/json,.json" hidden>
+<script src="/app.js" defer></script>
+</body></html>
