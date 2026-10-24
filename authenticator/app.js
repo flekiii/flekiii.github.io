@@ -49,6 +49,8 @@ async function encryptVault(){
 }
 function lock(){
  stopCamera();
+ $("accounts").replaceChildren();
+ $("addForm").reset();$("addForm").hidden=true;
  key=null;vault=null;currentVault=null;lastActive=0;
  clearInterval(timer);timer=null;
  $("unlocked").hidden=true;$("locked").hidden=false;
