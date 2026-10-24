@@ -1,1 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><defs><radialGradient id="bg"><stop stop-color="#1b071d"/><stop offset="1" stop-color="#160817"/></radialGradient><radialGradient id="orb" cx=".35" cy=".32" r=".75"><stop stop-color="#2c1029"/><stop offset=".62" stop-color="#240c24"/><stop offset="1" stop-color="#120719"/></radialGradient><linearGradient id="halo" x1=".03" y1=".25" x2=".95" y2=".86"><stop stop-color="#ffe5e5"/><stop offset=".16" stop-color="#f38adf"/><stop offset=".43" stop-color="#b147ed"/><stop offset=".7" stop-color="#7220bb"/><stop offset=".88" stop-color="#ffb8cd"/><stop offset="1" stop-color="#ffd8a4"/></linearGradient><filter id="blur" x="-.5" y="-.5" width="2" height="2"><feGaussianBlur stdDeviation="3.5"/></filter></defs><rect width="128" height="128" fill="url(#bg)"/><circle cx="71" cy="60" r="49" stroke="url(#halo)" stroke-width="7" fill="none" opacity=".75" filter="url(#blur)"/><circle cx="71" cy="60" r="49" stroke="url(#halo)" stroke-width="3" fill="none"/><circle cx="55" cy="58" r="46" fill="url(#orb)" stroke="url(#halo)" stroke-width="5" filter="url(#blur)"/><circle cx="55" cy="58" r="46" fill="url(#orb)" stroke="url(#halo)" stroke-width="2.5"/><path d="M18 57C28 12 72 9 94 42" stroke="#fff3f5" stroke-width="1.8" opacity=".55" fill="none"/><path d="M46 99Q75 112 99 82" stroke="#cc61fe" stroke-width="1.8" opacity=".6" fill="none"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <radialGradient id="planet" cx="38%" cy="30%" r="74%">
+    <stop stop-color="#7e3b83"/><stop offset=".43" stop-color="#56235f"/>
+    <stop offset=".76" stop-color="#34143f"/><stop offset="1" stop-color="#210b2e"/>
+  </radialGradient>
+  <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop stop-color="#fff1f6"/><stop offset=".22" stop-color="#ffc0f0"/>
+    <stop offset=".5" stop-color="#ef79ff"/><stop offset=".76" stop-color="#bc77ff"/>
+    <stop offset="1" stop-color="#ffe1b9"/>
+  </linearGradient>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="3"/>
+  </filter>
+</defs>
+<!-- Transparent corners keep the favicon truly circular. -->
+<circle cx="72" cy="63" r="48" fill="none" stroke="#f7a3ff" stroke-width="10" opacity=".85" filter="url(#glow)"/>
+<circle cx="72" cy="63" r="48" fill="none" stroke="url(#shine)" stroke-width="5"/>
+<circle cx="52" cy="63" r="49" fill="#f3abed" opacity=".72" filter="url(#glow)"/>
+<circle cx="52" cy="63" r="49" fill="url(#planet)" stroke="url(#shine)" stroke-width="4"/>
+<path d="M9 60C16 29 41 14 65 14" fill="none" stroke="#fff4fb" stroke-width="2.5" stroke-linecap="round" opacity=".95"/>
+<path d="M20 91C41 120 78 111 94 88" fill="none" stroke="#ef92ff" stroke-width="2.1" stroke-linecap="round" opacity=".66"/>
+</svg>
