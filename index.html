@@ -19,8 +19,8 @@
 
 /* About: personal introduction and separate community destinations */
 .about-layout{display:grid;gap:28px;padding-bottom:24px}
-.about-bio{position:relative;isolation:isolate;overflow:hidden;border-radius:22px;border:1px solid var(--line);background:radial-gradient(circle at 95% 8%,var(--wash),transparent 42%),var(--panel);padding:34px 38px}
-.about-bio:after{content:"";position:absolute;right:-86px;top:-105px;width:310px;height:310px;border:1px solid var(--line);border-radius:50%;box-shadow:0 0 0 41px var(--wash),0 0 0 90px var(--wash);z-index:-1;pointer-events:none}
+.about-bio{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--line);background:var(--panel);padding:34px 38px}
+
 .about-bio h2{font:700 clamp(30px,4vw,43px)/1.14 "Space Grotesk";letter-spacing:-1.8px;margin:14px 0 18px}
 .about-bio h2 span{background:var(--grad);background-clip:text;-webkit-background-clip:text;color:transparent}
 .about-bio p{color:var(--muted);max-width:810px;font-size:15px;line-height:1.8;margin:0 0 13px}
@@ -32,9 +32,9 @@
 .about-social-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .about-social-card{display:flex;flex-direction:column;align-items:flex-start;min-height:238px;gap:14px;position:relative;overflow:hidden;border:1px solid var(--line);background:var(--panel);padding:25px;border-radius:21px;transition:transform .2s ease,border-color .2s ease}
 .about-social-card:hover{transform:translateY(-3px);border-color:var(--accent)}
-.about-social-card:after{content:"";position:absolute;right:-76px;top:-76px;width:210px;height:210px;border-radius:50%;opacity:.08;pointer-events:none}
-.about-social-card.discord:after{background:#7784ff}
-.about-social-card.telegram:after{background:#29ade6}
+
+
+
 .about-social-icon{display:grid;place-items:center;width:49px;height:49px;border-radius:15px;flex-shrink:0}
 .about-social-icon svg{width:26px;height:26px;stroke-width:1.6}
 .discord .about-social-icon{background:#5865f222;color:#8d9bff}
@@ -44,6 +44,11 @@
 .about-social-link{display:flex;align-items:center;justify-content:space-between;gap:20px;min-width:158px;padding:11px 16px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:13px;font-weight:800;margin-top:auto}
 .about-social-link:hover{border-color:var(--accent);color:var(--accent)}
 @media(max-width:700px){.about-bio{padding:26px 23px}.about-bio-footer .btn{margin-left:0}.about-social-grid{grid-template-columns:1fr}.about-social-card{min-height:210px}}
+
+/* Use consistent native-sized cursors: don't switch to oversized text I-beams on cards. */
+html,body,main,.page,.tile,.feature,.about-layout,.about-layout *{cursor:default}
+a,button,[data-go],.about-social-link,.about-bio-footer .btn{cursor:pointer}
+input,textarea,[contenteditable="true"]{cursor:text}
 </style></head><body>
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/></symbol><symbol id="i-game" viewBox="0 0 24 24"><path d="M6 8h12c2 0 3 2 4 8 1 5-2 5-5 2l-2-2H9l-2 2c-3 3-6 3-5-2 1-6 2-8 4-8Z"/><path d="M6 12h6m-3-3v6m8-2h.01m2-2h.01"/></symbol><symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></symbol><symbol id="i-service" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 5-5 13 0 18m0-18c5 5 5 13 0 18"/></symbol><symbol id="i-shop" viewBox="0 0 24 24"><path d="m4 9 2-6h12l2 6v12H4zM4 9h16M9 21v-8h6v8"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 11c0 5-4 8-9 8H6l-3 2 1-5c-1-1-2-3-2-5 0-5 4-8 9-8s9 3 9 8z"/><path d="M7 11h9"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0v5l-2 4h16l-2-4V8ZM10 21h4"/></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-9 16-9 16 0"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.5 1.5m11.2 11.2 1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15A8 8 0 0 1 9 4 8 8 0 1 0 20 15Z"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol></svg>
 <header class="shell top"><a href="#home" class="brand" data-go="home"><span class="brandmark">f.</span><span>fleki's wrld<small>Your space on the internet</small></span></a><div class="top-tools"><label class="search"><svg><use href="#i-search"/></svg><input type="search" id="search" placeholder="Search the world..." aria-label="Search sections" autocomplete="off"></label><button class="tool" id="themeToggle" aria-label="Switch color theme" title="Switch color theme"><svg><use id="themeIcon" href="#i-sun"/></svg></button><button class="avatar" id="profileBtn" title="About Fleki" aria-label="About Fleki">f.</button></div><div class="search-results hidden" id="searchResults"></div></header>
