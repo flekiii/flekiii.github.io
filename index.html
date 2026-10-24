@@ -1,211 +1,29 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#070b16">
-<meta name="description" content="flekiii — independent developer from Ukraine. Apps, interfaces and game development.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="flekiii — Developer Portfolio">
-<meta property="og:description" content="Developer portfolio. Software, design and interactive experiences.">
-<meta property="og:url" content="https://flekiii.github.io/">
-<title>flekiii — Developer Portfolio</title>
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="stylesheet" href="styles.css?v=13">
-<script src="app.js?v=14" defer></script>
-<script src="jar3d.js?v=12" type="module"></script><script src="tether.js?v=12" defer></script><script src="earth3d.js?v=13" type="module"></script>
-</head>
-<body>
-<a class="skip-link" href="#main" data-t="skipLink">Skip to main content</a>
-<svg id="lanternTether" class="lantern-tether" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-<defs>
- <linearGradient id="cordShade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#544436"/><stop offset=".27" stop-color="#a78b6e"/><stop offset=".53" stop-color="#f5debc"/><stop offset=".82" stop-color="#a08460"/><stop offset="1" stop-color="#443629"/></linearGradient>
- <filter id="cordShadow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4"/></filter>
- <radialGradient id="mountMetal"><stop stop-color="#f2d4ac"/><stop offset=".5" stop-color="#807b7c"/><stop offset="1" stop-color="#272a36"/></radialGradient>
-</defs>
-<path id="tetherShadow" fill="none" stroke="#06070c" stroke-opacity=".78" stroke-width="8" filter="url(#cordShadow)"/>
-<path id="tetherCord" fill="none" stroke="url(#cordShade)" stroke-width="5.8" stroke-linecap="round"/>
-<path id="tetherBraided" fill="none" stroke="#f5ddb8" stroke-width="1.15" stroke-opacity=".74" stroke-linecap="round" stroke-dasharray="2 6"/>
-<path id="tetherStitch" fill="none" stroke="#523e32" stroke-width=".85" stroke-opacity=".64" stroke-linecap="round" stroke-dasharray="1 7" stroke-dashoffset="4"/>
-<g id="tetherMount"><rect x="-19" y="-11" width="38" height="22" rx="8" fill="#242b3a" stroke="#959caa" stroke-width="1.5"/><circle r="7" fill="url(#mountMetal)" stroke="#b1a6a0"/><circle r="2" fill="#2a2b31"/><circle cx="-13" r="1.6" fill="#b1a89a"/><circle cx="13" r="1.6" fill="#b1a89a"/></g>
-</svg>
-<div class="firefly-lantern" id="fireflyLantern">
-  <div class="lantern-cast" ></div>
-  <canvas id="lantern3d" class="lantern3d" tabindex="0" aria-label="Draggable hanging firefly lantern. Drag to reposition. Home resets." title="Drag the lantern anywhere"></canvas>
-  <div class="lantern-fallback" aria-hidden="true"><div class="lantern-scroll" id="lanternScroll">
-    <div class="lantern-sway">
-      <svg class="lantern-svg" viewBox="0 0 180 294" xmlns="http://www.w3.org/2000/svg" role="presentation">
-        <defs>
-          <linearGradient id="ropeGrad" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#f8b4d5"/><stop offset=".46" stop-color="#9b6988"/><stop offset="1" stop-color="#fff3f5"/></linearGradient>
-          <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2=".2"><stop stop-color="#e4b8ec" stop-opacity=".45"/><stop offset=".22" stop-color="#f9e7f5" stop-opacity=".12"/><stop offset=".65" stop-color="#dffcfb" stop-opacity=".06"/><stop offset="1" stop-color="#efaddb" stop-opacity=".34"/></linearGradient>
-          <linearGradient id="lidGrad" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff5da"/><stop offset=".32" stop-color="#b99b88"/><stop offset=".7" stop-color="#796375"/><stop offset="1" stop-color="#f8d4b6"/></linearGradient>
-          <radialGradient id="warmGlow"><stop stop-color="#fffdec" stop-opacity=".9"/><stop offset=".25" stop-color="#ffebaf" stop-opacity=".55"/><stop offset="1" stop-color="#f8dd89" stop-opacity="0"/></radialGradient>
-          <filter id="blurFirefly" x="-220%" y="-220%" width="540%" height="540%"><feGaussianBlur stdDeviation="8"/></filter>
-        </defs>
-        <path d="M90 -12 C87 23 97 30 90 58 C85 78 95 84 90 98" fill="none" stroke="#4c3546" stroke-linecap="round" stroke-width="6"/>
-        <path d="M90 -12 C87 23 97 30 90 58 C85 78 95 84 90 98" fill="none" stroke="url(#ropeGrad)" stroke-linecap="round" stroke-width="3.5"/>
-        <path d="M88 2 C88 14 93 20 91 33" fill="none" stroke="#ffe6f3" stroke-width="1" stroke-linecap="round" opacity=".8"/>
-        <path d="M72 94 Q65 83 73 77 Q90 72 107 77 Q115 84 108 94" fill="none" stroke="#ad7394" stroke-width="6" stroke-linecap="round"/>
-        <path d="M72 94 Q65 83 73 77 Q90 72 107 77 Q115 84 108 94" fill="none" stroke="#ffe4d1" stroke-width="2.4" stroke-linecap="round"/>
-        <path d="M57 96 Q90 87 124 96 L121 119 Q90 126 59 119Z" fill="url(#lidGrad)" stroke="#4d3a48" stroke-width="3" stroke-linejoin="round"/>
-        <path d="M54 94 Q88 86 126 94 L126 102 Q89 111 54 102Z" fill="#dbc2ae" stroke="#584052" stroke-width="2.4"/>
-        <path d="M58 103 Q91 112 123 102" fill="none" stroke="#fff0df" stroke-width="2" opacity=".8"/>
-        <path d="M65 118 C59 129 49 133 47 151 L43 223 Q43 258 74 263 L109 263 Q140 258 138 224 L134 151 Q132 131 115 118 Z" fill="url(#glassGrad)" stroke="#eab2de" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M65 121 C60 137 56 146 56 177 L56 224 Q57 249 74 255" fill="none" stroke="#fff3fb" stroke-width="5" opacity=".63" stroke-linecap="round"/>
-        <path d="M121 134 Q129 147 129 177 L128 228 Q127 243 119 251" fill="none" stroke="#fff4fc" stroke-width="2.5" opacity=".62" stroke-linecap="round"/>
-        <ellipse cx="91" cy="243" rx="38" ry="15" fill="#ffd8be" opacity=".12"/>
-        <ellipse cx="90" cy="262" rx="23" ry="3" fill="none" stroke="#ffeaf3" stroke-width="2.4" opacity=".8"/>
-        <g class="ff ff-one" style="--dx:7px;--dy:-9px;--delay:-1.5s"><circle class="ff-aura" cx="80" cy="171" r="29" fill="url(#warmGlow)"/><ellipse cx="74" cy="166" rx="7" ry="4" fill="#ffeef1" opacity=".82" transform="rotate(-31 74 166)"/><ellipse cx="86" cy="166" rx="7" ry="4" fill="#fff6fa" opacity=".9" transform="rotate(31 86 166)"/><circle cx="80" cy="173" r="3.8" fill="#fffad5"/></g>
-        <g class="ff ff-two" style="--dx:-9px;--dy:8px;--delay:-3.2s"><circle class="ff-aura" cx="112" cy="203" r="27" fill="url(#warmGlow)"/><ellipse cx="107" cy="197" rx="6" ry="3.4" fill="#fff5f8" transform="rotate(-30 107 197)"/><ellipse cx="118" cy="197" rx="6" ry="3.4" fill="#fff7fa" transform="rotate(30 118 197)"/><circle cx="112" cy="203" r="3.6" fill="#fff9ce"/></g>
-        <g class="ff ff-three" style="--dx:13px;--dy:5px;--delay:-.7s"><circle class="ff-aura" cx="67" cy="224" r="26" fill="url(#warmGlow)"/><ellipse cx="62" cy="218" rx="6" ry="3.2" fill="#fff6fc" transform="rotate(-28 62 218)"/><ellipse cx="72" cy="218" rx="6" ry="3.2" fill="#ffedfa" transform="rotate(28 72 218)"/><circle cx="67" cy="224" r="3.6" fill="#fff4ac"/></g>
-        <g class="ff ff-four" style="--dx:-5px;--dy:-12px;--delay:-2.1s"><circle class="ff-aura" cx="104" cy="150" r="23" fill="url(#warmGlow)"/><circle cx="104" cy="150" r="2.7" fill="#fff8d6"/></g>
-        <g class="ff ff-five" style="--dx:8px;--dy:9px;--delay:-4.4s"><circle class="ff-aura" cx="94" cy="240" r="21" fill="url(#warmGlow)"/><circle cx="94" cy="240" r="2.5" fill="#fff6cf"/></g>
-        <path d="M48 212 Q48 251 72 262" fill="none" stroke="#ffe8fc" stroke-width="2.5" stroke-linecap="round" opacity=".78"/>
-        <path d="M138 229 Q136 253 114 261" fill="none" stroke="#fce8f6" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>
-        <path d="M45 163 l-5 -4 M40 171 l-8 -1 M139 168 l7 -2 M137 179 l7 3" stroke="#fff1da" stroke-width="1.7" stroke-linecap="round" opacity=".65"/>
-        <path class="lantern-sparkle star-one" d="M36 187v-7m-3.5 3.5h7" stroke="#ffebc0" stroke-width="1.6" stroke-linecap="round"/>
-        <path class="lantern-sparkle star-two" d="M149 207v-9m-4.5 4.5h9" stroke="#ffeec9" stroke-width="1.8" stroke-linecap="round"/>
-        <path class="lantern-sparkle star-three" d="M31 236v-5m-2.5 2.5h5" stroke="#ffdcaa" stroke-width="1.4" stroke-linecap="round"/>
-      </svg>
-    </div>
-  </div>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1a0927"><meta name="description" content="Fleki's Wrld — a creative universe for everyone. Create, connect, explore, belong.">
+<meta property="og:title" content="Fleki's Wrld"><meta property="og:description" content="More people. More possibilities. Welcome to my world."><meta property="og:type" content="website">
+<title>Fleki's Wrld — More People. More Possibilities.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#130820;--panel:#27102e;--line:#a451ab99;--pink:#ff48c2;--lav:#c361fd;--text:#fff7ff;--muted:#e5cee7}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#150822;color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden}button,input{font:inherit}a{color:inherit;text-decoration:none}button{cursor:pointer}::selection{background:#ff49bc;color:#fff}.shell{width:min(1440px,calc(100% - 7%));margin:auto}.site-top{position:absolute;z-index:10;top:12px;left:0;width:100%}.nav{width:min(1120px,94%);margin:auto;padding:9px 15px 9px 25px;display:flex;align-items:center;justify-content:space-between;border:1px solid #df6cd18a;background:#150b22b8;box-shadow:0 4px 30px #12021f88,inset 0 0 25px #fa58cc10;border-radius:20px;backdrop-filter:blur(20px)}.brand{display:flex;align-items:center;gap:12px;font:800 22px "Space Grotesk",sans-serif;letter-spacing:-1px;font-style:italic;white-space:nowrap}.brand b{color:#ff63c4}.brandmark{font:900 49px/0.9 "Space Grotesk",sans-serif;color:#f98ee0;text-shadow:2px 0 #8639fa,-3px 2px #fb65c9;letter-spacing:-9px;transform:skew(-9deg);display:inline-block;padding-right:9px}.navlinks{display:flex;align-items:center;gap:6px}.navlinks a{font-size:13px;font-weight:700;padding:12px 19px;border-radius:40px;transition:background .2s}.navlinks a:hover,.navlinks a.active{background:#a3267c95}.nav-right{display:flex;align-items:center;gap:14px}.icon-button{border:0;background:transparent;color:white;font-size:22px;padding:6px}.pill{display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:14px 28px;border:1px solid #ff76ce;border-radius:45px;font-size:14px;font-weight:800;box-shadow:0 0 25px #f83eb86a;transition:transform .2s,box-shadow .2s}.pill:hover{transform:translateY(-3px);box-shadow:0 0 34px #ff4ac5ba}.pill.primary{background:linear-gradient(125deg,#ff31aa,#ff6ed1);color:#fff}.pill.secondary{background:#1d0a2c99;border-color:#de7fde95;box-shadow:none}.pill.small{padding:10px 23px}.menu-btn{display:none}.hero{min-height:650px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 90% 12%,#ff8c9e 0%,#ed2e8c 26%,transparent 58%),radial-gradient(ellipse at 56% 59%,#ff008a 0%,#a40765 35%,transparent 69%),radial-gradient(ellipse at 4% 82%,#50345e 0%,#230d31 48%,#120820 90%)}.hero:after{content:"";pointer-events:none;position:absolute;inset:0;background:linear-gradient(0deg,#12091a9c,transparent 30%),repeating-radial-gradient(circle at 75% 24%,transparent 0 95px,#ff9cfe13 96px 97px)}.stars{position:absolute;inset:0;pointer-events:none;opacity:.8;background-image:radial-gradient(2px 2px at 16% 13%,white 80%,transparent),radial-gradient(2px 2px at 43% 24%,white 80%,transparent),radial-gradient(3px 3px at 69% 18%,#fff 75%,transparent),radial-gradient(2px 2px at 90% 30%,#fff 75%,transparent),radial-gradient(2px 2px at 80% 65%,#fff 75%,transparent),radial-gradient(3px 3px at 57% 48%,#ffb8f8 75%,transparent);background-size:280px 240px,350px 310px,440px 380px,300px 250px,260px 330px,360px 370px;animation:twinkle 8s infinite alternate}@keyframes twinkle{to{opacity:.28}}.hero-art{position:absolute;inset:0;pointer-events:none;z-index:1}.planet{position:absolute;width:195px;height:195px;border-radius:50%;top:14%;right:10%;background:radial-gradient(circle at 34% 28%,#ffb6e9,#fc64a2 38%,#bd2b88 62%,#631953 88%);box-shadow:0 0 38px 8px #ff98df9c,inset -24px -12px 25px #6d245599}.planet:after{content:"";position:absolute;inset:12px;border:2px solid #ffb7e350;border-radius:50%;transform:rotate(35deg) scaleY(.6)}.city{position:absolute;bottom:118px;right:0;width:47%;height:275px;opacity:.85;background:linear-gradient(0deg,#fc66b6,#72094b 60%,transparent 95%);clip-path:polygon(0 95%,0 82%,4% 82%,4% 57%,7% 57%,7% 76%,11% 76%,11% 37%,13% 37%,13% 22%,15% 38%,15% 80%,19% 80%,19% 61%,22% 61%,22% 30%,24% 30%,24% 68%,27% 68%,27% 8%,29% 28%,29% 64%,31% 64%,31% 45%,35% 45%,35% 81%,39% 81%,39% 36%,43% 36%,43% 53%,46% 53%,46% 16%,48% 32%,48% 78%,52% 78%,52% 49%,56% 49%,56% 19%,58% 19%,58% 60%,61% 60%,61% 2%,63% 18%,63% 65%,67% 65%,67% 34%,70% 34%,70% 77%,74% 77%,74% 41%,78% 41%,78% 25%,80% 25%,80% 79%,84% 79%,84% 57%,88% 57%,88% 28%,90% 40%,90% 66%,93% 66%,93% 16%,95% 38%,95% 76%,100% 76%,100% 100%,0 100%);filter:drop-shadow(0 0 21px #ff70d4)}.land{position:absolute;bottom:65px;right:-9%;width:83%;height:155px;border-radius:50% 50% 0 0;transform:rotate(-4deg);background:radial-gradient(ellipse at 70% 12%,#ff65d2 0,#59124a 41%,#1b092d 73%);box-shadow:0 -10px 34px #ff4ed6aa}.horizon{position:absolute;bottom:110px;right:9%;width:58%;height:80px;border:7px solid #ff77dd;border-radius:50%;transform:rotate(-13deg);filter:drop-shadow(0 0 14px #ff94e8);opacity:.85}.floater{position:absolute;width:105px;height:110px;background:linear-gradient(#ff5eb5,#5d164f 66%,transparent 68%);clip-path:polygon(20% 8%,80% 7%,100% 35%,64% 70%,50% 100%,25% 60%,0 36%);filter:drop-shadow(0 0 15px #ff4fd7);transform:rotate(-12deg)}.floater.one{top:26%;left:47%}.floater.two{top:20%;right:30%;transform:scale(.67)}.floater.three{top:12%;right:1%;transform:scale(.8) rotate(16deg)}.hero-layout{position:relative;z-index:3;min-height:650px;display:flex;align-items:center}.hero-copy{max-width:610px;padding-top:45px}.eyebrow{display:inline-block;font-size:11px;letter-spacing:2px;font-weight:800;color:#ffe3fb;background:#ffffff16;border:1px solid #ffffff1f;border-radius:30px;padding:10px 16px}.hero h1{font:800 clamp(52px,6vw,88px)/.98 "Space Grotesk",sans-serif;letter-spacing:-5px;margin:20px 0 10px;filter:drop-shadow(0 3px 10px #34052e)}.gradient{background:linear-gradient(100deg,#ff86d5 7%,#bd6dff 55%,#f64fbd);-webkit-background-clip:text;background-clip:text;color:transparent}.hero-copy>p{max-width:510px;color:#f7e9fa;font-size:18px;line-height:1.55;margin:18px 0 24px;text-shadow:0 1px 6px #2d0631}.hero-actions{display:flex;flex-wrap:wrap;gap:12px}.hero-note{margin-top:24px;color:#f5dff0;display:flex;align-items:center;gap:13px;font-size:13px}.avatar-pips{display:flex;padding-left:8px}.avatar-pips span{width:32px;height:32px;border-radius:50%;border:2px solid #ffd3f8;margin-left:-9px;display:grid;place-items:center;background:linear-gradient(135deg,#802cba,#ef64b9);font-weight:800}.giant-logo{position:absolute;z-index:2;left:51%;top:18%;width:290px;height:370px;filter:drop-shadow(0 0 30px #ff55d3a6);transform:rotate(-4deg);display:flex;justify-content:center;align-items:center}.giant-logo:before{content:"#";position:absolute;font:900 430px/.7 "Space Grotesk",sans-serif;color:#ffa1e0;text-shadow:0 0 35px #fa56ca;transform:skew(-10deg) scaleX(1.02)}.giant-logo:after{content:"f";position:absolute;font:900 340px/1 "Space Grotesk",sans-serif;background:linear-gradient(170deg,#543cfc,#a32aff,#db39de);-webkit-background-clip:text;background-clip:text;color:transparent;transform:translateY(18px)}.giant-logo span{position:absolute;top:20%;z-index:3;font:bold 21px "Space Grotesk",sans-serif;color:#592453;transform:rotate(-11deg)}.scribble{position:absolute;right:9%;top:22%;font:italic 31px/1.1 cursive;color:#ffe3f6;transform:rotate(-12deg);text-shadow:0 0 12px #d137c6}.content{position:relative;z-index:4;background:linear-gradient(180deg,#2a0b2df2,#180a26 36%,#1a0a29 100%);margin-top:-28px;border-top:1px solid #e062bb66;border-radius:30px 30px 0 0;box-shadow:0 -16px 50px #ff329c2b;padding-bottom:0}.section{padding:42px 0 26px}.section-top{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:20px}.kicker{font-size:11px;font-weight:800;color:#ff92dd;letter-spacing:3px;margin-bottom:7px}.section h2{font:800 clamp(32px,3vw,43px)/1.02 "Space Grotesk";letter-spacing:-2px;margin:0}.section-top p{max-width:470px;color:#e4cfe8;font-size:14px;line-height:1.5}.arrows{display:flex;gap:9px}.arrow{border:1px solid #b86db5a1;border-radius:50%;background:#ffffff0b;color:white;width:42px;height:42px;font-size:22px}.arrow:hover{background:#d436a8}.world-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:17px}.world-card{min-height:218px;border:1px solid #f281cb9a;border-radius:19px;padding:18px;display:flex;flex-direction:column;justify-content:end;position:relative;overflow:hidden;background:#331637;box-shadow:inset 0 0 35px #ed2bac26,0 6px 22px #0e001859;transition:transform .2s}.world-card:hover{transform:translateY(-6px)}.world-card:before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#1b0922 0%,#290d3399 38%,#831aa426 100%),var(--image);background-size:cover;background-position:center;transition:transform .3s}.world-card:hover:before{transform:scale(1.06)}.world-card>*{z-index:1;position:relative}.card-icon{align-self:flex-start;font-size:23px;padding:9px;background:#923b8e66;border-radius:12px;margin-bottom:auto}.world-card h3{margin:0 0 7px;font-size:18px}.world-card p{font-size:12px;color:#ffeaf7;line-height:1.35;margin:0;max-width:90%}.card-arrow{position:absolute;right:12px;bottom:13px;border:1px solid #eaa4e0;border-radius:50%;height:39px;width:39px;display:grid;place-items:center;background:#3b154ca6;font-size:22px}.community-panel{margin-top:26px;background:linear-gradient(110deg,#3c143e,#1c0d2e 65%,#4a163b);border:1px solid #e063af54;border-radius:24px;display:grid;grid-template-columns:1fr 1.4fr;align-items:center;gap:24px;min-height:210px;overflow:hidden}.collage{height:210px;position:relative;overflow:hidden;display:flex;align-items:center;padding-left:15px;gap:8px}.collage img,.collage .collage-text{width:28%;height:155px;object-fit:cover;border:2px solid #ff8bd9;border-radius:10px;transform:rotate(-9deg);box-shadow:0 0 25px #ec42be6e}.collage img:nth-child(2){transform:rotate(8deg)}.collage img:nth-child(4){transform:rotate(7deg)}.collage-text{display:grid;place-items:center;text-align:center;font-size:15px;font-weight:900;color:#ffa7e7;background:linear-gradient(150deg,#3f1554,#a31870)}.community-copy{padding:25px 25px 25px 0}.community-copy h2{font-size:30px;margin:10px 0}.community-copy p{color:#e7cee9;font-size:14px;line-height:1.55}.values{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}.values span{border:1px solid #bb4b9e88;background:#ffffff09;border-radius:30px;padding:8px 14px;font-size:12px;font-weight:700}.about-panel{margin-top:48px;text-align:center;padding:60px 20px;background:radial-gradient(ellipse at center,#65226f65,transparent 66%)}.about-panel h2{font-size:clamp(36px,5vw,68px);max-width:850px;margin:0 auto 20px}.about-panel p{max-width:670px;margin:0 auto 24px;line-height:1.7;color:#e9cfe7}.footer{border-top:1px solid #eb74c15c;background:#1a0927;padding:22px 0}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.footlinks{display:flex;flex-wrap:wrap;gap:24px;font-size:12px;color:#f3dbee}.footmeta{font-size:11px;color:#c4abc9}.dialog{border:1px solid #e77ed2;border-radius:22px;color:#fff;background:#24102feF;padding:28px;max-width:490px;box-shadow:0 24px 100px #080211}.dialog::backdrop{background:#0a0519d6;backdrop-filter:blur(8px)}.dialog h2{font-size:26px}.dialog p{color:#ead5ef;line-height:1.5}.dialog-close{float:right;background:transparent;border:0;color:white;font-size:26px}.search-box{width:100%;background:#ffffff11;border:1px solid #e18ed0;border-radius:14px;color:white;padding:14px;margin-top:15px}.search-results{display:grid;gap:8px;margin-top:15px}.search-results a{padding:12px;border:1px solid #ffffff2e;border-radius:12px}.search-results a:hover{background:#ffffff18}@media(max-width:1050px){.giant-logo{left:58%;transform:scale(.78) rotate(-4deg)}.scribble{display:none}.hero-copy{max-width:560px}.world-grid{grid-template-columns:repeat(2,1fr)}.navlinks a{padding:10px}.community-panel{grid-template-columns:1fr 1.2fr}}@media(max-width:700px){.shell{width:92%}.nav{padding:8px 13px}.brand{font-size:18px}.brandmark{font-size:38px}.navlinks{display:none;position:absolute;top:70px;left:4%;right:4%;background:#25102ff7;border:1px solid #bd6bbc;border-radius:16px;padding:14px;flex-direction:column;align-items:stretch}.navlinks.open{display:flex}.navlinks a{padding:12px}.menu-btn{display:block}.search-toggle{display:none}.hero,.hero-layout{min-height:745px}.hero-layout{align-items:flex-end;padding-bottom:92px}.hero-copy{padding:0}.hero h1{font-size:51px;letter-spacing:-3px}.hero-copy>p{font-size:15px}.giant-logo{left:50%;top:14%;transform:translateX(-50%) scale(.58);transform-origin:top center}.planet{width:110px;height:110px;right:4%;top:15%}.city{width:90%;height:185px;bottom:275px}.land{bottom:270px}.horizon{bottom:290px}.floater.one{left:12%;top:20%}.floater.two{top:24%;right:15%}.section-top{align-items:start;flex-wrap:wrap}.section-top p{margin:0}.world-grid{grid-template-columns:1fr}.world-card{min-height:215px}.community-panel{grid-template-columns:1fr}.collage{height:170px}.collage img,.collage .collage-text{height:125px}.community-copy{padding:0 20px 20px}.about-panel{margin-top:25px;padding:45px 12px}.footer-inner{justify-content:center;text-align:center}.footlinks{justify-content:center}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+</style></head><body>
+<header class="site-top"><div class="nav"><a class="brand" href="#home" aria-label="Fleki's Wrld home"><span class="brandmark">#</span><span>FLEKI'S <b>WRLD</b></span></a><nav class="navlinks" id="navlinks" aria-label="Main"><a href="#home" class="active">Home</a><a href="#worlds">Worlds</a><a href="#community">Community</a><a href="#explore">Explore</a><a href="#about">About</a></nav><div class="nav-right"><button class="icon-button search-toggle" id="openSearch" aria-label="Search">⌕</button><a class="pill primary small" href="https://discord.gg/aMmRhCHd4j" target="_blank" rel="noopener noreferrer">Join <span>→</span></a><button class="icon-button menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">☰</button></div></div></header>
+<main><section class="hero" id="home"><div class="stars"></div><div class="hero-art" aria-hidden="true"><div class="planet"></div><div class="city"></div><div class="land"></div><div class="horizon"></div><div class="floater one"></div><div class="floater two"></div><div class="floater three"></div><div class="giant-logo"><span>FLEKI'S WRLD</span></div><div class="scribble">More People<br>More Possibilities ♡</div></div><div class="shell hero-layout"><div class="hero-copy"><span class="eyebrow">✦ A CREATIVE UNIVERSE FOR EVERYONE</span><h1>Welcome to<br><span class="gradient">Fleki's Wrld</span></h1><p>A digital universe where creativity, community and self-expression come together. No matter who you are, there's a place for you here.</p><div class="hero-actions"><a class="pill primary" href="#worlds">Enter the World <span>→</span></a><a class="pill secondary" href="https://discord.gg/aMmRhCHd4j" target="_blank" rel="noopener noreferrer">♧ Join the Community</a></div><div class="hero-note"><div class="avatar-pips" aria-hidden="true"><span>✦</span><span>♥</span><span>★</span><span>☻</span></div><span>A growing world of creators, dreamers and doers.<br>Everyone belongs here.</span></div></div></div></section>
+<div class="content"><section class="section shell" id="worlds"><div class="section-top"><div><div class="kicker">EXPLORE THE WORLDS</div><h2>Different spaces.<br><span style="color:#ff79d8">Same universe.</span></h2></div><p>From creative expression to community connections, Fleki's Wrld is made up of unique spaces for every part of your journey.</p><div class="arrows"><button class="arrow" id="prev" aria-label="Previous space">←</button><button class="arrow" id="next" aria-label="Next space">→</button></div></div>
+<div class="world-grid" id="worldGrid">
+<a class="world-card" href="#explore" style="--image:url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1000&q=80')"><span class="card-icon">🎨</span><h3>Creative Space</h3><p>Showcase your art, ideas, music, photos and more. Let your imagination run wild.</p><span class="card-arrow">→</span></a>
+<a class="world-card" href="#community" style="--image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&q=80')"><span class="card-icon">♧</span><h3>Community Hub</h3><p>Meet amazing people, join conversations and find your tribe. Real connections.</p><span class="card-arrow">→</span></a>
+<a class="world-card" href="#about" style="--image:url('https://images.unsplash.com/photo-1517841905240-472988babdf9?w=1000&q=80')"><span class="card-icon">♙</span><h3>Profile Space</h3><p>Make it yours. Express who you are and share your journey with the world.</p><span class="card-arrow">→</span></a>
+<a class="world-card" href="#explore" style="--image:url('https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=1000&q=80')"><span class="card-icon">▦</span><h3>Events & Discover</h3><p>Discover creators, collaborations and exciting experiences across the universe.</p><span class="card-arrow">→</span></a>
 </div>
-</div>
-<header class="site-header" id="top">
-  <div class="header-inner">
-    <a href="#top" class="dock-home" aria-label="Home" title="Home"><span>f.</span></a>
-    <nav class="desktop-nav" aria-label="Main navigation">
-      <a href="#about" data-t="navAbout">About</a>
-      <a href="#expertise" data-t="navWork">What I do</a>
-      <a href="#skills" data-t="navSkills">Skills</a>
-      <a href="#contact" data-t="navContact">Contact</a>
-    </nav>
-    <div class="nav-actions">
-      <div class="lang-switch" role="group" aria-label="Site language">
-        <button data-lang="en" type="button" aria-pressed="true">EN</button>
-        <button data-lang="uk" type="button" aria-pressed="false">UA</button>
-      </div>
-    </div>
-  </div>
-</header>
-
-<main id="main">
-<section class="hero earth-hero" aria-labelledby="planet-title">
-  <div class="cosmic-nebula cosmic-nebula-a" aria-hidden="true"></div>
-  <div class="cosmic-nebula cosmic-nebula-b" aria-hidden="true"></div>
-  <div class="cosmic-stars" aria-hidden="true"></div>
-  <div class="container hero-layout">
-    <div class="planet-zone">
-      <h1 id="planet-title" class="visually-hidden" data-t="earthTitle">Home. Earth. My starting point.</h1>
-      <div class="earth-stage">
-        <div class="earth-backlight" aria-hidden="true"></div>
-        <div class="orbit-ring orbit-ring-one" aria-hidden="true"></div>
-        <div class="orbit-ring orbit-ring-two" aria-hidden="true"></div>
-        <div class="earth-fallback" aria-hidden="true"></div>
-        <canvas id="earthCanvas" tabindex="0" aria-label="Interactive 3D planet Earth. Drag to rotate or use arrow keys. Home resets view." title="Drag to spin planet Earth"></canvas>
-        <div class="earth-small-star earth-small-star-a" aria-hidden="true"></div>
-        <div class="earth-small-star earth-small-star-b" aria-hidden="true"></div>
-      </div>
-      <div class="planet-metadata" aria-hidden="true">
-        <span class="planet-meta-id"><i></i></span>
-      </div>
-    </div>
-    <aside class="profile-card text-profile" aria-label="fleki"><div class="profile-inner"><div class="profile-wordmark">fleki</div></div></aside>
-  </div>
-
-</section>
-
-<section class="section about matrix-about" id="about">
-  <div class="container matrix-container">
-    <h2 class="matrix-heading" id="matrixHeading" data-uk="хочу створити свій вільний світ" data-en="I want to create my own free world">хочу створити свій вільний світ</h2>
-  </div>
-</section>
-
-<section class="section expertise" id="expertise">
-  <div class="container">
-    <div class="section-heading"><h2 data-t="expertiseTitle">Things I <em>love working on.</em></h2></div>
-    <div class="expertise-list">
-      <article class="expertise-item">
-        <span class="expertise-index">01</span>
-        <div class="expertise-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><rect x="9" y="13" width="46" height="37" rx="5" stroke="currentColor" stroke-width="2.5"/><path d="m24 27-7 6 7 6m16-12 7 6-7 6M35 23l-6 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="expertise-copy"><h3 data-t="serviceApps">Software & applications</h3><p data-t="serviceAppsDesc">Building applications and exploring new technologies to create experiences that are useful and enjoyable.</p></div>
-        <span class="expertise-tail" aria-hidden="true">↗</span>
-      </article>
-      <article class="expertise-item">
-        <span class="expertise-index">02</span>
-        <div class="expertise-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><rect x="9" y="10" width="46" height="44" rx="5" stroke="currentColor" stroke-width="2.5"/><path d="M9 22h46M17 16h2m6 0h2M20 32h12v13H20zm19 2h8m-8 8h8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>
-        <div class="expertise-copy"><h3 data-t="serviceWeb">Web & interface design</h3><p data-t="serviceWebDesc">Designing and developing clean, responsive interfaces with attention to small details and usability.</p></div>
-        <span class="expertise-tail" aria-hidden="true">↗</span>
-      </article>
-      <article class="expertise-item">
-        <span class="expertise-index">03</span>
-        <div class="expertise-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><path d="M20 25h24c6 0 9 4 11 13 2 8-1 12-7 10l-9-7H25l-9 7c-6 2-9-2-7-10 2-9 5-13 11-13Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M22 30v12m-6-6h12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="40" cy="32" r="2" fill="currentColor"/><circle cx="47" cy="38" r="2" fill="currentColor"/></svg></div>
-        <div class="expertise-copy"><h3 data-t="serviceGames">Game development</h3><p data-t="serviceGamesDesc">Learning and experimenting with game engines, interaction, gameplay systems and world building.</p></div>
-        <span class="expertise-tail" aria-hidden="true">↗</span>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section class="section skills" id="skills">
-  <div class="container">
-    <div class="skills-layout">
-      <div class="skills-intro"><h2 data-t="skillsTitle">The tools<br>behind <em>my work.</em></h2><p data-t="skillsIntro">A collection of technologies I use, learn and experiment with. Always growing, never finished.</p></div>
-      <div class="skill-groups">
-        <div class="skill-group"><h3 data-t="skillsDev">Development</h3><div class="skill-pills"><span>JavaScript</span><span>Dart</span><span>Flutter</span><span>Rust</span><span>HTML / CSS</span></div></div>
-        <div class="skill-group"><h3 data-t="skillsGame">Game development</h3><div class="skill-pills"><span>Unity</span><span>Unreal Engine</span><span>C#</span></div></div>
-        <div class="skill-group"><h3 data-t="skillsWorkflow">Workflow & environment</h3><div class="skill-pills"><span>NixOS</span><span>Linux</span><span>GitHub</span><span>VS Code</span><span>Git</span></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section support" id="support">
-  <div class="container support-grid">
-    <div class="support-message">
-      <p class="section-label" data-t="supportEyebrow">SUPPORT</p>
-      <h2 data-t="supportTitle">Support my <em>journey.</em></h2>
-      <p data-t="supportBody">I'm still learning and building. If you'd like to support what I do, you can contribute through Monobank. It's completely optional.</p>
-      <a class="button button-dark" href="https://send.monobank.ua/jar/91HH8iY31q" target="_blank" rel="noopener noreferrer"><span data-t="donate">Support via Monobank</span><span aria-hidden="true">↗</span></a>
-      
-    </div>
-    <div class="support-card-wrap">
-      <div class="support-card-halo" aria-hidden="true"></div>
-      <div id="cardStage" class="card-stage" tabindex="0" role="group" aria-label="Interactive fictional bank card. Drag or use arrow keys to rotate; Home to reset.">
-        <div id="bankCard" class="card-rotator">
-          <div class="card-face bank-front">
-            <div class="bank-texture"></div><div class="bank-reflection"></div><div class="bank-security-pattern" aria-hidden="true"></div><div class="bank-hologram" aria-hidden="true">◈</div>
-            <div class="bank-top"><strong>flekiii<span>.</span></strong><small>PRIVATE / CONCEPT</small></div>
-            <div class="bank-middle"><div class="bank-chip"><i></i></div><svg class="contactless" viewBox="0 0 30 30" aria-hidden="true"><path d="M5 10Q11 15 5 20 M11 6Q20 15 11 24 M17 2Q29 15 17 28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-            <div class="bank-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; 0000</div><div class="bank-printed-details"><span>01 / STUDIO EDITION</span><span>VALID THRU &nbsp; 12 / 34</span></div>
-            <div class="bank-bottom"><div><small>CARDHOLDER</small><strong>FLEKIII</strong></div><span>PRIVACY BY DESIGN</span></div>
-          </div>
-          <div class="card-face bank-back">
-            <div class="bank-texture"></div><div class="bank-reflection"></div>
-            <div class="bank-back-top"><strong>flekiii<span>.</span></strong><small>CONCEPT CARD / 01</small></div><div class="bank-stripe"></div><div class="bank-fine-print" aria-hidden="true">CONCEPT CARD · DESIGN STUDY · PRIVATE IDENTITY</div>
-            <div class="bank-signature"><span>AUTHORIZED HOLDER</span><b>•••</b></div>
-            <div class="bank-back-caption">DESIGNED FOR SIMPLICITY AND CONTROL.</div><div class="bank-back-serial">SERIES 001  ·  FLEKIII STUDIO</div>
-            <div class="bank-back-footer"><span>NOT A PAYMENT CARD</span><span>01 / CONCEPT</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="card-controls"><button id="resetCard" type="button" data-t="cardReset">RESET ↺</button></div>
-    </div>
-  </div>
-</section>
-
-<section class="section contact" id="contact">
-  <div class="container">
-    <div class="contact-content"><p class="contact-kicker" data-t="contactKicker">HAVE AN IDEA OR JUST WANT TO TALK?</p><h2 data-t="contactTitle">Let's connect<span>.</span></h2>
-      <p data-t="contactBody">I'm always interested in learning, connecting and hearing about interesting ideas.</p>
-      <div class="contact-links">
-        <a href="https://github.com/flekiii" target="_blank" rel="noopener noreferrer"><span>GitHub</span><span aria-hidden="true">↗</span></a>
-        <a href="https://discord.gg/aMmRhCHd4j" target="_blank" rel="noopener noreferrer"><span>Discord</span><span aria-hidden="true">↗</span></a>
-        <a href="https://www.tiktok.com/@fleki.truepkg" target="_blank" rel="noopener noreferrer"><span>TikTok</span><span aria-hidden="true">↗</span></a>
-      </div>
-    </div>
-  </div>
-</section>
-</main>
-
-</body></html>
+<div class="community-panel" id="community"><div class="collage"><img loading="lazy" alt="Artist creating" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=450&q=75"><img loading="lazy" alt="Community together" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=450&q=75"><div class="collage-text">GOOD<br>PEOPLE<br>BRIGHTER<br>WORLDS ♡</div><img loading="lazy" alt="Neon celebration" src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=450&q=75"></div><div class="community-copy"><div class="kicker">A COMMUNITY THAT FEELS LIKE HOME</div><h2>Create. Connect. Share. <span style="color:#ff77d5">Belong.</span></h2><p>Fleki's Wrld is more than a website — it's the beginning of a world built around creativity, freedom and people. Come help shape what it becomes.</p><div class="values"><span>♡ Everyone welcome</span><span>✦ Create freely</span><span>◎ Connect globally</span></div></div></div></section>
+<section class="section shell about-panel" id="explore"><div class="kicker">THIS WORLD IS JUST BEGINNING</div><h2>More people.<br><span class="gradient">More possibilities.</span></h2><p>Imagine a place where ideas grow into projects, strangers become friends, and everyone has room to express themselves. We're building the first chapter together.</p><a class="pill primary" href="https://discord.gg/aMmRhCHd4j" target="_blank" rel="noopener noreferrer">Be Part of the World →</a></section>
+<section class="section shell about-panel" id="about" style="margin-top:0;padding-top:30px"><div class="kicker">BEHIND THE WORLD</div><h2>Created by <span class="gradient">Fleki.</span></h2><p>I'm an independent creator from Ukraine who wants to build a freer, more creative corner of the internet. Fleki's Wrld starts here — and grows with the people who enter it.</p><a class="pill secondary" href="https://github.com/flekiii" target="_blank" rel="noopener noreferrer">See my GitHub ↗</a></section></div></main>
+<footer class="footer"><div class="shell footer-inner"><a class="brand" href="#home"><span class="brandmark">#</span><span>FLEKI'S <b>WRLD</b></span></a><span class="footmeta">More People. More Possibilities.</span><nav class="footlinks" aria-label="Footer"><a href="#home">Home</a><a href="#worlds">Worlds</a><a href="#community">Community</a><a href="#explore">Explore</a><a href="#about">About</a><a href="https://discord.gg/aMmRhCHd4j" target="_blank" rel="noopener noreferrer">Discord ↗</a></nav><span class="footmeta">© <span id="year"></span> Fleki's Wrld</span></div></footer>
+<dialog class="dialog" id="searchDialog"><button class="dialog-close" id="closeSearch" aria-label="Close search">×</button><h2>Explore Fleki's Wrld ✦</h2><p>Find a space in the world.</p><label for="searchInput">Search spaces</label><input class="search-box" id="searchInput" type="search" placeholder="Try community, creative, about..." autocomplete="off"><div class="search-results" id="searchResults"></div></dialog>
+<script>
+const menu=document.getElementById('navlinks'),menuBtn=document.getElementById('menuBtn');menuBtn.addEventListener('click',()=>{let open=menu.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(open))});document.querySelectorAll('.navlinks a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');document.querySelectorAll('.navlinks a').forEach(n=>n.classList.remove('active'));a.classList.add('active')}));document.getElementById('year').textContent=new Date().getFullYear();
+const cards=document.querySelectorAll('.world-card');let current=0;function focusCard(delta){current=(current+delta+cards.length)%cards.length;cards[current].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});cards[current].focus({preventScroll:true})}document.getElementById('prev').addEventListener('click',()=>focusCard(-1));document.getElementById('next').addEventListener('click',()=>focusCard(1));
+const dialog=document.getElementById('searchDialog'),input=document.getElementById('searchInput'),results=document.getElementById('searchResults');let pages=[['Creative Space','#explore'],['Community Hub','#community'],['Profile Space','#about'],['Events & Discover','#explore'],['About Fleki','#about'],['Worlds','#worlds']];function updateSearch(){const q=input.value.toLowerCase().trim();results.replaceChildren();let found=pages.filter(([label])=>label.toLowerCase().includes(q));if(!found.length){results.textContent='No matching spaces yet.';return}found.forEach(([label,url])=>{let a=document.createElement('a');a.href=url;a.textContent=label+' ↗';a.addEventListener('click',()=>dialog.close());results.append(a)})}document.getElementById('openSearch').addEventListener('click',()=>{dialog.showModal();input.value='';updateSearch();input.focus()});document.getElementById('closeSearch').addEventListener('click',()=>dialog.close());input.addEventListener('input',updateSearch);
+</script></body></html>
