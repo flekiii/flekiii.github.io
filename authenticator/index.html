@@ -20,7 +20,7 @@
  <div class="add-top"><h2>Add an authenticator</h2><button type="button" id="cancelAdd" class="x">✕</button></div>
  <label>Service name<input id="accountIssuer" placeholder="Fleki’s Wrld, GitHub, Discord…" maxlength="60" required></label>
  <label>Account label (optional)<input id="accountLabel" placeholder="Your username" maxlength="90"></label>
- <label>Setup key or otpauth:// link<textarea id="accountSecret" placeholder="Paste the base32 key shown during 2FA setup" rows="2" required spellcheck="false"></textarea></label>
+ <label>Setup key or otpauth:// link<textarea id="accountSecret" placeholder="Paste the base32 key shown during 2FA setup" rows="2" required spellcheck="false"></textarea></label><div class="qr-controls"><button type="button" id="scanQr" class="subtle">Scan QR code with camera</button><button type="button" id="stopScan" class="subtle" hidden>Stop camera</button></div><video id="qrVideo" class="qr-preview" autoplay playsinline muted hidden aria-label="Camera preview for QR code"></video>
  <p>Use the setup key shown in Fleki’s Wrld → Profile → 2FA. Never share this key with anyone.</p>
  <button type="submit" class="primary">Save encrypted account <span>↗</span></button>
  </form>
