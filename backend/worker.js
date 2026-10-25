@@ -52,7 +52,7 @@ const unseal=async(s,env)=>{
  const plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:payload.slice(0,12)},await mfaKey(env),payload.slice(12));
  return dec.decode(plain);
 };
-async function verifyTotp(secret,code){if(!/^\d{6}$/.test(code))return false;const key=await crypto.subtle.importKey("raw",debase(secret),{name:"HMAC",hash:"SHA-1"},false,["sign"]);let counter=Math.floor(now()/30000);for(let d=-1;d<=1;d++){const b=new Uint8Array(8);new DataView(b.buffer).setBigUint64(0,BigInt(counter+d));const h=new Uint8Array(await crypto.subtle.sign("HMAC",key,b)),i=h[19]&15,n=(((h[i]&127)<<24)|(h[i+1]<<16)|(h[i+2]<<8)|h[i+3])%1000000;if(String(n).padStart(6,"0")===code)return true}return false}
+async function verifyTotp(secret,code){if(!/^\d{6}$/.test(code))return false;const key=await crypto.subtle.importKey("raw",debase(secret),{name:"HMAC",hash:"SHA-1"},false,["sign"]);let counter=Math.floor(now()/30000);for(let d=-1;d<=1;d++){const b=new Uint8Array(8);new DataView(b.buffer).setBigUint64(0,BigInt(counter+d),false);const h=new Uint8Array(await crypto.subtle.sign("HMAC",key,b)),i=h[19]&15,n=(((h[i]&127)<<24)|(h[i+1]<<16)|(h[i+2]<<8)|h[i+3])%1000000;if(String(n).padStart(6,"0")===code)return true}return false}
 async function endpoints(req,env,path,ip){
  const db=env.DB,url=new URL(req.url),m=req.method,t=now();
  const is=(method,p)=>method===m&&path===p;
