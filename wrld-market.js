@@ -176,9 +176,25 @@ function renderMessages(){
 function renderStore(){
  return '<section class="market-panel"><h2>Register your own store</h2><p>Store accounts require manual approval so buyers can recognize official merchants. Ordinary users can publish individual listings immediately after verifying 2FA.</p><a class="btn primary" target="_blank" rel="noopener noreferrer" href="https://t.me/flekusik">Apply directly via Telegram · @flekusik ↗</a><p class="market-footnote">Do not send passwords, 2FA secrets or recovery codes to anyone, including store administrators.</p></section>';
 }
+function fillEditor(){
+ const item=editing,form=$("#marketSellForm");if(!item||!form)return;
+ const update=(name,value)=>{const el=form.elements.namedItem(name);if(el&&!("length" in el))el.value=String(value??"")};
+ update("title",item.title);update("description",item.description);update("price",(item.price_minor/100).toFixed(2));update("currency",item.currency);
+ update("category",item.category);refreshSubcategories();update("subcategory",item.subcategory);refreshCustomType();update("custom_type",item.custom_type);
+ const radio=form.querySelector('input[name="negotiable"][value="'+(item.negotiable?"yes":"no")+'"]');if(radio)radio.checked=true;
+ update("origin_country",item.origin_country);update("origin_region",item.origin_region);
+ for(const input of $('[name="shipping_countries"]'))input.checked=(item.shipping_countries||[]).includes(input.value);
+ for(const input of $('[name="payment_methods"]'))input.checked=(item.payment_methods||[]).includes(input.value);
+ update("images",(item.images||[]).join("\n"));update("videos",(item.videos||[]).join("\n"));
+}
 function paint(){
- root.innerHTML='<div class="market-shell">'+menu()+(view==="browse"?renderBrowse():view==="sell"?renderSell():view==="my"?renderMy():view==="messages"?renderMessages():renderStore())+'</div>';
- if(view==="sell"){void refreshShippingProviders();updateDestinationCount()}
+ if(authState!=="verified"){
+  root.innerHTML=verifiedGate();return;
+ }
+ const main=view==="my"?renderMy():view==="wishlist"?(selected?detail(selected):renderWishlist()):view==="messages"?renderMessages():renderBrowse();
+ root.innerHTML='<div class="market-shell market-workspace">'+menu()+'<main class="market-main">'+topbar()+main+'</main></div>'+
+ (shopFormOpen?'<div class="market-modal-backdrop" id="marketEditBackdrop"><div class="market-edit-dialog" role="dialog" aria-modal="true" aria-label="Listing editor"><button type="button" class="market-modal-close" data-market-close="1" aria-label="Close listing editor">×</button>'+renderSell()+'</div></div>':'');
+ if(shopFormOpen){fillEditor();void refreshShippingProviders();updateDestinationCount()}
  if(chatKey)void loadMessages();
 }
 async function browse(){
@@ -192,11 +208,13 @@ async function browse(){
  }catch(err){message(err.message,true)}finally{loading=false}
 }
 async function changeView(next){
- view=next;selected=null;chatKey=null;message("");
+ if(!["browse","my","wishlist","messages"].includes(next))return;
+ view=next;selected=null;chatKey=null;shopFormOpen=false;editing=null;message("");
  try{
-  if(next==="sell"&&!options)options=await loadOptions();
-  if(next==="my"){await needLogin();own=(await call("/market/mine")).listings}
-  if(next==="messages"){await needLogin();conversations=(await call("/market/conversations")).conversations}
+  if(next==="my")own=(await call("/market/mine")).listings;
+  if(next==="wishlist")wishlist=(await call("/market/wishlist")).listings;
+  if(next==="messages")conversations=(await call("/market/conversations")).conversations;
+  if(next==="browse")listings=(await call("/market/listings")).listings;
  }catch(err){message(err.message,true)}
  paint();
 }
@@ -280,8 +298,14 @@ root.addEventListener("submit",async event=>{
   }
  }catch(err){message(err.message,true)}finally{loading=false}
 });
-void Promise.all([loadOptions(),call("/market/listings")]).then(([catalog,list])=>{
- options=catalog;listings=list.listings;
- paint();
-}).catch(err=>{message("Marketplace settings could not load: "+err.message,true);paint()});
+async function initialize(){
+ authState="loading";paint();
+ if(!await validateAccess()){paint();return}
+ try{
+  const [catalog,list]=await Promise.all([loadOptions(),call("/market/listings")]);
+  options=catalog;listings=list.listings;message("");paint();
+ }catch(err){message("Marketplace could not load: "+err.message,true);paint()}
+}
+window.addEventListener("fw-auth-changed",()=>void initialize());
+void initialize();
 })();
