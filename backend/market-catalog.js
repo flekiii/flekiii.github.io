@@ -402,8 +402,28 @@ export const marketCategories = {
     ]
   },
   "electronics": {
-    "label": "Electronics & technology",
+    "label": "Computers & electronics",
     "subcategories": [
+      {"id":"monitors","label":"Monitors"},
+      {"id":"computer_mice","label":"Computer mice"},
+      {"id":"keyboards","label":"Keyboards"},
+      {"id":"ram","label":"RAM / memory"},
+      {"id":"pc_cases","label":"PC cases"},
+      {"id":"cpu_coolers","label":"CPU coolers"},
+      {"id":"case_fans","label":"Case fans"},
+      {"id":"liquid_cooling","label":"Liquid cooling / AIO"},
+      {"id":"graphics_cards","label":"Graphics cards / GPUs"},
+      {"id":"motherboards","label":"Motherboards"},
+      {"id":"cpus","label":"Processors / CPUs"},
+      {"id":"power_supplies","label":"Power supplies"},
+      {"id":"ssd_drives","label":"SSDs"},
+      {"id":"hdd_drives","label":"Hard drives / HDDs"},
+      {"id":"thermal_paste","label":"Thermal paste & pads"},
+      {"id":"pc_cables","label":"PC cables & adapters"},
+      {"id":"network_cards","label":"Network cards"},
+      {"id":"sound_cards","label":"Sound cards"},
+      {"id":"pc_sets","label":"Custom PC builds"},
+      {"id":"computer_accessories","label":"Computer accessories"},
       {
         "id": "smartphones",
         "label": "Smartphones"
