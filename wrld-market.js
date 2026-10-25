@@ -195,7 +195,7 @@ function paint(){
  root.innerHTML='<div class="market-shell market-workspace">'+menu()+'<main class="market-main">'+topbar()+main+'</main></div>'+
  (shopFormOpen?'<div class="market-modal-backdrop" id="marketEditBackdrop"><div class="market-edit-dialog" role="dialog" aria-modal="true" aria-label="Listing editor"><button type="button" class="market-modal-close" data-market-close="1" aria-label="Close listing editor">×</button>'+renderSell()+'</div></div>':'');
  if(shopFormOpen){fillEditor();void refreshShippingProviders();updateDestinationCount();
-  const form=$("#marketSellForm");if(form&&!form.dataset.focused){form.dataset.focused="yes";queueMicrotask(()=>form.querySelector('input[name="title"]')?.focus())}
+  const form=$("#marketSellForm");if(form&&!form.dataset.focused){form.dataset.focused="yes";Promise.resolve().then(()=>form.querySelector('input[name="title"]')?.focus())}
  }
  if(chatKey)void loadMessages();
 }
