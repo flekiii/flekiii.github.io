@@ -3,6 +3,7 @@ const SITE="https://flekiii.github.io/";
 const API="https://flekis-wrld-api.flekideveloper.workers.dev";
 const e=new TextEncoder(),d=new TextDecoder();
 const providers={
+  fmail:{auth:"https://xoni-mail.onrender.com/oauth/authorize",token:"https://xoni-mail.onrender.com/oauth/token",scope:"profile"},
   google:{id:"GOOGLE_CLIENT_ID",secret:"GOOGLE_CLIENT_SECRET",auth:"https://accounts.google.com/o/oauth2/v2/auth",token:"https://oauth2.googleapis.com/token",scope:"openid profile"},
   apple:{id:"APPLE_CLIENT_ID",team:"APPLE_TEAM_ID",kid:"APPLE_KEY_ID",key:"APPLE_PRIVATE_KEY",auth:"https://appleid.apple.com/auth/authorize",token:"https://appleid.apple.com/auth/token",scope:"openid"},
   github:{id:"GITHUB_CLIENT_ID",secret:"GITHUB_CLIENT_SECRET",auth:"https://github.com/login/oauth/authorize",token:"https://github.com/login/oauth/access_token",scope:"read:user"},
@@ -17,7 +18,7 @@ const first=(db,sql,...args)=>stmt(db,sql,...args).first();
 const sql=(db,q,...args)=>stmt(db,q,...args).run();
 const respond=(obj,status=200)=>new Response(JSON.stringify(obj),{status,headers:{"Content-Type":"application/json","Cache-Control":"no-store","Access-Control-Allow-Origin":SITE.slice(0,-1),"Vary":"Origin"}});
 const fail=(msg,status=400)=>respond({error:msg},status);
-const available=(env,p)=>{const c=providers[p];return !!(c&&env[c.id]&&(p==="apple"?env[c.team]&&env[c.kid]&&env[c.key]:env[c.secret]))};
+const available=(env,p)=>{const c=providers[p];return p==="fmail"||!!(c&&env[c.id]&&(p==="apple"?env[c.team]&&env[c.kid]&&env[c.key]:env[c.secret]))};
 const redirectUri=p=>API+"/auth/oauth/callback/"+p;
 const siteError=message=>Response.redirect(SITE+"#profile?oauth_error="+encodeURIComponent(message),303);
 function tokenParts(jwt){const a=jwt.split(".");if(a.length!==3)throw Error("Malformed provider identity token");return {h:JSON.parse(d.decode(dec(a[0]))),p:JSON.parse(d.decode(dec(a[1]))),sig:dec(a[2]),text:a[0]+"."+a[1]}}
@@ -47,7 +48,7 @@ async function appleIdentity(token,env,nonce){
 async function getIdentity(provider,token,env,nonce){
  if(provider==="apple")return appleIdentity(token.id_token,env,nonce);
  if(!token.access_token)throw Error("Missing provider access token");
- const endpoint={google:"https://openidconnect.googleapis.com/v1/userinfo",github:"https://api.github.com/user",discord:"https://discord.com/api/users/@me"}[provider];
+ const endpoint={fmail:"https://xoni-mail.onrender.com/oauth/userinfo",google:"https://openidconnect.googleapis.com/v1/userinfo",github:"https://api.github.com/user",discord:"https://discord.com/api/users/@me"}[provider];
  const request=await fetch(endpoint,{headers:{"Authorization":"Bearer "+token.access_token,"Accept":"application/json","User-Agent":"Flekis-Wrld"}});
  if(!request.ok)throw Error("Provider identity lookup failed");
  const user=await request.json();
@@ -58,8 +59,8 @@ async function getIdentity(provider,token,env,nonce){
 async function start(env,p){
  if(!available(env,p))return fail("This provider is awaiting OAuth configuration.",503);
  const c=providers[p],state=enc(rand(30)),nonce=enc(rand(16)),verifier=enc(rand(32)),now=Date.now();
- const params={client_id:env[c.id],redirect_uri:redirectUri(p),response_type:"code",scope:c.scope,state};
- if(p==="google"){params.nonce=nonce;params.code_challenge=await sha(verifier);params.code_challenge_method="S256";params.prompt="select_account"}
+ const params={client_id:p==="fmail"?"flekis-wrld":env[c.id],redirect_uri:redirectUri(p),response_type:"code",scope:c.scope,state};
+ if(p==="google"||p==="fmail"){params.nonce=nonce;params.code_challenge=await sha(verifier);params.code_challenge_method="S256";if(p==="google")params.prompt="select_account"}
  if(p==="apple"){params.nonce=nonce;params.response_mode="form_post"}
  await sql(env.DB,"INSERT INTO oauth_states(state_hash,provider,nonce,verifier,expires_at) VALUES(?,?,?,?,?)",await sha(state),p,nonce,verifier,now+600000);
  const url=new URL(c.auth);Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
@@ -76,9 +77,9 @@ async function callback(req,env,p){
  const record=await first(env.DB,"SELECT provider,nonce,verifier,expires_at FROM oauth_states WHERE state_hash=?",key);
  if(!record||record.provider!==p||record.expires_at<Date.now())return siteError("login_expired");
  await sql(env.DB,"DELETE FROM oauth_states WHERE state_hash=?",key);
- const c=providers[p],form=new URLSearchParams({client_id:env[c.id],code,redirect_uri:redirectUri(p),grant_type:"authorization_code"});
- form.set("client_secret",p==="apple"?await appleJWT(env):env[c.secret]);
- if(p==="google")form.set("code_verifier",record.verifier);
+ const c=providers[p],form=new URLSearchParams({client_id:p==="fmail"?"flekis-wrld":env[c.id],code,redirect_uri:redirectUri(p),grant_type:"authorization_code"});
+ if(p!=="fmail")form.set("client_secret",p==="apple"?await appleJWT(env):env[c.secret]);
+ if(p==="google"||p==="fmail")form.set("code_verifier",record.verifier);
  const response=await fetch(c.token,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded","Accept":"application/json"},body:form.toString()});
  if(!response.ok)return siteError("oauth_exchange_failed");
  const profile=await getIdentity(p,await response.json(),env,record.nonce);
