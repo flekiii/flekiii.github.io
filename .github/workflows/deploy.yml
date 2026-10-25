@@ -21,6 +21,7 @@ jobs:
           node --check app.js
           node --check backend/worker.js
           node --check backend/marketplace.js
+          node --check backend/market-catalog.js
           node --check wrld-market.js
           node --test backend/totp.test.mjs backend/marketplace.test.mjs
           node --check backend/oauth.js
