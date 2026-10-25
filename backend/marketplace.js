@@ -58,7 +58,7 @@ export async function marketHandle(req,env,path,{auth,authorized}){
      bargain!==null&&bargain!=="true"&&bargain!=="false")return fail("Invalid filter.");
   let query="SELECT l.*,u.username AS seller_username,u.display_name AS seller_name FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.status='active'";
   const params=[];
-  if(q){query+=" AND (l.title LIKE ? ESCAPE '\\' OR l.description LIKE ? ESCAPE '\\' OR l.subcategory LIKE ? ESCAPE '\\' OR l.custom_type LIKE ? ESCAPE '\\')";const needle="%"+q.replace(/[\\%_]/g,"\\if(q){query+=" AND (l.title LIKE ? ESCAPE '\\' OR l.description LIKE ? ESCAPE '\\')";const needle="%"+q.replace(/[\\%_]/g,"\\$&")+"%";params.push(needle,needle)}")+"%";params.push(needle,needle,needle,needle)}
+  if(q){query+=" AND (l.title LIKE ? ESCAPE '\\' OR l.description LIKE ? ESCAPE '\\' OR l.subcategory LIKE ? ESCAPE '\\' OR l.custom_type LIKE ? ESCAPE '\\')";const needle="%"+q.replace(/[\\%_]/g,"\\$&")+"%";params.push(needle,needle,needle,needle)}
   if(category){query+=" AND l.category=?";params.push(category)}
   if(country){query+=" AND l.origin_country=?";params.push(country)}
   if(subcategory){query+=" AND l.subcategory=?";params.push(subcategory)}
