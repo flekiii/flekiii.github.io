@@ -172,3 +172,10 @@
 .market-shipping-columns .market-check[hidden]{display:none!important}
 .market-edit-dialog button:focus-visible,.market-rail button:focus-visible,.market-card button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 @media(max-width:650px){#page-marketplace .market-auth-gate{min-height:calc(100dvh - 180px)}}
+
+/* Marketplace v5: owner's storefront request belongs in the left upper corner. */
+.market-rail .market-shop-top{margin-top:0;margin-bottom:6px;border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--surface2);color:var(--text)!important;line-height:1.3}
+.market-rail .market-shop-top:hover{border-color:var(--accent);background:var(--soft);color:var(--soft-ink)!important}
+.market-rail-home{margin-top:auto;font-size:12px;font-weight:730}
+.market-topplus{min-width:47px;min-height:47px}
+@media(max-width:730px){.market-rail .market-shop-top{margin:0}.market-rail-home{margin:0;justify-content:center}}
