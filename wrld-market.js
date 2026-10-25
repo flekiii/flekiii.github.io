@@ -56,7 +56,25 @@ function refreshSubcategories(){
  const other=sel.querySelector('option[value="other"]');if(other)other.textContent="Other / specify item";
  refreshCustomType();
 }
-function refreshCustomType(){const wrap=$("#marketCustomTypeWrap");if(wrap)wrap.hidden=$("#marketSellSubcategory")?.value!=="other"}
+function refreshCustomType(){
+ const wrap=$("#marketCustomTypeWrap"),show=$("#marketSellSubcategory")?.value==="other";
+ if(!wrap)return;
+ wrap.hidden=!show;
+ const input=wrap.querySelector("input");if(input){input.required=show;if(!show)input.value=""}
+}
+function updateDestinationCount(){
+ const checked=$('[name="shipping_countries"]:checked');
+ const count=$("#marketDestinationCount");
+ if(count)count.textContent=checked.length+" / 70 countries selected"+(checked.length===0?" — select at least one":"");
+}
+function filterDestinations(){
+ const q=$("#marketDestinationSearch")?.value.trim().toLocaleLowerCase()||"";
+ for(const item of $("[data-search-country]")){
+  const option=item.querySelector("input");
+  item.hidden=!!q&&!item.dataset.searchCountry.includes(q)&&!option.checked;
+ }
+}
+
 
 const token=()=>sessionStorage.getItem("fw-token")||"";
 const message=(txt,error=false)=>{status=txt;const el=$("#market-status");if(el){el.textContent=txt;el.dataset.error=String(error)}};
@@ -132,20 +150,23 @@ function renderStore(){
 }
 function paint(){
  root.innerHTML='<div class="market-shell">'+menu()+(view==="browse"?renderBrowse():view==="sell"?renderSell():view==="my"?renderMy():view==="messages"?renderMessages():renderStore())+'</div>';
- if(view==="sell")$("#marketOriginCountry")?.dispatchEvent(new Event("change"));
+ if(view==="sell"){void refreshShippingProviders();updateDestinationCount()}
  if(chatKey)void loadMessages();
 }
 async function browse(){
  loading=true;try{
   const params=new URLSearchParams();
-  const q=$("#marketSearch")?.value.trim(),cat=$("#marketCategory")?.value,country=$("#marketCountry")?.value;
-  if(q)params.set("q",q);if(cat)params.set("category",cat);if(country)params.set("country",country);
+  filters={q:$("#marketSearch")?.value.trim()||"",category:$("#marketCategory")?.value||"",
+   subcategory:$("#marketFilterSubcategory")?.value||"",country:$("#marketCountry")?.value||"",
+   negotiable:$("#marketNegotiable")?.value||""};
+  for(const [k,v] of Object.entries(filters))if(v)params.set(k==="q"?"q":k,v);
   listings=(await call("/market/listings?"+params)).listings;selected=null;message("");paint();
  }catch(err){message(err.message,true)}finally{loading=false}
 }
 async function changeView(next){
  view=next;selected=null;chatKey=null;message("");
  try{
+  if(next==="sell"&&!options)options=await loadOptions();
   if(next==="my"){await needLogin();own=(await call("/market/mine")).listings}
   if(next==="messages"){await needLogin();conversations=(await call("/market/conversations")).conversations}
  }catch(err){message(err.message,true)}
@@ -164,19 +185,35 @@ async function loadMessages(){
 }
 root.addEventListener("change",async event=>{
  const el=event.target;
- if(el.id==="marketOriginCountry"){
-  const label=$("#marketRegionLabel");if(label)label.textContent=regionLabels[el.value]||"Region / State / Province";
+ if(el.id==="marketOriginCountry"||el.id==="marketSellCategory"){
+  if(el.id==="marketSellCategory")refreshSubcategories();
+  await refreshShippingProviders();
+ }else if(el.id==="marketSellSubcategory"){refreshCustomType()}
+ else if(el.id==="marketCategory"){
+  const sub=$("#marketFilterSubcategory");
+  if(sub){sub.disabled=!el.value;sub.innerHTML=subcategoryChoices(el.value)}
+ }else if(el.name==="shipping_countries"){
+  if($('[name="shipping_countries"]:checked').length>70){el.checked=false;message("Choose up to 70 destination countries.",true)}
+  updateDestinationCount();filterDestinations();
  }else if(el.matches("[data-market-status-id]")){
   try{await needLogin();await call("/market/listings/"+el.dataset.marketStatusId+"/status","POST",{status:el.value});message("Listing updated.");own=(await call("/market/mine")).listings;paint()}catch(err){message(err.message,true)}
  }
 });
+root.addEventListener("input",event=>{if(event.target?.id==="marketDestinationSearch")filterDestinations()});
 root.addEventListener("click",async event=>{
  const target=event.target.closest("button");if(!target)return;
  try{
   if(target.dataset.marketView){await changeView(target.dataset.marketView);return}
   if(target.dataset.marketSearch){await browse();return}
   if(target.dataset.marketBack){selected=null;paint();return}
-  if(target.dataset.marketOpen){selected=listings.find(x=>x.id===target.dataset.marketOpen);paint();return}
+  if(target.dataset.marketOpen){
+   selected=listings.find(x=>x.id===target.dataset.marketOpen);
+   if(selected)try{
+    const data=await loadOptions(selected.origin_country,selected.category);
+    for(const x of data.delivery_providers||[])carrierNames.set(selected.origin_country+":"+x.id,x.label);
+   }catch{}
+   paint();return;
+  }
   if(target.dataset.marketChat){const me=await needLogin();const x=selected||listings.find(x=>x.id===target.dataset.marketChat);if(me.id===x.seller_id)throw Error("You own this listing.");view="messages";chatKey={listingId:x.id,buyerId:me.id};conversations=(await call("/market/conversations")).conversations;paint();return}
   if(target.dataset.marketReport){await needLogin();const reason=window.prompt("Why should this listing be reviewed? (10–500 characters)");if(reason===null)return;await call("/market/reports","POST",{listing_id:target.dataset.marketReport,reason});message("Report received for moderation.");return}
   if(target.dataset.marketThread){await needLogin();chatKey={listingId:target.dataset.marketThread,buyerId:target.dataset.marketBuyer};paint();return}
@@ -189,11 +226,19 @@ root.addEventListener("submit",async event=>{
  try{
   const me=await needLogin();
   if(form.id==="marketSellForm"){
-   const data=new FormData(form),shipping=[...form.elements.shipping_countries.selectedOptions].map(x=>x.value);
+   const data=new FormData(form),shipping=data.getAll("shipping_countries"),
+    delivery=data.getAll("delivery_providers"),payments=data.getAll("payment_methods");
    const lines=name=>String(data.get(name)||"").split(/[\r\n]+/).map(x=>x.trim()).filter(Boolean);
    const price=Number(data.get("price"));
    if(!Number.isFinite(price))throw Error("Invalid price.");
-   const fields={title:data.get("title"),description:data.get("description"),category:data.get("category"),price_minor:Math.round(price*100),currency:data.get("currency"),origin_country:data.get("origin_country"),origin_region:data.get("origin_region"),shipping_countries:shipping,images:lines("images"),videos:lines("videos")};
+   const fields={title:data.get("title"),description:data.get("description"),category:data.get("category"),
+    subcategory:data.get("subcategory"),custom_type:data.get("custom_type")||"",
+    price_minor:Math.round(price*100),currency:data.get("currency"),negotiable:data.get("negotiable")==="yes",
+    origin_country:data.get("origin_country"),origin_region:data.get("origin_region"),
+    shipping_countries:shipping,delivery_providers:delivery,payment_methods:payments,
+    images:lines("images"),videos:lines("videos")};
+   if(!shipping.length||!delivery.length||!payments.length)throw Error("Select a delivery destination, carrier and at least one payment method.");
+   if(shipping.length>70)throw Error("Select no more than 70 delivery countries.");
    await call("/market/listings","POST",fields);message("Listing published successfully!");view="my";own=(await call("/market/mine")).listings;paint();
   }else{
    const content=new FormData(form).get("message");
@@ -202,5 +247,8 @@ root.addEventListener("submit",async event=>{
   }
  }catch(err){message(err.message,true)}finally{loading=false}
 });
-void call("/market/listings").then(x=>{listings=x.listings;paint()}).catch(err=>message(err.message,true));
+void Promise.all([loadOptions(),call("/market/listings")]).then(([catalog,list])=>{
+ options=catalog;listings=list.listings;
+ paint();
+}).catch(err=>message("Marketplace settings could not load: "+err.message,true));
 })();
