@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "product": "Auth2FA",
+  "version": "0.1.0",
+  "stage": "development",
+  "updated": "2026-10-25",
+  "note": "Unsigned or untested builds are not public releases. Download buttons appear only after signed, tested binaries are published.",
+  "downloads": {
+    "windows": {
+      "status": "pending",
+      "label": "Windows 10/11",
+      "format": "EXE installer",
+      "file": null,
+      "url": null,
+      "sha256": null,
+      "size_bytes": null,
+      "verified": false
+    },
+    "android": {
+      "status": "pending",
+      "label": "Android 8+",
+      "format": "Signed APK",
+      "file": null,
+      "url": null,
+      "sha256": null,
+      "size_bytes": null,
+      "verified": false
+    },
+    "linux": {
+      "status": "pending",
+      "label": "Linux",
+      "format": "AppImage",
+      "file": null,
+      "url": null,
+      "sha256": null,
+      "size_bytes": null,
+      "verified": false
+    }
+  }
+}
