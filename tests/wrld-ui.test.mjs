@@ -7,7 +7,7 @@ const social=readFileSync(new URL("../wrld-social.js",import.meta.url),"utf8");
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 function marketRuntime({token="",verified=false}={}){
  const listeners={},visited=[],root={innerHTML:"",addEventListener:(n,fn)=>listeners[n]=fn,querySelector:()=>null,querySelectorAll:()=>[]};
- const document={getElementById:id=>id==="wrld-market-root"?root:null};
+ const document={getElementById:id=>id==="wrld-market-root"?root:null,addEventListener:()=>{}};
  const sandbox={document,window:{addEventListener(){}},sessionStorage:{getItem:key=>key==="fw-token"?token:null},
   fetch:async(url,request)=>{
    const path=new URL(url).pathname;visited.push(path);
