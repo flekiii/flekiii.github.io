@@ -39,6 +39,10 @@ jobs:
           assert.ok(settings.categories?.clothing?.subcategories?.some(x=>x.id==="shorts"));
           assert.ok(settings.delivery_providers?.some(x=>x.label==="Nova Poshta"));
           assert.ok(settings.payment_methods?.some(x=>x.id==="card_transfer"));
+          const filters=await call("/market/listings?q=shorts&category=clothing&subcategory=shorts");
+          assert.equal(filters.status,200,"Listing search by specific clothing type must work");
+          const wrong=await call("/market/listings?country=ZZ");
+          assert.equal(wrong.status,400,"Unsupported countries must be rejected");
           const list=await call("/market/listings");
           const content=await list.json();
           assert.equal(list.status,200,"Public product catalog must be available");
