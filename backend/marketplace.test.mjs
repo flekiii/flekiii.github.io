@@ -40,8 +40,8 @@ test("Named delivery services are country-specific; payment arrangements are exp
  assert.ok(marketPayments.some(x=>x.id==="cash_on_delivery"));
  assert.ok(marketPayments.some(x=>x.id==="card_transfer"));
 });
-test("Public marketplace options supply only validated country-specific services",async()=>{
- const r=await marketHandle(emptyReq("/market/options?country=UA&category=clothing","GET"),{DB:fakeDB},"/market/options",{auth:async()=>null,authorized:()=>false});
+test("Authenticated marketplace options supply validated local couriers",async()=>{
+ const r=await marketHandle(emptyReq("/market/options?country=UA&category=clothing","GET"),{DB:fakeDB},"/market/options",{auth:async()=>({id:"member"}),authorized:()=>true});
  assert.equal(r.status,200);
  const x=await r.json();
  assert.ok(x.delivery_providers.some(c=>c.label==="Nova Poshta"));
@@ -73,4 +73,28 @@ test("Server rejects incorrect courier country, missing payments, invalid taxono
  const good=await send(payload);assert.equal(good.status,201);
  const digital=await send({...payload,category:"digital",subcategory:"apps",delivery_providers:["digital_delivery"]});
  assert.equal(digital.status,400,"COD cannot be attached to digital delivery");
+});
+
+test("Marketplace catalog, wishlist, product editor, votes and conversations require sign-in AND 2FA",async()=>{
+ const paths=["/market/options","/market/listings","/market/mine","/market/wishlist","/market/conversations","/market/messages"];
+ const fake={DB:fakeDB};
+ for(const path of paths){
+  const req=emptyReq(path,"GET");
+  const guest=await marketHandle(req,fake,path,{auth:async()=>null,authorized:()=>false});
+  assert.equal(guest.status,401,path+" should reject guests");
+  const unverified=await marketHandle(emptyReq(path,"GET"),fake,path,{auth:async()=>({id:"person"}),authorized:()=>false});
+  assert.equal(unverified.status,403,path+" should reject unverified sessions");
+ }
+ const listing="aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa";
+ for(const path of ["/market/favorites/"+listing,"/market/reactions/"+listing,"/market/listings/"+listing]){
+  const method=path.includes("favorites")?"POST":"PUT";
+  const denied=await marketHandle(emptyReq(path,method),fake,path,{auth:async()=>({id:"member"}),authorized:()=>false});
+  assert.equal(denied.status,403);
+ }
+});
+test("Computing category includes RAM, monitors, keyboards, PC cooling and GPU",()=>{
+ const ids=marketCategories.electronics.subcategories.map(x=>x.id);
+ for(const value of ["monitors","computer_mice","keyboards","ram","pc_cases","cpu_coolers","case_fans","graphics_cards","motherboards","cpus"]){
+  assert.ok(ids.includes(value),value);
+ }
 });
