@@ -83,7 +83,7 @@ export async function marketHandle(req,env,path,{auth,authorized}){
   const items=await many(db,"SELECT "+scored+",u.username AS seller_username,u.display_name AS seller_name,1 AS favorited,COALESCE((SELECT r.reaction FROM market_reactions r WHERE r.listing_id=l.id AND r.user_id=?),0) AS my_reaction FROM market_favorites f JOIN market_listings l ON l.id=f.listing_id JOIN users u ON u.id=l.seller_id WHERE f.user_id=? AND l.status='active' ORDER BY f.created_at DESC LIMIT 100",u.id,u.id);
   return ok({listings:await Promise.all(items.map(row=>safeListing(db,row)))});
  }
- if((m==="POST"||m==="DELETE")&&/^\\/market\\/favorites\\/[a-f0-9-]{36}$/.test(path)){
+ if((m==="POST"||m==="DELETE")&&/^\/market\/favorites\/[a-f0-9-]{36}$/.test(path)){
   const target=path.split("/")[3],listing=await get(db,"SELECT id,seller_id,status FROM market_listings WHERE id=?",target);
   if(!listing||listing.status!=="active")return fail("Listing unavailable.",404);
   if(listing.seller_id===u.id)return fail("You cannot save your own listing.",403);
@@ -92,7 +92,7 @@ export async function marketHandle(req,env,path,{auth,authorized}){
   const count=await get(db,"SELECT COUNT(*) AS total FROM market_favorites WHERE listing_id=?",target);
   return ok({saved:m==="POST",favorite_count:count.total});
  }
- if(m==="PUT"&&/^\\/market\\/reactions\\/[a-f0-9-]{36}$/.test(path)){
+ if(m==="PUT"&&/^\/market\/reactions\/[a-f0-9-]{36}$/.test(path)){
   const target=path.split("/")[3],p=await body(req),value=p.reaction;
   if(![-1,0,1].includes(value))return fail("Reaction must be like, dislike or neither.");
   const listing=await get(db,"SELECT id,seller_id,status FROM market_listings WHERE id=?",target);
@@ -103,7 +103,7 @@ export async function marketHandle(req,env,path,{auth,authorized}){
   const score=await get(db,"SELECT SUM(CASE WHEN reaction=1 THEN 1 ELSE 0 END) AS likes,SUM(CASE WHEN reaction=-1 THEN 1 ELSE 0 END) AS dislikes FROM market_reactions WHERE listing_id=?",target);
   return ok({reaction:value,likes:score?.likes||0,dislikes:score?.dislikes||0});
  }
- if(m==="POST"&&path==="/market/listings"||m==="PUT"&&/^\\/market\\/listings\\/[a-f0-9-]{36}$/.test(path)){
+ if(m==="POST"&&path==="/market/listings"||m==="PUT"&&/^\/market\/listings\/[a-f0-9-]{36}$/.test(path)){
   const p=await body(req),title=text(p.title,120),description=text(p.description,1000);
   const category=text(p.category,40),currency=text(p.currency,3).toUpperCase();
   const country=text(p.origin_country,2).toUpperCase(),region=text(p.origin_region,100);
