@@ -194,7 +194,9 @@ function paint(){
  const main=view==="my"?renderMy():view==="wishlist"?(selected?detail(selected):renderWishlist()):view==="messages"?renderMessages():renderBrowse();
  root.innerHTML='<div class="market-shell market-workspace">'+menu()+'<main class="market-main">'+topbar()+main+'</main></div>'+
  (shopFormOpen?'<div class="market-modal-backdrop" id="marketEditBackdrop"><div class="market-edit-dialog" role="dialog" aria-modal="true" aria-label="Listing editor"><button type="button" class="market-modal-close" data-market-close="1" aria-label="Close listing editor">×</button>'+renderSell()+'</div></div>':'');
- if(shopFormOpen){fillEditor();void refreshShippingProviders();updateDestinationCount()}
+ if(shopFormOpen){fillEditor();void refreshShippingProviders();updateDestinationCount();
+  const form=$("#marketSellForm");if(form&&!form.dataset.focused){form.dataset.focused="yes";queueMicrotask(()=>form.querySelector('input[name="title"]')?.focus())}
+ }
  if(chatKey)void loadMessages();
 }
 async function browse(){
@@ -214,7 +216,10 @@ async function changeView(next){
   if(next==="my")own=(await call("/market/mine")).listings;
   if(next==="wishlist")wishlist=(await call("/market/wishlist")).listings;
   if(next==="messages")conversations=(await call("/market/conversations")).conversations;
-  if(next==="browse")listings=(await call("/market/listings")).listings;
+  if(next==="browse"){
+   const qs=new URLSearchParams();for(const [k,v] of Object.entries(filters))if(v)qs.set(k,v);
+   listings=(await call("/market/listings?"+qs)).listings;
+  }
  }catch(err){message(err.message,true)}
  paint();
 }
@@ -250,6 +255,7 @@ root.addEventListener("input",event=>{
  if(event.target?.id==="marketCourierSearch")filterCouriers();
 });
 root.addEventListener("click",async event=>{
+ if(event.target?.id==="marketEditBackdrop"){shopFormOpen=false;editing=null;paint();return}
  const target=event.target.closest("button");if(!target)return;
  try{
   if(target.dataset.marketRetry){
@@ -352,5 +358,9 @@ async function initialize(){
  }catch(err){message("Marketplace could not load: "+err.message,true);paint()}
 }
 window.addEventListener("fw-auth-changed",()=>void initialize());
+document.addEventListener("keydown",event=>{
+ if(event.key==="Escape"&&shopFormOpen){shopFormOpen=false;editing=null;paint()}
+});
+window.addEventListener("pageshow",()=>{if(token()&&authState!=="verified")void initialize()});
 void initialize();
 })();
