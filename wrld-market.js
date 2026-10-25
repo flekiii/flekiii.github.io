@@ -16,6 +16,48 @@ const countryName=c=>dn.of(c)||c;
 const regionLabels={UA:"Oblast / область",US:"State",CA:"Province or territory",AU:"State or territory",GB:"County or region",DE:"Bundesland",PL:"Województwo",FR:"Région",JP:"Prefecture",IN:"State / Union territory",BR:"Estado",ES:"Comunidad autónoma",IT:"Regione",CH:"Canton"};
 const money=l=>new Intl.NumberFormat("en",{style:"currency",currency:l.currency||"USD"}).format((l.price_minor||0)/100);
 let view="browse",listings=[],own=[],conversations=[],selected=null,chatKey=null,loading=false,status="";
+let options=null,shippingProviders=[],carrierLoadToken=0;
+let filters={q:"",category:"",subcategory:"",country:"",negotiable:""};
+const choiceOptions=(items,selected="")=>items.map(x=>'<option value="'+escape(x.id)+'"'+(x.id===selected?" selected":"")+'>'+escape(x.label)+'</option>').join("");
+const subcategoryChoices=(category,selected="")=>{
+ const list=options?.categories?.[category]?.subcategories||[];
+ return '<option value="">All types</option>'+list.map(x=>'<option value="'+escape(x.id)+'"'+(x.id===selected?" selected":"")+'>'+escape(x.label)+'</option>').join("")+'<option value="other"'+(selected==="other"?" selected":"")+'>Other / custom type</option>';
+};
+const categoryChoices=(selected="")=>{
+ const all=options?.categories||Object.fromEntries(Object.entries(categories).map(([key,label])=>[key,{label}]));
+ return Object.entries(all).map(([id,cat])=>'<option value="'+escape(id)+'"'+(id===selected?" selected":"")+'>'+escape(cat.label)+'</option>').join("");
+};
+const subcategoryName=(item)=>item.subcategory==="other"?(item.custom_type||"Other item"):(options?.categories?.[item.category]?.subcategories?.find(x=>x.id===item.subcategory)?.label||"Other item");
+const carrierNames=new Map();
+const shippingName=(item,id)=>carrierNames.get(item.origin_country+":"+id)||({"local_pickup":"Local pickup / in person","national_post":"National postal operator","international_courier":"International courier","other_method":"Other courier","digital_delivery":"Digital delivery"}[id]||id.replaceAll("_"," "));
+const paymentName=id=>options?.payment_methods?.find(x=>x.id===id)?.label||id.replaceAll("_"," ");
+async function loadOptions(country="",category=""){
+ const p=new URLSearchParams();if(country)p.set("country",country);if(category)p.set("category",category);
+ return call("/market/options?"+p.toString());
+}
+async function refreshShippingProviders(){
+ const country=$("#marketOriginCountry")?.value,category=$("#marketSellCategory")?.value;
+ if(!country||!category)return;
+ const serial=++carrierLoadToken,area=$("#marketCarrierChoices");
+ if(area)area.textContent="Checking delivery methods…";
+ try{
+  const data=await loadOptions(country,category);
+  if(serial!==carrierLoadToken)return;
+  shippingProviders=data.delivery_providers||[];
+  for(const x of shippingProviders)carrierNames.set(country+":"+x.id,x.label);
+  const region=$("#marketRegionLabel");if(region)region.textContent=regionLabels[country]||"Region / State / Province";
+  if(area)area.innerHTML=shippingProviders.map(x=>'<label class="market-check"><input type="checkbox" name="delivery_providers" value="'+escape(x.id)+'"><span>'+escape(x.label)+'</span></label>').join("");
+  const hint=$("#marketCarrierHint");if(hint)hint.textContent=data.delivery_disclaimer||"Confirm routes and tariffs with the carrier.";
+ }catch(err){if(serial===carrierLoadToken&&area)area.textContent="Delivery options unavailable: "+err.message}
+}
+function refreshSubcategories(){
+ const sel=$("#marketSellSubcategory");if(!sel)return;
+ sel.innerHTML='<option value="" selected disabled>Select specific item type</option>'+subcategoryChoices($("#marketSellCategory").value);
+ const other=sel.querySelector('option[value="other"]');if(other)other.textContent="Other / specify item";
+ refreshCustomType();
+}
+function refreshCustomType(){const wrap=$("#marketCustomTypeWrap");if(wrap)wrap.hidden=$("#marketSellSubcategory")?.value!=="other"}
+
 const token=()=>sessionStorage.getItem("fw-token")||"";
 const message=(txt,error=false)=>{status=txt;const el=$("#market-status");if(el){el.textContent=txt;el.dataset.error=String(error)}};
 async function call(path,method="GET",body=null){
