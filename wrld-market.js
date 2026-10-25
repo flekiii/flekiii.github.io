@@ -6,7 +6,7 @@ const root=document.getElementById("wrld-market-root");
 if(!root)return;
 const $=q=>root.querySelector(q),$$=q=>[...root.querySelectorAll(q)];
 const escape=s=>String(s??"").replace(/[&<>"']/g,v=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[v]));
-const categories={furniture:"Furniture & home",food:"Food & groceries",games:"Games",game_accounts:"Game accounts",game_currency:"In-game currency",electronics:"Electronics",clothing:"Clothing",digital:"Digital products",services:"Services",other:"Other"};
+const categories={furniture:"Furniture & home",food:"Food & groceries",games:"Games",game_accounts:"Game accounts",game_currency:"In-game currency",electronics:"Computers & electronics",clothing:"Clothing",digital:"Digital products",services:"Services",other:"Other"};
 const currencies=["UAH","USD","EUR","GBP","PLN","CAD","AUD","JPY","CHF","SEK","NOK","DKK","CZK","HUF","RON","TRY","BRL","INR"];
 const codes="AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW".split(" ");
 const dn=new Intl.DisplayNames(["en"],{type:"region"});
@@ -15,7 +15,8 @@ const selectCountries=selected=>countries.map(c=>'<option value="'+c.code+'" '+(
 const countryName=c=>dn.of(c)||c;
 const regionLabels={UA:"Oblast / область",US:"State",CA:"Province or territory",AU:"State or territory",GB:"County or region",DE:"Bundesland",PL:"Województwo",FR:"Région",JP:"Prefecture",IN:"State / Union territory",BR:"Estado",ES:"Comunidad autónoma",IT:"Regione",CH:"Canton"};
 const money=l=>new Intl.NumberFormat("en",{style:"currency",currency:l.currency||"USD"}).format((l.price_minor||0)/100);
-let view="browse",listings=[],own=[],conversations=[],selected=null,chatKey=null,loading=false,status="",statusError=false;
+let view="browse",listings=[],own=[],wishlist=[],conversations=[],selected=null,chatKey=null,loading=false,status="",statusError=false;
+let authState="loading",myId=null,shopFormOpen=false,editing=null,threadSide="buy";
 let options=null,shippingProviders=[],carrierLoadToken=0;
 let filters={q:"",category:"",subcategory:"",country:"",negotiable:""};
 const choiceOptions=(items,selected="")=>items.map(x=>'<option value="'+escape(x.id)+'"'+(x.id===selected?" selected":"")+'>'+escape(x.label)+'</option>').join("");
@@ -88,32 +89,51 @@ async function call(path,method="GET",body=null){
  return data;
 }
 const needLogin=async()=>{
- if(!token())throw Error("Sign in to Fleki's Wrld, then verify 2FA in your profile.");
+ if(!token())throw Error("Sign in to Fleki's Wrld first.");
  const me=await call("/me");
- if(!me.user?.mfa_verified)throw Error("Enable and verify 2FA in your Fleki's Wrld profile first.");
+ if(!me.user?.mfa_verified)throw Error("Enable and verify 2FA in Profile first.");
+ myId=me.user.id;
  return me.user;
 };
+async function validateAccess(){
+ if(!token()){authState="guest";myId=null;return false}
+ try{
+  const me=await call("/me");
+  myId=me.user?.id||null;
+  authState=me.user?.mfa_verified?"verified":"unverified";
+  return authState==="verified";
+ }catch{authState="guest";myId=null;return false}
+}
+const verifiedGate=()=>{
+ const login=authState==="guest",busy=authState==="loading";
+ return '<div class="market-auth-gate" role="region" aria-label="Marketplace access"><div class="market-auth-art" aria-hidden="true">✦</div><span class="market-auth-kicker">FLEKI’S WRLD · SECURE MARKETPLACE</span><h2>'+ (busy?'Checking your access…':login?'Enter the marketplace.':'One security check left.') +'</h2><p>'+ (busy?'Verifying your account and session.':login?'Sign in or create a Fleki’s Wrld account to browse goods, message sellers and save favorites.':'For everyone’s safety, verify your six-digit code in Profile using Auth2FA. Then the marketplace will unlock automatically.')+'</p>'+(busy?'':'<div class="market-gate-actions"><button type="button" class="btn primary" data-market-profile="1">'+(login?'Sign in / Register':'Verify Auth2FA')+' →</button><button type="button" class="btn" data-market-check="1">I’m ready · Recheck</button></div>')+'<span class="market-gate-note">🔒 Listings and messages stay private until 2FA is verified</span></div>';
+};
 function menu(){
- return '<div class="market-tabs">'+[["browse","Explore"],["sell","Sell an item"],["my","My listings"],["messages","Messages"],["store","Register a shop"]].map(([id,name])=>'<button class="market-tab '+(view===id?"active":"")+'" type="button" data-market-view="'+id+'">'+name+'</button>').join("")+'</div><p id="market-status" class="market-status" role="status" data-error="'+String(statusError)+'">'+escape(status)+'</p>'+(options?'':'<button type="button" class="btn" data-market-retry="1">Reload marketplace options</button>');
+ const nav=[["my","My listings","▤"],["wishlist","Wishlist","♡"],["messages","Messages","✉"]];
+ return '<aside class="market-rail"><div class="market-rail-header"><span class="market-rail-mark">✦</span><div><strong>Marketplace</strong><small>Trade · Discover · Connect</small></div></div><button type="button" class="market-create" data-market-create="1" title="Publish a new listing"><span>＋</span> Sell an item</button><nav aria-label="My marketplace">'+nav.map(([id,label,icon])=>'<button type="button" class="market-rail-link '+(view===id?"active":"")+'" data-market-view="'+id+'"><span>'+icon+'</span>'+label+'</button>').join("")+'<button type="button" class="market-rail-link '+(view==="browse"?"active":"")+'" data-market-view="browse"><span>⌕</span> Explore</button></nav><a class="market-shop-link" href="https://t.me/flekusik" target="_blank" rel="noopener noreferrer">Register a shop <span>↗</span></a></aside>';
+}
+function topbar(){
+ const names={browse:"Explore listings",my:"My listings",wishlist:"Wishlist",messages:"Buyer & seller chats"};
+ return '<div class="market-topbar"><div><small>FLEKI’S WRLD MARKETPLACE</small><h2>'+names[view]+'</h2></div><button type="button" class="market-topplus" data-market-create="1" title="Create listing" aria-label="Create listing">＋</button></div><p id="market-status" class="market-status" role="status" data-error="'+String(statusError)+'">'+escape(status)+'</p>'+(options?'':'<button type="button" class="btn" data-market-retry="1">Reload marketplace options</button>');
 }
 function mediaPreview(item){
  const images=Array.isArray(item.images)?item.images:[];
  return images.length?'<img src="'+escape(images[0])+'" loading="lazy" referrerpolicy="no-referrer" alt="">':'<span class="market-image-placeholder" aria-hidden="true">✧</span>';
 }
 function itemCard(item){
- return '<article class="market-card"><div class="market-thumb">'+mediaPreview(item)+'</div><div class="market-card-content"><span class="market-pill">'+escape(categories[item.category]||item.category)+'</span><small>'+escape(subcategoryName(item))+'</small><h3>'+escape(item.title)+'</h3><strong>'+escape(money(item))+'</strong><small>'+(item.negotiable?'Negotiable · ':'Fixed price · ')+escape(countryName(item.origin_country))+'</small><p>'+escape(item.origin_region)+'</p><small>Seller: @'+escape(item.seller_username)+'</small><button class="btn" type="button" data-market-open="'+escape(item.id)+'">View listing →</button></div></article>';
+ return '<article class="market-card"><div class="market-thumb">'+mediaPreview(item)+'<button class="market-heart '+(item.favorited?'is-saved':'')+'" type="button" data-market-favorite="'+escape(item.id)+'" aria-label="'+(item.favorited?'Remove from wishlist':'Add to wishlist')+'" title="Wishlist">'+(item.favorited?'♥':'♡')+'</button></div><div class="market-card-content"><span class="market-pill">'+escape(categories[item.category]||item.category)+'</span><small>'+escape(subcategoryName(item))+'</small><h3>'+escape(item.title)+'</h3><strong>'+escape(money(item))+'</strong><small>'+(item.negotiable?'Negotiable · ':'Fixed price · ')+escape(countryName(item.origin_country))+'</small><p>'+escape(item.origin_region)+'</p><div class="market-item-counts"><span>♥ '+(item.favorite_count||0)+'</span><span>👍 '+(item.likes||0)+'</span><span>👎 '+(item.dislikes||0)+'</span></div><small>Seller: @'+escape(item.seller_username)+'</small><button class="btn" type="button" data-market-open="'+escape(item.id)+'">View listing →</button></div></article>';
 }
 function detail(item){
  const images=item.images||[],videos=item.videos||[];
  return '<div class="market-detail"><button type="button" class="market-back" data-market-back="1">← Back to listings</button><h2>'+escape(item.title)+'</h2><strong class="market-price">'+escape(money(item))+'</strong><span class="market-pill">'+(item.negotiable?'Offers welcome · Price negotiable':'Fixed price · No bargaining')+'</span><p>'+escape(item.description)+'</p><dl><dt>Category</dt><dd>'+escape(categories[item.category])+' / '+escape(subcategoryName(item))+'</dd><dt>Seller</dt><dd>@'+escape(item.seller_username)+'</dd><dt>Location</dt><dd>'+escape(countryName(item.origin_country))+', '+escape(item.origin_region)+'</dd><dt>Delivers to</dt><dd>'+escape((item.shipping_countries||[]).map(countryName).join(", "))+'</dd><dt>Delivery services</dt><dd>'+escape((item.delivery_providers||[]).map(id=>shippingName(item,id)).join(", ")||"Ask the seller")+'</dd><dt>Payment options</dt><dd>'+escape((item.payment_methods||[]).map(paymentName).join(", ")||"Ask the seller")+'</dd></dl>'+
  (images.length?'<div class="market-media">'+images.map(src=>'<a href="'+escape(src)+'" target="_blank" rel="noopener noreferrer"><img src="'+escape(src)+'" loading="lazy" referrerpolicy="no-referrer" alt="Item photo"></a>').join("")+'</div>':'')+
  (videos.length?'<div class="market-media">'+videos.map(src=>'<video controls preload="none" referrerpolicy="no-referrer" src="'+escape(src)+'"></video>').join("")+'</div>':'')+
- '<div class="market-actions"><button class="btn primary" type="button" data-market-chat="'+escape(item.id)+'">Message the seller</button><button class="btn" type="button" data-market-report="'+escape(item.id)+'">Report listing</button></div><p class="market-footnote">Arrange payment and shipping with the seller directly. Fleki’s Wrld does not process payments, guarantee delivery or hold funds in escrow.</p></div>';
+ '<div class="market-actions"><button class="btn primary" type="button" data-market-chat="'+escape(item.id)+'">Message the seller</button><button type="button" class="btn '+(item.favorited?'market-liked':'')+'" data-market-favorite="'+escape(item.id)+'">'+(item.favorited?'♥ Saved':'♡ Wishlist')+' · '+(item.favorite_count||0)+'</button><button type="button" class="btn '+(item.my_reaction===1?'market-liked':'')+'" data-market-reaction="'+escape(item.id)+'" data-reaction="1">👍 '+(item.likes||0)+'</button><button type="button" class="btn '+(item.my_reaction===-1?'market-liked':'')+'" data-market-reaction="'+escape(item.id)+'" data-reaction="-1">👎 '+(item.dislikes||0)+'</button><button class="btn" type="button" data-market-report="'+escape(item.id)+'">Report listing</button></div><p class="market-footnote">Arrange payment and shipping with the seller directly. Fleki’s Wrld does not process payments, guarantee delivery or hold funds in escrow.</p></div>';
 }
 function renderBrowse(){
  return '<div class="market-filters"><input id="marketSearch" type="search" maxlength="70" placeholder="Search shorts, bedside tables, phones, games…" aria-label="Search marketplace" value="'+escape(filters.q)+'"><select id="marketCategory"><option value="">All categories</option>'+Object.entries(options?.categories||Object.fromEntries(Object.entries(categories).map(([id,label])=>[id,{label}]))).map(([id,group])=>'<option value="'+id+'"'+(id===filters.category?" selected":"")+'>'+escape(group.label)+'</option>').join("")+'</select><select id="marketFilterSubcategory" '+(!filters.category?"disabled":"")+'>'+subcategoryChoices(filters.category,filters.subcategory)+'</select><select id="marketCountry"><option value="">All countries</option>'+selectCountries(filters.country?[filters.country]:[])+'</select><select id="marketNegotiable"><option value="">Fixed price or bargaining</option><option value="true"'+(filters.negotiable==="true"?" selected":"")+'>Negotiable prices only</option><option value="false"'+(filters.negotiable==="false"?" selected":"")+'>Fixed prices only</option></select><button class="btn" data-market-search="1" type="button">Search</button></div>'+
  '<p class="market-footnote">Only list goods you legally own and can transfer. Game account/currency trades may violate game rules. Shipping carrier availability and payment methods must be confirmed with the seller; the platform does not take payments.</p>'+
- (selected?detail(selected):'<div class="market-grid">'+(listings.length?listings.map(itemCard).join(""):'<div class="market-empty"><h3>No listings match yet</h3><p>Be the first to publish a genuine item.</p><button class="btn primary" data-market-view="sell" type="button">Create a listing</button></div>')+'</div>');
+ (selected?detail(selected):'<div class="market-grid">'+(listings.length?listings.map(itemCard).join(""):'<div class="market-empty"><h3>No listings match yet</h3><p>Be the first to publish a real item, or change your search filters.</p><button class="btn primary" data-market-create="1" type="button">＋ Sell an item</button></div>')+'</div>');
 }
 function renderSell(){
  if(!options?.categories||!options?.payment_methods)return '<section class="market-panel"><h2>Prepare a listing</h2><p>Category and delivery options are unavailable at the moment. Publishing stays disabled until the options are loaded securely from the server.</p></section>';
