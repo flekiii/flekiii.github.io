@@ -17,8 +17,8 @@ const validUser=s=>typeof s==="string"&&/^[a-z][a-z0-9_]{2,23}$/.test(s);
 const validName=s=>typeof s==="string"&&s.trim().length>=1&&s.trim().length<=60;
 const pwd=async(pass,salt)=>{const key=await crypto.subtle.importKey("raw",enc.encode(pass),"PBKDF2",false,["deriveBits"]);return b64(new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",iterations:210000,salt:un64(salt)},key,256)))};
 const issue=async(db,id)=>{const token=b64(bytes(32));await exec(db,"INSERT INTO sessions(token_hash,user_id,mfa_verified,created_at,expires_at) VALUES(?,?,?,?,?)",await hash(token),id,0,now(),now()+604800000);return token};
-const auth=async(req,db)=>{const h=req.headers.get("Authorization")||"";if(!/^Bearer [A-Za-z0-9_-]{42,}$/.test(h))return null;return one(db,"SELECT s.token_hash,s.mfa_verified,u.id,u.username,u.display_name,u.bio,u.mfa_secret FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>?",await hash(h.slice(7)),now())};
-const authorized=u=>u?.mfa_verified===1&&!!u.mfa_secret;
+const auth=async(req,db)=>{const h=req.headers.get("Authorization")||"";if(!/^Bearer [A-Za-z0-9_-]{42,}$/.test(h))return null;return one(db,"SELECT s.token_hash,s.mfa_verified,s.external_mfa,u.id,u.username,u.display_name,u.bio,u.mfa_secret FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>?",await hash(h.slice(7)),now())};
+const authorized=u=>u?.mfa_verified===1&&(!!u.mfa_secret||u.external_mfa===1);
 const limited=async(db,key,ip,limit=8,window=900000,record=true)=>{let h=await hash(ip+"|"+key),t=now(),old=await one(db,"SELECT count,expires_at FROM login_attempts WHERE key_hash=?",h);if(old&&old.expires_at>t&&old.count>=limit)return false;if(record)await exec(db,"INSERT INTO login_attempts(key_hash,count,expires_at) VALUES(?,?,?) ON CONFLICT(key_hash) DO UPDATE SET count=CASE WHEN expires_at<=? THEN 1 ELSE count+1 END,expires_at=CASE WHEN expires_at<=? THEN ? ELSE expires_at END",h,1,t+window,t,t,t+window);return true};
 const clearLimit=async(db,key,ip)=>exec(db,"DELETE FROM login_attempts WHERE key_hash=?",await hash(ip+"|"+key));
 const isBlocked=async(db,a,b)=>!!await one(db,"SELECT 1 FROM blocks WHERE (blocker=? AND blocked=?) OR (blocker=? AND blocked=?)",a,b,b,a);
@@ -77,7 +77,7 @@ async function endpoints(req,env,path,ip){
   return j({token:await issue(db,row.id)});
  }
  const u=await auth(req,db);if(!u)return bad("Sign in required.",401);
- if(is("GET","/me"))return j({user:{id:u.id,username:u.username,display_name:u.display_name,bio:u.bio,mfa_enabled:!!u.mfa_secret,mfa_verified:authorized(u)}});
+ if(is("GET","/me"))return j({user:{id:u.id,username:u.username,display_name:u.display_name,bio:u.bio,mfa_enabled:!!u.mfa_secret||u.external_mfa===1,mfa_verified:authorized(u)}});
  if(is("POST","/auth/logout")){await exec(db,"DELETE FROM sessions WHERE token_hash=?",u.token_hash);return j({ok:true})}
  if(is("POST","/mfa/enroll")){
   if(u.mfa_secret&&!authorized(u))return bad("Verify existing 2FA first.",403);
