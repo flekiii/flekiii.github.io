@@ -1,0 +1,20 @@
+{
+  "name": "fleki-authenticator-android",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Android native project for Fleki Authenticator's offline encrypted TOTP vault",
+  "type": "module",
+  "scripts": {
+    "android:init": "cap add android",
+    "android:sync": "cap sync android",
+    "android:open": "cap open android",
+    "android:run": "cap run android"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.5.3",
+    "@capacitor/android": "8.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3"
+  }
+}
