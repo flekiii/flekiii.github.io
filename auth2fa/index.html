@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111019">
+  <meta name="description" content="Auth2FA is an offline two-factor authenticator for Windows and Android. Get verified downloads here on Fleki's Wrld.">
+  <meta property="og:title" content="Auth2FA · Downloads · Fleki's Wrld">
+  <meta property="og:description" content="One home for verified Auth2FA downloads. Offline TOTP codes, encrypted local vault and secure backup.">
+  <title>Auth2FA · Downloads · Fleki's Wrld</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="stylesheet" href="./style.css?v=1">
+  <script src="./downloads.js?v=1" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+  <header class="nav shell">
+    <a href="/#apps" class="back" aria-label="Back to Fleki's Wrld Apps"><span aria-hidden="true">←</span> Apps</a>
+    <a href="/" class="site-mark" aria-label="Fleki's Wrld home">fleki<span>'s</span> wrld<span class="small-mark">.</span></a>
+    <span class="edition">OFFICIAL DOWNLOADS</span>
+  </header>
+  <main class="shell">
+    <section class="hero" aria-labelledby="product-title">
+      <div class="product-mark"><img src="./icon.svg" width="92" height="92" alt="Auth2FA shield icon"></div>
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse" aria-hidden="true"></span> SECURITY · WINDOWS · ANDROID</div>
+        <h1 id="product-title">Auth<span>2FA</span><span class="title-dot">.</span></h1>
+        <p class="tagline">Your accounts. Your codes. Your control.</p>
+        <p class="intro">A standalone two-factor authenticator designed to keep security codes on your device. No online account needed to generate codes.</p>
+        <div class="pills"><span>Works offline</span><span>Encrypted vault</span><span>QR setup</span><span>No subscription</span></div>
+      </div>
+      <div class="version-box" aria-label="Release status">
+        <span class="status-heading">RELEASE CHANNEL</span>
+        <strong id="versionLabel">v0.1.0</strong>
+        <span id="releaseStatus" class="release-status">In development</span>
+      </div>
+    </section>
+
+    <section class="download-section" aria-labelledby="download-title">
+      <div class="section-head"><div><div class="eyebrow">GET AUTH2FA</div><h2 id="download-title">Download for your device</h2><p>Installation files are offered here only after they have been built and verified.</p></div></div>
+      <div class="download-grid">
+        <article class="download-card" data-platform="windows">
+          <div class="platform-top"><span class="platform-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5 10.5 3.9V11H3V5ZM12 3.7 21 2.5V11H12V3.7ZM3 12.7h7.5v7.4L3 19v-6.3Zm9 0h9v8.8l-9-1.2v-7.6Z" fill="currentColor"/></svg></span><span class="platform-kind">DESKTOP</span></div>
+          <h3>Windows</h3><p>Installer for Windows 10 and Windows 11.</p><div class="platform-spec">Windows · x64 · EXE</div>
+          <a id="windowsDownload" class="download-button disabled" href="#" aria-disabled="true"><span>Not released yet</span><span aria-hidden="true">↓</span></a>
+          <p id="windowsMeta" class="download-meta">Signed, verified build required.</p>
+        </article>
+        <article class="download-card featured" data-platform="android">
+          <div class="platform-top"><span class="platform-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span class="platform-kind">MOBILE</span></div>
+          <h3>Android</h3><p>Offline authenticator with native QR scanner.</p><div class="platform-spec">Android 8+ · APK</div>
+          <a id="androidDownload" class="download-button disabled" href="#" aria-disabled="true"><span>Not released yet</span><span aria-hidden="true">↓</span></a>
+          <p id="androidMeta" class="download-meta">Signed, verified build required.</p>
+        </article>
+        <article class="download-card" data-platform="linux">
+          <div class="platform-top"><span class="platform-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 18.5 4 21h16l-2.5-2.5M7 13.5 9 4c.6-2 5.4-2 6 0l2 9.5-1 5h-8l-1-5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" fill="none"/><circle cx="10" cy="9" r="1" fill="currentColor"/><circle cx="14" cy="9" r="1" fill="currentColor"/></svg></span><span class="platform-kind">DESKTOP</span></div>
+          <h3>Linux</h3><p>Desktop package. NixOS compatibility will be tested separately.</p><div class="platform-spec">Linux · x64 · AppImage</div>
+          <a id="linuxDownload" class="download-button disabled" href="#" aria-disabled="true"><span>Not released yet</span><span aria-hidden="true">↓</span></a>
+          <p id="linuxMeta" class="download-meta">Verified build required.</p>
+        </article>
+      </div>
+      <div class="release-note" role="status"><span class="note-icon" aria-hidden="true">ⓘ</span><p id="downloadNotice">Auth2FA is still being tested. We do not provide fake or unverified installation files. When official builds are ready, download buttons on this page will become available.</p></div>
+    </section>
+
+    <section class="details" aria-labelledby="features-title">
+      <div class="eyebrow">BUILT FOR PRIVACY</div>
+      <h2 id="features-title">Protection that stays with you.</h2>
+      <div class="feature-grid">
+        <div class="feature"><div class="feature-icon" aria-hidden="true">⌁</div><h3>Offline codes</h3><p>Generate time-based verification codes without an internet connection.</p></div>
+        <div class="feature"><div class="feature-icon" aria-hidden="true">◇</div><h3>Encrypted by default</h3><p>Your local vault is encrypted using a password you choose.</p></div>
+        <div class="feature"><div class="feature-icon" aria-hidden="true">▣</div><h3>Easy account setup</h3><p>Import TOTP setup keys or scan QR codes on supported devices.</p></div>
+        <div class="feature"><div class="feature-icon" aria-hidden="true">↗</div><h3>Backup and restore</h3><p>Export an encrypted backup and verify it before restoring.</p></div>
+      </div>
+    </section>
+    <section class="caution"><div><div class="eyebrow">IMPORTANT</div><h2>Keep access to your accounts.</h2><p>Store recovery codes separately before enabling two-factor authentication. Losing both your device and recovery codes may permanently lock you out of a protected account.</p></div><a href="/#apps" class="return-link">Back to Apps <span aria-hidden="true">↗</span></a></section>
+  </main>
+  <footer class="footer shell"><span>© <span id="currentYear">2026</span> fleki's wrld</span><span>Auth2FA · Independent authenticator</span></footer>
+</body>
+</html>
