@@ -1,0 +1,34 @@
+{
+  "name": "fleki-authenticator-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Fleki Authenticator — offline TOTP vault for Windows",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win nsis portable"
+  },
+  "devDependencies": {
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "dev.fleki.authenticator",
+    "productName": "Fleki Authenticator",
+    "files": [
+      "main.cjs",
+      "assets/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    }
+  }
+}
