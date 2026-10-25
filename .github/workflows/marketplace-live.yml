@@ -1,0 +1,41 @@
+name: Fleki's Wrld marketplace live smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/marketplace.js'
+      - 'backend/worker.js'
+      - 'backend/migrations/**'
+      - 'wrld-market.js'
+      - '.github/workflows/marketplace-live.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check backend/marketplace.js && node --check wrld-market.js
+      - name: Confirm production catalog and 2FA gate
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from "node:assert/strict";
+          const url="https://flekis-wrld-api.flekideveloper.workers.dev";
+          const call=(p,opts={})=>fetch(url+p,{...opts,signal:AbortSignal.timeout(15000),headers:{"Accept":"application/json",...(opts.headers||{})}});
+          const list=await call("/market/listings");
+          const content=await list.json();
+          assert.equal(list.status,200,"Public product catalog must be available");
+          assert.ok(Array.isArray(content.listings));
+          const priv=await call("/market/mine");
+          assert.equal(priv.status,401,"Seller listings must require login");
+          const post=await call("/market/listings",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});
+          assert.equal(post.status,401,"Publishing must require authenticated 2FA");
+          const dm=await call("/market/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});
+          assert.equal(dm.status,401,"Messaging must require authenticated 2FA");
+          console.log("Production marketplace: public listings online, private writes denied.");
+          NODE
