@@ -49,6 +49,10 @@ export async function marketHandle(req,env,path,{auth,authorized}){
  const u=await auth(req,db);
  if(!u)return fail("Sign in to Fleki's Wrld first.",401);
  if(!authorized(u))return fail("Verified 2FA is required to sell or message.",403);
+ if(m==="GET"&&path==="/market/mine"){
+  const listings=await many(db,"SELECT l.*,u.username AS seller_username,u.display_name AS seller_name FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.seller_id=? ORDER BY l.created_at DESC LIMIT 100",u.id);
+  return ok({listings:await Promise.all(listings.map(row=>safeListing(db,row)))});
+ }
  if(m==="POST"&&path==="/market/listings"){
   const p=await body(req),title=text(p.title,120),description=text(p.description,1000);
   const category=text(p.category,40),currency=text(p.currency,3).toUpperCase();
