@@ -20,7 +20,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --check backend/marketplace.js && node --check backend/market-catalog.js && node --check wrld-market.js
+      - name: Run marketplace syntax and security tests
+        run: |
+          node --check backend/marketplace.js
+          node --check backend/market-catalog.js
+          node --check wrld-market.js
           node --test backend/marketplace.test.mjs
       - name: Confirm production catalog and 2FA gate
         shell: bash
