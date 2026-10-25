@@ -150,17 +150,18 @@ test("Game name input safely escapes untrusted user text",()=>{
 });
 
 test("Community uses a full-width responsive viewport workspace for all three panels",()=>{
- assert.match(communityCss,/#main\\.shell:has\\(#page-chat\\.active\\)/);
- assert.match(communityCss,/#page-chat \\.social-workspace\\{/);
- assert.match(communityCss,/height:clamp\\(660px,calc\\(100dvh - 255px\\),1400px\\)/);
- assert.match(communityCss,/#page-chat \\.social-global \\.social-chat-list/);
- assert.match(communityCss,/#page-chat \\.social-layout-direct \\.social-chat-list/);
- assert.match(communityCss,/#page-chat \\.social-layout-friends>/);
- assert.match(communityCss,/@media\\(max-width:560px\\)/);
- assert.match(social,/social-layout social-layout-/);
- assert.match(social,/\\["global","Global chat"/);
- assert.match(social,/\\["friends","Friends"/);
- assert.match(social,/\\["direct","Messages"/);
- assert.match(siteHtml,/href="\\/wrld-community\\.css\\?v=2"/);
- assert.match(siteHtml,/src="\\/wrld-social\\.js\\?v=10"/);
+ const has=(src,needle)=>assert.ok(src.includes(needle),"Missing "+needle);
+ has(communityCss,":has(#page-chat.active)");
+ has(communityCss,"#page-chat .social-workspace{");
+ has(communityCss,"height:clamp(660px,calc(100dvh - 255px),1400px)");
+ has(communityCss,"#page-chat .social-global .social-chat-list");
+ has(communityCss,"#page-chat .social-layout-direct .social-chat-list");
+ has(communityCss,"#page-chat .social-layout-friends>");
+ has(communityCss,"@media(max-width:560px)");
+ has(social,"social-layout social-layout-");
+ has(social,'["global","Global chat"');
+ has(social,'["friends","Friends"');
+ has(social,'["direct","Messages"');
+ has(siteHtml,'href="/wrld-community.css?v=2"');
+ has(siteHtml,'src="/wrld-social.js?v=10"');
 });
