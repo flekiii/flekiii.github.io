@@ -33,25 +33,17 @@ jobs:
           import assert from "node:assert/strict";
           const url="https://flekis-wrld-api.flekideveloper.workers.dev";
           const call=(p,opts={})=>fetch(url+p,{...opts,signal:AbortSignal.timeout(15000),headers:{"Accept":"application/json",...(opts.headers||{})}});
-          const options=await call("/market/options?country=UA&category=furniture");
-          assert.equal(options.status,200,"Live marketplace options must be available");
-          const settings=await options.json();
-          assert.ok(settings.categories?.clothing?.subcategories?.some(x=>x.id==="shorts"));
-          assert.ok(settings.delivery_providers?.some(x=>x.label==="Nova Poshta"));
-          assert.ok(settings.payment_methods?.some(x=>x.id==="card_transfer"));
-          const filters=await call("/market/listings?q=shorts&category=clothing&subcategory=shorts");
-          assert.equal(filters.status,200,"Listing search by specific clothing type must work");
-          const wrong=await call("/market/listings?country=ZZ");
-          assert.equal(wrong.status,400,"Unsupported countries must be rejected");
-          const list=await call("/market/listings");
-          const content=await list.json();
-          assert.equal(list.status,200,"Public product catalog must be available");
-          assert.ok(Array.isArray(content.listings));
-          const priv=await call("/market/mine");
-          assert.equal(priv.status,401,"Seller listings must require login");
+          for(const path of ["/market/options?country=UA&category=furniture","/market/listings","/market/mine","/market/wishlist","/market/conversations"]){
+            const res=await call(path);
+            assert.equal(res.status,401,"Unauthenticated visitors must not see "+path);
+          }
+          const publicChat=await call("/messages/public");
+          assert.equal(publicChat.status,200,"Global chat must be readable to visitors");
+          const feed=await publicChat.json();
+          assert.ok(Array.isArray(feed.messages));
           const post=await call("/market/listings",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});
-          assert.equal(post.status,401,"Publishing must require authenticated 2FA");
+          assert.equal(post.status,401,"Publishing must require login and verified 2FA");
           const dm=await call("/market/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});
-          assert.equal(dm.status,401,"Messaging must require authenticated 2FA");
-          console.log("Production marketplace: public listings online, private writes denied.");
+          assert.equal(dm.status,401,"Marketplace messaging must require verified 2FA");
+          console.log("Production marketplace private until 2FA; global community readable to guests.");
           NODE
