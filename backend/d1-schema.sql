@@ -63,7 +63,8 @@ CREATE TABLE reports(
 
 CREATE TABLE sessions(
  token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
- mfa_verified INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL, expires_at INTEGER NOT NULL
+ mfa_verified INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL, expires_at INTEGER NOT NULL,
+ external_mfa INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE users(
@@ -88,3 +89,17 @@ CREATE INDEX idx_global ON messages(created_at DESC) WHERE recipient IS NULL;
 CREATE INDEX idx_notifications ON notifications(recipient,created_at DESC);
 
 CREATE INDEX idx_sessions_user ON sessions(user_id,expires_at);
+
+-- Existing deployments apply the additive 2026-10-fmail-sso migration.
+-- No mail or other projects' data belongs in this D1 database.
+CREATE TABLE IF NOT EXISTS oauth_states (
+ state_hash TEXT PRIMARY KEY,provider TEXT NOT NULL,nonce TEXT,verifier TEXT,expires_at INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS oauth_identities (
+ provider TEXT NOT NULL,subject TEXT NOT NULL,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ created_at INTEGER NOT NULL,PRIMARY KEY(provider,subject),UNIQUE(provider,user_id)
+);
+CREATE TABLE IF NOT EXISTS oauth_tickets (
+ ticket_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ expires_at INTEGER NOT NULL,external_mfa INTEGER NOT NULL DEFAULT 0
+);
