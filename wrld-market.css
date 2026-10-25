@@ -164,3 +164,11 @@
 @media(max-width:940px){.market-shell.market-workspace{grid-template-columns:180px minmax(0,1fr);gap:10px}.market-inbox{grid-template-columns:1fr}.market-inbox-list{max-height:240px}.market-shipping-columns{grid-template-columns:1fr}}
 @media(max-width:730px){.market-shell.market-workspace{grid-template-columns:1fr}.market-rail{min-height:0;padding:10px;gap:6px}.market-rail-header{display:none}.market-rail nav{display:flex;flex-wrap:wrap}.market-rail-link{flex:1 1 120px;justify-content:center;min-height:39px;padding:7px 8px;font-size:11px}.market-rail-link span{font-size:16px}.market-create{min-height:42px}.market-shop-link{margin:0;border:0;padding:8px}.market-main{gap:10px}.market-topbar{padding:0}.market-edit-dialog{height:min(95dvh,1000px)}.market-shipping-columns{grid-template-columns:1fr}.market-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:430px){.market-owner-card{flex-direction:column}.market-owner-thumb{width:100%;height:125px;flex-basis:auto}.market-filters{grid-template-columns:1fr}.market-shipping-columns{grid-template-columns:1fr}.market-edit-dialog .market-country-choices{grid-template-columns:1fr}.market-inbox{grid-template-columns:1fr}.market-rail-link span{display:none}}
+
+/* Guest or unverified marketplace is a single, full-height access screen. */
+#page-marketplace:has(.market-auth-gate) .page-heading{display:none!important}
+#page-marketplace:has(.market-auth-gate) #wrld-market-root{margin:0 auto;max-width:100%}
+#page-marketplace .market-auth-gate{min-height:calc(100dvh - 150px);border-radius:0;border-inline:0}
+.market-shipping-columns .market-check[hidden]{display:none!important}
+.market-edit-dialog button:focus-visible,.market-rail button:focus-visible,.market-card button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+@media(max-width:650px){#page-marketplace .market-auth-gate{min-height:calc(100dvh - 180px)}}
