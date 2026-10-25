@@ -109,3 +109,40 @@ test("Games multi-select menu is searchable and can close with Escape",()=>{
  assert.match(ui.root.innerHTML,/id="gamesGenreOptions" class="games-filter-menu" hidden/);
  assert.match(ui.root.innerHTML,/aria-expanded="false"/);
 });
+
+
+test("Games dropdown click does not bubble into the outside-click handler after replacing its own button",()=>{
+ const ui=gamesRuntime();
+ let stopped=false;
+ const oldToggle={id:"gamesToggle",dataset:{},closest:()=>null};
+ const click={target:{closest:()=>oldToggle},stopPropagation(){stopped=true}};
+ ui.listeners.click(click);
+ // Simulate browser bubbling only when the event wasn't cancelled.
+ if(!stopped)ui.documentListeners.click({target:oldToggle});
+ assert.equal(stopped,true,"Opening the dropdown must stop bubbling before the trigger is detached.");
+ assert.match(ui.root.innerHTML,/aria-expanded="true"/);
+ assert.match(ui.root.innerHTML,/id="gamesGenreOptions" class="games-filter-menu" >/);
+ assert.match(ui.root.innerHTML,/class="games-toggle-chevron"/);
+});
+test("Title search is above genre and platform controls, tracks game name and resets cleanly",()=>{
+ const ui=gamesRuntime();
+ const html=ui.root.innerHTML;
+ const searchPos=html.indexOf('id="gamesTitleSearch"');
+ const genrePos=html.indexOf('id="gamesToggle"');
+ const platformPos=html.indexOf('id="gamesPlatform"');
+ assert.ok(searchPos>0&&searchPos<genrePos&&genrePos<platformPos);
+ assert.match(html,/Search by game name/);
+ assert.match(html,/class="games-title-search"/);
+ ui.listeners.input({target:{id:"gamesTitleSearch",value:"Lethal Company",selectionStart:14}});
+ assert.match(ui.root.innerHTML,/value="Lethal Company"/);
+ assert.match(ui.root.innerHTML,/No games found for “Lethal Company”/);
+ ui.listeners.click({target:{closest:()=>({id:"gamesReset",dataset:{}})}});
+ assert.match(ui.root.innerHTML,/id="gamesTitleSearch"[^>]*value=""/);
+ assert.doesNotMatch(ui.root.innerHTML,/No games found for/);
+});
+test("Game name input safely escapes untrusted user text",()=>{
+ const ui=gamesRuntime();
+ ui.listeners.input({target:{id:"gamesTitleSearch",value:'<img src=x onerror=alert(1)>',selectionStart:7}});
+ assert.doesNotMatch(ui.root.innerHTML,/<img src=x onerror/);
+ assert.match(ui.root.innerHTML,/&lt;img src=x onerror=alert\(1\)&gt;/);
+});
