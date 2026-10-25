@@ -77,6 +77,10 @@ async function endpoints(req,env,path,ip){
   await clearLimit(db,"login:"+username,ip);
   return j({token:await issue(db,row.id)});
  }
+ if(is("GET","/messages/public")){
+  const messages=await rows(db,"SELECT m.id,m.author,m.content,m.created_at,a.username,a.display_name FROM messages m JOIN users a ON a.id=m.author WHERE m.recipient IS NULL ORDER BY m.created_at DESC LIMIT 80");
+  return j({messages:messages.reverse(),pins:[],read_only:true});
+ }
  const u=await auth(req,db);if(!u)return bad("Sign in required.",401);
  if(is("GET","/me"))return j({user:{id:u.id,username:u.username,display_name:u.display_name,bio:u.bio,mfa_enabled:!!u.mfa_secret||u.external_mfa===1,mfa_verified:authorized(u),mfa_provider:u.external_mfa===1?"fmail":u.mfa_secret?"wrld":null}});
  if(is("POST","/auth/logout")){await exec(db,"DELETE FROM sessions WHERE token_hash=?",u.token_hash);return j({ok:true})}
