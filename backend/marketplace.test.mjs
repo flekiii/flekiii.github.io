@@ -98,3 +98,11 @@ test("Computing category includes RAM, monitors, keyboards, PC cooling and GPU",
   assert.ok(ids.includes(value),value);
  }
 });
+
+test("Standalone computers category lists precise hardware options",()=>{
+ const computer=marketCategories.computers;
+ assert.equal(computer.label,"Computers & PC components");
+ for(const id of ["monitors","computer_mice","keyboards","ram","pc_cases","case_fans","cpu_coolers","graphics_cards","ssd_drives","motherboards"]){
+  assert.ok(computer.subcategories.some(item=>item.id===id),id);
+ }
+});
