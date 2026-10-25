@@ -91,6 +91,14 @@ export async function marketHandle(req,env,path,{auth,authorized}){
   const messages=await many(db,"SELECT id,sender_id,content,created_at FROM market_messages WHERE listing_id=? AND buyer_id=? ORDER BY created_at DESC LIMIT 100",listingId,buyer);
   return ok({messages:messages.reverse()});
  }
+ if(m==="POST"&&path==="/market/reports"){
+  const p=await body(req),reason=text(p.reason,500);
+  if(!id(p.listing_id)||reason.length<10||reason.length>500)return fail("Provide a listing and a 10–500-character reason.");
+  const listing=await get(db,"SELECT seller_id FROM market_listings WHERE id=?",p.listing_id);
+  if(!listing||listing.seller_id===u.id)return fail("Cannot report this listing.",403);
+  await run(db,"INSERT OR IGNORE INTO market_reports(id,reporter_id,listing_id,reason,created_at) VALUES(?,?,?,?,?)",crypto.randomUUID(),u.id,p.listing_id,reason,now);
+  return ok({ok:true});
+ }
  if(m==="POST"&&path==="/market/messages"){
   const p=await body(req),listingId=p.listing_id,buyer=id(p.buyer_id)?p.buyer_id:u.id,content=text(p.content,1500);
   if(!id(listingId)||content.length<1||content.length>1500)return fail("Message must be 1–1500 characters.");
