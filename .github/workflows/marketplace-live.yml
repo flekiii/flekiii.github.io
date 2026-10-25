@@ -8,6 +8,10 @@ on:
       - 'backend/worker.js'
       - 'backend/migrations/**'
       - 'wrld-market.js'
+      - 'wrld-market.css'
+      - 'wrld-social.js'
+      - 'wrld-games.js'
+      - 'tests/wrld-ui.test.mjs'
       - '.github/workflows/marketplace-live.yml'
   workflow_dispatch:
 permissions:
