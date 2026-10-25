@@ -89,3 +89,19 @@
  .games-applied>strong{flex-basis:100%}
 }
 @media(prefers-reduced-motion:reduce){.games-filter-toggle,.games-quick-btn,.games-genre-choice{transition:none}}
+
+/* Games v3: the game-title search spans the combined Genres + Platform columns. */
+.games-title-search{grid-column:1 / span 2;display:grid;gap:8px;width:100%;min-width:0}
+.games-title-search-box{width:100%;height:49px;min-width:0;display:flex;gap:11px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:0 15px;transition:border-color .15s}
+.games-title-search-box:focus-within{border-color:var(--accent);outline:2px solid color-mix(in srgb,var(--accent) 15%,transparent);outline-offset:2px}
+.games-title-search-box svg{width:20px;height:20px;flex:0 0 20px;color:var(--accent);fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.games-title-search-box input{width:100%;height:100%;min-width:0;flex:1;background:transparent;color:var(--text);border:0;outline:0;font:600 13px "DM Sans",system-ui,sans-serif}
+.games-title-search-box input::placeholder{color:var(--muted);font-weight:450;opacity:.9}
+.games-filter-toggle .games-filter-icon{display:block;width:20px;height:20px;flex:0 0 20px;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;color:var(--accent)}
+.games-filter-toggle .games-toggle-chevron{display:block;width:19px;height:19px;flex:0 0 19px;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--muted);transition:transform .2s ease}
+.games-filter-toggle.is-open .games-toggle-chevron{transform:rotate(180deg);color:var(--accent)}
+.games-filter-toggle .games-toggle-chevron{margin-left:auto}
+.games-reset{grid-column:3;grid-row:2}
+@media(max-width:760px){.games-title-search{grid-column:1/-1}.games-reset{grid-column:1/-1;grid-row:auto}}
+@media(max-width:530px){.games-title-search{grid-column:1}.games-filter-menu{position:relative;z-index:4}.games-reset{grid-column:1}}
+@media(prefers-reduced-motion:reduce){.games-filter-toggle .games-toggle-chevron,.games-title-search-box{transition:none}}
