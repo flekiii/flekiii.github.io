@@ -178,7 +178,7 @@ function renderStore(){
 }
 function fillEditor(){
  const item=editing,form=$("#marketSellForm");if(!item||!form)return;
- const update=(name,value)=>{const el=form.elements.namedItem(name);if(el&&!("length" in el))el.value=String(value??"")};
+ const update=(name,value)=>{const el=form.elements.namedItem(name);if(el&&el.tagName)el.value=String(value??"")};
  update("title",item.title);update("description",item.description);update("price",(item.price_minor/100).toFixed(2));update("currency",item.currency);
  update("category",item.category);refreshSubcategories();update("subcategory",item.subcategory);refreshCustomType();update("custom_type",item.custom_type);
  const radio=form.querySelector('input[name="negotiable"][value="'+(item.negotiable?"yes":"no")+'"]');if(radio)radio.checked=true;
@@ -245,7 +245,10 @@ root.addEventListener("change",async event=>{
   try{await needLogin();await call("/market/listings/"+el.dataset.marketStatusId+"/status","POST",{status:el.value});message("Listing updated.");own=(await call("/market/mine")).listings;paint()}catch(err){message(err.message,true)}
  }
 });
-root.addEventListener("input",event=>{if(event.target?.id==="marketDestinationSearch")filterDestinations()});
+root.addEventListener("input",event=>{
+ if(event.target?.id==="marketDestinationSearch")filterDestinations();
+ if(event.target?.id==="marketCourierSearch")filterCouriers();
+});
 root.addEventListener("click",async event=>{
  const target=event.target.closest("button");if(!target)return;
  try{
@@ -254,18 +257,57 @@ root.addEventListener("click",async event=>{
     const data=await call("/market/listings");listings=data.listings;
     message("Marketplace is ready.");paint();return;
   }
+  if(target.dataset.marketProfile){document.querySelector('#dock [data-go="profile"]')?.click();return}
+  if(target.dataset.marketCheck){await initialize();return}
+  if(target.dataset.marketClose){shopFormOpen=false;editing=null;paint();return}
+  if(target.dataset.marketCreate){await needLogin();editing=null;shopFormOpen=true;paint();return}
+  if(target.dataset.marketEdit){
+   await needLogin();editing=own.find(x=>x.id===target.dataset.marketEdit);
+   if(!editing)throw Error("Your listing was not found.");
+   shopFormOpen=true;paint();return;
+  }
   if(target.dataset.marketView){await changeView(target.dataset.marketView);return}
+  if(target.dataset.marketSide){
+   threadSide=target.dataset.marketSide;chatKey=null;paint();return;
+  }
   if(target.dataset.marketSearch){await browse();return}
   if(target.dataset.marketBack){selected=null;paint();return}
   if(target.dataset.marketOpen){
-   selected=listings.find(x=>x.id===target.dataset.marketOpen);
+   selected=[...listings,...wishlist].find(x=>x.id===target.dataset.marketOpen);
    if(selected)try{
     const data=await loadOptions(selected.origin_country,selected.category);
     for(const x of data.delivery_providers||[])carrierNames.set(selected.origin_country+":"+x.id,x.label);
    }catch{}
    paint();return;
   }
-  if(target.dataset.marketChat){const me=await needLogin();const x=selected||listings.find(x=>x.id===target.dataset.marketChat);if(me.id===x.seller_id)throw Error("You own this listing.");view="messages";chatKey={listingId:x.id,buyerId:me.id};conversations=(await call("/market/conversations")).conversations;paint();return}
+  if(target.dataset.marketFavorite){
+   await needLogin();
+   const id=target.dataset.marketFavorite,old=[...listings,...wishlist].find(x=>x.id===id)||selected;
+   const method=old?.favorited?"DELETE":"POST";
+   await call("/market/favorites/"+encodeURIComponent(id),method);
+   const results=await Promise.all([call("/market/listings"),call("/market/wishlist")]);
+   listings=results[0].listings;wishlist=results[1].listings;
+   if(selected?.id===id)selected=(await call("/market/listings/"+id)).listing;
+   paint();return;
+  }
+  if(target.dataset.marketReaction){
+   await needLogin();
+   const id=target.dataset.marketReaction;
+   const item=selected?.id===id?selected:[...listings,...wishlist].find(x=>x.id===id);
+   const selectedValue=Number(target.dataset.reaction);
+   await call("/market/reactions/"+encodeURIComponent(id),"PUT",{reaction:item?.my_reaction===selectedValue?0:selectedValue});
+   if(selected?.id===id)selected=(await call("/market/listings/"+id)).listing;
+   listings=(await call("/market/listings")).listings;
+   paint();return;
+  }
+  if(target.dataset.marketChat){
+   const me=await needLogin();
+   const x=selected||[...listings,...wishlist].find(x=>x.id===target.dataset.marketChat);
+   if(!x||me.id===x.seller_id)throw Error("You cannot message yourself.");
+   view="messages";threadSide="buy";chatKey={listingId:x.id,buyerId:me.id};
+   conversations=(await call("/market/conversations")).conversations;
+   paint();return;
+  }
   if(target.dataset.marketReport){await needLogin();const reason=window.prompt("Why should this listing be reviewed? (10–500 characters)");if(reason===null)return;await call("/market/reports","POST",{listing_id:target.dataset.marketReport,reason});message("Report received for moderation.");return}
   if(target.dataset.marketThread){await needLogin();chatKey={listingId:target.dataset.marketThread,buyerId:target.dataset.marketBuyer};paint();return}
  }catch(err){message(err.message,true)}
@@ -290,11 +332,14 @@ root.addEventListener("submit",async event=>{
     images:lines("images"),videos:lines("videos")};
    if(!shipping.length||!delivery.length||!payments.length)throw Error("Select a delivery destination, carrier and at least one payment method.");
    if(shipping.length>70)throw Error("Select no more than 70 delivery countries.");
-   await call("/market/listings","POST",fields);message("Listing published successfully!");view="my";own=(await call("/market/mine")).listings;paint();
+   await call(editing?"/market/listings/"+editing.id:"/market/listings",editing?"PUT":"POST",fields);
+   message(editing?"Listing updated.":"Listing published successfully!");
+   shopFormOpen=false;editing=null;view="my";own=(await call("/market/mine")).listings;paint();
   }else{
    const content=new FormData(form).get("message");
    await call("/market/messages","POST",{listing_id:chatKey.listingId,buyer_id:chatKey.buyerId,content});
-   form.reset();await loadMessages();message("Message sent.");
+   form.reset();conversations=(await call("/market/conversations")).conversations;
+   paint();message("Message sent.");
   }
  }catch(err){message(err.message,true)}finally{loading=false}
 });
