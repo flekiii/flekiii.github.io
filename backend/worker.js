@@ -1,4 +1,5 @@
 import { oauthHandle } from "./oauth.js";
+import { marketHandle } from "./marketplace.js";
 // Fleki's Wrld independent social API. No third-party login or shared identity database.
 const ORIGIN="https://flekiii.github.io",enc=new TextEncoder(),dec=new TextDecoder();
 const j=(obj,status=200)=>new Response(JSON.stringify(obj),{status,headers:{"Content-Type":"application/json","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Access-Control-Allow-Origin":ORIGIN,"Vary":"Origin"}});
@@ -206,6 +207,6 @@ export default {async fetch(req,env){
  if(req.method==="OPTIONS"){if(origin!==ORIGIN)return new Response(null,{status:403});return new Response(null,{status:204,headers:{"Access-Control-Allow-Origin":ORIGIN,"Access-Control-Allow-Headers":"Authorization,Content-Type","Access-Control-Allow-Methods":"GET,POST,PUT,DELETE,OPTIONS","Access-Control-Max-Age":"1800"}})}
  if(origin&&origin!==ORIGIN&&!(path==="/auth/oauth/callback/apple"&&origin==="https://appleid.apple.com"))return bad("Forbidden origin.",403);
  if(!env.DB)return bad("Backend not configured.",503);
- try{const socialAuth=await oauthHandle(req,env,path);if(socialAuth)return socialAuth;return await endpoints(req,env,path,req.headers.get("CF-Connecting-IP")||"unknown")}
+ try{const socialAuth=await oauthHandle(req,env,path);if(socialAuth)return socialAuth;const market=await marketHandle(req,env,path,{auth,authorized});if(market)return market;return await endpoints(req,env,path,req.headers.get("CF-Connecting-IP")||"unknown")}
  catch(e){if(["Request too large.","Malformed JSON."].includes(e.message))return bad(e.message);if(String(e).includes("UNIQUE constraint failed"))return bad("Already exists.",409);return bad("Server error.",500)}
 }};
