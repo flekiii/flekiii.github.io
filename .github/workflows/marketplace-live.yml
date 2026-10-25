@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'backend/marketplace.js'
+      - 'backend/market-catalog.js'
       - 'backend/worker.js'
       - 'backend/migrations/**'
       - 'wrld-market.js'
@@ -19,7 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --check backend/marketplace.js && node --check wrld-market.js
+      - run: node --check backend/marketplace.js && node --check backend/market-catalog.js && node --check wrld-market.js
+          node --test backend/marketplace.test.mjs
       - name: Confirm production catalog and 2FA gate
         shell: bash
         run: |
@@ -27,6 +29,12 @@ jobs:
           import assert from "node:assert/strict";
           const url="https://flekis-wrld-api.flekideveloper.workers.dev";
           const call=(p,opts={})=>fetch(url+p,{...opts,signal:AbortSignal.timeout(15000),headers:{"Accept":"application/json",...(opts.headers||{})}});
+          const options=await call("/market/options?country=UA&category=furniture");
+          assert.equal(options.status,200,"Live marketplace options must be available");
+          const settings=await options.json();
+          assert.ok(settings.categories?.clothing?.subcategories?.some(x=>x.id==="shorts"));
+          assert.ok(settings.delivery_providers?.some(x=>x.label==="Nova Poshta"));
+          assert.ok(settings.payment_methods?.some(x=>x.id==="card_transfer"));
           const list=await call("/market/listings");
           const content=await list.json();
           assert.equal(list.status,200,"Public product catalog must be available");
