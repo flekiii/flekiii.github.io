@@ -1,5 +1,5 @@
 // Real Fleki's Wrld marketplace. 2FA is required for writes and private messages.
-import {marketCategories,countryCarriers,marketPayments,availableShipping,validTaxon,digitalCategories} from "./market-catalog.js";
+import {marketCategories,marketCountries,countryCarriers,marketPayments,availableShipping,validTaxon,digitalCategories} from "./market-catalog.js";
 const ORIGIN="https://flekiii.github.io";
 const categories=new Set(Object.keys(marketCategories));
 const payments=new Set(marketPayments.map(x=>x.id));
@@ -10,7 +10,7 @@ const many=async(db,sql,...args)=>(await db.prepare(sql).bind(...args).all()).re
 const run=(db,sql,...args)=>db.prepare(sql).bind(...args).run();
 const id=s=>typeof s==="string"&&/^[a-f0-9-]{36}$/.test(s);
 const text=(value,max)=>typeof value==="string"?value.trim().slice(0,max+1):"";
-const iso2=s=>typeof s==="string"&&/^[A-Z]{2}$/.test(s);
+const iso2=s=>typeof s==="string"&&/^[A-Z]{2}$/.test(s)&&marketCountries.has(s);
 const media=(v,max,type)=>{
  if(!Array.isArray(v)||v.length>max)throw Error("Maximum "+max+" "+type+" URLs.");
  const rx=type==="images"?/\.(?:png|jpe?g|webp|gif)(?:$|\?)/i:/\.(?:mp4|webm)(?:$|\?)/i;
@@ -58,7 +58,7 @@ export async function marketHandle(req,env,path,{auth,authorized}){
      bargain!==null&&bargain!=="true"&&bargain!=="false")return fail("Invalid filter.");
   let query="SELECT l.*,u.username AS seller_username,u.display_name AS seller_name FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.status='active'";
   const params=[];
-  if(q){query+=" AND (l.title LIKE ? ESCAPE '\\' OR l.description LIKE ? ESCAPE '\\')";const needle="%"+q.replace(/[\\%_]/g,"\\$&")+"%";params.push(needle,needle)}
+  if(q){query+=" AND (l.title LIKE ? ESCAPE '\\' OR l.description LIKE ? ESCAPE '\\' OR l.subcategory LIKE ? ESCAPE '\\' OR l.custom_type LIKE ? ESCAPE '\\')";const needle="%"+q.replace(/[\\%_]/g,"\\if(q){query+=" AND (l.title LIKE ? ESCAPE '\\' OR l.description LIKE ? ESCAPE '\\')";const needle="%"+q.replace(/[\\%_]/g,"\\$&")+"%";params.push(needle,needle)}")+"%";params.push(needle,needle,needle,needle)}
   if(category){query+=" AND l.category=?";params.push(category)}
   if(country){query+=" AND l.origin_country=?";params.push(country)}
   if(subcategory){query+=" AND l.subcategory=?";params.push(subcategory)}
