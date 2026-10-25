@@ -26,6 +26,7 @@
  // Until then, this interface is intentionally an honest empty catalog.
  function render(){
   const count=selected.size;
+  const countLabel=count+" "+(count===1?"genre":"genres")+" selected";
   const hasFilters=count>0||platform!=="all";
   const platformLabel=platforms.find(x=>x[0]===platform)?.[1]||"All platforms";
   const chosen=[...selected].map(id=>'<button type="button" class="games-selected-tag" data-remove-genre="'+esc(id)+'" aria-label="Remove '+esc(label(id))+' filter">'+esc(label(id))+' <span aria-hidden="true">×</span></button>').join("");
@@ -36,12 +37,12 @@
    '<section class="games-hub">'+
     '<header class="games-hub-head"><div><small>FLEKI’S WRLD / GAMES</small><h2>Games for every kind of player.</h2><p>Mix genres, pick your platform and discover games when they’re published.</p></div><span class="games-hub-decor" aria-hidden="true">✦</span></header>'+
     '<section class="games-discovery" aria-label="Find games">'+
-     '<div class="games-discovery-title"><div><small>FIND YOUR NEXT GAME</small><h3>Browse games</h3></div><span class="games-discovery-count">'+count+' genres selected</span></div>'+
+     '<div class="games-discovery-title"><div><small>FIND YOUR NEXT GAME</small><h3>Browse games</h3></div><span class="games-discovery-count">'+countLabel+'</span></div>'+
      '<div class="games-toolbar">'+
       '<div class="games-filter-picker">'+
        '<span class="games-field-label">Genres</span>'+
        '<button type="button" id="gamesToggle" class="games-filter-toggle '+(filterOpen?"is-open":"")+'" aria-expanded="'+String(filterOpen)+'" aria-controls="gamesGenreOptions">'+
-        '<span aria-hidden="true">☷</span><span>'+(count?count+' genres selected':"Choose genres")+'</span><span class="games-toggle-chevron" aria-hidden="true">⌄</span>'+
+        '<span aria-hidden="true">☷</span><span>'+(count?countLabel:"Choose genres")+'</span><span class="games-toggle-chevron" aria-hidden="true">⌄</span>'+
        '</button>'+
        '<div id="gamesGenreOptions" class="games-filter-menu" '+(filterOpen?"":"hidden")+ '>'+
         '<div class="games-filter-menu-head"><strong>Select multiple categories</strong><span>'+count+' / '+genres.length+'</span></div>'+
