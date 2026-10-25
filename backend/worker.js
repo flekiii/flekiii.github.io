@@ -27,9 +27,31 @@ const note=(db,recipient,actor,kind,ref)=>exec(db,"INSERT INTO notifications(id,
 const abc="ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 const base32=arr=>{let v=0,bits=0,out="";for(let b of arr){v=(v<<8)|b;bits+=8;while(bits>=5){out+=abc[(v>>>(bits-5))&31];bits-=5}}return out+(bits?abc[(v<<(5-bits))&31]:"")};
 const debase=s=>{let v=0,bits=0,r=[];for(let c of s.toUpperCase().replace(/[\s=-]/g,"")){const k=abc.indexOf(c);if(k<0)return new Uint8Array();v=(v<<5)|k;bits+=5;if(bits>=8){r.push((v>>>(bits-8))&255);bits-=8}}return new Uint8Array(r)};
-// TOTP seeds are only stored in the private D1 database, never returned after setup.
-const seal=async(s,env)=>s;
-const unseal=async(s,env)=>s;
+// AES-256-GCM encryption at rest; never store new TOTP seeds in plaintext.
+const mfaKey=async(env)=>{
+ const raw=String(env.MFA_MASTER_KEY||"");
+ if(!/^[A-Za-z0-9_-]{43}$/.test(raw))throw Error("MFA encryption is not configured.");
+ const bytes=un64(raw);
+ if(bytes.length!==32)throw Error("Invalid MFA encryption key.");
+ return crypto.subtle.importKey("raw",bytes,"AES-GCM",false,["encrypt","decrypt"]);
+};
+const seal=async(s,env)=>{
+ const iv=bytes(12),key=await mfaKey(env);
+ const data=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},key,enc.encode(s)));
+ return "v1:"+b64(new Uint8Array([...iv,...data]));
+};
+const unseal=async(s,env)=>{
+ if(typeof s!=="string")throw Error("Invalid authenticator data");
+ if(!s.startsWith("v1:")){
+  // Read-only compatibility for existing, pre-encryption account secrets.
+  if(!/^[A-Z2-7]{16,128}$/.test(s))throw Error("Unsupported authenticator data");
+  return s;
+ }
+ const payload=un64(s.slice(3));
+ if(payload.length<29)throw Error("Invalid encrypted authenticator data");
+ const plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:payload.slice(0,12)},await mfaKey(env),payload.slice(12));
+ return dec.decode(plain);
+};
 async function verifyTotp(secret,code){if(!/^\d{6}$/.test(code))return false;const key=await crypto.subtle.importKey("raw",debase(secret),{name:"HMAC",hash:"SHA-1"},false,["sign"]);let counter=Math.floor(now()/30000);for(let d=-1;d<=1;d++){const b=new Uint8Array(8);new DataView(b.buffer).setBigUint64(0,BigInt(counter+d));const h=new Uint8Array(await crypto.subtle.sign("HMAC",key,b)),i=h[19]&15,n=(((h[i]&127)<<24)|(h[i+1]<<16)|(h[i+2]<<8)|h[i+3])%1000000;if(String(n).padStart(6,"0")===code)return true}return false}
 async function endpoints(req,env,path,ip){
  const db=env.DB,url=new URL(req.url),m=req.method,t=now();
