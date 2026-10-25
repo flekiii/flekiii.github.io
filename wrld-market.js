@@ -15,7 +15,7 @@ const selectCountries=selected=>countries.map(c=>'<option value="'+c.code+'" '+(
 const countryName=c=>dn.of(c)||c;
 const regionLabels={UA:"Oblast / область",US:"State",CA:"Province or territory",AU:"State or territory",GB:"County or region",DE:"Bundesland",PL:"Województwo",FR:"Région",JP:"Prefecture",IN:"State / Union territory",BR:"Estado",ES:"Comunidad autónoma",IT:"Regione",CH:"Canton"};
 const money=l=>new Intl.NumberFormat("en",{style:"currency",currency:l.currency||"USD"}).format((l.price_minor||0)/100);
-let view="browse",listings=[],own=[],conversations=[],selected=null,chatKey=null,loading=false,status="";
+let view="browse",listings=[],own=[],conversations=[],selected=null,chatKey=null,loading=false,status="",statusError=false;
 let options=null,shippingProviders=[],carrierLoadToken=0;
 let filters={q:"",category:"",subcategory:"",country:"",negotiable:""};
 const choiceOptions=(items,selected="")=>items.map(x=>'<option value="'+escape(x.id)+'"'+(x.id===selected?" selected":"")+'>'+escape(x.label)+'</option>').join("");
@@ -77,7 +77,7 @@ function filterDestinations(){
 
 
 const token=()=>sessionStorage.getItem("fw-token")||"";
-const message=(txt,error=false)=>{status=txt;const el=$("#market-status");if(el){el.textContent=txt;el.dataset.error=String(error)}};
+const message=(txt,error=false)=>{status=txt;statusError=error;const el=$("#market-status");if(el){el.textContent=txt;el.dataset.error=String(error)}};
 async function call(path,method="GET",body=null){
  const headers={Accept:"application/json"};
  if(token())headers.Authorization="Bearer "+token();
@@ -94,7 +94,7 @@ const needLogin=async()=>{
  return me.user;
 };
 function menu(){
- return '<div class="market-tabs">'+[["browse","Explore"],["sell","Sell an item"],["my","My listings"],["messages","Messages"],["store","Register a shop"]].map(([id,name])=>'<button class="market-tab '+(view===id?"active":"")+'" type="button" data-market-view="'+id+'">'+name+'</button>').join("")+'</div><p id="market-status" class="market-status" role="status" data-error="false">'+escape(status)+'</p>';
+ return '<div class="market-tabs">'+[["browse","Explore"],["sell","Sell an item"],["my","My listings"],["messages","Messages"],["store","Register a shop"]].map(([id,name])=>'<button class="market-tab '+(view===id?"active":"")+'" type="button" data-market-view="'+id+'">'+name+'</button>').join("")+'</div><p id="market-status" class="market-status" role="status" data-error="'+String(statusError)+'">'+escape(status)+'</p>'+(options?'':'<button type="button" class="btn" data-market-retry="1">Reload marketplace options</button>');
 }
 function mediaPreview(item){
  const images=Array.isArray(item.images)?item.images:[];
@@ -203,6 +203,11 @@ root.addEventListener("input",event=>{if(event.target?.id==="marketDestinationSe
 root.addEventListener("click",async event=>{
  const target=event.target.closest("button");if(!target)return;
  try{
+  if(target.dataset.marketRetry){
+    options=await loadOptions();
+    const data=await call("/market/listings");listings=data.listings;
+    message("Marketplace is ready.");paint();return;
+  }
   if(target.dataset.marketView){await changeView(target.dataset.marketView);return}
   if(target.dataset.marketSearch){await browse();return}
   if(target.dataset.marketBack){selected=null;paint();return}
@@ -250,5 +255,5 @@ root.addEventListener("submit",async event=>{
 void Promise.all([loadOptions(),call("/market/listings")]).then(([catalog,list])=>{
  options=catalog;listings=list.listings;
  paint();
-}).catch(err=>message("Marketplace settings could not load: "+err.message,true));
+}).catch(err=>{message("Marketplace settings could not load: "+err.message,true);paint()});
 })();
