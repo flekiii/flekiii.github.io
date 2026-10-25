@@ -401,6 +401,95 @@ export const marketCategories = {
       }
     ]
   },
+  "computers": {
+    "label": "Computers & PC components",
+    "subcategories": [
+      {
+        "id": "monitors",
+        "label": "Monitors"
+      },
+      {
+        "id": "computer_mice",
+        "label": "Mice"
+      },
+      {
+        "id": "keyboards",
+        "label": "Keyboards"
+      },
+      {
+        "id": "ram",
+        "label": "RAM"
+      },
+      {
+        "id": "pc_cases",
+        "label": "PC cases"
+      },
+      {
+        "id": "case_fans",
+        "label": "Case fans"
+      },
+      {
+        "id": "cpu_coolers",
+        "label": "CPU coolers"
+      },
+      {
+        "id": "liquid_cooling",
+        "label": "AIO / liquid cooling"
+      },
+      {
+        "id": "graphics_cards",
+        "label": "Graphics cards"
+      },
+      {
+        "id": "cpus",
+        "label": "Processors"
+      },
+      {
+        "id": "motherboards",
+        "label": "Motherboards"
+      },
+      {
+        "id": "power_supplies",
+        "label": "Power supplies"
+      },
+      {
+        "id": "ssd_drives",
+        "label": "SSD drives"
+      },
+      {
+        "id": "hdd_drives",
+        "label": "Hard drives"
+      },
+      {
+        "id": "network_cards",
+        "label": "Network cards"
+      },
+      {
+        "id": "sound_cards",
+        "label": "Sound cards"
+      },
+      {
+        "id": "thermal_paste",
+        "label": "Thermal paste"
+      },
+      {
+        "id": "pc_cables",
+        "label": "PC cables"
+      },
+      {
+        "id": "desktop_pcs",
+        "label": "Desktop PCs"
+      },
+      {
+        "id": "laptops",
+        "label": "Laptops"
+      },
+      {
+        "id": "computer_accessories",
+        "label": "Other PC accessories"
+      }
+    ]
+  },
   "electronics": {
     "label": "Computers & electronics",
     "subcategories": [
