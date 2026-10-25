@@ -23,6 +23,7 @@ jobs:
           node --check backend/marketplace.js
           node --check backend/market-catalog.js
           node --check wrld-market.js
+          node --check wrld-games.js
           node --test backend/totp.test.mjs backend/marketplace.test.mjs
           node --check backend/oauth.js
           node --check wrld-social.js
