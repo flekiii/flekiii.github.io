@@ -22,13 +22,14 @@ const media=(v,max,type)=>{
  });
 };
 async function body(req){const raw=await req.text();if(raw.length>105000)throw Error("Request too large.");try{return JSON.parse(raw)}catch{throw Error("Invalid JSON.")}}
+const scored = "l.*, (SELECT COUNT(*) FROM market_favorites f WHERE f.listing_id=l.id) AS favorite_count, (SELECT COUNT(*) FROM market_reactions r WHERE r.listing_id=l.id AND r.reaction=1) AS likes, (SELECT COUNT(*) FROM market_reactions r WHERE r.listing_id=l.id AND r.reaction=-1) AS dislikes, (SELECT COUNT(DISTINCT m.buyer_id) FROM market_messages m WHERE m.listing_id=l.id) AS interested_buyers";
 const safeListing=async(db,row)=>{
  if(!row)return null;
  return {...row,images:JSON.parse(row.images||"[]"),videos:JSON.parse(row.videos||"[]"),
   shipping_countries:JSON.parse(row.shipping_countries||"[]"),
   delivery_providers:JSON.parse(row.delivery_providers||"[]"),
   payment_methods:JSON.parse(row.payment_methods||"[]"),
-  negotiable:row.negotiable===1};
+  negotiable:row.negotiable===1, favorite_count:row.favorite_count??0, likes:row.likes??0, dislikes:row.dislikes??0, interested_buyers:row.interested_buyers??0};
 };
 const choices=(value,max,allowed)=>{
  if(!Array.isArray(value)||value.length<1||value.length>max||value.some(x=>typeof x!=="string"||!allowed.has(x)))return null;
@@ -37,6 +38,9 @@ const choices=(value,max,allowed)=>{
 export async function marketHandle(req,env,path,{auth,authorized}){
  if(!path.startsWith("/market/"))return null;
  const db=env.DB,m=req.method,url=new URL(req.url),now=Date.now();
+ const u=await auth(req,db);
+ if(!u)return fail("Sign in to Fleki's Wrld first.",401);
+ if(!authorized(u))return fail("Verify your authenticator 2FA to use the marketplace.",403);
  if(m==="GET"&&path==="/market/options"){
   const country=text(url.searchParams.get("country")||"",2).toUpperCase();
   const category=text(url.searchParams.get("category")||"",40);
@@ -56,8 +60,8 @@ export async function marketHandle(req,env,path,{auth,authorized}){
   if(category&&!categories.has(category)||country&&!iso2(country)||
      subcategory&&(!category||!validTaxon(category,subcategory))||
      bargain!==null&&bargain!=="true"&&bargain!=="false")return fail("Invalid filter.");
-  let query="SELECT l.*,u.username AS seller_username,u.display_name AS seller_name FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.status='active'";
-  const params=[];
+  let query="SELECT "+scored+",u.username AS seller_username,u.display_name AS seller_name, EXISTS(SELECT 1 FROM market_favorites f WHERE f.listing_id=l.id AND f.user_id=?) AS favorited, COALESCE((SELECT r.reaction FROM market_reactions r WHERE r.listing_id=l.id AND r.user_id=?),0) AS my_reaction FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.status='active'";
+  const params=[u.id,u.id];
   if(q){query+=" AND (l.title LIKE ? ESCAPE '\\' OR l.description LIKE ? ESCAPE '\\' OR l.subcategory LIKE ? ESCAPE '\\' OR l.custom_type LIKE ? ESCAPE '\\')";const needle="%"+q.replace(/[\\%_]/g,"\\$&")+"%";params.push(needle,needle,needle,needle)}
   if(category){query+=" AND l.category=?";params.push(category)}
   if(country){query+=" AND l.origin_country=?";params.push(country)}
@@ -68,17 +72,38 @@ export async function marketHandle(req,env,path,{auth,authorized}){
   return ok({listings:await Promise.all((await many(db,query,...params)).map(row=>safeListing(db,row)))});
  }
  if(m==="GET"&&/^\/market\/listings\/[a-f0-9-]{36}$/.test(path)){
-  const listing=await get(db,"SELECT l.*,u.username AS seller_username,u.display_name AS seller_name FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.id=? AND l.status='active'",path.split("/").at(-1));
+  const listing=await get(db,"SELECT "+scored+",u.username AS seller_username,u.display_name AS seller_name, EXISTS(SELECT 1 FROM market_favorites f WHERE f.listing_id=l.id AND f.user_id=?) AS favorited, COALESCE((SELECT r.reaction FROM market_reactions r WHERE r.listing_id=l.id AND r.user_id=?),0) AS my_reaction FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.id=? AND l.status='active'",u.id,u.id,path.split("/").at(-1));
   return listing?ok({listing:await safeListing(db,listing)}):fail("Listing not found.",404);
  }
- const u=await auth(req,db);
- if(!u)return fail("Sign in to Fleki's Wrld first.",401);
- if(!authorized(u))return fail("Verified 2FA is required to sell or message.",403);
  if(m==="GET"&&path==="/market/mine"){
-  const listings=await many(db,"SELECT l.*,u.username AS seller_username,u.display_name AS seller_name FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.seller_id=? ORDER BY l.created_at DESC LIMIT 100",u.id);
+  const listings=await many(db,"SELECT "+scored+",u.username AS seller_username,u.display_name AS seller_name FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.seller_id=? ORDER BY l.created_at DESC LIMIT 100",u.id);
   return ok({listings:await Promise.all(listings.map(row=>safeListing(db,row)))});
  }
- if(m==="POST"&&path==="/market/listings"){
+ if(m==="GET"&&path==="/market/wishlist"){
+  const items=await many(db,"SELECT "+scored+",u.username AS seller_username,u.display_name AS seller_name,1 AS favorited,COALESCE((SELECT r.reaction FROM market_reactions r WHERE r.listing_id=l.id AND r.user_id=?),0) AS my_reaction FROM market_favorites f JOIN market_listings l ON l.id=f.listing_id JOIN users u ON u.id=l.seller_id WHERE f.user_id=? AND l.status='active' ORDER BY f.created_at DESC LIMIT 100",u.id,u.id);
+  return ok({listings:await Promise.all(items.map(row=>safeListing(db,row)))});
+ }
+ if((m==="POST"||m==="DELETE")&&/^\\/market\\/favorites\\/[a-f0-9-]{36}$/.test(path)){
+  const target=path.split("/")[3],listing=await get(db,"SELECT id,seller_id,status FROM market_listings WHERE id=?",target);
+  if(!listing||listing.status!=="active")return fail("Listing unavailable.",404);
+  if(listing.seller_id===u.id)return fail("You cannot save your own listing.",403);
+  if(m==="POST")await run(db,"INSERT OR IGNORE INTO market_favorites(user_id,listing_id,created_at) VALUES(?,?,?)",u.id,target,now);
+  else await run(db,"DELETE FROM market_favorites WHERE user_id=? AND listing_id=?",u.id,target);
+  const count=await get(db,"SELECT COUNT(*) AS total FROM market_favorites WHERE listing_id=?",target);
+  return ok({saved:m==="POST",favorite_count:count.total});
+ }
+ if(m==="PUT"&&/^\\/market\\/reactions\\/[a-f0-9-]{36}$/.test(path)){
+  const target=path.split("/")[3],p=await body(req),value=p.reaction;
+  if(![-1,0,1].includes(value))return fail("Reaction must be like, dislike or neither.");
+  const listing=await get(db,"SELECT id,seller_id,status FROM market_listings WHERE id=?",target);
+  if(!listing||listing.status!=="active")return fail("Listing unavailable.",404);
+  if(listing.seller_id===u.id)return fail("You cannot rate your own listing.",403);
+  if(value===0)await run(db,"DELETE FROM market_reactions WHERE user_id=? AND listing_id=?",u.id,target);
+  else await run(db,"INSERT INTO market_reactions(user_id,listing_id,reaction,created_at) VALUES(?,?,?,?) ON CONFLICT(user_id,listing_id) DO UPDATE SET reaction=excluded.reaction,created_at=excluded.created_at",u.id,target,value,now);
+  const score=await get(db,"SELECT SUM(CASE WHEN reaction=1 THEN 1 ELSE 0 END) AS likes,SUM(CASE WHEN reaction=-1 THEN 1 ELSE 0 END) AS dislikes FROM market_reactions WHERE listing_id=?",target);
+  return ok({reaction:value,likes:score?.likes||0,dislikes:score?.dislikes||0});
+ }
+ if(m==="POST"&&path==="/market/listings"||m==="PUT"&&/^\\/market\\/listings\\/[a-f0-9-]{36}$/.test(path)){
   const p=await body(req),title=text(p.title,120),description=text(p.description,1000);
   const category=text(p.category,40),currency=text(p.currency,3).toUpperCase();
   const country=text(p.origin_country,2).toUpperCase(),region=text(p.origin_region,100);
@@ -102,6 +127,12 @@ export async function marketHandle(req,env,path,{auth,authorized}){
   const ships=p.shipping_countries;
   if(!Array.isArray(ships)||ships.length<1||ships.length>70||ships.some(v=>!iso2(v)))return fail("Choose countries where you can deliver.");
   const images=media(p.images||[],30,"images"),videos=media(p.videos||[],5,"videos");
+  if(m==="PUT"){
+   const target=path.split("/")[3];
+   const updated=await run(db,"UPDATE market_listings SET title=?,description=?,category=?,subcategory=?,custom_type=?,price_minor=?,currency=?,origin_country=?,origin_region=?,shipping_countries=?,delivery_providers=?,payment_methods=?,negotiable=?,images=?,videos=?,updated_at=? WHERE id=? AND seller_id=?",
+    title,description,category,subcategory,customType,price,currency,country,region,JSON.stringify([...new Set(ships)]),JSON.stringify(delivery),JSON.stringify(payment),bargaining?1:0,JSON.stringify(images),JSON.stringify(videos),now,target,u.id);
+   return updated.meta.changes?ok({id:target,updated:true}):fail("Listing not found or not yours.",404);
+  }
   const count=await get(db,"SELECT count(*) AS total FROM market_listings WHERE seller_id=? AND created_at>?",u.id,now-3600000);
   if(Number(count?.total||0)>=5)return fail("Maximum 5 new listings per hour.",429);
   const uuid=crypto.randomUUID();
