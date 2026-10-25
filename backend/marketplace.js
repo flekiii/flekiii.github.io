@@ -1,6 +1,8 @@
 // Real Fleki's Wrld marketplace. 2FA is required for writes and private messages.
+import {marketCategories,countryCarriers,marketPayments,availableShipping,validTaxon,digitalCategories} from "./market-catalog.js";
 const ORIGIN="https://flekiii.github.io";
-const categories=new Set(["furniture","food","games","game_accounts","game_currency","electronics","clothing","digital","services","other"]);
+const categories=new Set(Object.keys(marketCategories));
+const payments=new Set(marketPayments.map(x=>x.id));
 const ok=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json","cache-control":"no-store","access-control-allow-origin":ORIGIN,"vary":"Origin"}});
 const fail=(message,status=400)=>ok({error:message},status);
 const get=(db,sql,...args)=>db.prepare(sql).bind(...args).first();
@@ -22,22 +24,45 @@ const media=(v,max,type)=>{
 async function body(req){const raw=await req.text();if(raw.length>105000)throw Error("Request too large.");try{return JSON.parse(raw)}catch{throw Error("Invalid JSON.")}}
 const safeListing=async(db,row)=>{
  if(!row)return null;
- return {...row,images:JSON.parse(row.images||"[]"),videos:JSON.parse(row.videos||"[]"),shipping_countries:JSON.parse(row.shipping_countries||"[]")};
+ return {...row,images:JSON.parse(row.images||"[]"),videos:JSON.parse(row.videos||"[]"),
+  shipping_countries:JSON.parse(row.shipping_countries||"[]"),
+  delivery_providers:JSON.parse(row.delivery_providers||"[]"),
+  payment_methods:JSON.parse(row.payment_methods||"[]"),
+  negotiable:row.negotiable===1};
+};
+const choices=(value,max,allowed)=>{
+ if(!Array.isArray(value)||value.length<1||value.length>max||value.some(x=>typeof x!=="string"||!allowed.has(x)))return null;
+ const unique=[...new Set(value)];return unique.length===value.length?unique:null;
 };
 export async function marketHandle(req,env,path,{auth,authorized}){
  if(!path.startsWith("/market/"))return null;
  const db=env.DB,m=req.method,url=new URL(req.url),now=Date.now();
+ if(m==="GET"&&path==="/market/options"){
+  const country=text(url.searchParams.get("country")||"",2).toUpperCase();
+  const category=text(url.searchParams.get("category")||"",40);
+  if(country&&!iso2(country)||category&&!categories.has(category))return fail("Invalid country or category.");
+  return ok({categories:marketCategories,payment_methods:marketPayments,
+    delivery_providers:country&&category?availableShipping(country,category):[],
+    countries_with_named_carriers:Object.keys(countryCarriers),
+    delivery_disclaimer:"Carrier options are suggestions only. The seller must confirm actual route, COD eligibility, destination, rates and shipping conditions."});
+ }
  if(m==="GET"&&path==="/market/listings"){
   const q=text(url.searchParams.get("q")||"",70);
   const category=text(url.searchParams.get("category")||"",40);
   const country=text(url.searchParams.get("country")||"",2).toUpperCase();
   const region=text(url.searchParams.get("region")||"",100);
-  if(category&&!categories.has(category)||country&&!iso2(country))return fail("Invalid filter.");
+  const subcategory=text(url.searchParams.get("subcategory")||"",80);
+  const bargain=url.searchParams.get("negotiable");
+  if(category&&!categories.has(category)||country&&!iso2(country)||
+     subcategory&&(!category||!validTaxon(category,subcategory))||
+     bargain!==null&&bargain!=="true"&&bargain!=="false")return fail("Invalid filter.");
   let query="SELECT l.*,u.username AS seller_username,u.display_name AS seller_name FROM market_listings l JOIN users u ON u.id=l.seller_id WHERE l.status='active'";
   const params=[];
   if(q){query+=" AND (l.title LIKE ? ESCAPE '\\' OR l.description LIKE ? ESCAPE '\\')";const needle="%"+q.replace(/[\\%_]/g,"\\$&")+"%";params.push(needle,needle)}
   if(category){query+=" AND l.category=?";params.push(category)}
   if(country){query+=" AND l.origin_country=?";params.push(country)}
+  if(subcategory){query+=" AND l.subcategory=?";params.push(subcategory)}
+  if(bargain!==null){query+=" AND l.negotiable=?";params.push(bargain==="true"?1:0)}
   if(region){query+=" AND l.origin_region LIKE ? ESCAPE '\\'";params.push("%"+region.replace(/[\\%_]/g,"\\$&")+"%")}
   query+=" ORDER BY l.created_at DESC LIMIT 60";
   return ok({listings:await Promise.all((await many(db,query,...params)).map(row=>safeListing(db,row)))});
@@ -57,9 +82,22 @@ export async function marketHandle(req,env,path,{auth,authorized}){
   const p=await body(req),title=text(p.title,120),description=text(p.description,1000);
   const category=text(p.category,40),currency=text(p.currency,3).toUpperCase();
   const country=text(p.origin_country,2).toUpperCase(),region=text(p.origin_region,100);
+  const subcategory=text(p.subcategory,80),customType=text(p.custom_type||"",80);
+  const bargaining=p.negotiable;
+  const chosenProviders=p.delivery_providers;
+  const chosenPayments=p.payment_methods;
   const price=Number(p.price_minor);
   if(title.length<5||title.length>120||description.length<10||description.length>1000)return fail("Title 5–120 characters, description 10–1000 characters.");
   if(!categories.has(category)||!iso2(country)||!region||region.length<2||region.length>100)return fail("Choose a category, country and region/state.");
+  if(!validTaxon(category,subcategory))return fail("Choose a valid item subcategory.");
+  if(subcategory==="other"&&(customType.length<2||customType.length>80)||subcategory!=="other"&&customType)return fail("Specify an item type only when selecting Other (2–80 characters).");
+  if(typeof bargaining!=="boolean")return fail("Specify whether the price is negotiable.");
+  const allowedProviders=new Set(availableShipping(country,category).map(x=>x.id));
+  const delivery=choices(chosenProviders,8,allowedProviders);
+  const payment=choices(chosenPayments,6,payments);
+  if(!delivery)return fail("Choose up to 8 valid delivery services for your seller country and category.");
+  if(!payment)return fail("Choose up to 6 supported payment methods.");
+  if(digitalCategories.includes(category)&&payment.includes("cash_on_delivery"))return fail("Cash on delivery is not available for digital listings.");
   if(!/^[A-Z]{3}$/.test(currency)||!Number.isSafeInteger(price)||price<0||price>1000000000)return fail("Invalid price or currency.");
   const ships=p.shipping_countries;
   if(!Array.isArray(ships)||ships.length<1||ships.length>70||ships.some(v=>!iso2(v)))return fail("Choose countries where you can deliver.");
@@ -67,8 +105,8 @@ export async function marketHandle(req,env,path,{auth,authorized}){
   const count=await get(db,"SELECT count(*) AS total FROM market_listings WHERE seller_id=? AND created_at>?",u.id,now-3600000);
   if(Number(count?.total||0)>=5)return fail("Maximum 5 new listings per hour.",429);
   const uuid=crypto.randomUUID();
-  await run(db,"INSERT INTO market_listings (id,seller_id,title,description,category,price_minor,currency,origin_country,origin_region,shipping_countries,images,videos,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-    uuid,u.id,title,description,category,price,currency,country,region,JSON.stringify([...new Set(ships)]),JSON.stringify(images),JSON.stringify(videos),"active",now,now);
+  await run(db,"INSERT INTO market_listings (id,seller_id,title,description,category,subcategory,custom_type,price_minor,currency,origin_country,origin_region,shipping_countries,delivery_providers,payment_methods,negotiable,images,videos,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    uuid,u.id,title,description,category,subcategory,customType,price,currency,country,region,JSON.stringify([...new Set(ships)]),JSON.stringify(delivery),JSON.stringify(payment),bargaining?1:0,JSON.stringify(images),JSON.stringify(videos),"active",now,now);
   return ok({id:uuid},201);
  }
  if(m==="POST"&&/^\/market\/listings\/[a-f0-9-]{36}\/status$/.test(path)){
