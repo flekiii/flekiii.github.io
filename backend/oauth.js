@@ -54,7 +54,7 @@ async function getIdentity(provider,token,env,nonce){
  const user=await request.json();
  const sub=user.sub||user.id;
  if(!sub)throw Error("Missing provider account ID");
- return {subject:String(sub),name:String(user.name||user.global_name||user.login||user.username||provider+" member").slice(0,60)};
+ return {subject:String(sub),name:String(user.name||user.global_name||user.login||user.username||provider+" member").slice(0,60),mfa_verified:provider==="fmail"&&user.mfa_verified===true};
 }
 async function start(env,p){
  if(!available(env,p))return fail("This provider is awaiting OAuth configuration.",503);
@@ -94,17 +94,17 @@ async function callback(req,env,p){
   ]);
  }
  const ticket=enc(rand(32));
- await sql(env.DB,"INSERT INTO oauth_tickets(ticket_hash,user_id,expires_at) VALUES(?,?,?)",await sha(ticket),userId,Date.now()+90000);
+ await sql(env.DB,"INSERT INTO oauth_tickets(ticket_hash,user_id,expires_at,external_mfa) VALUES(?,?,?,?)",await sha(ticket),userId,Date.now()+90000,p==="fmail"&&profile.mfa_verified?1:0);
  return new Response(null,{status:303,headers:{"Location":SITE+"#profile?oauth_ticket="+ticket,"Cache-Control":"no-store","Referrer-Policy":"no-referrer","Set-Cookie":"wrld_oauth=; Path=/auth/oauth; Max-Age=0; Secure; HttpOnly; SameSite=Lax"}});
 }
 async function redeem(req,env){
  const data=await req.json(),ticket=String(data.ticket||"");
  if(!/^[A-Za-z0-9_-]{43}$/.test(ticket))return fail("Invalid login ticket.");
- const h=await sha(ticket),r=await first(env.DB,"SELECT user_id,expires_at FROM oauth_tickets WHERE ticket_hash=?",h);
+ const h=await sha(ticket),r=await first(env.DB,"SELECT user_id,expires_at,external_mfa FROM oauth_tickets WHERE ticket_hash=?",h);
  if(!r||r.expires_at<Date.now())return fail("Sign-in link expired.",401);
  await sql(env.DB,"DELETE FROM oauth_tickets WHERE ticket_hash=?",h);
  const token=enc(rand(32));
- await sql(env.DB,"INSERT INTO sessions(token_hash,user_id,mfa_verified,created_at,expires_at) VALUES(?,?,?,?,?)",await sha(token),r.user_id,0,Date.now(),Date.now()+604800000);
+ await sql(env.DB,"INSERT INTO sessions(token_hash,user_id,mfa_verified,created_at,expires_at,external_mfa) VALUES(?,?,?,?,?,?)",await sha(token),r.user_id,r.external_mfa?1:0,Date.now(),Date.now()+604800000,r.external_mfa?1:0);
  return respond({token});
 }
 export async function oauthHandle(req,env,path){
