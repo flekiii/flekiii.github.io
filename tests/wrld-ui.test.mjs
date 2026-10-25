@@ -5,6 +5,8 @@ import { runInNewContext } from "node:vm";
 const market=readFileSync(new URL("../wrld-market.js",import.meta.url),"utf8");
 const social=readFileSync(new URL("../wrld-social.js",import.meta.url),"utf8");
 const games=readFileSync(new URL("../wrld-games.js",import.meta.url),"utf8");
+const communityCss=readFileSync(new URL("../wrld-community.css",import.meta.url),"utf8");
+const siteHtml=readFileSync(new URL("../index.html",import.meta.url),"utf8");
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 function marketRuntime({token="",verified=false}={}){
  const listeners={},visited=[],root={innerHTML:"",addEventListener:(n,fn)=>listeners[n]=fn,querySelector:()=>null,querySelectorAll:()=>[]};
@@ -145,4 +147,20 @@ test("Game name input safely escapes untrusted user text",()=>{
  ui.listeners.input({target:{id:"gamesTitleSearch",value:'<img src=x onerror=alert(1)>',selectionStart:7}});
  assert.doesNotMatch(ui.root.innerHTML,/<img src=x onerror/);
  assert.match(ui.root.innerHTML,/&lt;img src=x onerror=alert\(1\)&gt;/);
+});
+
+test("Community uses a full-width responsive viewport workspace for all three panels",()=>{
+ assert.match(communityCss,/#main\\.shell:has\\(#page-chat\\.active\\)/);
+ assert.match(communityCss,/#page-chat \\.social-workspace\\{/);
+ assert.match(communityCss,/height:clamp\\(660px,calc\\(100dvh - 255px\\),1400px\\)/);
+ assert.match(communityCss,/#page-chat \\.social-global \\.social-chat-list/);
+ assert.match(communityCss,/#page-chat \\.social-layout-direct \\.social-chat-list/);
+ assert.match(communityCss,/#page-chat \\.social-layout-friends>/);
+ assert.match(communityCss,/@media\\(max-width:560px\\)/);
+ assert.match(social,/social-layout social-layout-/);
+ assert.match(social,/\\["global","Global chat"/);
+ assert.match(social,/\\["friends","Friends"/);
+ assert.match(social,/\\["direct","Messages"/);
+ assert.match(siteHtml,/href="\\/wrld-community\\.css\\?v=2"/);
+ assert.match(siteHtml,/src="\\/wrld-social\\.js\\?v=10"/);
 });
