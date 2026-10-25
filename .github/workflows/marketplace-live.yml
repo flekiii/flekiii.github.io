@@ -26,6 +26,7 @@ jobs:
           node --check backend/market-catalog.js
           node --check wrld-market.js
           node --test backend/marketplace.test.mjs
+          node --test tests/wrld-ui.test.mjs
       - name: Confirm production catalog and 2FA gate
         shell: bash
         run: |
