@@ -1,0 +1,10 @@
+{
+  "appId": "dev.fleki.authenticator",
+  "appName": "Fleki Authenticator",
+  "webDir": "../desktop-app/assets",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0e0e15"
+  }
+}
