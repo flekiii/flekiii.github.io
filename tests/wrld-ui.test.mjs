@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 const market=readFileSync(new URL("../wrld-market.js",import.meta.url),"utf8");
 const social=readFileSync(new URL("../wrld-social.js",import.meta.url),"utf8");
+const games=readFileSync(new URL("../wrld-games.js",import.meta.url),"utf8");
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 function marketRuntime({token="",verified=false}={}){
  const listeners={},visited=[],root={innerHTML:"",addEventListener:(n,fn)=>listeners[n]=fn,querySelector:()=>null,querySelectorAll:()=>[]};
@@ -53,4 +54,58 @@ test("Public community client never hides global message text from guests",()=>{
  assert.match(social,/if\(\!S\.user\)\{/);
  assert.match(social,/function ensure2fa\(\)/);
  assert.match(social,/verified\(\)\?compose\("fw-global"/);
+});
+
+function gamesRuntime(){
+ const listeners={},documentListeners={};
+ const root={
+  innerHTML:"",
+  addEventListener:(name,cb)=>listeners[name]=cb,
+  querySelector:()=>null,
+  querySelectorAll:()=>[]
+ };
+ const document={
+  activeElement:null,
+  getElementById:id=>id==="wrld-games-root"?root:null,
+  addEventListener:(name,cb)=>documentListeners[name]=cb
+ };
+ runInNewContext(games,{document});
+ return {root,listeners,documentListeners};
+}
+test("Games platform picker offers both Android and a separate iOS choice",()=>{
+ const ui=gamesRuntime();
+ assert.match(ui.root.innerHTML,/<option value="android">Android<\/option>/);
+ assert.match(ui.root.innerHTML,/<option value="ios">iOS \(iPhone \/ iPad\)<\/option>/);
+ ui.listeners.change({target:{id:"gamesPlatform",value:"ios"}});
+ assert.match(ui.root.innerHTML,/<option value="ios" selected>iOS \(iPhone \/ iPad\)<\/option>/);
+ assert.match(ui.root.innerHTML,/iOS \(iPhone \/ iPad\).*No games published yet/s);
+});
+test("Games permits selecting multiple genres, individually removing and resetting filters",()=>{
+ const ui=gamesRuntime();
+ const click=dataset=>ui.listeners.click({target:{closest:()=>({dataset,id:""})}});
+ ui.listeners.click({target:{closest:()=>({id:"gamesToggle",dataset:{}})}});
+ assert.match(ui.root.innerHTML,/id="gamesGenreOptions" class="games-filter-menu" >/);
+ ui.listeners.change({target:{name:"games-genre",value:"horror",checked:true}});
+ ui.listeners.change({target:{name:"games-genre",value:"coop",checked:true}});
+ assert.match(ui.root.innerHTML,/2 genres selected/);
+ assert.match(ui.root.innerHTML,/name="games-genre" value="horror" checked/);
+ assert.match(ui.root.innerHTML,/name="games-genre" value="coop" checked/);
+ assert.match(ui.root.innerHTML,/Horror \+ Co-op/);
+ click({removeGenre:"horror"});
+ assert.match(ui.root.innerHTML,/1 genre selected/);
+ assert.doesNotMatch(ui.root.innerHTML,/name="games-genre" value="horror" checked/);
+ click({quickGenre:"survival"});
+ assert.match(ui.root.innerHTML,/2 genres selected/);
+ ui.listeners.click({target:{closest:()=>({id:"gamesReset",dataset:{}})}});
+ assert.match(ui.root.innerHTML,/0 genres selected/);
+ assert.match(ui.root.innerHTML,/<option value="all" selected>All platforms<\/option>/);
+});
+test("Games multi-select menu is searchable and can close with Escape",()=>{
+ const ui=gamesRuntime();
+ ui.listeners.click({target:{closest:()=>({id:"gamesToggle",dataset:{}})}});
+ ui.listeners.input({target:{id:"gamesGenreSearch",value:"rpg"}});
+ assert.match(ui.root.innerHTML,/games-genre-options/);
+ ui.documentListeners.keydown({key:"Escape"});
+ assert.match(ui.root.innerHTML,/id="gamesGenreOptions" class="games-filter-menu" hidden/);
+ assert.match(ui.root.innerHTML,/aria-expanded="false"/);
 });
