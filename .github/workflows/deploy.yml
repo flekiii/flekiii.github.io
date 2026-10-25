@@ -22,7 +22,7 @@ jobs:
           node --check backend/worker.js
           node --check backend/marketplace.js
           node --check wrld-market.js
-          node --test backend/totp.test.mjs
+          node --test backend/totp.test.mjs backend/marketplace.test.mjs
           node --check backend/oauth.js
           node --check wrld-social.js
           node --check jar3d.js
