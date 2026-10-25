@@ -47,7 +47,8 @@ async function refreshShippingProviders(){
   shippingProviders=data.delivery_providers||[];
   for(const x of shippingProviders)carrierNames.set(country+":"+x.id,x.label);
   const region=$("#marketRegionLabel");if(region)region.textContent=regionLabels[country]||"Region / State / Province";
-  if(area)area.innerHTML=shippingProviders.map(x=>'<label class="market-check"><input type="checkbox" name="delivery_providers" value="'+escape(x.id)+'"><span>'+escape(x.label)+'</span></label>').join("");
+  if(area)area.innerHTML=shippingProviders.map(x=>'<label class="market-check" data-search-carrier="'+escape(x.label.toLowerCase())+'"><input type="checkbox" name="delivery_providers" value="'+escape(x.id)+'"'+(editing?.delivery_providers?.includes(x.id)?" checked":"")+'><span>'+escape(x.label)+'</span></label>').join("");
+  filterCouriers();
   const hint=$("#marketCarrierHint");if(hint)hint.textContent=data.delivery_disclaimer||"Confirm routes and tariffs with the carrier.";
  }catch(err){if(serial===carrierLoadToken&&area)area.textContent="Delivery options unavailable: "+err.message}
 }
@@ -67,6 +68,10 @@ function updateDestinationCount(){
  const checked=$('[name="shipping_countries"]:checked');
  const count=$("#marketDestinationCount");
  if(count)count.textContent=checked.length+" / 70 countries selected"+(checked.length===0?" — select at least one":"");
+}
+function filterCouriers(){
+ const q=$("#marketCourierSearch")?.value.trim().toLowerCase()||"";
+ for(const item of $("[data-search-carrier]"))item.hidden=!!q&&!item.dataset.searchCarrier.includes(q)&&!item.querySelector("input").checked;
 }
 function filterDestinations(){
  const q=$("#marketDestinationSearch")?.value.trim().toLocaleLowerCase()||"";
@@ -140,7 +145,7 @@ function renderSell(){
  const first=Object.keys(options.categories)[0];
  const destinations=countries.map(x=>'<label class="market-country-option" data-search-country="'+escape(x.name.toLowerCase())+'"><input type="checkbox" name="shipping_countries" value="'+x.code+'"'+(x.code==="UA"?" checked":"")+'><span>'+escape(x.name)+'</span></label>').join("");
  const payments=options.payment_methods.map(x=>'<label class="market-check"><input type="checkbox" name="payment_methods" value="'+escape(x.id)+'"><span>'+escape(x.label)+'</span></label>').join("");
- return '<div class="market-panel"><h2>List your item for sale</h2><p>All declared terms are visible to buyers. You need to be signed in and 2FA-verified to publish.</p><form id="marketSellForm" class="market-form">'+
+ return '<div class="market-panel"><h2>'+(editing?'Edit listing':'Create a listing')+'</h2><p>Describe your offer and select the delivery and payment conditions.</p><form id="marketSellForm" class="market-form">'+
  '<label>Listing title (5–120 characters)<input name="title" minlength="5" maxlength="120" required placeholder="What are you selling?"></label>'+
  '<div class="market-inline"><label>Category<select id="marketSellCategory" name="category" required>'+categoryChoices(first)+'</select></label><label>Specific item type<select id="marketSellSubcategory" name="subcategory" required><option value="" disabled selected>Select item type</option>'+subcategoryChoices(first)+'</select></label></div>'+
  '<label id="marketCustomTypeWrap" hidden>Describe the item type (2–80 characters)<input name="custom_type" minlength="2" maxlength="80" placeholder="e.g. custom-made industrial shelving"></label>'+
@@ -148,13 +153,13 @@ function renderSell(){
  '<div class="market-inline"><label>Price<input name="price" type="number" min="0" max="10000000" step=".01" value="0" required></label><label>Currency<select name="currency">'+currencies.map(x=>'<option value="'+x+'"'+(x==="UAH"?" selected":"")+'>'+x+'</option>').join("")+'</select></label></div>'+
  '<fieldset class="market-fieldset"><legend>Can the buyer negotiate the price? <span class="market-required">*</span></legend><div class="market-choice-row"><label class="market-check"><input type="radio" name="negotiable" value="yes" required><span>Yes — open to offers / bargaining</span></label><label class="market-check"><input type="radio" name="negotiable" value="no" required><span>No — fixed price</span></label></div></fieldset>'+
  '<div class="market-inline"><label>Country where you sell <span class="market-required">*</span><select id="marketOriginCountry" name="origin_country" required>'+selectCountries(["UA"])+'</select></label><label><span id="marketRegionLabel">Oblast / область</span> <span class="market-required">*</span><input name="origin_region" minlength="2" maxlength="100" required placeholder="Enter the real region or state (not a private street address)"></label></div>'+
- '<fieldset class="market-fieldset"><legend>Delivery companies / methods <span class="market-required">*</span></legend><p class="market-field-help">Choose one or more companies. The list adapts to the seller country and item category. You must verify they actually ship to your destinations.</p><div id="marketCarrierChoices" class="market-choice-grid">Loading delivery services…</div><p class="market-field-help" id="marketCarrierHint">Carrier availability and COD eligibility vary by route.</p></fieldset>'+
- '<fieldset class="market-fieldset"><legend>Countries you can deliver to <span class="market-required">*</span></legend><p class="market-field-help">Search from '+countries.length+' countries and territories. Select up to 70 destinations.</p><input id="marketDestinationSearch" type="search" placeholder="Find destination country…" aria-label="Find shipping destination"><div id="marketCountryChoices" class="market-country-choices">'+destinations+'</div><p class="market-field-help" id="marketDestinationCount">1 country selected</p></fieldset>'+
+ '<fieldset class="market-fieldset"><legend>Deliveries & destinations <span class="market-required">*</span></legend><p class="market-field-help">Separate searchable lists: choose the countries you ship to, and the carriers you use. Confirm that each service operates on your route.</p><div class="market-shipping-columns"><section class="market-picker-column"><h3>Delivery destinations</h3><input id="marketDestinationSearch" type="search" placeholder="Search country…"><div id="marketCountryChoices" class="market-country-choices">'+destinations+'</div><p id="marketDestinationCount" class="market-field-help">1 country selected</p></section><section class="market-picker-column"><h3>Postal services</h3><input id="marketCourierSearch" type="search" placeholder="Search delivery company…"><div id="marketCarrierChoices" class="market-carrier-choices">Loading delivery services…</div><p id="marketCarrierHint" class="market-field-help">Carrier availability depends on the route.</p></section></div></fieldset>'+
+ 
  '<fieldset class="market-fieldset"><legend>Accepted payment arrangements <span class="market-required">*</span></legend><div class="market-choice-grid">'+payments+'</div><p class="market-field-help">You choose which options you accept. Payment is agreed directly with the buyer — Fleki’s Wrld does not charge cards, transfer money, or guarantee delivery. Never post full card details.</p></fieldset>'+
  '<label>Photos (up to 30 direct HTTPS image links, one per line)<textarea name="images" rows="3" placeholder="https://example.com/photo.jpg"></textarea></label>'+
  '<label>Videos (up to 5 direct HTTPS MP4/WebM links, one per line)<textarea name="videos" rows="2" placeholder="https://example.com/demo.mp4"></textarea></label>'+
  '<p class="market-footnote">Direct file uploads are not yet available. Use existing public HTTPS URLs for photos and videos. Keep private addresses, banking details, 2FA codes and passwords out of listings. Check publisher terms before selling game accounts or currencies.</p>'+
- '<button class="btn primary" type="submit">Publish listing</button></form></div>';
+ '<button class="btn primary" type="submit">'+(editing?'Save changes':'Publish listing')+'</button></form></div>';
 }
 function renderMy(){
  const row=item=>'<article class="market-owner-card"><div class="market-owner-thumb">'+mediaPreview(item)+'</div><div class="market-owner-body"><span class="market-pill">'+escape(item.status)+'</span><h3>'+escape(item.title)+'</h3><strong>'+escape(money(item))+'</strong><div class="market-owner-stats"><span title="Unique buyers who sent a message">✉ '+(item.interested_buyers||0)+' interested</span><span title="Saved to wishlist">♥ '+(item.favorite_count||0)+' saved</span><span title="Likes">👍 '+(item.likes||0)+'</span><span title="Dislikes">👎 '+(item.dislikes||0)+'</span></div><div class="market-owner-actions"><button type="button" class="btn primary" data-market-edit="'+escape(item.id)+'">Edit listing</button><label>Status <select data-market-status-id="'+escape(item.id)+'" aria-label="Listing status"><option value="active" '+(item.status==="active"?"selected":"")+'>Active</option><option value="sold" '+(item.status==="sold"?"selected":"")+'>Sold</option><option value="hidden" '+(item.status==="hidden"?"selected":"")+'>Hidden</option></select></label></div></div></article>';
