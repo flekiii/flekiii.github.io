@@ -24,6 +24,10 @@ jobs:
           node --check backend/market-catalog.js
           node --check wrld-market.js
           node --check wrld-games.js
+          node --check wrld-web-games.js
+          node --check wrld-web-games-core.mjs
+          node --test tests/web-games.test.mjs
+          test -s wrld-web-games.css
           node --test backend/totp.test.mjs backend/marketplace.test.mjs
           node --test tests/wrld-ui.test.mjs
           node --check backend/houses.js

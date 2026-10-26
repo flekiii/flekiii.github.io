@@ -1,0 +1,41 @@
+/* Member-verified browser games */
+#page-web-games{padding-bottom:130px}
+.wg-gate,.wg-panel,.wg-tile,.wg-loading{background:var(--panel);border:1px solid var(--line);border-radius:23px}
+.wg-gate{max-width:680px;text-align:center;margin:28px auto;padding:48px 28px}
+.wg-gate-icon{width:78px;height:78px;margin:0 auto 20px;display:grid;place-items:center;font-size:38px;border-radius:22px;background:linear-gradient(130deg,#dea8f0,#8989ed)}
+.wg-gate h2,.wg-panel h2{font:700 clamp(26px,3vw,36px) "Space Grotesk";letter-spacing:-1px;margin:12px 0}
+.wg-gate p,.wg-head p,.wg-desc{color:var(--muted);font-size:14px;line-height:1.7}
+.wg-gate .wg-note{font-size:12px;margin-top:22px}
+.wg-loading{text-align:center;color:var(--muted);padding:50px;margin:30px auto}
+.wg-head{display:flex;gap:14px;align-items:center;justify-content:space-between;margin:0 0 24px}
+.wg-account{font-size:12px;font-weight:800;padding:10px 15px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;white-space:nowrap}
+.wg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.wg-tile{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0;min-height:290px;padding:23px;text-align:left;transition:transform .2s,border-color .2s}
+.wg-tile:hover{border-color:var(--accent);transform:translateY(-3px)}
+.wg-thumb{height:110px;width:100%;border-radius:16px;display:grid;place-items:center;font-size:48px;background:radial-gradient(circle at 20% 15%,#ffc9ed66,transparent 50%),linear-gradient(130deg,#513d76,#252b45)}
+.wg-tile:nth-child(2) .wg-thumb{background:linear-gradient(130deg,#414487,#21263e)}
+.wg-tile:nth-child(3) .wg-thumb{background:linear-gradient(130deg,#67517e,#352b51)}
+.wg-tile strong{font:700 22px "Space Grotesk"}
+.wg-desc{flex:1}
+.wg-play{font-size:13px;font-weight:800;color:var(--accent2)}
+.wg-panel{max-width:750px;margin:18px auto;padding:27px}
+.wg-panel-head{display:flex;gap:15px;align-items:center;justify-content:space-between;margin-bottom:24px}
+.wg-panel-head h2{margin:5px 0}
+.wg-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px auto 0}
+.wg-stats,.wg-status{text-align:center;color:var(--muted);font-size:13px;margin:16px auto}
+.wg-memory{width:min(100%,425px);margin:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.wg-memory button{aspect-ratio:1;background:var(--panel2);border:1px solid var(--line);border-radius:14px;font-size:clamp(24px,4vw,38px)}
+.wg-memory button.wg-up{background:color-mix(in srgb,var(--accent2) 18%,var(--panel))}
+.wg-memory button.wg-matched{background:color-mix(in srgb,#47b597 18%,var(--panel));border-color:#44a68a}
+.wg-memory button:hover:not(:disabled){border-color:var(--accent)}
+.wg-ttt{width:min(100%,345px);margin:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.wg-ttt button{aspect-ratio:1;background:var(--panel2);border:1px solid var(--line);border-radius:15px;font:bold 64px "Space Grotesk";color:var(--accent2)}
+.wg-ttt button.wg-win{background:color-mix(in srgb,#45c4a2 26%,var(--panel))}
+.wg-reaction{display:block;width:min(100%,430px);height:240px;margin:10px auto;border:1px solid var(--line);border-radius:21px;background:var(--panel2);font:800 clamp(23px,5vw,41px) "Space Grotesk";color:var(--text)}
+.wg-reaction.waiting{background:#9a5151;color:#fff}.wg-reaction.go{background:#32986b;color:#fff}.wg-reaction.result{background:#4f549a;color:#fff}.wg-reaction.early{background:#a75b64;color:#fff}
+.about-social-card.donate{grid-column:1/-1;min-height:180px;background:radial-gradient(circle at 90% 0%,#d99aff22,transparent 50%),var(--panel)}
+.about-social-card.donate .about-social-icon{color:var(--accent2);background:color-mix(in srgb,var(--accent2) 18%,var(--panel2))}
+.about-social-card.donate .about-social-copy p{max-width:720px}
+.about-social-card.donate .about-social-link{margin-top:2px}
+@media(max-width:950px){.wg-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.wg-grid{grid-template-columns:1fr}.wg-head{flex-wrap:wrap}.wg-tile{min-height:245px}.wg-panel{padding:18px}.wg-gate{padding:36px 18px}.wg-memory{gap:6px}.wg-ttt button{font-size:48px}.about-social-card.donate{grid-column:auto}}
