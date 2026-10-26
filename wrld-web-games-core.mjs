@@ -15,3 +15,26 @@ export function cpuMove(board){
  for(const sign of ["O","X"])for(const i of free){const b=[...board];b[i]=sign;if(tttResult(b)?.winner===sign)return i;}
  return [4,0,2,6,8,1,3,5,7].find(i=>free.includes(i));
 }
+
+export function shift2048(board,direction){
+ if(board.length!==16||!["left","right","up","down"].includes(direction))throw Error("Invalid 2048 board");
+ const result=[...board];let points=0;
+ for(let n=0;n<4;n++){
+  const ids=Array.from({length:4},(_,i)=>{
+   const k=direction==="right"||direction==="down"?3-i:i;
+   return direction==="left"||direction==="right"?n*4+k:k*4+n;
+  });
+  const full=ids.map(i=>board[i]).filter(Boolean),merged=[];
+  for(let i=0;i<full.length;i++)if(full[i]===full[i+1]){merged.push(full[i]*2);points+=full[i]*2;i++}else merged.push(full[i]);
+  ids.forEach((id,i)=>result[id]=merged[i]||0);
+ }
+ return {board:result,points,moved:result.some((v,i)=>v!==board[i])};
+}
+export function newTile2048(board,random=Math.random){
+ const free=board.map((v,i)=>v?-1:i).filter(i=>i!==-1);
+ if(!free.length)return [...board];
+ const next=[...board],slot=free[Math.floor(random()*free.length)];
+ next[slot]=random()<.9?2:4;
+ return next;
+}
+export const canShift2048=board=>board.includes(0)||["left","right","up","down"].some(d=>shift2048(board,d).moved);
