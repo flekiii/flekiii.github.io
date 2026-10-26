@@ -22,6 +22,7 @@ jobs:
           node --check backend/worker.js
           node --check backend/profiles.js
           node --check wrld-profile.js
+          node --test tests/profile-banner.test.mjs
           node --test tests/profile-studio.test.mjs
           test -s wrld-profile.css
           test -s vendor/qrcode.js
