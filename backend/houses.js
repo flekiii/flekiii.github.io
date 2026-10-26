@@ -1,4 +1,4 @@
-// Public gallery houses + one reaction per member. All writes require verified 2FA.
+// Authenticated owners may publish houses; reactions still require verified 2FA.
 const ORIGIN="https://flekiii.github.io";
 const TYPES=new Set("sofa table tv rug plant lamp bed dresser desk chair pc shelf wardrobe nightstand mirror bathtub sink toilet fridge stove dining kitchen car tools bike arcade console speaker painting flower piano guitar beanbag windowseat pool".split(" "));
 const TEMPLATES=new Set("loft cottage starter townhouse family villa mansion garage garagehouse workshop".split(" "));
@@ -49,7 +49,7 @@ export async function houseHandle(req,env,path,{auth,authorized}){
   const row=await one(db,"SELECT h.*,u.username,u.display_name FROM wrld_houses h JOIN users u ON u.id=h.owner WHERE h.owner=?",user.id);
   return j({house:house(row)});
  }
- if(!authorized(user))return bad("Verified Auth2FA required for publishing or reacting.",403);
+
  if(method==="PUT"&&path==="/houses/publish"){
   const raw=await req.text();if(raw.length>14500)return bad("House is too large.",413);
   let payload;try{payload=JSON.parse(raw)}catch{return bad("Invalid JSON.")}
@@ -62,6 +62,7 @@ export async function houseHandle(req,env,path,{auth,authorized}){
   return j({ok:true,username:user.username,public_url:published?ORIGIN+"/#house?u="+encodeURIComponent(user.username):null,published:!!published,in_profile:!!inProfile});
  }
  if(method==="POST"&&path==="/houses/react"){
+  if(!authorized(user))return bad("Verify Auth2FA before reacting to a house.",403);
   const raw=await req.text();if(raw.length>400)return bad("Request too large.",413);
   let payload;try{payload=JSON.parse(raw)}catch{return bad("Invalid JSON.")}
   const name=String(payload.user||"").trim();
