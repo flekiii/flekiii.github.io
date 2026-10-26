@@ -97,3 +97,7 @@
 .wrld-public-scene [hidden],.wrld-public-camera-controls[hidden]{display:none!important}
 .wrld-public-mode-message{text-align:center;min-height:21px;color:var(--muted);font-size:12px;margin:10px 0 20px}
 @media(max-width:650px){.wrld-public-3d{height:clamp(300px,72vw,450px);border-radius:14px}.wrld-public-view-controls{gap:9px}.wrld-public-mode-buttons button{padding:9px 12px}.wrld-public-camera-controls button{min-width:37px;padding:7px}.wrld-public-top h1{font-size:30px}}
+
+/* Visually distinguish the visitor's selected emoji and actual session errors. */
+.wrld-reaction.selected,.wrld-reaction[aria-pressed="true"]{border-color:var(--accent2);background:color-mix(in srgb,var(--accent2) 18%,var(--panel2));box-shadow:0 0 0 1px var(--accent2) inset}
+.wrld-share-feedback .wrld-house-secondary{display:inline-flex;vertical-align:middle;margin:8px 0 3px 7px;padding:8px 12px;font-size:12px}

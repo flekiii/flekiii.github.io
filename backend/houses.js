@@ -42,7 +42,10 @@ export async function houseHandle(req,env,path,{auth,authorized}){
   const row=await one(db,"SELECT h.*,u.username,u.display_name FROM wrld_houses h JOIN users u ON u.id=h.owner WHERE u.username=? COLLATE NOCASE AND h.published=1",username);
   if(!row||(path==="/houses/profile"&&!row.in_profile))return bad("House not shared.",404);
   const reactions=await rows(db,"SELECT emoji,count(*) AS count FROM wrld_house_reactions WHERE owner=? GROUP BY emoji ORDER BY count DESC",row.owner);
-  return j({house:house(row),reactions,reaction_options:EMOJI_REACTIONS});
+  // Public counts need no account; signed-in members see their currently selected reaction.
+  const visitor=req.headers.get("Authorization")?await auth(req,db):null;
+  const previous=visitor?await one(db,"SELECT emoji FROM wrld_house_reactions WHERE owner=? AND reactor=?",row.owner,visitor.id):null;
+  return j({house:house(row),reactions,reaction_options:EMOJI_REACTIONS,your_reaction:previous?.emoji||null});
  }
  const user=await auth(req,db);if(!user)return bad("Sign in required.",401);
  if(method==="GET"&&path==="/houses/mine"){
@@ -62,14 +65,13 @@ export async function houseHandle(req,env,path,{auth,authorized}){
   return j({ok:true,username:user.username,public_url:published?ORIGIN+"/#house?u="+encodeURIComponent(user.username):null,published:!!published,in_profile:!!inProfile});
  }
  if(method==="POST"&&path==="/houses/react"){
-  if(!authorized(user))return bad("Verify Auth2FA before reacting to a house.",403);
+  if(!authorized(user))return bad("Verify Auth2FA for this session in Profile → Security before reacting.",403);
   const raw=await req.text();if(raw.length>400)return bad("Request too large.",413);
   let payload;try{payload=JSON.parse(raw)}catch{return bad("Invalid JSON.")}
   const name=String(payload.user||"").trim();
   if(!/^[a-z][a-z0-9_]{2,23}$/i.test(name))return bad("Invalid owner.");
   const target=await one(db,"SELECT h.owner FROM wrld_houses h JOIN users u ON u.id=h.owner WHERE u.username=? COLLATE NOCASE AND h.published=1",name);
   if(!target)return bad("House unavailable.",404);
-  if(target.owner===user.id)return bad("You cannot react to your own home.");
   if(payload.emoji!==null&&!EMOJI_REACTIONS.includes(payload.emoji))return bad("Unsupported reaction.");
   if(payload.emoji===null)await exec(db,"DELETE FROM wrld_house_reactions WHERE owner=? AND reactor=?",target.owner,user.id);
   else await exec(db,"INSERT INTO wrld_house_reactions(owner,reactor,emoji,created_at) VALUES(?,?,?,?) ON CONFLICT(owner,reactor) DO UPDATE SET emoji=excluded.emoji,created_at=excluded.created_at",target.owner,user.id,payload.emoji,Date.now());

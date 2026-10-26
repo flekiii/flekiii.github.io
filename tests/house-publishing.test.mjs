@@ -80,4 +80,22 @@ test("Actual house endpoint publishes a garage without 2FA, stores it for the ow
  assert.equal((await publicProfile.json()).house.name,"My garage");
  const reaction=await houseHandle(new Request(url+"/houses/react",{method:"POST",body:JSON.stringify({user:"garageowner",emoji:"❤️"})}),env,"/houses/react",fake);
  assert.equal(reaction.status,403,"Reactions must continue to require Auth2FA");
+ const verified={auth:async()=>account,authorized:()=>true};
+ const self=await houseHandle(new Request(url+"/houses/react",{method:"POST",body:JSON.stringify({user:"garageowner",emoji:"❤️"})}),env,"/houses/react",verified);
+ assert.equal(self.status,200,"Owner with verified Auth2FA can react to their own house");
+ assert.equal((await self.json()).your_reaction,"❤️");
+ const removal=await houseHandle(new Request(url+"/houses/react",{method:"POST",body:JSON.stringify({user:"garageowner",emoji:null})}),env,"/houses/react",verified);
+ assert.equal(removal.status,200);
+ assert.equal((await removal.json()).your_reaction,null);
+});
+test("Reaction errors distinguish missing session verification from unrelated failures",()=>{
+ const frontend=get("wrld-house-creator.mjs"),backend=get("backend/houses.js");
+ assert.match(frontend,/error.status=response.status/);
+ assert.match(frontend,/e.status===403/);
+ assert.match(frontend,/e.status===401/);
+ assert.doesNotMatch(frontend,/Перевір, чи увійшов у профіль та пройшов 2FA/);
+ assert.match(frontend,/aria-pressed/);
+ assert.match(frontend,/currentReaction=result.your_reaction/);
+ assert.doesNotMatch(backend,/You cannot react to your own home/);
+ assert.match(backend,/your_reaction:previous\?\.emoji\|\|null/);
 });

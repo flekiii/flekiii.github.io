@@ -10,7 +10,7 @@ const PLANS_EN={loft:["City loft","Studio"],cottage:["Cozy cottage","2 rooms"],s
 const planText=t=>houseLang()==="uk"?[t.name,t.tag]:(PLANS_EN[t.id]||[t.name,t.tag]);
 const escapeHtml=text=>String(text??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const getSettings=()=>{try{return JSON.parse(localStorage.getItem(settingsKey)||"null")}catch{return null}};
-let selected=getSettings()?.template||"starter",publishedUser=null,currentShareUser=null,publicHouse=null,public3D=null,publicLoadId=0,publicModeId=0;
+let selected=getSettings()?.template||"starter",publishedUser=null,currentShareUser=null,publicHouse=null,public3D=null,publicLoadId=0,publicModeId=0,currentReaction=null;
 function previewMarkup(template){
  const n=template.rooms;
  const cols=n<=2?n:n<=4?2:n<=6?3:4,rows=Math.ceil(n/cols),cells=[];
@@ -68,7 +68,7 @@ async function call(path,method="GET",body){
   ...(body!==undefined?{body:JSON.stringify(body)}:{})
  });
  const result=await response.json().catch(()=>({}));
- if(!response.ok)throw Error(result.error||"Server returned "+response.status);
+ if(!response.ok){const error=new Error(result.error||"Server returned "+response.status);error.status=response.status;throw error}
  return result;
 }
 async function publish(profile=true){
@@ -122,11 +122,11 @@ function housePlan(house){
  }
  return cells.join("");
 }
-function reactionMarkup(counts,owner){
+function reactionMarkup(counts,owner,selected=null){
  const map=new Map((counts||[]).map(v=>[v.emoji,Number(v.count)||0]));
  return REACTIONS.map((emoji)=>{
   const count=map.get(emoji)||0;
-  return '<button type="button" class="wrld-reaction" data-house-emoji="'+escapeHtml(emoji)+'" title="Реагувати '+escapeHtml(emoji)+'" aria-label="'+escapeHtml(emoji)+' — '+count+'">'+emoji+' <span>'+count+'</span></button>';
+  return '<button type="button" class="wrld-reaction'+(selected===emoji?" selected":"")+'" aria-pressed="'+String(selected===emoji)+'" data-house-emoji="'+escapeHtml(emoji)+'" title="Реагувати '+escapeHtml(emoji)+'" aria-label="'+escapeHtml(emoji)+' — '+count+'">'+emoji+' <span>'+count+'</span></button>';
  }).join("");
 }
 function disposePublic3D(){public3D?.destroy();public3D=null}
@@ -159,18 +159,18 @@ async function switchPublicMode(mode){
  }
 }
 async function loadPublic(user){
- const request=++publicLoadId;++publicModeId;disposePublic3D();publicHouse=null;
+ const request=++publicLoadId;++publicModeId;disposePublic3D();publicHouse=null;currentReaction=null;
  if(!/^[a-z][a-z0-9_]{2,23}$/i.test(user)){viewer.innerHTML='<p>'+tr("Invalid house link.","Некоректне посилання.")+'</p>';return}
  currentShareUser=user;
  viewer.innerHTML='<p class="wrld-preview-loading">'+tr("Loading the shared house…","Завантажуємо будинок…")+'</p>';
  try{
   const result=await call("/houses/public?user="+encodeURIComponent(user));
   if(request!==publicLoadId)return;
-  const h=result.house;publicHouse=h;
+  const h=result.house;publicHouse=h;currentReaction=result.your_reaction||null;
   viewer.innerHTML='<div class="wrld-public-top"><div><div class="overline">'+tr("SHARED HOUSE","ПУБЛІЧНИЙ ДІМ")+' · @'+escapeHtml(h.username)+'</div><h1>'+escapeHtml(h.name)+'</h1><p>'+escapeHtml(planText(TEMPLATE_BY_ID[h.template]||TEMPLATE_BY_ID.starter)[0])+' · '+(h.items?.length||0)+' '+tr("pieces of furniture","предметів меблів")+'</p></div><button type="button" data-go="create-house" class="wrld-house-cta">'+tr("Create your house ↗","Створити свій дім ↗")+'</button></div>'+
    '<div class="wrld-public-view-controls"><div class="wrld-public-mode-buttons" role="group" aria-label="'+tr("House view mode","Режим перегляду будинку")+'"><button type="button" class="active" aria-pressed="true" data-house-view-mode="3d">◈ 3D</button><button type="button" aria-pressed="false" data-house-view-mode="2d">▦ 2D</button></div><div class="wrld-public-camera-controls" id="publicHouseCameraControls"><button type="button" data-house-camera="zoom-in" aria-label="'+tr("Zoom in","Наблизити")+'">＋</button><button type="button" data-house-camera="zoom-out" aria-label="'+tr("Zoom out","Віддалити")+'">−</button><button type="button" data-house-camera="reset" aria-label="'+tr("Reset camera","Скинути камеру")+'">↺</button></div></div>'+
    '<div class="wrld-public-scene"><div id="publicHouse3D" class="wrld-public-3d" aria-label="'+tr("Interactive 3D house","Інтерактивний 3D будинок")+'"></div><div id="publicHouse2D" class="wrld-public-floor" hidden>'+housePlan(h)+'</div></div><p class="wrld-public-mode-message" id="publicHouseModeMessage" role="status"></p>'+
-   '<div class="wrld-public-reactions"><div><h2>'+tr("How do you like this house?","Як тобі цей дім?")+'</h2><p>'+tr("You need an account and verified Auth2FA to react.","Для реакції потрібен акаунт і підтверджена 2FA.")+'</p></div><div class="wrld-reaction-grid" id="houseReactionGrid">'+reactionMarkup(result.reactions,user)+'</div></div>'+
+   '<div class="wrld-public-reactions"><div><h2>'+tr("How do you like this house?","Як тобі цей дім?")+'</h2><p>'+tr("You need an account and verified Auth2FA to react.","Для реакції потрібен акаунт і підтверджена 2FA.")+'</p></div><div class="wrld-reaction-grid" id="houseReactionGrid">'+reactionMarkup(result.reactions,user,currentReaction)+'</div></div>'+
    '<p role="status" id="houseReactionStatus" class="wrld-share-feedback"></p>';
   await switchPublicMode("3d");
  }catch(error){
@@ -188,13 +188,26 @@ viewer.addEventListener("click",async(event)=>{
   else if(cameraButton.dataset.houseCamera==="zoom-out")public3D?.zoom(1.5);
   return;
  }
- const b=event.target.closest("[data-house-emoji]");if(!b||!currentShareUser)return;
+ const b=event.target.closest("[data-house-emoji]");if(!b||!currentShareUser||b.disabled)return;
  b.disabled=true;
+ const emoji=currentReaction===b.dataset.houseEmoji?null:b.dataset.houseEmoji;
+ const status=$("houseReactionStatus");
  try{
-  const result=await call("/houses/react","POST",{user:currentShareUser,emoji:b.dataset.houseEmoji});
-  $("houseReactionGrid").innerHTML=reactionMarkup(result.reactions,currentShareUser);
-  $("houseReactionStatus").textContent="Реакцію збережено 💜";
- }catch(e){$("houseReactionStatus").textContent=e.message+". Перевір, чи увійшов у профіль та пройшов 2FA.";b.disabled=false}
+  const result=await call("/houses/react","POST",{user:currentShareUser,emoji});
+  currentReaction=result.your_reaction||null;
+  const grid=$("houseReactionGrid");if(grid)grid.innerHTML=reactionMarkup(result.reactions,currentShareUser,currentReaction);
+  if(status)status.textContent=emoji?tr("Reaction saved 💜","Реакцію збережено 💜"):tr("Reaction removed","Реакцію прибрано");
+ }catch(e){
+  if(status){
+   status.textContent=e.message;
+   if(e.status===403){
+    status.insertAdjacentHTML("beforeend",' <span>'+tr("If you already connected Auth2FA, enter a fresh code for this session.","Якщо Auth2FA вже підключено, введи актуальний код для цього сеансу.")+'</span> <button type="button" class="wrld-house-secondary" data-go="profile">'+tr("Open Profile → Security","Відкрити профіль → Захист")+' ↗</button>');
+   }else if(e.status===401){
+    status.insertAdjacentHTML("beforeend",' <button type="button" class="wrld-house-secondary" data-go="profile">'+tr("Sign in","Увійти")+' ↗</button>');
+   }
+  }
+  b.disabled=false;
+ }
 });
 window.addEventListener("wrld:page-change",event=>{
  if(event.detail?.id!=="house-view"){++publicLoadId;++publicModeId;disposePublic3D();publicHouse=null;return}
