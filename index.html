@@ -84,7 +84,7 @@ input,textarea,[contenteditable="true"]{cursor:text}
       </aside>
       <div class="house-world">
         <div class="house-world-top"><div class="house-world-title"><span class="house-map-icon" aria-hidden="true">⌂</span><span><strong>The little wrld house</strong><small id="houseCount">10/36 items</small></span></div><div class="house-rooms" role="group" aria-label="Room for new furniture"><button type="button" data-house-room="living" class="active" aria-pressed="true">Living room</button><button type="button" data-house-room="bedroom" aria-pressed="false">Bedroom</button><button type="button" data-house-room="studio" aria-pressed="false">Studio</button></div></div>
-        <div class="house-stage" id="houseStage" data-view="2d" aria-label="House editor. Select furniture to move it.">
+        <div class="house-stage" id="houseStage" data-view="2d" tabindex="0" role="application" aria-label="House editor. Select furniture to move it. Use arrow keys to move a selected piece, R to rotate and Delete to remove.">
           <canvas id="houseCanvas" role="img" aria-label="Interactive 2D floor plan of three rooms with furniture"></canvas>
           <div class="house-stage-label"><strong id="houseModeLabel">2D HOUSE</strong><span>Living · Bedroom · Studio</span></div>
           <div class="house-stage-compass" aria-hidden="true"><small>N</small>✧</div>
