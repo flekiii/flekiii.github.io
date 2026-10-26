@@ -1,4 +1,5 @@
 import {HOUSE_TEMPLATES,TEMPLATE_BY_ID,STORE_KEY,encode} from "./wrld-home-core.mjs?v=2";
+import {mountPublicHouse3D} from "./wrld-public-house-3d.mjs?v=1";
 const API="https://flekis-wrld-api.flekideveloper.workers.dev";
 const REACTIONS=["👍","👎","❤️","💜","💙","💚","💛","🧡","🩷","😍","🥰","🔥","✨","👏","🎉","🤩","😮","😂","🏠","💯"];
 const $=id=>document.getElementById(id);
@@ -9,7 +10,7 @@ const PLANS_EN={loft:["City loft","Studio"],cottage:["Cozy cottage","2 rooms"],s
 const planText=t=>houseLang()==="uk"?[t.name,t.tag]:(PLANS_EN[t.id]||[t.name,t.tag]);
 const escapeHtml=text=>String(text??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const getSettings=()=>{try{return JSON.parse(localStorage.getItem(settingsKey)||"null")}catch{return null}};
-let selected=getSettings()?.template||"starter",publishedUser=null,currentShareUser=null;
+let selected=getSettings()?.template||"starter",publishedUser=null,currentShareUser=null,publicHouse=null,public3D=null,publicLoadId=0,publicModeId=0;
 function previewMarkup(template){
  const n=template.rooms;
  const cols=n<=2?n:n<=4?2:n<=6?3:4,rows=Math.ceil(n/cols),cells=[];
@@ -128,20 +129,65 @@ function reactionMarkup(counts,owner){
   return '<button type="button" class="wrld-reaction" data-house-emoji="'+escapeHtml(emoji)+'" title="Реагувати '+escapeHtml(emoji)+'" aria-label="'+escapeHtml(emoji)+' — '+count+'">'+emoji+' <span>'+count+'</span></button>';
  }).join("");
 }
+function disposePublic3D(){public3D?.destroy();public3D=null}
+async function switchPublicMode(mode){
+ if(!publicHouse||!["3d","2d"].includes(mode))return;
+ const ticket=++publicModeId;disposePublic3D();
+ const stage=$("publicHouse3D"),flat=$("publicHouse2D"),status=$("publicHouseModeMessage");
+ if(!stage||!flat||!status)return;
+ for(const button of viewer.querySelectorAll("[data-house-view-mode]")){
+  const selected=button.dataset.houseViewMode===mode;button.classList.toggle("active",selected);button.setAttribute("aria-pressed",String(selected));
+ }
+ const camera=$("publicHouseCameraControls");if(camera)camera.hidden=mode==="2d";
+ stage.hidden=mode==="2d";flat.hidden=mode!=="2d";
+ if(mode==="2d"){status.textContent=tr("2D floor plan","2D план будинку");return}
+ status.textContent=tr("Loading interactive 3D house…","Завантажуємо інтерактивний 3D будинок…");
+ try{
+  const instance=await mountPublicHouse3D(stage,publicHouse,()=>ticket===publicModeId&&stage.isConnected&&!stage.hidden);
+  if(!instance)return;
+  if(ticket!==publicModeId){instance.destroy();return}
+  public3D=instance;
+  status.textContent=tr("Drag to rotate · Scroll to zoom · Use + / − on mobile","Перетягуй для обертання · Прокручуй для наближення · На телефоні кнопки + / −");
+ }catch(error){
+  if(ticket!==publicModeId)return;
+  disposePublic3D();
+  stage.hidden=true;flat.hidden=false;if(camera)camera.hidden=true;
+  for(const button of viewer.querySelectorAll("[data-house-view-mode]")){
+   const selected=button.dataset.houseViewMode==="2d";button.classList.toggle("active",selected);button.setAttribute("aria-pressed",String(selected));
+  }
+  status.textContent=tr("3D is unavailable on this device or network. Showing the 2D plan.","3D недоступне на цьому пристрої або в мережі. Показуємо 2D-план.");
+ }
+}
 async function loadPublic(user){
- if(!/^[a-z][a-z0-9_]{2,23}$/i.test(user)){viewer.innerHTML="<p>Некоректне посилання.</p>";return}
+ const request=++publicLoadId;++publicModeId;disposePublic3D();publicHouse=null;
+ if(!/^[a-z][a-z0-9_]{2,23}$/i.test(user)){viewer.innerHTML='<p>'+tr("Invalid house link.","Некоректне посилання.")+'</p>';return}
  currentShareUser=user;
- viewer.innerHTML='<p class="wrld-preview-loading">Завантажуємо будинок користувача @'+escapeHtml(user)+'…</p>';
+ viewer.innerHTML='<p class="wrld-preview-loading">'+tr("Loading the shared house…","Завантажуємо будинок…")+'</p>';
  try{
   const result=await call("/houses/public?user="+encodeURIComponent(user));
-  const h=result.house;
-  viewer.innerHTML='<div class="wrld-public-top"><div><div class="overline">ПУБЛІЧНИЙ ДІМ • '+escapeHtml(h.display_name||h.username)+'</div><h1>'+escapeHtml(h.name)+'</h1><p>'+escapeHtml((TEMPLATE_BY_ID[h.template]||{}).name||"Дім")+' · '+(h.items?.length||0)+' меблів</p></div><button data-go="create-house" class="wrld-house-cta">Створи свій дім ↗</button></div>'+
-   '<div class="wrld-public-floor">'+housePlan(h)+'</div>'+
-   '<div class="wrld-public-reactions"><div><h2>Як тобі цей дім?</h2><p>Обери одну з 20 реакцій. Щоб реагувати, потрібен акаунт і підтверджена 2FA.</p></div><div class="wrld-reaction-grid" id="houseReactionGrid">'+reactionMarkup(result.reactions,user)+'</div></div>'+
+  if(request!==publicLoadId)return;
+  const h=result.house;publicHouse=h;
+  viewer.innerHTML='<div class="wrld-public-top"><div><div class="overline">'+tr("SHARED HOUSE","ПУБЛІЧНИЙ ДІМ")+' · @'+escapeHtml(h.username)+'</div><h1>'+escapeHtml(h.name)+'</h1><p>'+escapeHtml(planText(TEMPLATE_BY_ID[h.template]||TEMPLATE_BY_ID.starter)[0])+' · '+(h.items?.length||0)+' '+tr("pieces of furniture","предметів меблів")+'</p></div><button type="button" data-go="create-house" class="wrld-house-cta">'+tr("Create your house ↗","Створити свій дім ↗")+'</button></div>'+
+   '<div class="wrld-public-view-controls"><div class="wrld-public-mode-buttons" role="group" aria-label="'+tr("House view mode","Режим перегляду будинку")+'"><button type="button" class="active" aria-pressed="true" data-house-view-mode="3d">◈ 3D</button><button type="button" aria-pressed="false" data-house-view-mode="2d">▦ 2D</button></div><div class="wrld-public-camera-controls" id="publicHouseCameraControls"><button type="button" data-house-camera="zoom-in" aria-label="'+tr("Zoom in","Наблизити")+'">＋</button><button type="button" data-house-camera="zoom-out" aria-label="'+tr("Zoom out","Віддалити")+'">−</button><button type="button" data-house-camera="reset" aria-label="'+tr("Reset camera","Скинути камеру")+'">↺</button></div></div>'+
+   '<div class="wrld-public-scene"><div id="publicHouse3D" class="wrld-public-3d" aria-label="'+tr("Interactive 3D house","Інтерактивний 3D будинок")+'"></div><div id="publicHouse2D" class="wrld-public-floor" hidden>'+housePlan(h)+'</div></div><p class="wrld-public-mode-message" id="publicHouseModeMessage" role="status"></p>'+
+   '<div class="wrld-public-reactions"><div><h2>'+tr("How do you like this house?","Як тобі цей дім?")+'</h2><p>'+tr("You need an account and verified Auth2FA to react.","Для реакції потрібен акаунт і підтверджена 2FA.")+'</p></div><div class="wrld-reaction-grid" id="houseReactionGrid">'+reactionMarkup(result.reactions,user)+'</div></div>'+
    '<p role="status" id="houseReactionStatus" class="wrld-share-feedback"></p>';
- }catch(e){viewer.innerHTML='<div class="wrld-view-error"><h2>Дім недоступний</h2><p>'+escapeHtml(e.message)+'</p><button data-go="create-house">Створити власний</button></div>'}
+  await switchPublicMode("3d");
+ }catch(error){
+  if(request!==publicLoadId)return;
+  viewer.innerHTML='<div class="wrld-view-error"><h2>'+tr("House unavailable","Дім недоступний")+'</h2><p>'+escapeHtml(error.message)+'</p><button type="button" data-go="create-house">'+tr("Create your own","Створити власний")+'</button></div>';
+ }
 }
 viewer.addEventListener("click",async(event)=>{
+ const switchButton=event.target.closest("[data-house-view-mode]");
+ if(switchButton){void switchPublicMode(switchButton.dataset.houseViewMode);return}
+ const cameraButton=event.target.closest("[data-house-camera]");
+ if(cameraButton){
+  if(cameraButton.dataset.houseCamera==="reset")public3D?.reset();
+  else if(cameraButton.dataset.houseCamera==="zoom-in")public3D?.zoom(-1.5);
+  else if(cameraButton.dataset.houseCamera==="zoom-out")public3D?.zoom(1.5);
+  return;
+ }
  const b=event.target.closest("[data-house-emoji]");if(!b||!currentShareUser)return;
  b.disabled=true;
  try{
@@ -151,6 +197,7 @@ viewer.addEventListener("click",async(event)=>{
  }catch(e){$("houseReactionStatus").textContent=e.message+". Перевір, чи увійшов у профіль та пройшов 2FA.";b.disabled=false}
 });
 window.addEventListener("wrld:page-change",event=>{
+ if(event.detail?.id!=="house-view"){++publicLoadId;++publicModeId;disposePublic3D();publicHouse=null;return}
  if(event.detail?.id==="house-view"){
   const match=location.hash.match(/^#house\?u=([a-z0-9_]{3,24})/i);
   if(match)loadPublic(match[1]);
