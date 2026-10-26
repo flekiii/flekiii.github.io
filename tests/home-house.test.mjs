@@ -2,93 +2,88 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {
- LIMIT,TYPES,TYPE_BY_ID,ROOMS,START_ITEMS,WALLS,size,validItem,
- canPlace,restore,encode,cloneItems,findPlace,atRoom
+ LIMIT,TYPES,ROOMS,START_ITEMS,HOUSE_TEMPLATES,TEMPLATE_BY_ID,setLayout,
+ validItem,canPlace,restore,encode,cloneItems,findPlace,atRoom
 } from "../wrld-home-core.mjs";
 const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
-const html=read("index.html"),css=read("wrld-home.css"),moduleCode=read("wrld-home.mjs");
-
-test("The Home page is an editable house, not the old hero and marketing tiles",()=>{
- assert.match(html,/id="page-home"[^>]+wrld-house-page|class="page active wrld-house-page" id="page-home"/);
- for(const id of ["houseStage","houseCanvas","houseCatalogue","houseRotate","houseDelete","houseResetCamera","houseStorage","houseNotice","houseCount"]){
+const html=read("index.html"),core=read("wrld-home-core.mjs"),code=read("wrld-home.mjs"),creator=read("wrld-house-creator.mjs"),css=read("wrld-home-creator.css");
+test("Дім is first and Створи свій дім is a real second tab",()=>{
+ assert.match(html,/id:"home",name:"Дім"/);
+ assert.match(html,/id:"create-house",name:"Створи свій дім"/);
+ for(const id of ["page-home","page-create-house","houseTemplateGrid","houseNameInput","houseCreateButton","housePublishButton","houseProfileButton","houseShareButton","houseRooms","houseCanvas","wrldPublicHouse"])
   assert.ok(html.includes('id="'+id+'"'),"Missing "+id);
- }
- for(const mode of ["auto","3d","2d"])assert.ok(html.includes('data-house-mode="'+mode+'"'));
- for(const room of ["living","bedroom","studio"])assert.ok(html.includes('data-house-room="'+room+'"'));
- assert.match(html,/wrld-home\.mjs\?v=\d+/);
- assert.match(html,/wrld-home\.css\?v=1/);
- assert.doesNotMatch(html,/id="homeTiles"|WELCOME TO SOMETHING DIFFERENT|YOUR DESTINATIONS/);
- for(const section of ["games","apps","marketplace","chat","profile","notifications","about"])
-  assert.ok(html.includes('id:"'+section+'"')||html.includes("id:'"+section+"'"),"Lost navigation "+section);
- assert.match(html,/wrld:page-change/);
+ assert.doesNotMatch(html,/data-house-mode="auto"/);
+ assert.match(html,/data-house-mode="3d" aria-pressed="true"/);
+ assert.match(code,/choice:"3d"/);
+ assert.match(creator,/wrld:house-create/);
+ assert.match(creator,/wrld:house-get/);
+ assert.match(html,/wrld-house-creator\.mjs/);
 });
-
-test("All default furniture fits three realistic rooms without wall or piece collisions",()=>{
- assert.equal(START_ITEMS.length,10);
- assert.equal(Object.keys(ROOMS).length,3);
- assert.ok(WALLS.length>=4);
- assert.ok(TYPES.length>=12);
- for(const item of START_ITEMS){
-  assert.equal(validItem(item),true,"Invalid default item "+item.id);
-  assert.equal(canPlace(item,START_ITEMS),true,"Furniture overlaps "+item.id);
- }
- for(const t of TYPES){
-  assert.equal(TYPE_BY_ID[t.id],t);
-  assert.ok(t.w>0&&t.d>0);
- }
-});
-
-test("Furniture can be rotated, cannot walk through walls or overlap other furniture",()=>{
- const example={id:"draft",type:"sofa",x:0,z:-2.0,rot:0};
- assert.equal(validItem(example),true);
- assert.equal(size({...example,rot:1}).w,TYPE_BY_ID.sofa.d);
- assert.equal(size({...example,rot:1}).d,TYPE_BY_ID.sofa.w);
- assert.equal(validItem({...example,x:4.8}),false);
- assert.equal(validItem({...example,z:.5}),false);
- const existing=[{id:"one",type:"bed",x:-3,z:2,rot:0}];
- assert.equal(canPlace({id:"two",type:"chair",x:-3,z:2,rot:0},existing),false);
- assert.equal(canPlace({id:"one",type:"bed",x:-3,z:2,rot:0},existing),true);
- assert.equal(canPlace({id:"rug",type:"rug",x:-3,z:2,rot:0},existing),true);
-});
-
-test("Any room can accept furniture; save/reload produces identical arrangement",()=>{
- for(const room of Object.keys(ROOMS)){
-  let found=0;
-  for(const t of TYPES){
-   const item=findPlace(t.id,START_ITEMS,room);
-   if(!item)continue;
-   found++;
-   assert.equal(atRoom(item.x,item.z),room);
-   assert.equal(canPlace(item,START_ITEMS),true);
+test("Ten distinct plans include 1–7 rooms and multiple garages",()=>{
+ assert.equal(HOUSE_TEMPLATES.length,10);
+ assert.deepEqual([...new Set(HOUSE_TEMPLATES.map(x=>x.id))].length,10);
+ assert.ok(HOUSE_TEMPLATES.some(x=>x.rooms===1));
+ assert.ok(HOUSE_TEMPLATES.some(x=>x.rooms===7));
+ assert.ok(HOUSE_TEMPLATES.some(x=>x.id==="garage"));
+ for(const plan of HOUSE_TEMPLATES){
+  setLayout(plan.id);
+  assert.equal(Object.keys(ROOMS).length,plan.rooms,"Room count: "+plan.id);
+  assert.ok(START_ITEMS.length>0,"No starter furniture: "+plan.id);
+  for(const piece of START_ITEMS){
+   assert.equal(validItem(piece),true,"Invalid piece in "+plan.id);
+   assert.equal(canPlace(piece,START_ITEMS),true,"Collision in "+plan.id);
   }
-  assert.ok(found>=7,"Not enough furniture choices fit "+room);
+  const rooms=Object.keys(ROOMS);
+  for(const room of rooms){
+   const spot=findPlace("lamp",START_ITEMS,room);
+   assert.ok(spot,"Can't add a small lamp in "+room+" / "+plan.id);
+   assert.equal(atRoom(spot.x,spot.z),room);
+  }
  }
- const raw=encode(START_ITEMS);
- assert.deepEqual(restore(raw),cloneItems(START_ITEMS));
- assert.deepEqual(restore("not valid"),cloneItems(START_ITEMS));
- assert.deepEqual(restore('{"version":999,"items":[]}'),cloneItems(START_ITEMS));
- assert.deepEqual(restore('{"version":1,"items":[{"type":"chair","id":"invalid","x":500,"z":0,"rot":0}]}'),[]);
- assert.equal(restore(JSON.stringify({version:1,items:Array.from({length:LIMIT+4},(_,i)=>({id:"thing-"+i,type:"plant",x:0,z:0,rot:0}))})).length,1);
+ setLayout("starter");
 });
-
-test("Every referenced house UI control exists — 3D/2D startup must not throw",()=>{
- const ids=new Set([...html.matchAll(/\\bid="([^"]+)"/g)].map(m=>m[1]));
- const refs=[...moduleCode.matchAll(/\\$\\("([^"]+)"\\)/g)].map(m=>m[1]);
+test("Expanded furniture library includes car, garage and house fittings",()=>{
+ assert.ok(TYPES.length>=30);
+ assert.ok(LIMIT>=60);
+ for(const id of ["car","tools","bike","bathtub","stove","fridge","piano","arcade","wardrobe"])
+  assert.ok(TYPES.some(x=>x.id===id),id);
+ setLayout("garage");
+ const x=findPlace("car",START_ITEMS,"room1");
+ assert.ok(x,"Garage doesn't fit a car");
+ assert.equal(canPlace(x,START_ITEMS),true);
+ setLayout("starter");
+});
+test("Saves are versioned, validate pieces, and reject broken or overlapping coordinates",()=>{
+ setLayout("starter");
+ const items=cloneItems(START_ITEMS);
+ assert.deepEqual(restore(encode(items)),items);
+ assert.deepEqual(restore("broken JSON"),items);
+ const bad=[{id:"bad",type:"chair",x:55,z:0,rot:0}];
+ assert.deepEqual(restore(JSON.stringify({version:1,items:bad})),[]);
+ const a=items[0];
+ assert.equal(canPlace({...a,id:"another"},items),false);
+});
+test("Every statically referenced Home control exists and selection fixes are present",()=>{
+ const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]));
+ const refs=[...code.matchAll(/\$\("([^"]+)"\)/g)].map(x=>x[1]);
  assert.deepEqual([...new Set(refs)].filter(id=>!ids.has(id)),[]);
+ for(const marker of ["updateRoomButtons","chooseRoom","state.three.target","env.target","Object.values(ROOMS)","setMode(mode","setLayout(template)"])
+  assert.ok(code.includes(marker),marker);
+ assert.match(code,/document\.addEventListener\("keydown"/);
+ assert.match(code,/wrld:page-change/);
 });
-
-test("Auto fallback, performance cap, scene disposal, and local-only persistence are explicit",()=>{
- assert.match(moduleCode,/deviceMemory/);
- assert.match(moduleCode,/prefers-reduced-motion/);
- assert.match(moduleCode,/webgl2/);
- assert.match(moduleCode,/three@0\.180\.0/);
- assert.match(moduleCode,/slow>30/);
- assert.match(moduleCode,/setMode\("2d",false\)/);
- assert.match(moduleCode,/dispose3d/);
- assert.match(moduleCode,/window\.addEventListener\("wrld:page-change"/);
- assert.match(moduleCode,/localStorage\.setItem\(STORE_KEY/);
- assert.doesNotMatch(moduleCode,/fetch\(|\/api\/house|\/api\/room/);
- assert.match(css,/body:has\(#page-home\.active\)/);
- assert.match(css,/@media\(max-width:600px\)/);
- assert.match(css,/\.house-catalogue/);
+test("Public house sharing and profile placement uses real server endpoints",()=>{
+ assert.match(creator,/\/houses\/publish/);
+ assert.match(creator,/\/houses\/react/);
+ assert.match(creator,/\/houses\/public\?user=/);
+ assert.match(creator,/\/houses\/mine/);
+ assert.match(creator,/houseProfileCard/);
+ assert.match(creator,/fw-token/);
+ const backend=read("backend/houses.js");
+ assert.match(backend,/authorized\(user\)/);
+ assert.match(backend,/wrld_house_reactions/);
+ assert.match(backend,/PRIMARY KEY\(owner,reactor\)/);
+ assert.equal((backend.match(/"👍"/g)||[]).length,1);
+ assert.match(css,/\.wrld-template-grid/);
+ assert.match(css,/\.wrld-public-reactions/);
 });
