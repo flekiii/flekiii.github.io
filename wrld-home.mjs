@@ -59,7 +59,7 @@ if(root&&stage&&canvas&&ctx){
   Object.assign(item,moved);
   if(state.view==="3d"){
    const group=state.three?.furniture.get(id);
-   if(group){group.position.set(item.x,0,item.z);group.rotation.y=item.rot*Math.PI/2}
+   if(group){group.position.set(item.x,0,item.z);group.rotation.y=item.rot*Math.PI/2;group.updateMatrixWorld(true);state.three.selectionOutline?.update?.()}
    schedule3d();
   }else draw2d();
   return true;
@@ -319,13 +319,19 @@ if(root&&stage&&canvas&&ctx){
    renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();positionCamera();schedule3d();
   };
   env.setSelection=id=>{
-   for(const [itemId,group] of env.furniture){
-    group.traverse(obj=>{
-     const material=obj.material;
-     if(!material||!material.emissive)return;
-     material.emissive.set(itemId===id?"#39245b":"#000000");
-     material.emissiveIntensity=itemId===id?.12:0;
-    });
+   // Materials are reused across objects; use a single independent outline,
+   // otherwise selecting one sofa would highlight every object with that material.
+   if(env.selectionOutline){
+    scene.remove(env.selectionOutline);
+    env.selectionOutline.geometry?.dispose?.();
+    env.selectionOutline.material?.dispose?.();
+    env.selectionOutline=null;
+   }
+   const selected=env.furniture.get(id);
+   if(selected){
+    selected.updateMatrixWorld(true);
+    env.selectionOutline=new THREE.BoxHelper(selected,0xd4a6ff);
+    scene.add(env.selectionOutline);
    }
    schedule3d();
   };
@@ -342,6 +348,7 @@ if(root&&stage&&canvas&&ctx){
  function schedule3d(){const env=state.three;if(env&&!env.raf)env.raf=requestAnimationFrame(env.render)}
  function refreshFurniture3d(){
   const env=state.three;if(!env)return;
+  if(env.selectionOutline){env.scene.remove(env.selectionOutline);env.selectionOutline.geometry?.dispose?.();env.selectionOutline.material?.dispose?.();env.selectionOutline=null}
   for(const group of env.furniture.values()){
    env.scene.remove(group);group.traverse(o=>o.geometry?.dispose?.());
   }
