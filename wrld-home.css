@@ -1,8 +1,8 @@
 /* fleki's wrld / HOME — an actual editable dollhouse in 3D or 2D */
-body:has(#page-home.active){height:100dvh;overflow:hidden}
-body:has(#page-home.active) main.shell{width:100%;max-width:none;height:calc(100dvh - 89px);min-height:0;padding:0 20px}
-body:has(#page-home.active) .footer{display:none}
-#page-home.wrld-house-page{padding:0;overflow:hidden;height:100%;animation:none}
+body:has(#page-house-editor.active){height:100dvh;overflow:hidden}
+body:has(#page-house-editor.active) main.shell{width:100%;max-width:none;height:calc(100dvh - 89px);min-height:0;padding:0 20px}
+body:has(#page-house-editor.active) .footer{display:none}
+#page-house-editor.wrld-house-page{padding:0;overflow:hidden;height:100%;animation:none}
 .house-shell{height:100%;min-height:0;width:100%;max-width:1800px;margin:auto;display:flex;flex-direction:column;gap:16px;padding:8px 3px 108px}
 .house-header{display:flex;align-items:center;justify-content:space-between;gap:20px;flex:0 0 auto;min-height:77px}
 .house-intro{min-width:0}
@@ -73,7 +73,7 @@ body:has(#page-home.active) .footer{display:none}
  .house-header{min-height:66px}
 }
 @media(max-width:850px){
- body:has(#page-home.active) main.shell{height:calc(100dvh - 75px);padding:0 10px}
+ body:has(#page-house-editor.active) main.shell{height:calc(100dvh - 75px);padding:0 10px}
  .house-shell{padding:3px 0 94px;gap:8px}
  .house-intro h1{font-size:25px;letter-spacing:-1px}
  .house-intro p{font-size:10px}
@@ -98,7 +98,7 @@ body:has(#page-home.active) .footer{display:none}
  .house-notice{display:none}
 }
 @media(max-width:600px){
- body:has(#page-home.active) main.shell{padding:0 7px}
+ body:has(#page-house-editor.active) main.shell{padding:0 7px}
  .house-shell{padding-bottom:83px}
  .house-header{min-height:70px;gap:7px}
  .house-intro h1{font-size:20px;letter-spacing:-.9px}
@@ -137,3 +137,15 @@ body:has(#page-home.active) .footer{display:none}
  .house-stage-hint{display:none}
 }
 @media(prefers-reduced-motion:reduce){.house-furniture-card{transition:none}}
+
+/* Standalone welcome page and editor */
+.wrld-landing{padding-bottom:120px}.wrld-welcome-hero{min-height:455px}.wrld-welcome-hero .hero-copy{max-width:710px}
+.wrld-orbital{position:absolute;right:7%;top:22%;width:270px;height:270px;border:1px solid #d4b1f777;border-radius:50%;box-shadow:0 0 0 33px #cfaefa16,0 0 0 74px #cfaefa0b;display:grid;place-items:center;pointer-events:none}
+.wrld-orbital span{width:50%;height:50%;border-radius:35px;display:grid;place-items:center;background:linear-gradient(135deg,#f4bedf,#b59afb,#8493ed);color:#291731;font:800 94px "Space Grotesk";transform:rotate(-9deg)}
+.wrld-landing-section{margin-top:28px}.wrld-home-tile{text-align:left;color:var(--text)}
+.wrld-landing [hidden],#houseOpenButton[hidden]{display:none!important}
+.house-header-actions{display:flex;gap:9px;align-items:center}.house-change-plan{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:11px;font-weight:800}.house-change-plan:hover{border-color:var(--accent2)}
+.wrld-lang-picker select{height:43px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:0 8px;cursor:pointer;font-weight:800}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+@media(max-width:780px){.wrld-orbital{opacity:.17;right:-14%}.wrld-welcome-hero .hero-copy{padding:37px 24px}.wrld-landing .tiles{grid-template-columns:1fr}.house-change-plan{padding:9px;font-size:10px}}
+@media(max-width:470px){.wrld-lang-picker select{width:52px;padding:0 3px}.wrld-welcome-hero .hero-copy h1{font-size:40px;letter-spacing:-2px}}

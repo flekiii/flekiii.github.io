@@ -58,9 +58,9 @@
 .wrld-view-error{padding:40px;text-align:center;border:1px dashed var(--line);border-radius:18px;background:var(--panel)}
 .wrld-view-error p{color:var(--muted)}
 /* House editor with a variable 1–7-room plan */
-#page-home .house-rooms{max-width:min(100%,820px);overflow-x:auto;scrollbar-width:thin;justify-content:flex-end;flex-wrap:nowrap}
-#page-home .house-rooms button{flex:0 0 auto}
-#page-home .house-rooms button.active{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent2) 20%,transparent)}
+#page-house-editor .house-rooms{max-width:min(100%,820px);overflow-x:auto;scrollbar-width:thin;justify-content:flex-end;flex-wrap:nowrap}
+#page-house-editor .house-rooms button{flex:0 0 auto}
+#page-house-editor .house-rooms button.active{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent2) 20%,transparent)}
 @media(max-width:1100px){.wrld-house-creator{grid-template-columns:minmax(0,1fr) 290px}.wrld-template-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:800px){.wrld-house-creator{grid-template-columns:1fr}.wrld-create-sidebar{position:static}.wrld-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){
@@ -76,6 +76,6 @@
  .wrld-public-floor{border-width:8px}
  .wrld-preview-room small{font-size:9px;margin:3px}
  .wrld-public-reactions{padding:15px}
- #page-home .house-rooms{max-width:100%;justify-content:flex-start}
- #page-home .house-world-top{overflow:hidden}
+ #page-house-editor .house-rooms{max-width:100%;justify-content:flex-start}
+ #page-house-editor .house-world-top{overflow:hidden}
 }

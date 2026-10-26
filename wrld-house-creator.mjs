@@ -4,6 +4,9 @@ const REACTIONS=["👍","👎","❤️","💜","💙","💚","💛","🧡","🩷
 const $=id=>document.getElementById(id);
 const gallery=$("houseTemplateGrid"),viewer=$("wrldPublicHouse");
 const settingsKey="fleki_wrld_house_settings";
+const houseLang=()=>document.documentElement?.lang==="uk"?"uk":"en",tr=(en,uk)=>houseLang()==="uk"?uk:en;
+const PLANS_EN={loft:["City loft","Studio"],cottage:["Cozy cottage","2 rooms"],starter:["Starter home","3 rooms"],townhouse:["Townhouse","4 rooms"],family:["Family home","5 rooms"],villa:["Sunny villa","6 rooms"],mansion:["Grand mansion","7 rooms"],garage:["Garage workshop","Garage"],garagehouse:["House with garage","2 rooms + garage"],workshop:["Creative compound","4 rooms + garage"]};
+const planText=t=>houseLang()==="uk"?[t.name,t.tag]:(PLANS_EN[t.id]||[t.name,t.tag]);
 const escapeHtml=text=>String(text??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const getSettings=()=>{try{return JSON.parse(localStorage.getItem(settingsKey)||"null")}catch{return null}};
 let selected=getSettings()?.template||"starter",publishedUser=null,currentShareUser=null;
@@ -26,14 +29,16 @@ function cards(){
   const b=document.createElement("button");
   b.type="button";b.className="wrld-template-card"+(t.id===selected?" active":"");b.dataset.template=t.id;
   b.setAttribute("aria-pressed",String(t.id===selected));
-  b.innerHTML=previewMarkup(t)+'<span class="wrld-template-text"><strong>'+escapeHtml(t.name)+'</strong><small>'+escapeHtml(t.tag)+'</small></span><span class="wrld-template-check">✓</span>';
+  b.innerHTML=previewMarkup(t)+'<span class="wrld-template-text"><strong>'+escapeHtml(planText(t)[0])+'</strong><small>'+escapeHtml(planText(t)[1])+'</small></span><span class="wrld-template-check">✓</span>';
   gallery.append(b);
  }
  const t=TEMPLATE_BY_ID[selected]||TEMPLATE_BY_ID.starter;
- $("houseTemplateSummary").textContent=t.name+" · "+t.tag+" · "+t.rooms+" приміщень.";
+ $("houseTemplateSummary").textContent=planText(t).join(" · ")+" · "+t.rooms+" "+tr(t.rooms===1?"room":"rooms","приміщень");
 }
 cards();
-$("houseNameInput").value=getSettings()?.name||"Мій затишний дім";
+$("houseNameInput").value=getSettings()?.name||tr("My cozy home","Мій затишний дім");
+$("houseOpenButton").hidden=!getSettings()?.template;$("continueHouseBtn").hidden=!getSettings()?.template;
+window.addEventListener("wrld:language-change",()=>cards());
 gallery.addEventListener("click",event=>{
  const b=event.target.closest("[data-template]");if(!b)return;
  selected=b.dataset.template;cards();
@@ -45,12 +50,12 @@ function snapshot(){
 }
 function createHouse(){
  const t=TEMPLATE_BY_ID[selected];const name=$("houseNameInput").value.trim().slice(0,55);
- if(!t||!name){$("houseShareStatus").textContent="Спочатку введи назву будинку.";return}
+ if(!t||!name){$("houseShareStatus").textContent=tr("Name your house first.","Спочатку введи назву будинку.");return}
  const settings={template:t.id,name,createdAt:Date.now()};
  try{localStorage.setItem(settingsKey,JSON.stringify(settings));localStorage.removeItem(STORE_KEY)}catch{}
  window.dispatchEvent(new CustomEvent("wrld:house-create",{detail:settings}));
- $("houseShareStatus").textContent="Будинок створено. Облаштовуй меблями!";
- document.querySelector('[data-go="home"]')?.click();
+ $("houseShareStatus").textContent=tr("House created. Start decorating!","Будинок створено. Облаштовуй меблями!");
+ $("houseOpenButton").hidden=false;$("continueHouseBtn").hidden=false;$("houseOpenButton").click();
 }
 $("houseCreateButton").addEventListener("click",createHouse);
 function token(){try{return sessionStorage.getItem("fw-token")||""}catch{return ""}}
@@ -164,6 +169,4 @@ if(location.hash.startsWith("#house?")){
  const match=location.hash.match(/^#house\?u=([a-z0-9_]{3,24})/i);
  if(match)loadPublic(match[1]);
 }
-if(!getSettings()&&!location.hash.startsWith("#house?")){
- document.querySelector('[data-go="create-house"]')?.click();
-}
+// Keep first-time visitors on welcome Home; house creation is optional.

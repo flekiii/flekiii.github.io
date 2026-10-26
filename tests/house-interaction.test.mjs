@@ -12,13 +12,13 @@ test("Room controls really switch rooms, place furniture in chosen room and surv
  const make=(id="")=>{
   const el={
    id,dataset:{},hidden:false,style:{},children:[],textContent:"",disabled:false,
-   classList:{add(){},remove(){},toggle(){},contains(value){return id==="page-home"&&value==="active"}},
+   classList:{add(){},remove(){},toggle(){},contains(value){return id==="page-house-editor"&&value==="active"}},
    setAttribute(){},
    append(child){this.children.push(child)},
    replaceChildren(...items){this.children.splice(0,this.children.length,...items)},
    addEventListener:(type,cb)=>callbacks[id+":"+type]=cb,
    querySelectorAll(sel){return id==="houseRooms"?this.children:
-    id==="page-home"&&sel.includes("data-house-mode")?modes:[]},
+    id==="page-house-editor"&&sel.includes("data-house-mode")?modes:[]},
    getBoundingClientRect:()=>({width:850,height:540,left:0,top:0,bottom:540}),
    setPointerCapture(){},remove(){},
    focus(){}
@@ -34,7 +34,7 @@ test("Room controls really switch rooms, place furniture in chosen room and surv
  });
  $("houseCanvas").getContext=()=>ctx;
  const document={
-  hidden:false,activeElement:null,getElementById:$,createElement:()=>make(),
+  documentElement:{lang:"uk"},hidden:false,activeElement:null,getElementById:$,createElement:()=>make(),
   addEventListener:(type,cb)=>callbacks["document:"+type]=cb
  };
  const window={
@@ -53,7 +53,7 @@ test("Room controls really switch rooms, place furniture in chosen room and surv
  runInNewContext(body,{...core,...library});
  assert.equal($("houseRooms").children.length,3);
  const two=$("houseRooms").children[1];
- callbacks["page-home:click"]({target:{closest(selector){
+ callbacks["page-house-editor:click"]({target:{closest(selector){
   return selector==="[data-house-room]"?two:null;
  }}});
  assert.equal(two.dataset.houseRoom,"room2");
@@ -67,7 +67,7 @@ test("Room controls really switch rooms, place furniture in chosen room and surv
  assert.equal($("houseCount").textContent,"7/90 items");
  assert.equal($("houseNameDisplay").textContent,"Seven-room test house");
  const seven=$("houseRooms").children[6];
- callbacks["page-home:click"]({target:{closest:sel=>sel==="[data-house-room]"?seven:null}});
+ callbacks["page-house-editor:click"]({target:{closest:sel=>sel==="[data-house-room]"?seven:null}});
  assert.match($("houseNotice").textContent,/Їдальня/);
  callbacks["houseCatalogue:click"]({target:{closest:()=>({dataset:{furniture:"plant"}})}});
  assert.equal(JSON.parse(stored.get(core.STORE_KEY)).items.length,8);

@@ -4,7 +4,7 @@ import {
 } from "./wrld-home-core.mjs?v=2";
 
 const $=id=>document.getElementById(id);
-const root=$("page-home"),stage=$("houseStage"),canvas=$("houseCanvas"),ctx=canvas?.getContext("2d");
+const root=$("page-house-editor"),stage=$("houseStage"),canvas=$("houseCanvas"),ctx=canvas?.getContext("2d");
 if(root&&stage&&canvas&&ctx){
  const catalogue=$("houseCatalogue"),notice=$("houseNotice"),selectedLabel=$("houseSelectedLabel");
  const state={items:cloneItems(START_ITEMS),selected:null,room:"room1",choice:"3d",view:"2d",
@@ -27,6 +27,9 @@ if(root&&stage&&canvas&&ctx){
   catch{$("houseStorage").textContent="Storage unavailable";announce("Unable to save here. Browser storage might be disabled.");return false}}
  const preferred=()=>state.choice;
 
+ const houseLang=()=>document.documentElement?.lang==="uk"?"uk":"en";
+ const roomsUk=["Вітальня","Спальня","Кабінет","Кухня","Ванна","Ігрова","Їдальня"],roomsEn=["Living room","Bedroom","Study","Kitchen","Bathroom","Game room","Dining room"];
+ const roomLabel=n=>houseLang()==="en"?(roomsEn[roomsUk.indexOf(n)]||n):n;
  function furnitureCard(type){
   const b=document.createElement("button");b.type="button";b.className="house-furniture-card";
   b.dataset.furniture=type.id;b.title="Add "+type.name;b.innerHTML='<span class="house-furniture-icon">'+type.icon+'</span><span>'+type.name+'</span><span class="house-furniture-plus" aria-hidden="true">+</span>';
@@ -38,7 +41,7 @@ if(root&&stage&&canvas&&ctx){
   panel.replaceChildren();
   for(const room of Object.values(ROOMS)){
    const b=document.createElement("button");b.type="button";b.dataset.houseRoom=room.id;
-   b.textContent=(room.garage?"🚗 ":"⌂ ")+room.name;
+   b.textContent=(room.garage?"🚗 ":"⌂ ")+roomLabel(room.name);
    b.classList.toggle("active",room.id===state.room);
    b.setAttribute("aria-pressed",String(room.id===state.room));
    panel.append(b);
@@ -53,7 +56,7 @@ if(root&&stage&&canvas&&ctx){
    state.three.positionCamera();schedule3d();
   }
   $("houseStage").dataset.room=id;
-  announce("Обрано кімнату: "+room.name+". Нові меблі з'являться саме тут.");
+  announce(houseLang()==="uk"?"Обрано кімнату: "+room.name+". Нові меблі з’являться саме тут.":"Selected room: "+roomLabel(room.name)+". New furniture will be placed here.");
   updateUi();
  }
  function replaceHouse(template,name,items=null){
@@ -62,17 +65,17 @@ if(root&&stage&&canvas&&ctx){
   state.items=Array.isArray(items)?restore(JSON.stringify({version:1,items})):cloneItems(START_ITEMS);
   state.selected=null;
   state.next=state.items.reduce((v,i)=>Math.max(v,Number(i.id.match(/^item-(\d+)$/)?.[1]||0)+1),1);
-  $("houseNameDisplay").textContent=String(name||"Мій дім");
+  $("houseNameDisplay").textContent=String(name||(houseLang()==="uk"?"Мій дім":"My house"));
   updateRoomButtons();
   if(state.three){
    dispose3d();state.view="2d";stage.dataset.view="2d";canvas.hidden=false;
   }
-  save();updateUi();switchView();
+  save();updateUi();if(sceneActive())switchView();
  }
  function updateUi(){
-  $("houseCount").textContent=state.items.length+"/"+LIMIT+" items";
+  $("houseCount").textContent=state.items.length+"/"+LIMIT+(houseLang()==="uk"?" предметів":" items");
   const s=get(state.selected);
-  selectedLabel.textContent=s?TYPE_BY_ID[s.type].name:"Nothing selected";
+  selectedLabel.textContent=s?TYPE_BY_ID[s.type].name:houseLang()==="uk"?"Нічого не вибрано":"Nothing selected";
   $("houseRotate").disabled=!s;$("houseDelete").disabled=!s;
   $("houseResetCamera").hidden=state.view!=="3d";
   $("houseModeLabel").textContent=state.view==="3d"?"3D HOUSE":"2D HOUSE";
@@ -529,15 +532,16 @@ if(root&&stage&&canvas&&ctx){
  const resize=new ResizeObserver(()=>{if(state.view==="3d")state.three?.resize();else draw2d()});
  resize.observe(stage);
  window.addEventListener("wrld:page-change",e=>{
-  if(e.detail?.id!=="home"){if(state.three)dispose3d();state.view="2d";}
+  if(e.detail?.id!=="house-editor"){if(state.three)dispose3d();state.view="2d";}
   else switchView();
  });
  window.addEventListener("visibilitychange",()=>{if(sceneActive())schedule3d()});
- // Home renders in 3D by default; 2D remains a manual/performance fallback.
+ window.addEventListener("wrld:language-change",()=>{updateRoomButtons();updateUi()});
+ // The editor renders in 3D when visited, with a 2D fallback.
  updateRoomButtons();
  try{
   const settings=JSON.parse(localStorage.getItem("fleki_wrld_house_settings")||"null");
-  $("houseNameDisplay").textContent=settings?.name||"Мій дім";
+  $("houseNameDisplay").textContent=settings?.name||(houseLang()==="uk"?"Мій дім":"My house");
  }catch{}
  window.addEventListener("wrld:house-create",event=>{
   const d=event.detail||{};replaceHouse(d.template,d.name);

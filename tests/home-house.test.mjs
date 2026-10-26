@@ -7,14 +7,18 @@ import {
 } from "../wrld-home-core.mjs";
 const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 const html=read("index.html"),core=read("wrld-home-core.mjs"),code=read("wrld-home.mjs"),creator=read("wrld-house-creator.mjs"),css=read("wrld-home-creator.css");
-test("Дім is first and Створи свій дім is a real second tab",()=>{
- assert.match(html,/id:"home",name:"Дім"/);
- assert.match(html,/id:"create-house",name:"Створи свій дім"/);
+test("English and Ukrainian navigation, separate welcome Home and 3D house editor",()=>{
+ assert.match(html,/id:"home",name:"Home",uk:"Головна"/);
+ assert.match(html,/id:"create-house",name:"Create House",uk:"Створити дім"/);
+ for(const text of ['id="page-home" aria-label="Welcome','id="page-house-editor" aria-label="House editor"','id="siteLanguage"','id="houseOpenButton"','id="continueHouseBtn"',"function applyLanguage(lang)","id==='house-editor'&&!hasHouse()"])assert.ok(html.includes(text),text);
+ assert.match(creator,/houseOpenButton"\)\.click\(\)/);
+ assert.doesNotMatch(creator,/if\(!getSettings\(\)&&!location\.hash\.startsWith/);
  for(const id of ["page-home","page-create-house","houseTemplateGrid","houseNameInput","houseCreateButton","housePublishButton","houseProfileButton","houseShareButton","houseRooms","houseCanvas","wrldPublicHouse"])
   assert.ok(html.includes('id="'+id+'"'),"Missing "+id);
  assert.doesNotMatch(html,/data-house-mode="auto"/);
  assert.match(html,/data-house-mode="3d" aria-pressed="true"/);
  assert.match(code,/choice:"3d"/);
+ assert.match(code,/page-house-editor/);
  assert.match(creator,/wrld:house-create/);
  assert.match(creator,/wrld:house-get/);
  assert.match(html,/wrld-house-creator\.mjs/);
