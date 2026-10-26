@@ -103,3 +103,17 @@ CREATE TABLE IF NOT EXISTS oauth_tickets (
  ticket_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
  expires_at INTEGER NOT NULL,external_mfa INTEGER NOT NULL DEFAULT 0
 );
+
+-- House sharing (additive; provisioned lazily by backend/houses.js)
+CREATE TABLE IF NOT EXISTS wrld_houses (
+ owner TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+ name TEXT NOT NULL,template TEXT NOT NULL,layout_json TEXT NOT NULL,
+ published INTEGER NOT NULL DEFAULT 0,in_profile INTEGER NOT NULL DEFAULT 0,
+ updated_at INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS wrld_house_reactions (
+ owner TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ reactor TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ emoji TEXT NOT NULL,created_at INTEGER NOT NULL,
+ PRIMARY KEY(owner,reactor)
+);
