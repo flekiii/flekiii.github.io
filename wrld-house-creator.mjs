@@ -69,9 +69,12 @@ async function publish(profile=false){
  const layout=snapshot();
  if(!layout){$("houseShareStatus").textContent="Редактор дому ще не готовий.";return null}
  $("houseShareStatus").textContent="Зберігаємо будинок для перегляду…";
- const r=await call("/houses/publish","PUT",{name:saved.name,template:saved.template,items:layout.items,published:true,in_profile:profile});
+ // Preserve an existing "show in profile" choice when using Share again.
+ const existing=await call("/houses/mine");
+ const inProfile=profile||existing.house?.in_profile===true;
+ const r=await call("/houses/publish","PUT",{name:saved.name,template:saved.template,items:layout.items,published:true,in_profile:inProfile});
  publishedUser=r.username;
- $("houseShareStatus").textContent=profile?"Дім опубліковано й додано до профілю.":"Дім опубліковано! Тепер можна поділитися посиланням.";
+ $("houseShareStatus").textContent=inProfile?"Дім опубліковано й відображається в профілі.":"Дім опубліковано! Тепер можна поділитися посиланням.";
  updateProfileHouse();
  return r;
 }
