@@ -20,6 +20,11 @@ jobs:
         run: |
           node --check app.js
           node --check backend/worker.js
+          node --check backend/profiles.js
+          node --check wrld-profile.js
+          node --test tests/profile-studio.test.mjs
+          test -s wrld-profile.css
+          test -s vendor/qrcode.js
           node --check backend/marketplace.js
           node --check backend/market-catalog.js
           node --check wrld-market.js
