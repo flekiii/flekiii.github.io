@@ -1,0 +1,90 @@
+/* fleki's wrld · Profile Studio */
+#page-profile .social-account-wrap{min-width:0}
+#page-profile .social-account-layout{padding:0;border:0;background:transparent}
+#page-profile .social-bar{border-radius:20px}
+.wp-shell{display:grid;grid-template-columns:178px minmax(270px,1fr) minmax(270px,360px);align-items:start;gap:15px;width:100%;max-width:100%}
+.wp-rail,.wp-editor,.wp-preview-col{border:1px solid var(--line);background:var(--panel);border-radius:20px;min-width:0}
+.wp-rail{position:sticky;top:10px;display:grid;gap:3px;padding:12px}
+.wp-rail-title{color:var(--muted);font-size:10px;letter-spacing:1.2px;font-weight:800;margin:8px 8px 14px}
+.wp-rail button{display:flex;align-items:center;gap:10px;width:100%;background:transparent;border:1px solid transparent;border-radius:10px;padding:12px 9px;text-align:left;color:var(--muted);font-size:12px;font-weight:750}
+.wp-rail button span{font-size:16px;width:19px;text-align:center}
+.wp-rail button.active,.wp-rail button:hover{color:var(--text);background:var(--panel2);border-color:var(--line)}
+.wp-editor{padding:26px;min-height:360px}
+.wp-editor-inner h2{font:700 clamp(24px,3vw,30px)/1.17 "Space Grotesk";letter-spacing:-.8px;margin:0 0 10px}
+.wp-editor-inner h3{font:700 18px "Space Grotesk";letter-spacing:-.2px;margin:20px 0 14px}
+.wp-editor-inner>p{font-size:13px;line-height:1.75;color:var(--muted);margin:0 0 22px}
+.wp-field{display:grid;gap:7px;margin:14px 0}
+.wp-field>span{font-size:12px;color:var(--text);font-weight:750}
+.wp-field textarea{min-height:100px}
+.wp-field select{cursor:pointer}
+.wp-section-cards{display:grid;gap:9px}
+.wp-section-cards button{display:flex;justify-content:space-between;align-items:center;padding:14px 13px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;text-align:left}
+.wp-section-cards button:hover{border-color:var(--accent)}
+.wp-section-cards strong{font-size:13px}
+.wp-section-cards button span{color:var(--accent2)}
+.wp-editor .btn{justify-content:center;margin-top:10px}
+.wp-editor-inner>.btn.primary{margin-top:18px}
+.wp-preview-col{padding:15px;position:sticky;top:10px}
+.wp-preview-col>small{display:block;margin:14px 4px 2px;font-size:11px;color:var(--muted);line-height:1.7}
+.wp-preview-title{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.wp-preview-title .overline{font-size:9px;letter-spacing:1.15px}
+.wp-card{border-radius:16px;border:1px solid var(--line);background:var(--panel2);overflow:hidden;min-width:0}
+.wp-card-banner{height:125px;overflow:hidden;background:radial-gradient(circle at 80% 15%,#ffc2e87f,transparent 48%),linear-gradient(120deg,#5d3672,#353664 60%,#1e293a)}
+.wp-banner-image{height:100%;width:100%;object-fit:cover;display:block}
+.wp-image-fallback.wp-banner-image{display:grid;place-items:center;font-size:62px;font-weight:900;color:#fff9;letter-spacing:-2px}
+.wp-card-meta{display:flex;align-items:flex-end;gap:10px;padding:0 14px;min-width:0}
+.wp-avatar-image{height:73px;width:73px;object-fit:cover;border:4px solid var(--panel2);border-radius:23px;flex-shrink:0;margin-top:-28px;position:relative;background:var(--panel2)}
+.wp-image-fallback.wp-avatar-image{display:grid;place-items:center;font:bold 33px "Space Grotesk";color:var(--text);background:var(--grad)}
+.wp-card-name{min-width:0;flex:1;padding:9px 0 2px}
+.wp-card-name h3{font:700 18px "Space Grotesk";margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wp-card-name>span{font-size:11px;color:var(--muted);word-break:break-all}
+.wp-status{white-space:nowrap;font-size:10px;font-weight:800;display:flex;align-items:center;gap:5px;padding-bottom:7px}
+.wp-status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#50c994}
+.wp-status.away i{background:#e4bc6b}.wp-status.dnd i{background:#e67e89}.wp-status.offline i{background:#8d8996}
+.wp-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:13px}
+.wp-badges:empty{display:none}
+.wp-role{display:inline-block;font-size:10px;font-weight:800;color:var(--accent2);border:1px solid color-mix(in srgb,var(--accent2) 35%,var(--line));background:color-mix(in srgb,var(--accent2) 11%,var(--panel));padding:5px 9px;border-radius:999px;white-space:nowrap}
+.wp-role[data-role=owner],.wp-role[data-role=god]{background:linear-gradient(120deg,#e8bdff44,#a594ff44);color:var(--text);border-color:#bd88ec99}
+.wp-role[data-role=aurvex_ceo]{background:#8c435a55;color:#ffc5d7;border-color:#c1799b}
+.wp-card-bio{font-size:12px;color:var(--text);line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;margin:12px 14px}
+.wp-card-detail{font-size:11px;color:var(--muted);margin:8px 14px;overflow-wrap:anywhere}
+.wp-links{display:flex;gap:7px;flex-wrap:wrap;margin:12px 14px}
+.wp-links a{display:inline-block;color:var(--accent2);font-size:11px;font-weight:700;padding:6px 9px;background:var(--panel);border-radius:8px;border:1px solid var(--line);max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.wp-links a:hover{border-color:var(--accent2)}
+.wp-games-text{margin:13px 14px}
+.wp-games-text strong{display:block;font-size:12px;margin-bottom:8px}
+.wp-games-text>div{display:flex;gap:6px;flex-wrap:wrap}
+.wp-games-text span{font-size:10px;color:var(--muted);border:1px solid var(--line);padding:5px 8px;border-radius:7px;background:var(--panel)}
+.wp-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px;align-items:center}
+.wp-actions>.social-input{width:auto;flex:1 1 120px}
+.wp-upload-list{display:grid;gap:12px}
+.wp-upload{display:flex;flex-wrap:wrap;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel2);padding:17px;border-radius:14px}
+.wp-upload strong{display:block;width:100%;font-size:14px}
+.wp-upload small{font-size:11px;color:var(--muted);flex:1}
+.wp-upload .btn{font-size:11px;padding:9px 10px;margin:0}
+.wp-privacy{display:grid;gap:5px}
+.wp-privacy .wp-field{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,160px);align-items:center;margin:5px 0;gap:14px}
+.wp-privacy .wp-field span{line-height:1.5}
+.wp-qr{width:max-content;max-width:100%;padding:10px;border-radius:15px;background:white;margin:16px 0}
+.wp-qr svg{display:block;width:min(260px,68vw);height:auto;max-width:100%;fill:black;stroke:none}
+.wp-editor .social-mfa-secret{word-break:break-all;line-height:1.6;margin:12px 0}
+.wp-warning{border-left:3px solid #eabb7d;padding:10px 12px;background:var(--panel2);border-radius:8px;color:var(--muted);font-size:12px}
+.wp-feedback{font-size:12px;min-height:18px;color:var(--accent2);margin:18px 0}
+.wp-loading{min-height:280px;display:grid;place-items:center;color:var(--muted);font-size:14px}
+.wp-search{display:flex;gap:8px;align-items:center;margin:18px 0}
+.wp-search .btn{margin:0}
+.wp-results{display:grid;gap:13px}
+.wp-person{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:13px;min-width:0}
+.wp-person strong{font-size:14px;display:block}
+.wp-person small{color:var(--muted);font-size:11px}
+.wp-person .wp-badges{margin:10px 0}
+.wp-person .wp-actions{margin:9px 0}
+.wp-person .wp-actions .btn{margin:0;padding:10px;font-size:11px}
+.wp-modal{position:fixed;inset:0;background:#050307c9;z-index:400;display:grid;place-items:center;padding:18px;overflow:auto}
+.wp-modal-sheet{width:min(100%,490px);background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:23px;box-shadow:0 24px 70px #0006;max-height:calc(100dvh - 34px);overflow:auto}
+.wp-modal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.wp-modal-top strong{font:700 15px "Space Grotesk"}
+.wp-modal-sheet .wp-card-banner{height:150px}
+.wp-modal-sheet .wp-avatar-image{height:90px;width:90px}
+@media(max-width:1120px){.wp-shell{grid-template-columns:160px minmax(0,1fr)}.wp-preview-col{position:static;grid-column:2}.wp-rail{grid-row:1/span 2}}
+@media(max-width:770px){.wp-shell{grid-template-columns:1fr}.wp-rail{position:static;grid-row:auto;display:flex;overflow-x:auto;gap:6px;scrollbar-width:thin}.wp-rail-title{display:none}.wp-rail button{flex:0 0 auto;white-space:nowrap;width:auto;padding:11px 14px}.wp-preview-col{grid-column:auto}.wp-editor{padding:20px}.wp-preview-col{padding:13px}.wp-privacy .wp-field{grid-template-columns:1fr}.wp-search{flex-wrap:wrap}}
