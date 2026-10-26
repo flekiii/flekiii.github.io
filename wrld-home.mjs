@@ -378,7 +378,6 @@ if(root&&stage&&canvas&&ctx){
  async function switchView(){
   if(state.busy)return;
   const wanted=preferred();
-  $("houseModeSelect").value=state.choice;
   if(wanted===state.view&&(!state.three||wanted==="3d")){updateUi();return}
   state.busy=true;stage.classList.add("loading");
   if(state.three)dispose3d();
