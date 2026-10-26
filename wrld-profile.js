@@ -208,7 +208,7 @@ document.addEventListener("click",async e=>{
  e.preventDefault();const a=target.dataset.wp;
  try{
  if(a==="tab"){activeTab=target.dataset.id;window.dispatchEvent(new Event("wrld:profile-updated"));return}
-  if(a==="create-house"||a==="edit-house"){const id=a==="create-house"?"create-house":"house-editor";document.querySelector('#dock [data-go="'+id+'"]')?.click();return}
+  if(a==="create-house"||a==="edit-house"){const id=a==="create-house"?"create-house":"house-editor";(document.querySelector('#dock [data-go="'+id+'"]')||document.querySelector('#houseOpenButton[data-go="house-editor"]')||document.querySelector('[data-go="'+id+'"]'))?.click();return}
   if(a==="publish-house"){
    if(!savedHouseHere())throw Error(tr("Create a house first.","Спочатку створи будинок."));
    note(tr("Publishing your house…","Публікуємо твій будинок…"));

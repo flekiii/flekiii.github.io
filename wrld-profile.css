@@ -88,3 +88,16 @@
 .wp-modal-sheet .wp-avatar-image{height:90px;width:90px}
 @media(max-width:1120px){.wp-shell{grid-template-columns:160px minmax(0,1fr)}.wp-preview-col{position:static;grid-column:2}.wp-rail{grid-row:1/span 2}}
 @media(max-width:770px){.wp-shell{grid-template-columns:1fr}.wp-rail{position:static;grid-row:auto;display:flex;overflow-x:auto;gap:6px;scrollbar-width:thin}.wp-rail-title{display:none}.wp-rail button{flex:0 0 auto;white-space:nowrap;width:auto;padding:11px 14px}.wp-preview-col{grid-column:auto}.wp-editor{padding:20px}.wp-preview-col{padding:13px}.wp-privacy .wp-field{grid-template-columns:1fr}.wp-search{flex-wrap:wrap}}
+
+/* Published houses and garages inside Profile Studio, including the public preview. */
+.wp-my-house{padding:15px;border:1px solid var(--line);background:var(--panel2);border-radius:16px;margin:17px 0 24px}
+.wp-my-house .wp-actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+.wp-my-house .wp-actions .btn{font-size:12px;max-width:100%}
+.wp-house-empty{display:grid;gap:7px;padding:5px}
+.wp-house-empty>span{font-size:34px}.wp-house-empty strong{font-size:14px}
+.wp-house-empty p,.wp-house-hint{font-size:12px;color:var(--muted);line-height:1.7;margin:5px 0}
+.wp-house-card{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--panel);border-radius:15px;padding:13px;margin:12px 0}
+.wp-house-card .wp-house-icon{display:grid;place-items:center;background:linear-gradient(135deg,#505a80,#835a85);height:54px;width:54px;border-radius:12px;flex-shrink:0;font-size:28px}
+.wp-house-description{min-width:0;flex:1}.wp-house-description strong{display:block;font-size:13px;overflow-wrap:anywhere}.wp-house-description small{font-size:11px;color:var(--muted);display:block;margin-top:3px}
+.wp-house-card .btn{font-size:11px;flex-shrink:0}.wp-modal-sheet>.wp-house-card{margin:17px}.wp-preview-col>.wp-house-card{flex-wrap:wrap}
+@media(max-width:610px){.wp-house-card{flex-wrap:wrap}.wp-house-card .btn{margin-left:66px}}

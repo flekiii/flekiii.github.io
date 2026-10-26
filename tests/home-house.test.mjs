@@ -95,10 +95,11 @@ test("Public house sharing and profile placement uses real server endpoints",()=
  assert.match(creator,/\/houses\/react/);
  assert.match(creator,/\/houses\/public\?user=/);
  assert.match(creator,/\/houses\/mine/);
- assert.match(creator,/houseProfileCard/);
+ assert.match(creator,/wrld:house-published/);
+ assert.match(creator,/wrld:house-publish/);
  assert.match(creator,/fw-token/);
  const backend=read("backend/houses.js");
- assert.match(backend,/authorized\(user\)/);
+ assert.match(backend,/Verify Auth2FA before reacting/);
  assert.match(backend,/wrld_house_reactions/);
  assert.match(backend,/PRIMARY KEY\(owner,reactor\)/);
  assert.equal((backend.match(/"👍"/g)||[]).length,1);
