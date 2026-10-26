@@ -64,7 +64,7 @@ test("Room controls really switch rooms, place furniture in chosen room and surv
  assert.equal(core.atRoom(saved.items.at(-1).x,saved.items.at(-1).z),"room2");
  callbacks["window:wrld:house-create"]({detail:{template:"mansion",name:"Seven-room test house"}});
  assert.equal($("houseRooms").children.length,7);
- assert.equal($("houseCount").textContent,"7/90 items");
+ assert.equal($("houseCount").textContent,"7/90 предметів");
  assert.equal($("houseNameDisplay").textContent,"Seven-room test house");
  const seven=$("houseRooms").children[6];
  callbacks["page-house-editor:click"]({target:{closest:sel=>sel==="[data-house-room]"?seven:null}});
