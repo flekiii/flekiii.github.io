@@ -432,7 +432,14 @@ if(root&&stage&&canvas&&ctx){
  });
  document.addEventListener("keydown",e=>{
   if(!sceneActive()||!root.contains(document.activeElement)&&document.activeElement?.matches("input,textarea,select,[contenteditable]"))return;
-  if(e.key==="Delete"||e.key==="Backspace"){if(get(state.selected)){e.preventDefault();deleteSelected()}}
+  if(document.activeElement===stage&&get(state.selected)&&["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key)){
+   e.preventDefault();
+   const item=get(state.selected),step=e.shiftKey?.5:.25;
+   const x=item.x+(e.key==="ArrowLeft"?-step:e.key==="ArrowRight"?step:0);
+   const z=item.z+(e.key==="ArrowUp"?step:e.key==="ArrowDown"?-step:0);
+   if(changeItem(item.id,x,z,item.rot)){save();updateUi()}
+   else announce("The furniture cannot pass through walls or overlap other pieces.");
+  }else if(e.key==="Delete"||e.key==="Backspace"){if(get(state.selected)){e.preventDefault();deleteSelected()}}
   else if(e.key.toLowerCase()==="r"&&!e.ctrlKey&&!e.metaKey){if(get(state.selected)){e.preventDefault();rotateSelected()}}
   else if(e.key==="Escape"&&get(state.selected))select(null);
  });
