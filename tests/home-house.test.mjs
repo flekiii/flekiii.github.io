@@ -71,6 +71,12 @@ test("Any room can accept furniture; save/reload produces identical arrangement"
  assert.equal(restore(JSON.stringify({version:1,items:Array.from({length:LIMIT+4},(_,i)=>({id:"thing-"+i,type:"plant",x:0,z:0,rot:0}))})).length,1);
 });
 
+test("Every referenced house UI control exists — 3D/2D startup must not throw",()=>{
+ const ids=new Set([...html.matchAll(/\\bid="([^"]+)"/g)].map(m=>m[1]));
+ const refs=[...moduleCode.matchAll(/\\$\\("([^"]+)"\\)/g)].map(m=>m[1]);
+ assert.deepEqual([...new Set(refs)].filter(id=>!ids.has(id)),[]);
+});
+
 test("Auto fallback, performance cap, scene disposal, and local-only persistence are explicit",()=>{
  assert.match(moduleCode,/deviceMemory/);
  assert.match(moduleCode,/prefers-reduced-motion/);
