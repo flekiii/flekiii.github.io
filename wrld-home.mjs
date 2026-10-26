@@ -23,8 +23,8 @@ if(root&&stage&&canvas&&ctx){
  state.next=state.items.reduce((max,i)=>Math.max(max,Number(i.id.match(/^item-(\d+)$/)?.[1]||0)+1),11);
  const get=id=>state.items.find(item=>item.id===id);
  const announce=message=>{notice.textContent=message;};
- function save(){try{localStorage.setItem(STORE_KEY,encode(state.items));$("houseStorage").textContent="Saved on this device";return true}
-  catch{$("houseStorage").textContent="Storage unavailable";announce("Unable to save here. Browser storage might be disabled.");return false}}
+ function save(){try{localStorage.setItem(STORE_KEY,encode(state.items));$("houseStorage").textContent=houseLang()==="uk"?"Збережено на цьому пристрої":"Saved on this device";return true}
+  catch{$("houseStorage").textContent=houseLang()==="uk"?"Збереження недоступне":"Storage unavailable";announce("Unable to save here. Browser storage might be disabled.");return false}}
  const preferred=()=>state.choice;
 
  const houseLang=()=>document.documentElement?.lang==="uk"?"uk":"en";
@@ -78,7 +78,7 @@ if(root&&stage&&canvas&&ctx){
   selectedLabel.textContent=s?TYPE_BY_ID[s.type].name:houseLang()==="uk"?"Нічого не вибрано":"Nothing selected";
   $("houseRotate").disabled=!s;$("houseDelete").disabled=!s;
   $("houseResetCamera").hidden=state.view!=="3d";
-  $("houseModeLabel").textContent=state.view==="3d"?"3D HOUSE":"2D HOUSE";
+  $("houseModeLabel").textContent=state.view==="3d"?(houseLang()==="uk"?"3D БУДИНОК":"3D HOUSE"):(houseLang()==="uk"?"2D БУДИНОК":"2D HOUSE");
   for(const b of root.querySelectorAll("[data-house-mode]")){
    b.classList.toggle("active",b.dataset.houseMode===state.choice);
    b.setAttribute("aria-pressed",String(b.dataset.houseMode===state.choice));
@@ -117,7 +117,7 @@ if(root&&stage&&canvas&&ctx){
  function rotateSelected(){const item=get(state.selected);if(!item)return; if(changeItem(item.id,item.x,item.z,item.rot+1)){save();refreshFurniture3d();updateUi();announce("Furniture rotated.")}else announce("Not enough space to rotate here. Move the item first.")}
  function deleteSelected(){const item=get(state.selected);if(!item)return;state.items=state.items.filter(x=>x.id!==item.id);state.selected=null;save();refreshFurniture3d();updateUi();announce("Furniture removed.")}
  function clearAll(){
-  if(!confirm("Reset your house and restore the original furniture? Your saved arrangement on this device will be replaced."))return;
+  if(!confirm(houseLang()==="uk"?"Скинути будинок? Поточна розстановка меблів на цьому пристрої буде замінена.":"Reset your house? Your saved furniture arrangement on this device will be replaced."))return;
   state.items=cloneItems(START_ITEMS);state.selected=null;state.next=11;save();refreshFurniture3d();updateUi();announce("House reset to its original arrangement.");
  }
  function background2d(width,height){
@@ -170,7 +170,7 @@ if(root&&stage&&canvas&&ctx){
   ctx.fillStyle="#413547";ctx.font='700 '+Math.max(10,Math.min(13,map.scale*.16))+'px "DM Sans",sans-serif';
   for(const [key,pos] of Object.entries(ROOMS)){
    const p=project(pos.x-pos.w/2+.18,pos.z+pos.d/2-.22);
-   ctx.fillStyle="#54485f88";ctx.textAlign="left";ctx.fillText(pos.name.toUpperCase(),p.x,p.y);
+   ctx.fillStyle="#54485f88";ctx.textAlign="left";ctx.fillText(roomLabel(pos.name).toUpperCase(),p.x,p.y);
   }
   for(const item of [...state.items.filter(i=>i.type==="rug"),...state.items.filter(i=>i.type!=="rug")])drawItem2d(item);
   const a=project(-.7,-3.95),b=project(.7,-3.95);
@@ -491,7 +491,7 @@ if(root&&stage&&canvas&&ctx){
   }catch(e){
    if(state.three)dispose3d();
    state.view="2d";stage.dataset.view="2d";canvas.hidden=false;
-   announce("3D isn't available on this device or network. 2D house is ready instead.");
+   announce(houseLang()==="uk"?"3D недоступне на цьому пристрої або в мережі. Увімкнено 2D-режим.":"3D isn't available on this device or network. 2D house is ready instead.");
   }finally{state.busy=false;stage.classList.remove("loading");updateUi();if(state.view==="2d")draw2d()}
  }
  function setMode(mode,remember=true){if(!["3d","2d"].includes(mode))return;state.choice=mode;

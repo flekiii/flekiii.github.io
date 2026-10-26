@@ -86,15 +86,15 @@ input,textarea,[contenteditable="true"]{cursor:text}
 </section>
 <section class="page wrld-house-page" id="page-house-editor" aria-label="House editor">
   <div class="house-shell">
-    <div class="house-header"><div class="house-intro"><div class="house-eyebrow"><i aria-hidden="true"></i> YOUR WORLD, YOUR HOUSE</div><h1>Make this world <span>yours.</span></h1><p>A cozy little home to decorate. Your furniture stays on this device.</p></div>
+    <div class="house-header"><div class="house-intro"><div class="house-eyebrow"><i aria-hidden="true"></i> <span data-en="YOUR WORLD, YOUR HOUSE" data-uk="ТВІЙ СВІТ, ТВІЙ ДІМ">YOUR WORLD, YOUR HOUSE</span></div><h1><span data-en="Make this world" data-uk="Зроби цей світ">Make this world</span> <span data-en="yours." data-uk="своїм.">yours.</span></h1><p data-en="A cozy little home to decorate. Your furniture stays on this device." data-uk="Облаштовуй власний будинок. Меблі зберігаються на цьому пристрої.">A cozy little home to decorate. Your furniture stays on this device.</p></div>
       <div class="house-header-actions"><button data-go="create-house" class="house-change-plan" data-en="Change house" data-uk="Змінити будинок">Change house</button><div class="house-switch" role="group" aria-label="House graphics mode"><button type="button" data-house-mode="3d" aria-pressed="true" class="active">◈ 3D</button><button type="button" data-house-mode="2d" aria-pressed="false">▣ 2D</button></div></div>
     </div>
     <div class="house-layout">
       <aside class="house-panel" aria-label="Furniture catalogue">
-        <div class="house-panel-top"><span class="house-panel-kicker">YOUR COLLECTION</span><h2>Furniture studio.</h2><p>Choose a piece to add it to the selected room. Click the furniture inside the house to move or rotate it.</p></div>
-        <div class="house-collection-label">FURNITURE &amp; DECOR</div>
+        <div class="house-panel-top"><span class="house-panel-kicker" data-en="YOUR COLLECTION" data-uk="ТВОЯ КОЛЕКЦІЯ">YOUR COLLECTION</span><h2 data-en="Furniture studio." data-uk="Майстерня меблів.">Furniture studio.</h2><p data-en="Choose a piece to add it to the selected room. Click the furniture inside the house to move or rotate it." data-uk="Обери меблі для кімнати. Натисни на предмет у будинку, щоб пересунути чи повернути його.">Choose a piece to add it to the selected room. Click the furniture inside the house to move or rotate it.</p></div>
+        <div class="house-collection-label" data-en="FURNITURE & DECOR" data-uk="МЕБЛІ ТА ДЕКОР">FURNITURE &amp; DECOR</div>
         <div class="house-catalogue" id="houseCatalogue"></div>
-        <div class="house-panel-bottom"><span class="house-storage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg><span id="houseStorage">Saved on this device</span></span></div>
+        <div class="house-panel-bottom"><span class="house-storage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg><span id="houseStorage" data-en="Saved on this device" data-uk="Збережено на цьому пристрої">Saved on this device</span></span></div>
       </aside>
       <div class="house-world">
         <div class="house-world-top"><div class="house-world-title"><span class="house-map-icon" aria-hidden="true">⌂</span><span><strong><span id="houseNameDisplay">My house</span></strong><small id="houseCount">0/90 items</small></span></div><div class="house-rooms" id="houseRooms" role="group" aria-label="Choose a room"></div></div>
@@ -102,9 +102,9 @@ input,textarea,[contenteditable="true"]{cursor:text}
           <canvas id="houseCanvas" role="img" aria-label="Interactive 2D floor plan of three rooms with furniture"></canvas>
           <div class="house-stage-label"><strong id="houseModeLabel">2D HOUSE</strong><span data-en="Choose a room to decorate" data-uk="Обери кімнату, щоб облаштувати її">Choose a room to decorate</span></div>
           <div class="house-stage-compass" aria-hidden="true"><small>N</small>✧</div>
-          <div class="house-stage-hint">Drag furniture to place it · Drag empty space to orbit in 3D · Scroll to zoom</div>
+          <div class="house-stage-hint" data-en="Drag furniture · Drag empty space to orbit in 3D · Scroll to zoom" data-uk="Перетягуй меблі · Обертай 3D-будинок · Коліщатко змінює масштаб">Drag furniture · Drag empty space to orbit in 3D · Scroll to zoom</div>
         </div>
-        <div class="house-actionbar"><div class="house-selected"><strong id="houseSelectedLabel">Nothing selected</strong><small>Select furniture to edit</small></div><div class="house-actions"><button type="button" id="houseRotate" data-house-action="rotate" disabled>↻ Rotate</button><button type="button" id="houseDelete" class="danger" data-house-action="delete" disabled>✕ Remove</button><button type="button" id="houseResetCamera" data-house-action="camera" hidden>⌖ View</button><button type="button" data-house-action="reset">Reset house</button></div></div>
+        <div class="house-actionbar"><div class="house-selected"><strong id="houseSelectedLabel">Nothing selected</strong><small data-en="Select furniture to edit" data-uk="Обери меблі для редагування">Select furniture to edit</small></div><div class="house-actions"><button type="button" id="houseRotate" data-house-action="rotate" disabled data-en="↻ Rotate" data-uk="↻ Повернути">↻ Rotate</button><button type="button" id="houseDelete" class="danger" data-house-action="delete" disabled data-en="✕ Remove" data-uk="✕ Видалити">✕ Remove</button><button type="button" id="houseResetCamera" data-house-action="camera" hidden data-en="⌖ View" data-uk="⌖ Огляд">⌖ View</button><button type="button" data-house-action="reset" data-en="Reset house" data-uk="Скинути дім">Reset house</button></div></div>
         <div class="house-notice" id="houseNotice" role="status" aria-live="polite">Customize the house with furniture. Layout saves automatically in your browser.</div>
       </div>
     </div>

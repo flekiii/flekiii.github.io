@@ -33,7 +33,7 @@ function cards(){
   gallery.append(b);
  }
  const t=TEMPLATE_BY_ID[selected]||TEMPLATE_BY_ID.starter;
- $("houseTemplateSummary").textContent=planText(t).join(" · ")+" · "+t.rooms+" "+tr(t.rooms===1?"room":"rooms","приміщень");
+ $("houseTemplateSummary").textContent=planText(t).join(" · ")+" · "+t.rooms+" "+tr(t.rooms===1?"room":"rooms",t.rooms===1?"приміщення":"приміщень");
 }
 cards();
 $("houseNameInput").value=getSettings()?.name||tr("My cozy home","Мій затишний дім");
@@ -51,6 +51,8 @@ function snapshot(){
 function createHouse(){
  const t=TEMPLATE_BY_ID[selected];const name=$("houseNameInput").value.trim().slice(0,55);
  if(!t||!name){$("houseShareStatus").textContent=tr("Name your house first.","Спочатку введи назву будинку.");return}
+ const previous=getSettings();
+ if(previous?.template&&!confirm(tr("Create a new house? This will replace your saved furniture layout on this device.","Створити новий будинок? Збережена розстановка меблів на цьому пристрої буде замінена.")))return;
  const settings={template:t.id,name,createdAt:Date.now()};
  try{localStorage.setItem(settingsKey,JSON.stringify(settings));localStorage.removeItem(STORE_KEY)}catch{}
  window.dispatchEvent(new CustomEvent("wrld:house-create",{detail:settings}));
