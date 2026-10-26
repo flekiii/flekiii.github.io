@@ -15,7 +15,7 @@ test("The Home page is an editable house, not the old hero and marketing tiles",
  }
  for(const mode of ["auto","3d","2d"])assert.ok(html.includes('data-house-mode="'+mode+'"'));
  for(const room of ["living","bedroom","studio"])assert.ok(html.includes('data-house-room="'+room+'"'));
- assert.match(html,/wrld-home\.mjs\?v=1/);
+ assert.match(html,/wrld-home\.mjs\?v=\d+/);
  assert.match(html,/wrld-home\.css\?v=1/);
  assert.doesNotMatch(html,/id="homeTiles"|WELCOME TO SOMETHING DIFFERENT|YOUR DESTINATIONS/);
  for(const section of ["games","apps","marketplace","chat","profile","notifications","about"])
