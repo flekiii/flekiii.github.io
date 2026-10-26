@@ -70,29 +70,35 @@ async function call(path,method="GET",body){
  if(!response.ok)throw Error(result.error||"Server returned "+response.status);
  return result;
 }
-async function publish(profile=false){
+async function publish(profile=true){
  const saved=getSettings();
- if(!saved?.template){$("houseShareStatus").textContent="Спочатку створи дім.";return null}
+ if(!saved?.template){$("houseShareStatus").textContent=tr("Create a house first.","Спочатку створи будинок.");return null}
  const layout=snapshot();
- if(!layout){$("houseShareStatus").textContent="Редактор дому ще не готовий.";return null}
- $("houseShareStatus").textContent="Зберігаємо будинок для перегляду…";
- // Preserve an existing "show in profile" choice when using Share again.
+ if(!layout){$("houseShareStatus").textContent=tr("Open your house editor and try again.","Відкрий редактор будинку й повтори.");return null}
  const existing=await call("/houses/mine");
- const inProfile=profile||existing.house?.in_profile===true;
- const r=await call("/houses/publish","PUT",{name:saved.name,template:saved.template,items:layout.items,published:true,in_profile:inProfile});
- publishedUser=r.username;
- $("houseShareStatus").textContent=inProfile?"Дім опубліковано й відображається в профілі.":"Дім опубліковано! Тепер можна поділитися посиланням.";
- updateProfileHouse();
- return r;
+ const showInProfile=profile||existing.house?.in_profile===true;
+ const buttons=["housePublishButton","houseProfileButton","houseShareButton"].map($).filter(Boolean);
+ buttons.forEach(b=>b.disabled=true);
+ $("houseShareStatus").textContent=tr("Publishing and saving furniture…","Публікуємо будинок і зберігаємо меблі…");
+ try{
+  const r=await call("/houses/publish","PUT",{name:saved.name||layout.name,template:saved.template,items:layout.items,published:true,in_profile:showInProfile});
+  if(!r.published||r.in_profile!==showInProfile)throw Error(tr("The server could not confirm publication.","Сервер не підтвердив публікацію."));
+  const check=await call("/houses/mine");
+  if(!check.house?.published||check.house.in_profile!==showInProfile)throw Error(tr("Publication did not persist. Retry.","Публікація не збереглася. Спробуй ще."));
+  publishedUser=r.username;
+  $("houseShareStatus").textContent=tr("Your house is now visible in your profile!","Твій будинок тепер видно у профілі!");
+  window.dispatchEvent(new CustomEvent("wrld:house-published",{detail:{house:check.house}}));
+  return r;
+ }finally{buttons.forEach(b=>b.disabled=false)}
 }
-$("housePublishButton").addEventListener("click",async()=>{try{await publish(false)}catch(e){$("houseShareStatus").textContent=e.message+". Для публікації увійди й підтвердь Auth2FA."}});
-$("houseProfileButton").addEventListener("click",async()=>{try{await publish(true)}catch(e){$("houseShareStatus").textContent=e.message+". Потрібен вхід і Auth2FA."}});
+$("housePublishButton").addEventListener("click",async()=>{try{await publish(true)}catch(e){$("houseShareStatus").textContent=e.message+". "+tr("Sign in to publish your house.","Увійди в акаунт для публікації.")}});
+$("houseProfileButton").addEventListener("click",async()=>{try{await publish(true)}catch(e){$("houseShareStatus").textContent=e.message+". "+tr("Sign in to publish your house.","Увійди в акаунт для публікації.")}});
 $("houseShareButton").addEventListener("click",async()=>{
  try{
   const r=await publish(false);if(!r)return;
   await navigator.clipboard.writeText(r.public_url);
   $("houseShareStatus").textContent="Публічне посилання скопійовано!";
- }catch(e){$("houseShareStatus").textContent=e.message+". Публічний доступ потребує акаунта та Auth2FA."}
+ }catch(e){$("houseShareStatus").textContent=e.message+". "+tr("Sign in to publish your house.","Увійди в акаунт для публікації.")}
 });
 function housePlan(house){
  const t=TEMPLATE_BY_ID[house.template]||TEMPLATE_BY_ID.starter;
@@ -144,29 +150,16 @@ viewer.addEventListener("click",async(event)=>{
   $("houseReactionStatus").textContent="Реакцію збережено 💜";
  }catch(e){$("houseReactionStatus").textContent=e.message+". Перевір, чи увійшов у профіль та пройшов 2FA.";b.disabled=false}
 });
-async function updateProfileHouse(){
- const root=$("page-profile");if(!root)return;
- let container=$("houseProfileCard");
- if(!container){
-  container=document.createElement("section");container.id="houseProfileCard";container.className="wrld-profile-house";
-  root.append(container);
- }
- const t=token();
- if(!t){container.innerHTML='<h2>🏠 Мій дім у профілі</h2><p>Увійди в акаунт, щоб опублікувати будинок у своєму профілі.</p>';return}
- try{
-  const data=await call("/houses/mine");
-  const house=data.house;
-  if(!house?.in_profile){container.innerHTML='<h2>🏠 Мій дім у профілі</h2><p>Твій дім поки не показується в профілі.</p><button type="button" data-go="create-house" class="wrld-house-secondary">Додати свій дім ↗</button>';return}
-  container.innerHTML='<div class="overline">ОПУБЛІКОВАНИЙ ДІМ</div><h2>🏠 '+escapeHtml(house.name)+'</h2><p>Кожен користувач може відвідати твій будинок і залишити реакцію.</p><a class="wrld-house-cta" href="#house?u='+encodeURIComponent(house.username)+'">Переглянути дім ↗</a>';
- }catch{container.innerHTML='<h2>🏠 Мій дім у профілі</h2><p>Не вдалося завантажити публікацію. Перевір зʼєднання.</p>'}
-}
 window.addEventListener("wrld:page-change",event=>{
  if(event.detail?.id==="house-view"){
   const match=location.hash.match(/^#house\?u=([a-z0-9_]{3,24})/i);
   if(match)loadPublic(match[1]);
- }else if(event.detail?.id==="profile")updateProfileHouse();
+ }
 });
-window.addEventListener("fw-auth-changed",()=>{if($("page-profile")?.classList.contains("active"))updateProfileHouse()});
+window.addEventListener("wrld:house-publish",async()=>{
+ try{const r=await publish(true);if(!r)throw Error(tr("Open or create a house first.","Спочатку створи або відкрий будинок."));}
+ catch(e){$("houseShareStatus").textContent=e.message;window.dispatchEvent(new CustomEvent("wrld:house-publish-error",{detail:{message:e.message}}))}
+});
 if(location.hash.startsWith("#house?")){
  const match=location.hash.match(/^#house\?u=([a-z0-9_]{3,24})/i);
  if(match)loadPublic(match[1]);
