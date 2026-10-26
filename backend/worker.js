@@ -77,6 +77,7 @@ async function endpoints(req,env,path,ip){
   const got=await pwd(p.password,row?.salt||b64(new Uint8Array(16)));
   if(!row||!same(row.password_hash,got)){await limited(db,"login:"+username,ip);return bad("Wrong username or password.",401)}
   await clearLimit(db,"login:"+username,ip);
+  if(await one(db,"SELECT 1 FROM wrld_profile_bans WHERE user_id=? AND (expires_at=0 OR expires_at>?)",row.id,t))return bad("Account suspended.",403);
   return j({token:await issue(db,row.id)});
  }
  if(is("GET","/messages/public")){
