@@ -10,7 +10,7 @@ test("House publication requires sign-in but not 2FA; reactions remain protected
  const reactions=backend.indexOf('if(method==="POST"&&path==="/houses/react")');
  const check=backend.indexOf('if(!authorized(user))');
  assert.ok(publish>0&&reactions>publish&&check>reactions);
- assert.match(backend,/Verify Auth2FA before reacting/);
+ assert.match(backend,/Verify Auth2FA for this session/);
  assert.match(backend,/const user=await auth\(req,db\);if\(!user\)/);
 });
 test("Garage floor plans are serializable in the publishing payload",()=>{
@@ -36,7 +36,7 @@ test("Profile Studio shows published houses and offers a publish button",()=>{
  assert.match(profile,/\/houses\/mine/);
  assert.match(profile,/\/houses\/profile\?user=/);
  assert.match(profile,/housePreview\(myHouse\)/);
- assert.match(html,/wrld-house-creator\.mjs\?v=5/);
+ assert.match(html,/wrld-house-creator\.mjs\?v=6/);
  assert.match(html,/wrld-profile\.js\?v=4/);
  assert.match(html,/wrld-profile\.css\?v=2/);
  assert.doesNotThrow(()=>new Function(html.match(/<script>([\s\S]*?)<\/script>/)?.[1]));
