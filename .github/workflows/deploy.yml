@@ -26,9 +26,12 @@ jobs:
           node --check wrld-games.js
           node --test backend/totp.test.mjs backend/marketplace.test.mjs
           node --test tests/wrld-ui.test.mjs
+          node --check backend/houses.js
+          node --check wrld-house-creator.mjs
           node --check wrld-home.mjs
           node --check wrld-home-core.mjs
           node --test tests/home-house.test.mjs
+          test -s wrld-home-creator.css
           test -s wrld-home.css
           node --check backend/oauth.js
           node --check wrld-social.js
