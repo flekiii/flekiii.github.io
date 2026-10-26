@@ -480,7 +480,7 @@ if(root&&stage&&canvas&&ctx){
   try{
    if(wanted==="3d"){
     const THREE=await import("https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js");
-    if(!root.isConnected)return;
+    if(!root.isConnected||!sceneActive()||state.choice!=="3d")return;
     create3d(THREE);
     state.view="3d";stage.dataset.view="3d";canvas.hidden=true;
 
