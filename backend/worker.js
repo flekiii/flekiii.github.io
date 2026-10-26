@@ -85,7 +85,7 @@ async function endpoints(req,env,path,ip){
   return j({messages:messages.reverse(),pins:[],read_only:true});
  }
  const u=await auth(req,db);if(!u)return bad("Sign in required.",401);
- if(is("GET","/me")){return j({user:{id:u.id,username:u.username,display_name:u.display_name,bio:u.bio,mfa_enabled:!!u.mfa_secret||u.external_mfa===1,mfa_verified:authorized(u),mfa_provider:u.external_mfa===1?"fmail":u.mfa_secret?"wrld":null}});}
+ if(is("GET","/me")){await exec(db,"INSERT INTO wrld_profile_settings(user_id,last_seen,updated_at) VALUES(?,?,?) ON CONFLICT(user_id) DO UPDATE SET last_seen=excluded.last_seen",u.id,t,t);return j({user:{id:u.id,username:u.username,display_name:u.display_name,bio:u.bio,mfa_enabled:!!u.mfa_secret||u.external_mfa===1,mfa_verified:authorized(u),mfa_provider:u.external_mfa===1?"fmail":u.mfa_secret?"wrld":null}});}
  if(is("POST","/auth/logout")){await exec(db,"DELETE FROM sessions WHERE token_hash=?",u.token_hash);return j({ok:true})}
  if(is("POST","/mfa/enroll")){
   if(u.mfa_secret&&!authorized(u))return bad("Verify existing 2FA first.",403);
