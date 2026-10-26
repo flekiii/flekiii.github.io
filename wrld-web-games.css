@@ -39,3 +39,20 @@
 .about-social-card.donate .about-social-link{margin-top:2px}
 @media(max-width:950px){.wg-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.wg-grid{grid-template-columns:1fr}.wg-head{flex-wrap:wrap}.wg-tile{min-height:245px}.wg-panel{padding:18px}.wg-gate{padding:36px 18px}.wg-memory{gap:6px}.wg-ttt button{font-size:48px}.about-social-card.donate{grid-column:auto}}
+
+/* 2048, Guess the Number and Rock Paper Scissors */
+.wg-2048{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;width:min(100%,420px);margin:14px auto;padding:11px;border-radius:17px;background:color-mix(in srgb,var(--accent2) 14%,var(--panel2))}
+.wg-number{aspect-ratio:1;display:grid;place-items:center;border-radius:10px;background:var(--panel);font:800 clamp(19px,4vw,34px) "Space Grotesk"}
+.wg-number[data-v="0"]{opacity:.4}
+.wg-number:not([data-v="0"]){background:color-mix(in srgb,var(--accent2) 35%,var(--panel))}
+.wg-number[data-v="128"],.wg-number[data-v="256"],.wg-number[data-v="512"],.wg-number[data-v="1024"],.wg-number[data-v="2048"]{background:linear-gradient(125deg,#deb3ff,#83a0ff);color:#18112b}
+.wg-arrows{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
+.wg-arrows button{height:48px;min-width:55px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:23px}
+.wg-arrows button:hover{border-color:var(--accent)}
+.wg-guess-form{display:flex;gap:9px;justify-content:center;align-items:center;max-width:370px;margin:24px auto}
+.wg-guess-form .social-input{min-width:0;flex:1}
+.wg-guess-form .btn{white-space:nowrap}
+.wg-rps{display:flex;gap:13px;justify-content:center;margin:35px auto;flex-wrap:wrap}
+.wg-rps button{width:92px;height:92px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;font-size:42px}
+.wg-rps button:hover{border-color:var(--accent);transform:translateY(-2px)}
+@media(max-width:600px){.wg-2048{gap:5px}.wg-rps button{width:77px;height:77px;font-size:36px}}
