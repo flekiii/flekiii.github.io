@@ -42,3 +42,13 @@ CREATE INDEX IF NOT EXISTS idx_wrld_roles_expiry ON wrld_profile_roles(expires_a
 CREATE INDEX IF NOT EXISTS idx_wrld_ban_expiry ON wrld_profile_bans(expires_at);
 -- Owner privilege is NOT awarded automatically. Configure Worker OWNER_USER_ID
 -- to the verified owner's immutable users.id. Never grant owner by client input.
+
+-- A maximum profile media file is 3 MiB. D1's maximum BLOB row is only 2,000,000 bytes.
+CREATE TABLE IF NOT EXISTS wrld_profile_media_chunks (
+ user_id TEXT NOT NULL,
+ kind TEXT NOT NULL CHECK(kind IN ('avatar','banner')),
+ part INTEGER NOT NULL CHECK(part BETWEEN 0 AND 7),
+ data BLOB NOT NULL,
+ PRIMARY KEY(user_id,kind,part),
+ FOREIGN KEY(user_id,kind) REFERENCES wrld_profile_media(user_id,kind) ON DELETE CASCADE
+);

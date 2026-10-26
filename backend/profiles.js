@@ -11,6 +11,10 @@ const visibilityFields=["bio","media","location","phone","links","games","status
 const visibilityDefault={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public"};
 const roleNames=["aurvex_ceo","developer","god","moderator","creator","vip","tester","member"];
 const statuses=["online","away","dnd","offline"];
+// Cloudflare D1 max row/BLOB is 2,000,000 bytes; store larger media in <=512KiB chunks.
+const MAX_MEDIA_BYTES=3*1024*1024,MEDIA_CHUNK_BYTES=512*1024;
+function mediaParts(raw){const parts=[];for(let offset=0;offset<raw.length;offset+=MEDIA_CHUNK_BYTES)parts.push(raw.slice(offset,offset+MEDIA_CHUNK_BYTES));return parts}
+function joinMedia(parts){let length=0;for(const part of parts)length+=part.data?.length||0;if(length<32||length>MAX_MEDIA_BYTES)return null;const bytes=new Uint8Array(length);let offset=0;for(const part of parts){const data=new Uint8Array(part.data);bytes.set(data,offset);offset+=data.length}return bytes}
 const read=async req=>{const raw=await req.text();if(raw.length>12000)throw Error("Payload too large");try{return JSON.parse(raw)||{}}catch{throw Error("Invalid JSON")}};
 const clean=(v,max)=>typeof v==="string"?v.trim().slice(0,max):"";
 const js=v=>{try{return JSON.parse(v)}catch{return null}};
@@ -83,7 +87,14 @@ export async function profileHandle(req,env,path,{auth,authorized}){
   if(!visible(privacy(p?.visibility),"media",r))return fail("Forbidden",403);
   const media=await one(db,"SELECT data,mime FROM wrld_profile_media WHERE user_id=? AND kind=?",id,kind);
   if(!media)return fail("Not found",404);
-  return new Response(new Uint8Array(media.data),{status:200,headers:{"Content-Type":media.mime,"Cache-Control":"private,no-store","X-Content-Type-Options":"nosniff","Access-Control-Allow-Origin":ORIGIN}});
+  // Existing users' original one-piece media still reads without migration.
+  let bytes=new Uint8Array(media.data);
+  if(!bytes.length){
+   const parts=await many(db,"SELECT data FROM wrld_profile_media_chunks WHERE user_id=? AND kind=? ORDER BY part ASC",id,kind);
+   bytes=joinMedia(parts);
+   if(!bytes)return fail("Image unavailable",404);
+  }
+  return new Response(bytes,{status:200,headers:{"Content-Type":media.mime,"Cache-Control":"private,no-store","X-Content-Type-Options":"nosniff","Access-Control-Allow-Origin":ORIGIN}});
  }
  if(!viewer)return fail("Sign in required",401);
  const current=await one(db,"SELECT id,username,display_name,bio,updated_at FROM users WHERE id=?",viewer.id);
@@ -118,16 +129,25 @@ export async function profileHandle(req,env,path,{auth,authorized}){
  }
  if(method==="POST"&&parts[0]==="profiles"&&parts[1]==="media"&&parts.length===3){
   const kind=parts[2];if(!["avatar","banner"].includes(kind))return fail("Bad media type");
-  const cap=kind==="avatar"?420000:1450000;
-  const declared=Number(req.headers.get("Content-Length")||0);if(declared>cap)return fail("Image too large",413);
-  const raw=new Uint8Array(await req.arrayBuffer());if(raw.length<32||raw.length>cap)return fail("Image too large or empty",413);
+  const declared=Number(req.headers.get("Content-Length")||0);
+  if(declared>MAX_MEDIA_BYTES)return fail("Image too large (3 MB max)",413);
+  const raw=new Uint8Array(await req.arrayBuffer());
+  if(raw.length<32||raw.length>MAX_MEDIA_BYTES)return fail("Image too large or empty (3 MB max)",413);
   const mime=mediaMime(raw);if(!mime)return fail("Only PNG, JPEG, GIF and WebP images",415);
-  await exec(db,"INSERT INTO wrld_profile_media(user_id,kind,mime,data,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(user_id,kind) DO UPDATE SET mime=excluded.mime,data=excluded.data,updated_at=excluded.updated_at",viewer.id,kind,mime,raw,t);
+  // Atomic replacement ensures old image survives failed or interrupted uploads.
+  await db.batch([
+   stmt(db,"INSERT INTO wrld_profile_media(user_id,kind,mime,data,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(user_id,kind) DO UPDATE SET mime=excluded.mime,data=excluded.data,updated_at=excluded.updated_at",viewer.id,kind,mime,new Uint8Array(0),t),
+   stmt(db,"DELETE FROM wrld_profile_media_chunks WHERE user_id=? AND kind=?",viewer.id,kind),
+   ...mediaParts(raw).map((chunk,part)=>stmt(db,"INSERT INTO wrld_profile_media_chunks(user_id,kind,part,data) VALUES(?,?,?,?)",viewer.id,kind,part,chunk))
+  ]);
   return reply({ok:true,mime,size:raw.length});
  }
  if(method==="DELETE"&&parts[0]==="profiles"&&parts[1]==="media"&&parts.length===3){
   if(!["avatar","banner"].includes(parts[2]))return fail("Bad media type");
-  await exec(db,"DELETE FROM wrld_profile_media WHERE user_id=? AND kind=?",viewer.id,parts[2]);return reply({ok:true});
+  await db.batch([
+   stmt(db,"DELETE FROM wrld_profile_media_chunks WHERE user_id=? AND kind=?",viewer.id,parts[2]),
+   stmt(db,"DELETE FROM wrld_profile_media WHERE user_id=? AND kind=?",viewer.id,parts[2])
+  ]);return reply({ok:true});
  }
  if(!path.startsWith("/admin/"))return fail("Not found",404);
  if(!authorized(viewer))return fail("Verify your authenticator before moderation",403);
