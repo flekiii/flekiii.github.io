@@ -1,7 +1,7 @@
 import {
  STORE_KEY,LIMIT,TYPES,TYPE_BY_ID,ROOMS,WALLS,START_ITEMS,cloneItems,
  rounded,clamp,size,canPlace,atRoom,findPlace,restore,encode,HOUSE_TEMPLATES,setLayout
-} from "./wrld-home-core.mjs";
+} from "./wrld-home-core.mjs?v=2";
 
 const $=id=>document.getElementById(id);
 const root=$("page-home"),stage=$("houseStage"),canvas=$("houseCanvas"),ctx=canvas?.getContext("2d");
