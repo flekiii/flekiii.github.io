@@ -1,0 +1,37 @@
+name: Fleki's Wrld profile live smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - backend/profiles.js
+      - backend/worker.js
+      - .github/workflows/profile-live.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  profile-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify deployed profile endpoints and access restrictions
+        run: |
+          node --input-type=module <<'NODE'
+          const api="https://flekis-wrld-api.flekideveloper.workers.dev";
+          const get=async path=>{
+            const response=await fetch(api+path,{signal:AbortSignal.timeout(25000)});
+            let data=await response.json().catch(()=>({}));
+            return {status:response.status,data};
+          };
+          const health=await get("/health");
+          if(health.status!==200||health.data.service!=="flekis-wrld-social")throw Error("Social API health check failed");
+          const providers=await get("/auth/providers");
+          if(providers.status!==200||providers.data.providers?.fmail!==true)throw Error("OAuth sign-in is unavailable");
+          const me=await get("/profiles/me");
+          if(me.status!==401)throw Error("Private profile is exposed without sign-in: "+me.status);
+          const admin=await get("/admin/members?q=test");
+          if(admin.status!==401)throw Error("Admin endpoint is exposed without sign-in: "+admin.status);
+          const absent=await get("/profiles/public/__nonexistent_profile_903");
+          if(absent.status!==400&&absent.status!==404)throw Error("Public profile endpoint is not responding: "+absent.status);
+          console.log("Social API, OAuth, protected profile and admin restrictions: PASS");
+          NODE
