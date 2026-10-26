@@ -1,36 +1,74 @@
 import {
  STORE_KEY,LIMIT,TYPES,TYPE_BY_ID,ROOMS,WALLS,START_ITEMS,cloneItems,
- rounded,clamp,size,canPlace,atRoom,findPlace,restore,encode
+ rounded,clamp,size,canPlace,atRoom,findPlace,restore,encode,HOUSE_TEMPLATES,setLayout
 } from "./wrld-home-core.mjs";
 
 const $=id=>document.getElementById(id);
 const root=$("page-home"),stage=$("houseStage"),canvas=$("houseCanvas"),ctx=canvas?.getContext("2d");
 if(root&&stage&&canvas&&ctx){
  const catalogue=$("houseCatalogue"),notice=$("houseNotice"),selectedLabel=$("houseSelectedLabel");
- const state={items:cloneItems(START_ITEMS),selected:null,room:"living",choice:"auto",view:"2d",
+ const state={items:cloneItems(START_ITEMS),selected:null,room:"room1",choice:"3d",view:"2d",
   busy:false,dirty:false,drag:null,three:null,next:11,frames:0};
- try{const saved=localStorage.getItem(STORE_KEY);if(saved!==null)state.items=restore(saved);
+ try{
+  const settings=JSON.parse(localStorage.getItem("fleki_wrld_house_settings")||"null");
+  if(settings?.template){
+   setLayout(settings.template);
+   const saved=localStorage.getItem(STORE_KEY);
+   state.items=saved!==null?restore(saved):cloneItems(START_ITEMS);
+  }
   const preference=localStorage.getItem("fleki_wrld_house_mode");
-  if(["auto","3d","2d"].includes(preference))state.choice=preference;
- }catch{}
+  if(["3d","2d"].includes(preference))state.choice=preference;
+ }catch{state.items=cloneItems(START_ITEMS)}
+ if(!ROOMS[state.room])state.room=Object.keys(ROOMS)[0];
  state.next=state.items.reduce((max,i)=>Math.max(max,Number(i.id.match(/^item-(\d+)$/)?.[1]||0)+1),11);
  const get=id=>state.items.find(item=>item.id===id);
  const announce=message=>{notice.textContent=message;};
  function save(){try{localStorage.setItem(STORE_KEY,encode(state.items));$("houseStorage").textContent="Saved on this device";return true}
   catch{$("houseStorage").textContent="Storage unavailable";announce("Unable to save here. Browser storage might be disabled.");return false}}
- const preferred=()=>{
-  if(state.choice!=="auto")return state.choice;
-  if(matchMedia("(prefers-reduced-motion: reduce)").matches||
-     (navigator.deviceMemory&&navigator.deviceMemory<=4)||
-     matchMedia("(pointer:coarse)").matches||innerWidth<760)return "2d";
-  try{const c=document.createElement("canvas");return c.getContext("webgl2")?"3d":"2d"}catch{return "2d"}
- };
+ const preferred=()=>state.choice;
+
  function furnitureCard(type){
   const b=document.createElement("button");b.type="button";b.className="house-furniture-card";
   b.dataset.furniture=type.id;b.title="Add "+type.name;b.innerHTML='<span class="house-furniture-icon">'+type.icon+'</span><span>'+type.name+'</span><span class="house-furniture-plus" aria-hidden="true">+</span>';
   return b;
  }
  for(const type of TYPES)catalogue.append(furnitureCard(type));
+ function updateRoomButtons(){
+  const panel=$("houseRooms");
+  panel.replaceChildren();
+  for(const room of Object.values(ROOMS)){
+   const b=document.createElement("button");b.type="button";b.dataset.houseRoom=room.id;
+   b.textContent=(room.garage?"🚗 ":"⌂ ")+room.name;
+   b.classList.toggle("active",room.id===state.room);
+   b.setAttribute("aria-pressed",String(room.id===state.room));
+   panel.append(b);
+  }
+ }
+ function chooseRoom(id){
+  if(!ROOMS[id])return;
+  state.room=id;
+  const room=ROOMS[id];
+  if(state.three){
+   state.three.target={x:room.x,z:room.z};
+   state.three.positionCamera();schedule3d();
+  }
+  $("houseStage").dataset.room=id;
+  announce("Обрано кімнату: "+room.name+". Нові меблі з'являться саме тут.");
+  updateUi();
+ }
+ function replaceHouse(template,name,items=null){
+  setLayout(template);
+  state.room=Object.keys(ROOMS)[0];
+  state.items=Array.isArray(items)?restore(JSON.stringify({version:1,items})):cloneItems(START_ITEMS);
+  state.selected=null;
+  state.next=state.items.reduce((v,i)=>Math.max(v,Number(i.id.match(/^item-(\\d+)$/)?.[1]||0)+1),1);
+  $("houseNameDisplay").textContent=String(name||"Мій дім");
+  updateRoomButtons();
+  if(state.three){
+   dispose3d();state.view="2d";stage.dataset.view="2d";canvas.hidden=false;
+  }
+  save();updateUi();switchView();
+ }
  function updateUi(){
   $("houseCount").textContent=state.items.length+"/"+LIMIT+" items";
   const s=get(state.selected);
@@ -42,7 +80,7 @@ if(root&&stage&&canvas&&ctx){
    b.classList.toggle("active",b.dataset.houseMode===state.choice);
    b.setAttribute("aria-pressed",String(b.dataset.houseMode===state.choice));
   }
-  for(const b of root.querySelectorAll("[data-house-room]")){
+  for(const b of $("houseRooms").querySelectorAll("[data-house-room]")){
    b.classList.toggle("active",b.dataset.houseRoom===state.room);
    b.setAttribute("aria-pressed",String(b.dataset.houseRoom===state.room));
   }
@@ -108,9 +146,7 @@ if(root&&stage&&canvas&&ctx){
   map.ox=(box.width-10*map.scale)/2;map.oy=(box.height-8*map.scale)/2;
   ctx.shadowColor="#07071488";ctx.shadowBlur=23;
   rectWorld(0,0,10.17,8.18,"#c4b2a7",.07);ctx.shadowBlur=0;
-  rectWorld(0,-1.75,10,4.5,"#ded1c3");
-  rectWorld(-2.275,2.25,5.55,3.5,"#d8c0cb");
-  rectWorld(2.725,2.25,4.55,3.5,"#c3cddb");
+  for(const room of Object.values(ROOMS))rectWorld(room.x,room.z,room.w,room.d,room.color);
   ctx.save();ctx.strokeStyle="#ffffff18";ctx.lineWidth=1;
   for(let x=-4.75;x<5;x+=.5){const a=project(x,-4),b=project(x,4);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
   for(let z=-3.75;z<4;z+=.5){const a=project(-5,z),b=project(5,z);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}ctx.restore();
@@ -125,9 +161,12 @@ if(root&&stage&&canvas&&ctx){
   lineWorld(-4.3,4,-2.75,4,"#80b6d1",.075);
   lineWorld(2.3,4,3.95,4,"#80b6d1",.075);
   lineWorld(5,-2,5,-.5,"#80b6d1",.075);
+  const focus=ROOMS[state.room];
+  if(focus){const corner=project(focus.x-focus.w/2,focus.z+focus.d/2);
+   ctx.strokeStyle="#ab67f6";ctx.lineWidth=3;ctx.strokeRect(corner.x+3,corner.y+3,focus.w*map.scale-6,focus.d*map.scale-6)}
   ctx.fillStyle="#413547";ctx.font='700 '+Math.max(10,Math.min(13,map.scale*.16))+'px "DM Sans",sans-serif';
   for(const [key,pos] of Object.entries(ROOMS)){
-   const p=project(key==="living"?3:key==="bedroom"?-4.35:1.25,key==="living"?-.55:3.45);
+   const p=project(pos.x-pos.w/2+.18,pos.z+pos.d/2-.22);
    ctx.fillStyle="#54485f88";ctx.textAlign="left";ctx.fillText(pos.name.toUpperCase(),p.x,p.y);
   }
   for(const item of [...state.items.filter(i=>i.type==="rug"),...state.items.filter(i=>i.type!=="rug")])drawItem2d(item);
@@ -207,7 +246,8 @@ if(root&&stage&&canvas&&ctx){
   renderer.domElement.className="house-webgl";renderer.domElement.setAttribute("aria-label","Interactive 3D house");stage.append(renderer.domElement);
   const scene=new THREE.Scene();scene.background=new THREE.Color("#28263e");
   const camera=new THREE.PerspectiveCamera(44,1,.1,100);
-  const env={THREE,renderer,scene,camera,azimuth:.64,elevation:.84,distance:16.3,raf:0,furniture:new Map(),pointer:null,resize:()=>{}};
+  const focus=ROOMS[state.room]||{x:0,z:0};
+  const env={THREE,renderer,scene,camera,target:{x:focus.x,z:focus.z},azimuth:.64,elevation:.84,distance:16.3,raf:0,furniture:new Map(),pointer:null,resize:()=>{}};
   state.three=env;
   scene.add(new THREE.HemisphereLight(0xebedff,0x72556d,2.55));
   const sun=new THREE.DirectionalLight(0xffe6cc,3.15);sun.position.set(-4,9,3);scene.add(sun);
@@ -224,7 +264,7 @@ if(root&&stage&&canvas&&ctx){
    const o=new THREE.Mesh(new THREE.SphereGeometry(r,12,8),mat(color));o.position.set(x,y,z);target.add(o);return o;
   };
   const floor=(x,z,w,d,c)=>box(scene,x,-.13,z,w,.22,d,c);
-  floor(0,-1.75,10,4.5,"#cebba8");floor(-2.275,2.25,5.55,3.5,"#d2b7c9");floor(2.725,2.25,4.55,3.5,"#b5c5d6");
+  for(const room of Object.values(ROOMS))floor(room.x,room.z,room.w,room.d,room.color);
   // Exterior walls have no full-height front: a playable dollhouse cutaway.
   const wall=(x,z,w,d,h=1.8)=>{box(scene,x,h/2,z,w,h,d,"#f5ede7");box(scene,x,h-.055,z,w+.03,.09,d+.03,"#b69cb8")};
   wall(-5,0,.16,8);wall(5,0,.16,8);wall(0,4,10,.16);
@@ -337,8 +377,8 @@ if(root&&stage&&canvas&&ctx){
   };
   function positionCamera(){
    const a=env.azimuth,b=env.elevation,d=env.distance;
-   camera.position.set(Math.sin(a)*Math.cos(b)*d,Math.sin(b)*d,Math.cos(a)*Math.cos(b)*d);
-   camera.lookAt(0,.35,0);
+   camera.position.set(env.target.x+Math.sin(a)*Math.cos(b)*d,Math.sin(b)*d,env.target.z+Math.cos(a)*Math.cos(b)*d);
+   camera.lookAt(env.target.x,.35,env.target.z);
   }
   env.positionCamera=positionCamera;positionCamera();
   refreshFurniture3d();env.resize();
@@ -388,18 +428,7 @@ if(root&&stage&&canvas&&ctx){
     if(!root.isConnected)return;
     create3d(THREE);
     state.view="3d";stage.dataset.view="3d";canvas.hidden=true;
-    // Sample actual frame throughput only in Auto mode; no permanent performance polling.
-    if(state.choice==="auto"&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
-     let frames=0,started=performance.now(),previous=started,slow=0;
-     const check=t=>{
-      if(!state.three||state.view!=="3d"||state.choice!=="auto"||!sceneActive())return;
-      if(t-previous>55)slow++;
-      previous=t;frames++;state.three.renderer.render(state.three.scene,state.three.camera);
-      if(frames<70){requestAnimationFrame(check);return}
-      if(slow>30){announce("3D was too demanding on this device, so we switched to smooth 2D.");setMode("2d",false)}
-     };
-     requestAnimationFrame(check);
-    }
+
    }
   }catch(e){
    if(state.three)dispose3d();
@@ -407,7 +436,7 @@ if(root&&stage&&canvas&&ctx){
    announce("3D isn't available on this device or network. 2D house is ready instead.");
   }finally{state.busy=false;stage.classList.remove("loading");updateUi();if(state.view==="2d")draw2d()}
  }
- function setMode(mode,remember=true){if(!["auto","3d","2d"].includes(mode))return;state.choice=mode;
+ function setMode(mode,remember=true){if(!["3d","2d"].includes(mode))return;state.choice=mode;
   if(remember)try{localStorage.setItem("fleki_wrld_house_mode",mode)}catch{}
   switchView();
  }
@@ -419,7 +448,7 @@ if(root&&stage&&canvas&&ctx){
  stage.addEventListener("wheel",e=>{if(state.view!=="3d"||!state.three||!sceneActive())return;e.preventDefault();state.three.distance=clamp(state.three.distance+(e.deltaY>0?1:-1),10,25);state.three.positionCamera();schedule3d()},{passive:false});
  catalogue.addEventListener("click",e=>{const b=e.target.closest("[data-furniture]");if(b)add(b.dataset.furniture)});
  root.addEventListener("click",e=>{
-  const room=e.target.closest("[data-house-room]");if(room){state.room=room.dataset.houseRoom;updateUi();return}
+  const room=e.target.closest("[data-house-room]");if(room){chooseRoom(room.dataset.houseRoom);return}
   const mode=e.target.closest("[data-house-mode]");if(mode){setMode(mode.dataset.houseMode);return}
   const command=e.target.closest("[data-house-action]");if(!command)return;
   switch(command.dataset.houseAction){
@@ -449,6 +478,20 @@ if(root&&stage&&canvas&&ctx){
   else switchView();
  });
  window.addEventListener("visibilitychange",()=>{if(sceneActive())schedule3d()});
- // Home is loaded after existing navigation. Do not load Three.js unless Home is visible.
+ // Home renders in 3D by default; 2D remains a manual/performance fallback.
+ updateRoomButtons();
+ try{
+  const settings=JSON.parse(localStorage.getItem("fleki_wrld_house_settings")||"null");
+  $("houseNameDisplay").textContent=settings?.name||"Мій дім";
+ }catch{}
+ window.addEventListener("wrld:house-create",event=>{
+  const d=event.detail||{};replaceHouse(d.template,d.name);
+ });
+ window.addEventListener("wrld:house-import",event=>{
+  const d=event.detail||{};replaceHouse(d.template,d.name,d.items);
+ });
+ window.addEventListener("wrld:house-get",event=>{
+  const d=event.detail||{};d.onResult?.({items:cloneItems(state.items),template:(JSON.parse(localStorage.getItem("fleki_wrld_house_settings")||"{}").template||"starter"),name:$("houseNameDisplay").textContent});
+ });
  updateUi();if(sceneActive())switchView();
 }
