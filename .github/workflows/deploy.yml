@@ -39,6 +39,8 @@ jobs:
           node --test tests/wrld-ui.test.mjs
           node --check backend/houses.js
           node --check wrld-house-creator.mjs
+          node --check wrld-public-house-3d.mjs
+          node --test tests/public-house-3d.test.mjs
           node --check wrld-home.mjs
           node --check wrld-home-core.mjs
           node --test tests/home-house.test.mjs
