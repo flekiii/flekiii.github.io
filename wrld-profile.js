@@ -12,6 +12,45 @@ const tr=(a,b)=>en()?a:b;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const tok=()=>{try{return sessionStorage.getItem("fw-token")||""}catch{return ""}};
 const fmt=n=>n&&n>0?new Date(n).toLocaleDateString():"∞";
+function sniffImageMime(bytes){
+ if(bytes.length>=8&&[137,80,78,71,13,10,26,10].every((v,i)=>bytes[i]===v))return "image/png";
+ if(bytes.length>=3&&bytes[0]===255&&bytes[1]===216&&bytes[2]===255)return "image/jpeg";
+ if(bytes.length>=6&&/^GIF8[79]a$/.test(String.fromCharCode(...bytes.subarray(0,6))))return "image/gif";
+ if(bytes.length>=12&&String.fromCharCode(...bytes.subarray(0,4))==="RIFF"&&String.fromCharCode(...bytes.subarray(8,12))==="WEBP")return "image/webp";
+ return "";
+}
+const imageLimits={avatar:420000,banner:1450000};
+async function uploadMedia(kind,file){
+ if(!data||!tok()||!file||!Object.prototype.hasOwnProperty.call(imageLimits,kind))return;
+ const limit=imageLimits[kind];
+ if(file.size>limit){note(tr("Image is too large: ","Зображення завелике: ")+(file.size/1048576).toFixed(2)+" MB · "+tr("limit ","ліміт ")+(limit/1048576).toFixed(2)+" MB");return}
+ if(file.size<32){note(tr("File is empty or damaged.","Файл порожній або пошкоджений."));return}
+ let temporary="";
+ try{
+  const raw=new Uint8Array(await file.arrayBuffer());
+  const mime=sniffImageMime(raw);
+  if(!mime){note(tr("Not a valid PNG, JPEG, GIF or WebP image.","Це не правильне зображення PNG, JPEG, GIF чи WebP."));return}
+  temporary=URL.createObjectURL(new Blob([raw],{type:mime}));
+  if(kind==="avatar"){if(avatarTemp.startsWith("blob:"))URL.revokeObjectURL(avatarTemp);avatarTemp=temporary}
+  else{if(bannerTemp.startsWith("blob:"))URL.revokeObjectURL(bannerTemp);bannerTemp=temporary}
+  liveUpdate();note(tr("Uploading image…","Завантажую зображення…"));
+  // The real file signature, not its .gif filename or browser MIME, defines Content-Type.
+  const result=await secure("/profiles/media/"+kind,{method:"POST",body:raw,headers:{"Content-Type":mime}});
+  if(result.mime!==mime)throw Error(tr("Unexpected image format on server.","Неочікуваний формат зображення на сервері."));
+  const url=await imageFor(data.id,kind);
+  if(!url)throw Error(tr("Uploaded, but preview could not load. Refresh your profile.","Завантажено, але перегляд не відкрився. Онови профіль."));
+  if(kind==="avatar"){if(avatar.startsWith("blob:"))URL.revokeObjectURL(avatar);avatar=url;avatarTemp=""}
+  else{if(banner.startsWith("blob:"))URL.revokeObjectURL(banner);banner=url;bannerTemp=""}
+  URL.revokeObjectURL(temporary);temporary="";liveUpdate();
+  if(/\.gif$/i.test(file.name)&&mime!=="image/gif")note(tr("Image saved! This file is actually a PNG/JPG/WebP, not an animated GIF.","Зображення збережено! Файл насправді PNG/JPG/WebP, а не анімований GIF."));
+  else note(tr("Image uploaded ✓","Зображення завантажено ✓"));
+ }catch(e){
+  if(kind==="avatar")avatarTemp="";else bannerTemp="";
+  if(temporary)URL.revokeObjectURL(temporary);
+  liveUpdate();note(e.message||tr("Upload failed.","Помилка завантаження."));
+ }
+}
+
 let activeTab="overview",who="",data=null,draft=null,loading=false,err="",owner=false,mod=false,view="self",avatar="",banner="",avatarTemp="",bannerTemp="",people=[],query="",lastSecret=null;
 const secure=async(path,opts={})=>{
  const token=tok();if(!token)throw Error("Please sign in");
@@ -43,8 +82,8 @@ function card(p,opts={}){
  const urls=[p.website&&showUrl(p.website),...links.filter(k=>social[k]).map(k=>showUrl(social[k]))].filter(Boolean);
  const fav=p.favorite_games||[],playing=p.current_games||[];
  return '<div class="wp-card">'+
- '<div class="wp-card-banner">'+imageBox(opts.banner??banner,"Profile banner","✦","wp-banner-image")+'</div>'+
- '<div class="wp-card-meta">'+imageBox(opts.avatar??avatar,"Avatar",esc((n||"?").slice(0,1).toUpperCase()),"wp-avatar-image")+
+ '<div class="wp-card-banner">'+imageBox(opts.banner??(bannerTemp||banner),"Profile banner","✦","wp-banner-image")+'</div>'+
+ '<div class="wp-card-meta">'+imageBox(opts.avatar??(avatarTemp||avatar),"Avatar",esc((n||"?").slice(0,1).toUpperCase()),"wp-avatar-image")+
  '<div class="wp-card-name"><h3>'+esc(n)+'</h3><span>@'+esc(p.username||data?.username||"member")+'</span></div>'+statusMarkup(p.status)+'</div>'+
  '<div class="wp-badges">'+roleMarkup(p.roles)+'</div>'+
  (p.bio?'<p class="wp-card-bio">'+esc(p.bio)+'</p>':"")+
@@ -61,7 +100,7 @@ const save=()=>'<button type="button" class="btn primary" data-wp="save">'+tr("S
 function content(state){
  const p=draft||blank(state.user),v=p.visibility;
  if(activeTab==="overview")return '<h2>'+tr("Your profile","Твій профіль")+'</h2><p>'+tr("Customize your world, choose what to share and see changes instantly.","Налаштуй свій профіль, обери, що показувати іншим, і переглядай зміни одразу.")+'</p><div class="wp-section-cards">'+sections.filter(s=>!["overview","preview"].includes(s[0])).map(s=>'<button type="button" data-wp="tab" data-id="'+s[0]+'"><strong>'+s[1]+' '+(en()?s[2]:s[3])+'</strong><span>↗</span></button>').join("")+'</div>';
- if(activeTab==="appearance")return '<h2>'+tr("Photos & banners","Фото та банери")+'</h2><p>'+tr("Upload JPG, PNG, WebP or GIF. Animated GIF banners will stay animated. Images are stored with your account.","Завантаж JPG, PNG, WebP або GIF. Анімовані GIF-банери залишаться рухомими. Зображення зберігаються у твоєму акаунті.")+'</p><div class="wp-upload-list">'+["avatar","banner"].map(kind=>'<div class="wp-upload"><strong>'+ (kind==="avatar"?tr("Profile photo","Фото профілю"):tr("Animated banner","Анімований банер"))+'</strong><small>'+ (kind==="avatar"?"420 KB max":"1.45 MB max")+'</small><label class="btn"><input hidden type="file" data-wp-upload="'+kind+'" accept="image/png,image/jpeg,image/webp,image/gif">'+tr("Choose image / GIF","Вибрати фото / GIF")+'</label><button class="btn" data-wp="remove-media" data-kind="'+kind+'">'+tr("Remove","Прибрати")+'</button></div>').join("")+'</div>';
+ if(activeTab==="appearance")return '<h2>'+tr("Photos & banners","Фото та банери")+'</h2><p>'+tr("Upload JPG, PNG, WebP or GIF. Animated GIF banners will stay animated. Images are stored with your account.","Завантаж JPG, PNG, WebP або GIF. Анімовані GIF-банери залишаться рухомими. Зображення зберігаються у твоєму акаунті.")+'</p><div class="wp-upload-list">'+["avatar","banner"].map(kind=>'<div class="wp-upload"><strong>'+ (kind==="avatar"?tr("Profile photo","Фото профілю"):tr("Animated banner","Анімований банер"))+'</strong><small>'+ (kind==="avatar"?"420 KB max":"1.45 MB max")+'</small><label class="btn"><input hidden type="file" data-wp-upload="'+kind+'" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpeg,image/webp,image/gif">'+tr("Choose image / GIF","Вибрати фото / GIF")+'</label><button class="btn" data-wp="remove-media" data-kind="'+kind+'">'+tr("Remove","Прибрати")+'</button></div>').join("")+'</div>';
  if(activeTab==="about")return '<h2>'+tr("About me","Про мене")+'</h2>'+fld(tr("Display name","Ім'я профілю"),"display_name",p.display_name,"text",60)+textarea(tr("Description","Опис"),"bio",p.bio,350)+'<label class="wp-field"><span>'+tr("My status","Мій статус")+'</span><select class="social-input" data-wp-field="status">'+["online","away","dnd","offline"].map(k=>'<option value="'+k+'" '+(p.status===k?"selected":"")+'>'+langStatus(k)+'</option>').join("")+'</select></label>'+save();
  if(activeTab==="contact")return '<h2>'+tr("Location & contact","Локація та контакти")+'</h2><p>'+tr("All fields are optional. Never publish an address or a phone number unless you want to.","Усі поля необов'язкові. Не публікуй адресу чи телефон, якщо цього не хочеш.")+'</p>'+fld(tr("Country","Країна"),"country",p.country,"text",60)+fld(tr("State / Oblast / Region","Штат / Область / Регіон"),"region",p.region,"text",80)+fld(tr("District","Район"),"district",p.district,"text",80)+fld(tr("Phone number (optional)","Номер телефону (необов'язково)"),"phone",p.phone,"tel",30)+fld(tr("Website (HTTPS)","Сайт (HTTPS)"),"website",p.website,"url",220)+'<h3>'+tr("Social media links","Посилання на соцмережі")+'</h3>'+links.map(k=>fld(k.charAt(0).toUpperCase()+k.slice(1)+" (https://)","social:"+k,p.socials[k],"url",220)).join("")+save();
  if(activeTab==="games")return '<h2>'+tr("My games","Мої ігри")+'</h2><p>'+tr("Write one title per line, up to 10 games in each section.","По одній грі на рядок, до 10 у кожному розділі.")+'</p>'+textarea(tr("Favorite games","Улюблені ігри"),"favorite_games",p.favorite_games.join("\n"),570)+textarea(tr("Currently playing","Актуальні ігри"),"current_games",p.current_games.join("\n"),570)+save();
@@ -172,18 +211,12 @@ document.addEventListener("click",async e=>{
 document.addEventListener("change",async e=>{
  const input=e.target;
  if(input.matches("[data-wp-upload]")){
-  const kind=input.dataset.wpUpload,file=input.files?.[0];if(!file)return;
-  const cap=kind==="avatar"?420000:1450000;
-  if(file.size>cap||!["image/png","image/jpeg","image/gif","image/webp"].includes(file.type)){note(tr("Unsupported image or file too large","Непідтримуване зображення або завеликий файл"));return}
-  try{
-   const bytes=new Uint8Array(await file.arrayBuffer());
-   await secure("/profiles/media/"+kind,{method:"POST",body:bytes,headers:{"Content-Type":file.type}});
-   const loaded=await imageFor(data.id,kind);
-   if(kind==="avatar"){if(avatar.startsWith("blob:"))URL.revokeObjectURL(avatar);avatar=loaded}else{if(banner.startsWith("blob:"))URL.revokeObjectURL(banner);banner=loaded}
-   liveUpdate();note(tr("Image uploaded ✓","Зображення завантажено ✓"));
-  }catch(err){note(err.message)}return;
- }
- if(input.dataset.wpPrivacy&&draft){draft.visibility[input.dataset.wpPrivacy]=input.value;liveUpdate()}
+   const kind=input.dataset.wpUpload,file=input.files?.[0];if(!file)return;
+   input.value="";
+   await uploadMedia(kind,file);
+   return;
+  }
+  if(input.dataset.wpPrivacy&&draft){draft.visibility[input.dataset.wpPrivacy]=input.value;liveUpdate()}
  if(input.dataset.wpField&&draft){updateField(input)}
 });
 function updateField(input){
