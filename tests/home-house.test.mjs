@@ -23,6 +23,20 @@ test("English and Ukrainian navigation, separate welcome Home and 3D house edito
  assert.match(creator,/wrld:house-get/);
  assert.match(html,/wrld-house-creator\.mjs/);
 });
+test("Inline navigation script parses and welcome page never contains the furniture canvas",()=>{
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
+ assert.ok(script,"Site navigation script missing");
+ assert.doesNotThrow(()=>new Function(script),"Site navigation JavaScript syntax error");
+ const welcome=html.slice(html.indexOf('<section class="page active wrld-landing"'),html.indexOf('<section class="page wrld-house-page"'));
+ const editor=html.slice(html.indexOf('<section class="page wrld-house-page"'),html.indexOf('<section class="page wrld-create-page"'));
+ assert.doesNotMatch(welcome,/id="houseCanvas"|id="houseStage"/);
+ assert.match(editor,/id="houseCanvas"/);
+ assert.match(editor,/data-house-mode="3d"/);
+ assert.match(editor,/data-house-mode="2d"/);
+ assert.match(html,/id="siteLanguage"/);
+ assert.match(code,/root\.classList\.contains\("active"\)/);
+ assert.match(code,/e\.detail\?\.id!=="house-editor"/);
+});
 test("Ten distinct plans include 1–7 rooms and multiple garages",()=>{
  assert.equal(HOUSE_TEMPLATES.length,10);
  assert.deepEqual([...new Set(HOUSE_TEMPLATES.map(x=>x.id))].length,10);
