@@ -24,6 +24,8 @@ async function relation(db,viewer,id,as){
  if(as==="friend"&&viewer?.id===id)return "friend";
  if(viewer?.id===id)return "self";
  if(!viewer)return "public";
+ const blocked=await one(db,"SELECT 1 FROM blocks WHERE (blocker=? AND blocked=?) OR (blocker=? AND blocked=?)",viewer.id,id,id,viewer.id);
+ if(blocked)return "public";
  const [low,high]=[viewer.id,id].sort();
  return await one(db,"SELECT 1 FROM friendships WHERE user_low=? AND user_high=? AND status='accepted'",low,high)?"friend":"public";
 }
