@@ -1,4 +1,4 @@
-import {memoryDeck,tttResult,cpuMove} from "./wrld-web-games-core.mjs";
+import {memoryDeck,tttResult,cpuMove,shift2048,newTile2048,canShift2048} from "./wrld-web-games-core.mjs";
 const root=document.getElementById("wrld-web-games-root");
 const endpoint="https://flekis-wrld-api.flekideveloper.workers.dev/me";
 const L={
@@ -8,6 +8,9 @@ const L={
  checking:["Checking your account…","Перевіряємо акаунт…"],subtitle:["Choose a game. Play instantly in your browser.","Обери гру та грай одразу в браузері."],
  memory:["Memory Match","Знайди пару"],memoryAbout:["Find all eight matching pairs.","Знайди всі вісім пар карток."],ttt:["Tic Tac Toe","Хрестики-нулики"],tttAbout:["Try to beat the computer.","Спробуй перемогти комп'ютер."],
  reaction:["Reaction Test","Тест реакції"],reactionAbout:["Wait for green, then click as fast as you can.","Дочекайся зеленого та натисни якнайшвидше."],
+ merge:["2048","2048"],mergeAbout:["Merge matching number tiles to reach 2048.","Об’єднуй плитки, щоб досягти 2048."],
+ guess:["Guess the Number","Вгадай число"],guessAbout:["Find a hidden number from 1 to 100.","Відгадай число від 1 до 100."],
+ rps:["Rock Paper Scissors","Камінь ножиці папір"],rpsAbout:["Challenge the computer to a quick match.","Зіграй проти комп’ютера."],
  play:["Play now","Грати"],back:["← All games","← Усі ігри"],again:["New game","Нова гра"],moves:["Moves","Ходи"],pairs:["Pairs","Пари"],
  wonMemory:["All pairs found. Nice work! 🎉","Усі пари знайдено! Молодець! 🎉"],yourTurn:["Your turn: X","Твій хід: X"],won:["You win! 🎉","Ти переміг! 🎉"],lost:["Computer wins. Try again!","Комп'ютер переміг. Спробуй ще!"],draw:["It's a draw!","Нічия!"],
  ready:["Press Start to begin.","Натисни Старт, щоб почати."],start:["Start","Старт"],wait:["Wait for green…","Чекай на зелений…"],tap:["CLICK!","ТИСНИ!"],
@@ -16,6 +19,7 @@ const L={
 const t=k=>L[k][document.documentElement.lang==="uk"?1:0];
 const escape=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const getToken=()=>{try{return sessionStorage.getItem("fw-token")||""}catch{return ""}};
+let mergeGrid=Array(16).fill(0),mergeScore=0,guessNumber=0,guessTries=0,guessText="",rpsText="",rpsWins=0;
 let validated="",user=null,view="menu",deck=[],up=[],matched=new Set(),moves=0,locked=false,board=[],result=null,react="ready",reactionAt=0,reactMs=null,timeout=0,nonce=0,request=0;
 const onPage=()=>document.getElementById("page-web-games")?.classList.contains("active");
 const allowed=()=>!!(validated&&validated===getToken()&&user);
@@ -40,7 +44,7 @@ async function verify(showLoading=false){
  }catch{if(id===request&&onPage()){revoke();gate(true)}return false}
 }
 function menu(){
- const items=[["memory","🧠"],["ttt","⭕"],["reaction","⚡"]];
+ const items=[["memory","🧠"],["ttt","⭕"],["reaction","⚡"],["merge","🔢"],["guess","🎯"],["rps","✊"]];
  root.innerHTML='<div class="wg-head"><p>'+t("subtitle")+'</p><span class="wg-account">● @'+escape(user.username)+'</span></div><div class="wg-grid">'+items.map(([id,icon])=>
   '<button class="wg-tile" data-wg="launch" data-game="'+id+'"><span class="wg-thumb">'+icon+'</span><strong>'+t(id)+'</strong><span class="wg-desc">'+t(id+"About")+'</span><span class="wg-play">'+t("play")+' ↗</span></button>').join("")+'</div>';
 }
@@ -52,6 +56,9 @@ function newGame(id){
  if(id==="memory"){deck=memoryDeck();up=[];matched=new Set();moves=0;locked=false}
  if(id==="ttt"){board=Array(9).fill("");result=null}
  if(id==="reaction"){react="ready";reactionAt=0;reactMs=null}
+ if(id==="merge"){mergeGrid=newTile2048(newTile2048(Array(16).fill(0)));mergeScore=0}
+ if(id==="guess"){guessNumber=1+Math.floor(Math.random()*100);guessTries=0;guessText=""}
+ if(id==="rps"){rpsWins=0;rpsText=""}
  render();
 }
 function memoryView(){
@@ -89,21 +96,54 @@ function reactionClick(){
   const turn=nonce;timeout=setTimeout(()=>{if(turn!==nonce||!allowed()||!onPage())return;react="go";reactionAt=performance.now();reactionView()},1400+Math.random()*2600);
  }
 }
-function render(){if(!onPage())return;if(!allowed())return gate();if(view==="memory")memoryView();else if(view==="ttt")tttView();else if(view==="reaction")reactionView();else menu()}
+
+function mergeView(){
+ const body='<div class="wg-stats">'+tr2048()+'</div><div class="wg-2048">'+mergeGrid.map(v=>'<div class="wg-number" data-v="'+v+'">'+(v||"")+'</div>').join("")+'</div><div class="wg-arrows"><button data-wg="move" data-dir="up" aria-label="Up">↑</button><button data-wg="move" data-dir="left" aria-label="Left">←</button><button data-wg="move" data-dir="down" aria-label="Down">↓</button><button data-wg="move" data-dir="right" aria-label="Right">→</button></div><p class="wg-status">'+(canShift2048(mergeGrid)?tr2048help():tr2048over())+'</p>';
+ frame("merge",body);
+}
+const tr2048=()=>en2048("Score: ","Рахунок: ")+mergeScore;
+const en2048=(en,uk)=>document.documentElement.lang==="uk"?uk:en;
+const tr2048help=()=>en2048("Arrow keys or buttons to move tiles.","Використовуй стрілки чи кнопки для руху.");
+const tr2048over=()=>en2048("No moves left. Try again!","Немає ходів. Спробуй ще!");
+function shift(direction){if(!canShift2048(mergeGrid))return;const next=shift2048(mergeGrid,direction);if(!next.moved)return;mergeGrid=newTile2048(next.board);mergeScore+=next.points;mergeView()}
+function guessView(){
+ const title=en2048("Tries: ","Спроби: ")+guessTries;
+ frame("guess",'<p class="wg-status">'+title+'</p><form id="wg-guess-form" class="wg-guess-form"><input class="social-input" name="guess" type="number" min="1" max="100" inputmode="numeric" required placeholder="1–100"><button class="btn primary" type="submit">'+en2048("Guess","Вгадати")+'</button></form><p class="wg-status" role="status">'+guessText+'</p>');
+}
+function guessIt(n){
+ if(!Number.isInteger(n)||n<1||n>100)return;
+ guessTries++;
+ guessText=n===guessNumber?en2048("Correct! 🎉","Правильно! 🎉"):n<guessNumber?en2048("Try higher ↑","Спробуй більше ↑"):en2048("Try lower ↓","Спробуй менше ↓");
+ guessView();
+}
+function rpsView(){
+ frame("rps",'<div class="wg-stats">'+en2048("Your wins: ","Твої перемоги: ")+rpsWins+'</div><div class="wg-rps">'+[["rock","✊"],["paper","✋"],["scissors","✌️"]].map(([k,icon])=>'<button data-wg="rps-pick" data-pick="'+k+'" aria-label="'+k+'">'+icon+'</button>').join("")+'</div><p class="wg-status" role="status">'+(rpsText||en2048("Choose your move","Обери свій хід"))+'</p>');
+}
+function playRps(pick){
+ const choices=["rock","paper","scissors"],opponent=choices[Math.floor(Math.random()*3)],win=(pick==="rock"&&opponent==="scissors")||(pick==="paper"&&opponent==="rock")||(pick==="scissors"&&opponent==="paper");
+ if(win)rpsWins++;
+ rpsText=en2048("Computer: ","Комп’ютер: ")+opponent+" · "+(pick===opponent?en2048("Draw!","Нічия!"):win?en2048("You win! 🎉","Ти переміг! 🎉"):en2048("Computer wins","Переміг комп’ютер"));
+ rpsView();
+}
+function render(){if(!onPage())return;if(!allowed())return gate();if(view==="memory")memoryView();else if(view==="ttt")tttView();else if(view==="reaction")reactionView();else if(view==="merge")mergeView();else if(view==="guess")guessView();else if(view==="rps")rpsView();else menu()}
 root.addEventListener("click",async e=>{
  const b=e.target.closest("[data-wg]");if(!b||!root.contains(b))return;
  const action=b.dataset.wg;
  if(action==="sign"){document.querySelector('#dock [data-go="profile"]')?.click();return}
  if(action==="retry"){void verify(true);return}
  if(!allowed()){revoke();gate();return}
- if(action==="launch"){const key=b.dataset.game;if(["memory","ttt","reaction"].includes(key)&&await verify())newGame(key);return}
+ if(action==="launch"){const key=b.dataset.game;if(["memory","ttt","reaction","merge","guess","rps"].includes(key)&&await verify())newGame(key);return}
  if(action==="back"){cancel();view="menu";render();return}
  if(action==="again"){newGame(view);return}
  if(action==="card"&&view==="memory")card(Number(b.dataset.i));
  if(action==="square"&&view==="ttt")square(Number(b.dataset.i));
  if(action==="react"&&view==="reaction")reactionClick();
+ if(action==="move"&&view==="merge")shift(b.dataset.dir);
+ if(action==="rps-pick"&&view==="rps")playRps(b.dataset.pick);
 });
 window.addEventListener("wrld:page-change",e=>{if(e.detail?.id==="web-games")void verify(true);else revoke()});
+document.addEventListener("submit",e=>{if(e.target.id!=="wg-guess-form")return;e.preventDefault();if(onPage()&&allowed()&&view==="guess")guessIt(Number(new FormData(e.target).get("guess")))});
+window.addEventListener("keydown",e=>{if(!onPage()||!allowed()||view!=="merge"||e.target.closest("input,textarea,select,[contenteditable]"))return;const d={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"up",ArrowDown:"down"}[e.key];if(d){e.preventDefault();shift(d)}});
 window.addEventListener("fw-auth-changed",()=>{revoke();if(onPage())void verify(true)});
 window.addEventListener("wrld:language-change",()=>{if(onPage())render()});
 window.addEventListener("focus",()=>{if(onPage())void verify()});
