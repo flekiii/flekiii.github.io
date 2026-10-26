@@ -1,5 +1,5 @@
 import test from "node:test";import assert from "node:assert/strict";import {readFileSync} from "node:fs";
-import {memoryDeck,tttResult,cpuMove} from "../wrld-web-games-core.mjs";
+import {memoryDeck,tttResult,cpuMove,shift2048,newTile2048,canShift2048} from "../wrld-web-games-core.mjs";
 const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 const html=read("index.html"),js=read("wrld-web-games.js");
 test("Web Games comes between Create House and Games",()=>{
@@ -25,4 +25,19 @@ test("Tic tac toe picks a win or block",()=>{
  assert.equal(tttResult(["X","O","X","X","O","O","O","X","X"])?.winner,"draw");
  assert.equal(cpuMove(["X","X","","O","","","","",""]),2);
  assert.equal(cpuMove(["O","O","","X","X","","","",""]),2);
+});
+
+test("Arcade contains six playable game types",()=>{
+ for(const name of ["memory","ttt","reaction","merge","guess","rps"])assert.match(js,new RegExp('view==="'+name+'"'));
+ assert.match(js,/wg-guess-form/);
+ assert.match(js,/rps-pick/);
+});
+test("2048 merges tiles once, creates a tile and checks game over",()=>{
+ const board=[2,2,2,2,...Array(12).fill(0)];
+ const left=shift2048(board,"left");
+ assert.deepEqual(left.board.slice(0,4),[4,4,0,0]);
+ assert.equal(left.points,8);
+ assert.deepEqual(shift2048([2,4,0,0,...Array(12).fill(0)],"left").board.slice(0,4),[2,4,0,0]);
+ assert.equal(newTile2048(Array(16).fill(0),()=>0).filter(Boolean).length,1);
+ assert.equal(canShift2048([2,4,2,4,4,2,4,2,2,4,2,4,4,2,4,2]),false);
 });
