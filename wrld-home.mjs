@@ -61,7 +61,7 @@ if(root&&stage&&canvas&&ctx){
   state.room=Object.keys(ROOMS)[0];
   state.items=Array.isArray(items)?restore(JSON.stringify({version:1,items})):cloneItems(START_ITEMS);
   state.selected=null;
-  state.next=state.items.reduce((v,i)=>Math.max(v,Number(i.id.match(/^item-(\\d+)$/)?.[1]||0)+1),1);
+  state.next=state.items.reduce((v,i)=>Math.max(v,Number(i.id.match(/^item-(\d+)$/)?.[1]||0)+1),1);
   $("houseNameDisplay").textContent=String(name||"Мій дім");
   updateRoomButtons();
   if(state.three){
@@ -334,6 +334,61 @@ if(root&&stage&&canvas&&ctx){
       put(0,.13+i*.46,0,1.3,.09,.54,"#c09377");
       for(let j=0;j<6;j++)put(-.46+j*.17,.23+i*.46,0,.13,.2,.31,["#907aa4","#819c89","#d4b58e","#a07579"][j%4]);
      }break;
+    case "car":
+     put(0,.33,0,1.55,.33,2.18,"#bc86aa");
+     put(0,.69,-.15,1.3,.43,1.09,"#d2a0c8");
+     put(0,.79,-.71,1.15,.24,.08,"#7492af");
+     for(const x of [-.72,.72])for(const z of [-.65,.65])round(x,.21,z,.22,.18,"#383746");
+     put(0,.27,-1.04,1.2,.1,.06,"#e6d3cd");
+     break;
+    case "tools":case "kitchen":case "dresser":
+     put(0,.5,0,1.28,1,.6,"#ad876b");
+     for(let i=0;i<3;i++)put(0,.27+i*.25,-.32,1.13,.2,.06,"#d1aa88");
+     if(item.type==="tools"){put(0,1.12,.25,1.3,.3,.15,"#696875");put(0,1.06,-.29,1.15,.08,.12,"#e2c87f")}
+     break;
+    case "bathtub":
+     put(0,.35,0,1.65,.59,.85,"#f2e9ed");put(0,.68,0,1.32,.02,.53,"#a3c9d9");
+     round(.65,.85,.25,.065,.3,"#dddde9");break;
+    case "toilet":
+     round(0,.37,0,.29,.42,"#f1eced");put(0,.83,.27,.55,.65,.23,"#ece9f2");break;
+    case "sink":
+     put(0,.65,0,.73,.2,.55,"#f4f0e9");round(0,.78,-.04,.2,.02,"#accada");break;
+    case "fridge":
+     put(0,1,0,.85,2,.75,"#cbd7e0");put(0,.45,-.4,.07,.32,.04,"#8795a5");
+     put(0,1.43,-.4,.07,.38,.04,"#8795a5");break;
+    case "stove":
+     put(0,.48,0,.85,.91,.75,"#dfd8d4");put(0,.94,0,.83,.04,.72,"#404957");
+     for(const x of [-.23,.23])for(const z of [-.2,.2])round(x,.97,z,.12,.02,"#73808d");break;
+    case "dining":
+     foot(1.44,.84,.52);put(0,.72,0,1.5,.14,.9,"#b88c6e");
+     break;
+    case "wardrobe":case "shelf":
+     put(0,1,0,TYPE_BY_ID[item.type].w,2,TYPE_BY_ID[item.type].d,"#bc947a");
+     put(-.3,1.0,-TYPE_BY_ID[item.type].d/2-.01,.04,.12,.035,"#6c5763");
+     put(.3,1.0,-TYPE_BY_ID[item.type].d/2-.01,.04,.12,.035,"#6c5763");break;
+    case "nightstand":case "windowseat":case "beanbag":
+     put(0,.36,0,TYPE_BY_ID[item.type].w,.65,TYPE_BY_ID[item.type].d,item.type==="beanbag"?"#9186c6":"#b78f79");break;
+    case "bike":
+     for(const z of [-.49,.49])sphere(0,.36,z,.3,"#424653");
+     put(0,.68,0,.12,.12,1.18,"#b391cc");put(0,.9,-.18,.07,.35,.12,"#d8c8cb");break;
+    case "arcade":
+     put(0,.75,0,.8,1.5,.76,"#654f8f");put(0,1.04,-.41,.63,.55,.045,"#7395b5");
+     put(0,.55,-.4,.58,.13,.11,"#c47aba");break;
+    case "piano":
+     put(0,.66,0,1.55,.7,.64,"#3f344a");put(0,1.0,-.33,1.42,.09,.2,"#f3ece4");
+     for(let i=0;i<9;i++)put(-.62+i*.155,1.057,-.32,.12,.02,.19,"#272936");break;
+    case "guitar":
+     put(0,.56,0,.14,1.08,.13,"#ad886a");sphere(0,.36,0,.26,"#cc986f");break;
+    case "pc":case "speaker":case "console":
+     put(0,.44,0,TYPE_BY_ID[item.type].w,.8,TYPE_BY_ID[item.type].d,"#33364c");
+     put(0,.4,-TYPE_BY_ID[item.type].d/2-.005,.32,.36,.02,"#867ec3");break;
+    default: {
+     const t=TYPE_BY_ID[item.type];
+     put(0,.32,0,t.w,.59,t.d,["#b59b87","#828eaa","#a57e9b"][t.id.length%3]);
+     // Provide a distinct visible object for every additional furniture type.
+     if(t.group==="Decor")round(0,.68,0,.16,.28,"#d1b8d5");
+     break;
+    }
    }
    group.traverse(o=>{o.userData.furnitureId=item.id});
    return group;
