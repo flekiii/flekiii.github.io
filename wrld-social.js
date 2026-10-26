@@ -17,7 +17,7 @@ async function api(path,method="GET",body=null){
 }
 function verified(){return !!S.user?.mfa_verified}
 function ensure2fa(){if(!S.user){openProfile();msg("Sign in first.");return false}if(!verified()){openProfile();msg("Verified authenticator 2FA is required.");return false}return true}
-function userRow(u,actions){return '<div class="social-person"><div class="social-person-main"><strong>'+esc(u.display_name||u.name||u.username)+'</strong><small>@'+esc(u.username)+'</small></div><div class="social-person-actions">'+actions+'</div></div>'}
+function userRow(u,actions){const visit=u.username?'<a class="social-mini social-visit-house" href="#house?u='+encodeURIComponent(u.username)+'" title="View public home">🏠 Дім</a>':'';return '<div class="social-person"><div class="social-person-main"><strong>'+esc(u.display_name||u.name||u.username)+'</strong><small>@'+esc(u.username)+'</small></div><div class="social-person-actions">'+visit+actions+'</div></div>'}
 function renderPasswordToggle(type){const btn=document.querySelector(".auth-show-password");if(btn){btn.textContent=type==="password"?"Show":"Hide";btn.setAttribute("aria-label",type==="password"?"Show password":"Hide password")}}
 function account(){
  if(!S.user){
