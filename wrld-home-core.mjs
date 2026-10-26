@@ -1,7 +1,20 @@
 // Fleki's Wrld House — deterministic shared model for 3D and 2D.
 // Model is browser-local. There is no account/cloud sync in this release.
 export const STORE_KEY="fleki_wrld_house_v1";
-export const LIMIT=36;
+export const LIMIT=90;
+export const HOUSE_TEMPLATES=[
+{id:"loft",name:"Міський лофт",rooms:1,icon:"🏙️",tag:"Студія"},
+{id:"cottage",name:"Затишний котедж",rooms:2,icon:"🏡",tag:"2 кімнати"},
+{id:"starter",name:"Перший дім",rooms:3,icon:"🏠",tag:"3 кімнати"},
+{id:"townhouse",name:"Таунхаус",rooms:4,icon:"🏘️",tag:"4 кімнати"},
+{id:"family",name:"Сімейний дім",rooms:5,icon:"🌷",tag:"5 кімнат"},
+{id:"villa",name:"Сонячна вілла",rooms:6,icon:"🌴",tag:"6 кімнат"},
+{id:"mansion",name:"Великий маєток",rooms:7,icon:"🏰",tag:"7 кімнат"},
+{id:"garage",name:"Гаражна майстерня",rooms:1,icon:"🚙",tag:"Гараж"},
+{id:"garagehouse",name:"Дім із гаражем",rooms:3,icon:"🚗",tag:"2 кімнати + гараж"},
+{id:"workshop",name:"Творчий комплекс",rooms:5,icon:"🛠️",tag:"4 кімнати + гараж"}
+];
+export const TEMPLATE_BY_ID=Object.fromEntries(HOUSE_TEMPLATES.map(h=>[h.id,h]));
 export const TYPES=[
  {id:"sofa",name:"Cloud sofa",icon:"🛋️",w:2,d:1,group:"Living"},
  {id:"table",name:"Coffee table",icon:"☕",w:1.15,d:.9,group:"Living"},
@@ -14,33 +27,89 @@ export const TYPES=[
  {id:"desk",name:"Work desk",icon:"🖥️",w:1.7,d:.9,group:"Studio"},
  {id:"chair",name:"Desk chair",icon:"🪑",w:.8,d:.8,group:"Studio"},
  {id:"pc",name:"Gaming PC",icon:"⌘",w:.6,d:.65,group:"Studio"},
- {id:"shelf",name:"Bookshelf",icon:"📚",w:1.35,d:.5,group:"Decor"}
+ {id:"shelf",name:"Bookshelf",icon:"📚",w:1.35,d:.5,group:"Decor"},
+ {id:"wardrobe",name:"Шафа",icon:"🚪",w:1.25,d:.65,group:"Bedroom"},
+ {id:"nightstand",name:"Тумбочка",icon:"▤",w:.55,d:.55,group:"Bedroom"},
+ {id:"mirror",name:"Дзеркало",icon:"🪞",w:.55,d:.4,group:"Decor"},
+ {id:"bathtub",name:"Ванна",icon:"🛁",w:1.65,d:.85,group:"Bathroom"},
+ {id:"sink",name:"Раковина",icon:"🚰",w:.75,d:.55,group:"Bathroom"},
+ {id:"toilet",name:"Туалет",icon:"🚽",w:.6,d:.72,group:"Bathroom"},
+ {id:"fridge",name:"Холодильник",icon:"🧊",w:.85,d:.76,group:"Kitchen"},
+ {id:"stove",name:"Плита",icon:"🍳",w:.85,d:.75,group:"Kitchen"},
+ {id:"dining",name:"Обідній стіл",icon:"🍽️",w:1.5,d:.9,group:"Kitchen"},
+ {id:"kitchen",name:"Кухонна стійка",icon:"🥣",w:1.45,d:.68,group:"Kitchen"},
+ {id:"car",name:"Автомобіль",icon:"🚗",w:1.65,d:2.3,group:"Garage"},
+ {id:"tools",name:"Верстак",icon:"🛠️",w:1.35,d:.65,group:"Garage"},
+ {id:"bike",name:"Велосипед",icon:"🚲",w:.55,d:1.35,group:"Garage"},
+ {id:"arcade",name:"Аркадний автомат",icon:"🕹️",w:.8,d:.76,group:"Gaming"},
+ {id:"console",name:"Консоль",icon:"🎮",w:.85,d:.48,group:"Gaming"},
+ {id:"speaker",name:"Колонки",icon:"🔊",w:.55,d:.48,group:"Gaming"},
+ {id:"painting",name:"Картина",icon:"🖼️",w:.9,d:.18,group:"Decor"},
+ {id:"flower",name:"Квіти",icon:"🌻",w:.52,d:.52,group:"Decor"},
+ {id:"piano",name:"Піаніно",icon:"🎹",w:1.55,d:.65,group:"Music"},
+ {id:"guitar",name:"Гітара",icon:"🎸",w:.47,d:.56,group:"Music"},
+ {id:"beanbag",name:"Пуф",icon:"🟣",w:.85,d:.85,group:"Living"},
+ {id:"windowseat",name:"Лавка",icon:"🪑",w:1.3,d:.55,group:"Living"},
+ {id:"pool",name:"Міні-більярд",icon:"🎱",w:1.75,d:1,group:"Gaming"}
 ];
 export const TYPE_BY_ID=Object.fromEntries(TYPES.map(t=>[t.id,t]));
-export const ROOMS={
- living:{name:"Living room",x:-1.75,z:-1.9,color:"#dbcdbb"},
- bedroom:{name:"Bedroom",x:-2.55,z:2.15,color:"#e1cddd"},
- studio:{name:"Studio",x:2.6,z:2.15,color:"#cbd5e4"}
-};
-export const WALLS=[
- {axis:"z",at:.5,from:-5,to:-3.1},
- {axis:"z",at:.5,from:-2.15,to:1.7},
- {axis:"z",at:.5,from:2.8,to:5},
- {axis:"x",at:.45,from:.5,to:1.75},
- {axis:"x",at:.45,from:2.65,to:4}
-];
-export const START_ITEMS=[
- {id:"item-1",type:"sofa",x:-2.15,z:-1.65,rot:0},
- {id:"item-2",type:"table",x:-2.2,z:-2.85,rot:0},
- {id:"item-3",type:"tv",x:1.45,z:-3.3,rot:0},
- {id:"item-4",type:"rug",x:-2.05,z:-2.12,rot:0},
- {id:"item-5",type:"plant",x:-4.3,z:-3.2,rot:0},
- {id:"item-6",type:"bed",x:-2.8,z:2.3,rot:0},
- {id:"item-7",type:"dresser",x:-.85,z:3.15,rot:1},
- {id:"item-8",type:"desk",x:2.5,z:3.25,rot:0},
- {id:"item-9",type:"chair",x:2.5,z:1.98,rot:0},
- {id:"item-10",type:"lamp",x:4.3,z:2.6,rot:0}
-];
+// In-place mutable structures: existing 2D and Three.js renderers share layouts.
+export const ROOMS={};
+export const WALLS=[];
+export const START_ITEMS=[];
+export let activeTemplate="starter";
+const PALETTE=["#ded1c3","#e2c9d7","#cad5e4","#d9dbca","#e5d0b7","#d1d4d9","#d9bfc4"];
+const HOUSE_ROOM_NAMES=["Вітальня","Спальня","Кабінет","Кухня","Ванна","Ігрова","Їдальня"];
+function wallsFromRooms(){
+ WALLS.length=0;
+ // only internal partitions: avoid duplicate segments for the same dividing wall
+ const seen=new Set();
+ for(const a of Object.values(ROOMS))for(const b of Object.values(ROOMS)){
+  if(a.id>=b.id)continue;
+  let axis,at,from,to;
+  if(Math.abs(a.x+a.w/2-(b.x-b.w/2))<.01||Math.abs(b.x+b.w/2-(a.x-a.w/2))<.01){
+   axis="x";at=Math.abs(a.x+a.w/2-(b.x-b.w/2))<.01?a.x+a.w/2:b.x+b.w/2;
+   from=Math.max(a.z-a.d/2,b.z-b.d/2);to=Math.min(a.z+a.d/2,b.z+b.d/2);
+  }else if(Math.abs(a.z+a.d/2-(b.z-b.d/2))<.01||Math.abs(b.z+b.d/2-(a.z-a.d/2))<.01){
+   axis="z";at=Math.abs(a.z+a.d/2-(b.z-b.d/2))<.01?a.z+a.d/2:b.z+b.d/2;
+   from=Math.max(a.x-a.w/2,b.x-b.w/2);to=Math.min(a.x+a.w/2,b.x+b.w/2);
+  }else continue;
+  if(to-from<.5)continue;
+  const k=[axis,at,from,to].join(":");if(seen.has(k))continue;seen.add(k);
+  // a centered pass-through doorway ~1 unit wide
+  const mid=(from+to)/2,gap=Math.min(.54,(to-from)*.23);
+  if(mid-gap>from+.1)WALLS.push({axis,at,from,to:mid-gap});
+  if(mid+gap<to-.1)WALLS.push({axis,at,from:mid+gap,to});
+ }
+}
+export function setLayout(id="starter"){
+ const t=TEMPLATE_BY_ID[id]||TEMPLATE_BY_ID.starter;
+ activeTemplate=t.id;
+ for(const k of Object.keys(ROOMS))delete ROOMS[k];
+ const n=t.rooms,cols=n<=2?n:n<=4?2:n<=6?3:4,rows=Math.ceil(n/cols);
+ let counter=0;
+ for(let row=0;row<rows;row++){
+  const count=Math.min(cols,n-counter),width=10/count,height=8/rows;
+  for(let col=0;col<count;col++){
+   const garage=(t.id==="garage"||t.id==="garagehouse"||t.id==="workshop")&&counter===n-1;
+   const id="room"+(counter+1);
+   const w=width,d=height,x=-5+(col+.5)*width,z=-4+(row+.5)*height;
+   ROOMS[id]={id,name:garage?"Гараж":HOUSE_ROOM_NAMES[counter%HOUSE_ROOM_NAMES.length],x,z,w,d,
+    color:garage?"#c1c5cd":PALETTE[counter%PALETTE.length],garage};
+   counter++;
+  }
+ }
+ wallsFromRooms();START_ITEMS.length=0;
+ // Make initial furnishings fit even the smallest floorplan.
+ const defaults=["sofa","bed","desk","dining","bathtub","arcade","table"];
+ let next=1;
+ for(const [index,room] of Object.values(ROOMS).entries()){
+  const type=room.garage?"tools":defaults[index%defaults.length];
+  const pos=findPlace(type,START_ITEMS,room.id);
+  if(pos){START_ITEMS.push({...pos,id:"item-"+next++});}
+ }
+ return t;
+}
 export const cloneItems=items=>items.map(item=>({...item}));
 export const rounded=n=>Math.round(n*4)/4;
 export const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
@@ -53,11 +122,9 @@ export function validItem(item){
  if(!item||!TYPE_BY_ID[item.type]||typeof item.id!=="string"||!/^[-a-zA-Z0-9]{1,50}$/.test(item.id))return false;
  if(!Number.isFinite(item.x)||!Number.isFinite(item.z)||!Number.isInteger(item.rot)||item.rot<0||item.rot>3)return false;
  const {w,d}=size(item);
- if(Math.abs(item.x)+w/2>4.89||Math.abs(item.z)+d/2>3.88)return false;
- for(const wall of WALLS){
-  if(wall.axis==="z"&&Math.abs(item.z-wall.at)<d/2+.105&&item.x+w/2>wall.from&&item.x-w/2<wall.to)return false;
-  if(wall.axis==="x"&&Math.abs(item.x-wall.at)<w/2+.105&&item.z+d/2>wall.from&&item.z-d/2<wall.to)return false;
- }
+ const room=ROOMS[atRoom(item.x,item.z)];
+ if(!room)return false;
+ if(Math.abs(item.x-room.x)+w/2>room.w/2-.13||Math.abs(item.z-room.z)+d/2>room.d/2-.13)return false;
  return true;
 }
 export function canPlace(item,existing){
@@ -74,14 +141,14 @@ export function canPlace(item,existing){
  return true;
 }
 export function atRoom(x,z){
- if(z<.5)return "living";
- return x<.45?"bedroom":"studio";
+ const room=Object.values(ROOMS).find(p=>Math.abs(x-p.x)<=p.w/2&&Math.abs(z-p.z)<=p.d/2);
+ return room?.id||null;
 }
 export function findPlace(type,items,room="living"){
  if(!TYPE_BY_ID[type])return null;
  const preference=ROOMS[room]||ROOMS.living;
  const probes=[];
- for(let radius=0;radius<=5;radius+=.25)for(let angle=0;angle<Math.PI*2;angle+=Math.PI/10){
+ for(let radius=0;radius<=7;radius+=.25)for(let angle=0;angle<Math.PI*2;angle+=Math.PI/10){
   probes.push({x:rounded(preference.x+radius*Math.cos(angle)),z:rounded(preference.z+radius*Math.sin(angle))});
  }
  for(const pos of probes){
@@ -104,5 +171,7 @@ export function restore(raw){
  return result;
 }
 export function encode(items){
- return JSON.stringify({version:1,items:items.map(({id,type,x,z,rot})=>({id,type,x,z,rot})),savedAt:Date.now()});
+ return JSON.stringify({version:1,template:activeTemplate,items:items.map(({id,type,x,z,rot})=>({id,type,x,z,rot})),savedAt:Date.now()});
 }
+
+setLayout("starter");
