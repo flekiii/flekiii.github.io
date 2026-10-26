@@ -34,7 +34,7 @@ test("Auth2FA QR generated locally, not sent to third parties",()=>{
  assert.match(html,/vendor\/qrcode\.js/);
 });
 test("Only validated image types and bounded upload sizes",()=>{
- assert.match(profile,/420000:1450000/);
+ assert.match(profile,/MAX_MEDIA_BYTES=3\*1024\*1024/);\n assert.match(profile,/MEDIA_CHUNK_BYTES=512\*1024/);
  assert.match(profile,/mediaMime\(raw\)/);
  assert.match(profile,/image\/gif/);
  assert.match(profile,/new Uint8Array\(await req\.arrayBuffer\(\)\)/);
