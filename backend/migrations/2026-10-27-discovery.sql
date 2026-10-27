@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS wrld_discovery_reports(reporter TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,target TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,reason TEXT NOT NULL,created_at INTEGER NOT NULL,PRIMARY KEY(reporter,target));
