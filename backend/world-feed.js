@@ -6,6 +6,11 @@ export async function worldFeed(req,db,me){
   const rows=(await db.prepare("SELECT p.id,p.author,p.body,p.created_at,u.username,u.display_name,(SELECT COUNT(*) FROM wrld_world_likes l WHERE l.post_id=p.id) likes FROM wrld_world_posts p JOIN users u ON u.id=p.author ORDER BY p.created_at DESC LIMIT 35").all()).results||[];
   return out({posts:rows});
  }
+ if(p==="/world/comments"&&req.method==="GET"){
+  const id=(url.searchParams.get("post")||"").slice(0,48);
+  const rows=(await db.prepare("SELECT c.id,c.body,c.created_at,u.username FROM wrld_world_comments c JOIN users u ON u.id=c.author WHERE c.post_id=? ORDER BY c.created_at DESC LIMIT 30").bind(id).all()).results||[];
+  return out({comments:rows});
+ }
  if(!me)return out({error:"Sign in first"},401);
  let v;try{v=JSON.parse(await req.text())}catch{return out({error:"Invalid JSON"},400)}
  if(p==="/world/post"&&req.method==="POST"){
