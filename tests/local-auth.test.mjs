@@ -39,7 +39,7 @@ function setup({passwordIsValid=true,privateServicesWork=false,initialToken=""}=
    dispatchEvent(){},
    location:{assign(){}}
   },
-  FormData:class {constructor(form){this.entries=()=>Object.entries(form.values||{})}},
+  FormData:class {constructor(form){this.values=form.values||{}}[Symbol.iterator](){return Object.entries(this.values)[Symbol.iterator]()}},
   Event:class{constructor(type){this.type=type}},
   AbortController,URL,JSON,Date,Number,Math,String,Array,Map,Set,Promise,Uint8Array,
   console,setTimeout,clearTimeout,setInterval:()=>0
