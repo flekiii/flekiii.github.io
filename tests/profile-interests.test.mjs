@@ -38,9 +38,9 @@ test("Search in both site languages and switch categories without losing selecte
  assert.match(screen,/My special hobby/);
  assert.match(screen,/data-wi="category"/);
  s.input("кодинг");
- // Ukrainian heading for 'Coding' is Програмування; search 'кодинг' is an alias needed!
  const found=s.nodes["wi-results"].innerHTML;
- assert.match(found,/data-wi="custom"/);
+ assert.match(found,/Програмування/);
+ assert.doesNotMatch(found,/data-wi="custom"/);
  s.input("програмування");
  assert.match(s.nodes["wi-results"].innerHTML,/Програмування/);
  s.click("category","anime");

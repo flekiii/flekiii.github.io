@@ -59,7 +59,8 @@
   const [en,uk,icon]=raw.split("|");return {en,uk,icon,category,groupEn,groupUk};
  }));
  const norm=v=>String(v??"").normalize("NFKC").trim().toLocaleLowerCase();
- const match=v=>items.find(x=>norm(x.en)===norm(v)||norm(x.uk)===norm(v));
+ const aliases={Gaming:["games","геймінг","ігри"],Coding:["кодинг","programming","програмування"],Anime:["anime","аніме"],"Video editing":["монтаж","відео монтаж"],"Digital art":["діджитал арт"],"Content creation":["блогінг","блогерство"],"PC gaming":["комп’ютерні ігри"],"Web development":["веб дев","веб девелопмент"]};
+ const match=v=>items.find(x=>[x.en,x.uk,...(aliases[x.en]||[])].some(y=>norm(y)===norm(v)));
  const key=v=>norm(match(v)?.en||v);
  const lang=()=>document.documentElement.lang==="uk"?"uk":"en";
  const t=(en,uk)=>lang()==="uk"?uk:en;
@@ -73,7 +74,7 @@
   .map(([id,icon,en,uk])=>'<button type="button" class="wi-category'+(id===category?' active':'')+'" data-wi="category" data-value="'+id+'" aria-pressed="'+(id===category)+'">'+icon+' '+(lang()==="uk"?uk:en)+'</button>').join("");
  function results(){
   const q=norm(query),chosen=new Set(selected.map(key));
-  const shown=items.filter(x=>(category==="all"||x.category===category)&&(!q||[x.en,x.uk,x.groupEn,x.groupUk].some(y=>norm(y).includes(q))));
+  const shown=items.filter(x=>(category==="all"||x.category===category)&&(!q||[x.en,x.uk,x.groupEn,x.groupUk,...(aliases[x.en]||[])].some(y=>norm(y).includes(q))));
   const body='<div class="wi-grid">'+shown.map(x=>{
    const active=chosen.has(key(x.en));
    return '<button type="button" class="wi-tile'+(active?' chosen':'')+'" data-wi="toggle" data-value="'+esc(x.en)+'" aria-pressed="'+active+'">'+
