@@ -31,7 +31,9 @@ test("Discovery requires opt-in and restricts both sides to one self-reported ag
  assert.match(discovery,/wrld_profile_bans/);
  assert.doesNotMatch(discovery,/phone|district|\.age\s*,\s*interests:/);
  const screen=read("wrld-discover.mjs");
- assert.match(screen,/Dating · 18\+ \(not available\)/);
+ assert.match(screen,/Dating · 15\+/);
+ assert.match(discovery,/wrld_discovery_dating/);
+ assert.match(discovery,/if\(sourceMode==="dating"\)/);
  assert.match(screen,/data-fd="report"/);
  assert.match(screen,/data-fd="block"/);
  assert.match(html,/id="wrld-discover-root"/);
@@ -54,5 +56,5 @@ test("Versioned assets and Worker routes match",()=>{
  assert.match(worker,/gamesCatalog\(req,path\)/);
  assert.match(html,/wrld-profile\.js\?v=11/);
  assert.match(html,/wrld-world\.mjs\?v=7/);
- assert.match(html,/wrld-discover\.mjs\?v=2/);
+ assert.match(html,/wrld-discover\.mjs\?v=3/);
 });
