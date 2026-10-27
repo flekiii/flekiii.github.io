@@ -77,3 +77,34 @@ jobs:
         with:
           path: .
       - uses: actions/deploy-pages@v4
+
+  api-smoke:
+    needs: deploy
+    if: ${{ needs.deploy.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check public World API and browser CORS
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://flekis-wrld-api.flekideveloper.workers.dev"
+          origin="https://flekiii.github.io"
+          check_get() {
+            local path="$1" expected="$2" code
+            local headers body
+            headers="$(mktemp)"
+            body="$(mktemp)"
+            code="$(curl -sS --retry 2 --retry-all-errors --max-time 20 -D "$headers" -o "$body" -w '%{http_code}' -H "Origin: $origin" "$url$path")"
+            test "$code" = "$expected" || { echo "::error::$path returned HTTP $code (expected $expected)"; exit 1; }
+            grep -iq "^access-control-allow-origin: $origin" "$headers" || { echo "::error::$path is missing CORS"; exit 1; }
+            jq -e . "$body" >/dev/null || { echo "::error::$path did not return JSON"; exit 1; }
+            echo "$path: HTTP $code with CORS and JSON"
+          }
+          check_get "/world/quests" 401
+          check_get "/world/ranking" 200
+          headers="$(mktemp)"
+          code="$(curl -sS --retry 2 --retry-all-errors --max-time 20 -o /dev/null -D "$headers" -w '%{http_code}' -X OPTIONS -H "Origin: $origin" -H "Access-Control-Request-Method: GET" -H "Access-Control-Request-Headers: authorization" "$url/world/quests")"
+          test "$code" = "204" || { echo "::error::Quest preflight returned HTTP $code"; exit 1; }
+          grep -iq "^access-control-allow-origin: $origin" "$headers" || { echo "::error::Quest preflight is missing CORS"; exit 1; }
+          grep -iq "^access-control-allow-headers:.*Authorization" "$headers" || { echo "::error::Quest preflight does not allow Authorization"; exit 1; }
+          echo "Quest preflight: HTTP 204 with CORS"

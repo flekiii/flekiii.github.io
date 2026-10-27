@@ -6,7 +6,7 @@ import vm from "node:vm";
 const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
 const source=read("wrld-world.mjs"),html=read("index.html"),stylesheet=read("wrld-polish.css");
 
-async function openProgress({loggedIn=true,failQuest=false}={}){
+async function openProgress({loggedIn=true,failQuest=false,failOnce=false,failAlways=false}={}){
  const panel={innerHTML:""},feedback={textContent:""},handlers={};
  const root={
   innerHTML:"",
@@ -23,9 +23,11 @@ async function openProgress({loggedIn=true,failQuest=false}={}){
   }
  };
  const calls=[];
+ let networkFailures=0;
  const fetch=async url=>{
   const path=new URL(url).pathname;
   calls.push(path);
+  if(path==="/world/quests"&&(failAlways||(failOnce&&networkFailures++===0)))throw new TypeError("NetworkError when attempting to fetch resource.");
   const results={
    "/world/ranking":{ranking:[]},
    "/world/progress":{progress:{level:2,xp:85,badges:["first-post"]}},
@@ -56,6 +58,19 @@ test("World Progress renders authenticated XP and real quests without ReferenceE
  assert.ok(requests.includes("/world/quests"));
 });
 
+test("A transient network failure retries the read once and still displays quests",async()=>{
+ const {output,requests}=await openProgress({failOnce:true});
+ assert.match(output,/Опублікуй допис/);
+ assert.equal(requests.filter(x=>x==="/world/quests").length,2);
+});
+
+test("Persistent network failures show a localized retry message",async()=>{
+ const {output,requests}=await openProgress({failAlways:true});
+ assert.match(output,/API світу недоступний/);
+ assert.match(output,/data-ww="retry"/);
+ assert.equal(requests.filter(x=>x==="/world/quests").length,2);
+});
+
 test("Failed quest API does not hide XP and shows a working retry control",async()=>{
  const {output}=await openProgress({failQuest:true});
  assert.match(output,/85 XP/);
@@ -75,7 +90,7 @@ test("Header language selector uses the shared site theme and responsive accessi
  assert.match(html,/class="wrld-lang-picker"/);
  assert.match(html,/id="siteLanguage" aria-label="Site language"/);
  assert.match(html,/wrld-lang-caption" data-en="Language" data-uk="Мова"/);
- assert.match(html,/wrld-world\.mjs\?v=6/);
+ assert.match(html,/wrld-world\\.mjs\\?v=7/);
  assert.match(html,/wrld-polish\.css\?v=2/);
  assert.match(stylesheet,/\.wrld-lang-picker:focus-within/);
  assert.match(stylesheet,/#siteLanguage\{appearance:none/);

@@ -7,12 +7,20 @@ if(root){
  let tab="feed",loading=false,feedMode="all",gallerySort="popular",search="",nonce=0;
  const active=()=>document.getElementById("page-world")?.classList.contains("active");
  async function api(path,method="GET",body){
-  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);
-  try{
-   const res=await fetch(API+path,{method,headers:{Accept:"application/json",...(token()?{Authorization:"Bearer "+token()}:{}),...(body?{"Content-Type":"application/json"}:{})},body:body?JSON.stringify(body):undefined,cache:"no-store",signal:controller.signal});
-   const json=await res.json().catch(()=>({}));if(!res.ok)throw Error(json.error||"Request failed: "+res.status);
-   return json;
-  }finally{clearTimeout(timeout)}
+  // Retry one transient network error for reads only. Never retry a claim or other write.
+  for(let attempt=0;attempt<(method==="GET"?2:1);attempt++){
+   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);
+   try{
+    const res=await fetch(API+path,{method,headers:{Accept:"application/json",...(token()?{Authorization:"Bearer "+token()}:{}),...(body?{"Content-Type":"application/json"}:{})},body:body?JSON.stringify(body):undefined,cache:"no-store",signal:controller.signal});
+    const json=await res.json().catch(()=>({}));if(!res.ok)throw Error(json.error||"Request failed: "+res.status);
+    return json;
+   }catch(error){
+    const networkError=error?.name==="TypeError"||error?.name==="AbortError";
+    if(networkError&&method==="GET"&&attempt===0)continue;
+    if(networkError)throw Error(t("World API is unreachable. Check your connection or browser protection, then retry.","API світу недоступний. Перевір з’єднання або захист браузера та повтори."));
+    throw error;
+   }finally{clearTimeout(timeout)}
+  }
  }
  const notice=s=>{const n=root.querySelector("#ww-feedback");if(n)n.textContent=s};
  const tabs=[["feed","✦","Activity","Активність"],["clubs","👥","Clubs","Клуби"],["progress","🏆","Progress","Прогрес"]];

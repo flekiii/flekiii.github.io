@@ -59,7 +59,8 @@ async function questHandle(req,db,user){
 }
 export async function worldHandle(req,env,path,{auth,authorized}){
  if(!path.startsWith("/world/"))return null;
- await init(env.DB);
+ // Quest tables are already provisioned in D1: never require schema writes just to read quests.
+ if(path!=="/world/quests"&&path!=="/world/quest/claim")await init(env.DB);
  const user=req.headers.get("Authorization")?await auth(req,env.DB):null;
  if(path==="/world/gallery")return err("House gallery retired",410);
  if(path==="/world/quests"&&req.method==="GET")return user?questHandle(req,env.DB,user):err("Sign in to view quests",401);

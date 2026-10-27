@@ -38,6 +38,7 @@ test("Quest list is readable cross-origin by logged-in browser instead of a Netw
  const db=mockDB(),response=await request(db,"/world/quests");
  assert.equal(response.status,200);
  assertBrowserReadable(response);
+ assert.equal(db.statements.some(x=>x.sql.startsWith("CREATE TABLE")),false,"Reading quests must not depend on D1 schema writes");
  const result=await response.json();
  assert.ok(result.quests.length>=5);
  assert.equal(result.quests.find(x=>x.id==="share-post").complete,true);
