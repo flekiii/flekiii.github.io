@@ -18,7 +18,7 @@ if(root){
    '<p role="status" class="sc-feedback">'+esc(feedback)+'</p>'+
    (loading?'<div class="sc-empty">'+tr("Loading profiles…","Завантажуємо профілі…")+'</div>':
    '<div class="sc-grid">'+(profiles.length?profiles.map((p,i)=>
-     '<article class="sc-profile"><div class="sc-cover"><span class="sc-spark">✧</span><span class="sc-level">★ '+Number(p.level||1)+'</span></div><div class="sc-profile-inner"><div class="sc-person"><div class="sc-avatar">'+esc(p.display_name.slice(0,1).toUpperCase())+'</div><div><h3>'+esc(p.display_name)+'</h3><p>@'+esc(p.username)+'</p></div></div>'+
+     '<article class="sc-profile"><div class="sc-cover"><span class="sc-spark">✧</span><span class="sc-level">★ '+Number(p.level||1)+'</span></div><div class="sc-profile-inner"><div class="sc-person"><div class="sc-avatar">'+esc(p.display_name.slice(0,1).toUpperCase())+'</div><div><h3>'+esc(p.display_name)+'</h3>'+( /^fmail_[a-z0-9]+$/i.test(p.username)?'':'<p>@'+esc(p.username)+'</p>')+'</div></div>'+
      (p.status_text?'<p class="sc-status">'+esc(p.status_emoji||"💬")+' '+esc(p.status_text)+'</p>':'')+
      '<p class="sc-bio">'+esc(p.bio||tr("A world of creativity.","Світ творчості."))+'</p>'+
      '<div class="sc-interests">'+(p.interests||[]).slice(0,6).map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>'+

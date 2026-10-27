@@ -27,7 +27,7 @@ if(root){
    '<p class="fd-feedback" role="status">'+esc(message)+(group?' · '+esc(group):"")+'</p>'+
    (loading?'<p class="fd-empty">'+tr("Loading members…","Завантажуємо учасників…")+'</p>':
    '<div class="fd-grid">'+(members.length?members.map(p=>
-   '<article class="fd-card"><div class="fd-card-top"><span class="fd-avatar">'+esc((p.display_name||p.username).slice(0,1).toUpperCase())+'</span><div><h3>'+esc(p.display_name)+'</h3><small>@'+esc(p.username)+' · '+esc(p.age_group)+'</small></div></div>'+
+   '<article class="fd-card"><div class="fd-card-top"><span class="fd-avatar">'+esc((p.display_name||p.username).slice(0,1).toUpperCase())+'</span><div><h3>'+esc(p.display_name)+'</h3><small>'+( /^fmail_[a-z0-9]+$/i.test(p.username)?'':'@'+esc(p.username)+' · ')+esc(p.age_group)+'</small></div></div>'+
    (p.status_text?'<p>'+esc(p.status_emoji||"💬")+' '+esc(p.status_text)+'</p>':"")+
    '<div class="fd-tags">'+(p.interests||[]).map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>'+
    '<small>'+p.common+' '+tr("shared interests","спільних інтересів")+'</small>'+
