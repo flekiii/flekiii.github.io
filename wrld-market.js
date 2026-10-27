@@ -5,6 +5,7 @@ const API="https://flekis-wrld-api.flekideveloper.workers.dev";
 const root=document.getElementById("wrld-market-root");
 if(!root)return;
 const $=q=>root.querySelector(q),$$=q=>[...root.querySelectorAll(q)];
+const tr=(en,uk)=>document.documentElement?.lang==="uk"?uk:en;
 const escape=s=>String(s??"").replace(/[&<>"']/g,v=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[v]));
 const categories={furniture:"Furniture & home",food:"Food & groceries",games:"Games",game_accounts:"Game accounts",game_currency:"In-game currency",electronics:"Computers & electronics",clothing:"Clothing",digital:"Digital products",services:"Services",other:"Other"};
 const currencies=["UAH","USD","EUR","GBP","PLN","CAD","AUD","JPY","CHF","SEK","NOK","DKK","CZK","HUF","RON","TRY","BRL","INR"];
@@ -21,6 +22,7 @@ const MAX_MARKET_PHOTO=4*1024*1024;
 let authState="loading",myId=null,shopFormOpen=false,editing=null,threadSide="buy";
 let options=null,shippingProviders=[],carrierLoadToken=0;
 let filters={q:"",category:"",subcategory:"",country:"",negotiable:""};
+let filtersOpen=false,lastPaintIdentity="";
 const choiceOptions=(items,selected="")=>items.map(x=>'<option value="'+escape(x.id)+'"'+(x.id===selected?" selected":"")+'>'+escape(x.label)+'</option>').join("");
 const subcategoryChoices=(category,selected="")=>{
  const list=options?.categories?.[category]?.subcategories||[];
@@ -116,12 +118,12 @@ const verifiedGate=()=>{
  return '<div class="market-auth-gate" role="region" aria-label="Marketplace access"><div class="market-auth-art" aria-hidden="true">✦</div><span class="market-auth-kicker">FLEKI’S WRLD · SECURE MARKETPLACE</span><h2>'+ (busy?'Checking your access…':login?'Enter the marketplace.':'One security check left.') +'</h2><p>'+ (busy?'Verifying your account and session.':login?'Sign in or create a Fleki’s Wrld account to browse goods, message sellers and save favorites.':'For everyone’s safety, verify your six-digit code in Profile using Auth2FA. Then the marketplace will unlock automatically.')+'</p>'+(busy?'':'<div class="market-gate-actions"><button type="button" class="btn primary" data-market-profile="1">'+(login?'Sign in / Register':'Verify Auth2FA')+' →</button><button type="button" class="btn" data-market-check="1">I’m ready · Recheck</button></div>')+'<span class="market-gate-note">🔒 Listings and messages stay private until 2FA is verified</span></div>';
 };
 function menu(){
- const nav=[["my","My listings","▤"],["wishlist","Wishlist","♡"],["messages","Messages","✉"]];
- return '<aside class="market-rail"><div class="market-rail-header"><span class="market-rail-mark">✦</span><div><strong>Marketplace</strong><small>Trade · Discover · Connect</small></div></div><a class="market-shop-link market-shop-top" href="https://t.me/flekusik" target="_blank" rel="noopener noreferrer" aria-label="Apply to register your store through Telegram">Register a shop <span>↗</span></a><nav aria-label="My marketplace">'+nav.map(([id,label,icon])=>'<button type="button" class="market-rail-link '+(view===id?"active":"")+'" data-market-view="'+id+'"><span>'+icon+'</span>'+label+'</button>').join("")+'</nav><button type="button" class="market-rail-link market-rail-home '+(view==="browse"?"active":"")+'" data-market-view="browse">← Browse listings</button></aside>';
+ const nav=[["my",tr("My listings","Мої оголошення"),"▤"],["wishlist",tr("Wishlist","Обране"),"♡"],["messages",tr("Messages","Повідомлення"),"✉"]];
+ return '<aside class="market-rail"><div class="market-rail-header"><span class="market-rail-mark">✦</span><div><strong>Marketplace</strong><small>'+tr("Trade · Discover · Connect","Купуй · Продавай · Спілкуйся")+'</small></div></div><a class="market-shop-link market-shop-top" href="https://t.me/flekusik" target="_blank" rel="noopener noreferrer" aria-label="Apply to register your store through Telegram">'+tr("Register a shop","Зареєструвати магазин")+' <span>↗</span></a><nav aria-label="'+tr("My marketplace","Розділи маркетплейсу")+'">'+nav.map(([id,label,icon])=>'<button type="button" class="market-rail-link '+(view===id?"active":"")+'" data-market-view="'+id+'" aria-pressed="'+(view===id)+'"><span>'+icon+'</span>'+label+'</button>').join("")+'</nav><button type="button" class="market-rail-link market-rail-home '+(view==="browse"?"active":"")+'" data-market-view="browse">← '+tr("Browse listings","Каталог товарів")+'</button></aside>';
 }
 function topbar(){
- const names={browse:"Explore listings",my:"My listings",wishlist:"Wishlist",messages:"Buyer & seller chats"};
- return '<div class="market-topbar"><div><small>FLEKI’S WRLD MARKETPLACE</small><h2>'+names[view]+'</h2></div><button type="button" class="market-topplus" data-market-create="1" title="Create listing" aria-label="Create listing">＋</button></div><p id="market-status" class="market-status" role="status" data-error="'+String(statusError)+'">'+escape(status)+'</p>'+(options?'':'<button type="button" class="btn" data-market-retry="1">Reload marketplace options</button>');
+ const names={browse:tr("Explore listings","Каталог товарів"),my:tr("My listings","Мої оголошення"),wishlist:tr("Wishlist","Обране"),messages:tr("Buyer & seller chats","Чати покупця й продавця")};
+ return '<div class="market-topbar"><div><small>FLEKI’S WRLD MARKETPLACE</small><h2>'+names[view]+'</h2></div><button type="button" class="market-topplus" data-market-create="1" title="'+tr("Create listing","Створити оголошення")+'" aria-label="'+tr("Create listing","Створити оголошення")+'">＋</button></div><p id="market-status" class="market-status" role="status" data-error="'+String(statusError)+'">'+escape(status)+'</p>'+(options?'':'<button type="button" class="btn" data-market-retry="1">Reload marketplace options</button>');
 }
 function mediaPreview(item){
  const images=Array.isArray(item.images)?item.images:[];
@@ -138,9 +140,20 @@ function detail(item){
  '<div class="market-actions"><button class="btn primary" type="button" data-market-chat="'+escape(item.id)+'">Message the seller</button><button type="button" class="btn '+(item.favorited?'market-liked':'')+'" data-market-favorite="'+escape(item.id)+'">'+(item.favorited?'♥ Saved':'♡ Wishlist')+' · '+(item.favorite_count||0)+'</button><button type="button" class="btn '+(item.my_reaction===1?'market-liked':'')+'" data-market-reaction="'+escape(item.id)+'" data-reaction="1">👍 '+(item.likes||0)+'</button><button type="button" class="btn '+(item.my_reaction===-1?'market-liked':'')+'" data-market-reaction="'+escape(item.id)+'" data-reaction="-1">👎 '+(item.dislikes||0)+'</button><button class="btn" type="button" data-market-report="'+escape(item.id)+'">Report listing</button></div><p class="market-footnote">Arrange payment and shipping with the seller directly. Fleki’s Wrld does not process payments, guarantee delivery or hold funds in escrow.</p></div>';
 }
 function renderBrowse(){
- return '<div class="market-filters"><input id="marketSearch" type="search" maxlength="70" placeholder="Search shorts, bedside tables, phones, games…" aria-label="Search marketplace" value="'+escape(filters.q)+'"><select id="marketCategory"><option value="">All categories</option>'+Object.entries(options?.categories||Object.fromEntries(Object.entries(categories).map(([id,label])=>[id,{label}]))).map(([id,group])=>'<option value="'+id+'"'+(id===filters.category?" selected":"")+'>'+escape(group.label)+'</option>').join("")+'</select><select id="marketFilterSubcategory" '+(!filters.category?"disabled":"")+'>'+subcategoryChoices(filters.category,filters.subcategory)+'</select><select id="marketCountry"><option value="">All countries</option>'+selectCountries(filters.country?[filters.country]:[])+'</select><select id="marketNegotiable"><option value="">Fixed price or bargaining</option><option value="true"'+(filters.negotiable==="true"?" selected":"")+'>Negotiable prices only</option><option value="false"'+(filters.negotiable==="false"?" selected":"")+'>Fixed prices only</option></select><button class="btn" data-market-search="1" type="button">Search</button></div>'+
- '<p class="market-footnote">Only list goods you legally own and can transfer. Game account/currency trades may violate game rules. Shipping carrier availability and payment methods must be confirmed with the seller; the platform does not take payments.</p>'+
- (selected?detail(selected):'<div class="market-grid">'+(listings.length?listings.map(itemCard).join(""):'<div class="market-empty"><h3>No listings match yet</h3><p>Be the first to publish a real item, or change your search filters.</p><button class="btn primary" data-market-create="1" type="button">＋ Sell an item</button></div>')+'</div>');
+ if(selected)return detail(selected);
+ const groups=options?.categories||Object.fromEntries(Object.entries(categories).map(([id,label])=>[id,{label}]));
+ const option=(key,label,current)=>'<option value="'+escape(key)+'"'+(key===current?' selected':'')+'>'+escape(label)+'</option>';
+ return '<div class="market-filters'+(filtersOpen?' filters-open':'')+'">'+
+ '<input id="marketSearch" type="search" maxlength="70" placeholder="'+tr("Search products, games, electronics…","Пошук товарів, ігор, техніки…")+'" aria-label="'+tr("Search marketplace","Пошук по маркетплейсу")+'" value="'+escape(filters.q)+'">'+
+ '<button class="btn market-filter-toggle" type="button" data-market-toggle-filters="1" aria-expanded="'+filtersOpen+'" aria-controls="marketAdvancedFilters">⚙ '+tr("Filters","Фільтри")+'</button>'+
+ '<button class="btn primary market-search-button" data-market-search="1" type="button">'+tr("Search","Знайти")+' →</button>'+
+ '<div class="market-filter-advanced" id="marketAdvancedFilters"><select id="marketCategory" aria-label="'+tr("Category","Категорія")+'"><option value="">'+tr("All categories","Усі категорії")+'</option>'+Object.entries(groups).map(([id,g])=>option(id,g.label,filters.category)).join("")+'</select>'+
+ '<select id="marketFilterSubcategory" aria-label="'+tr("Product type","Тип товару")+'" '+(!filters.category?"disabled":"")+'>'+subcategoryChoices(filters.category,filters.subcategory)+'</select>'+
+ '<select id="marketCountry" aria-label="'+tr("Seller country","Країна продавця")+'"><option value="">'+tr("All countries","Усі країни")+'</option>'+selectCountries(filters.country?[filters.country]:[])+'</select>'+
+ '<select id="marketNegotiable" aria-label="'+tr("Price negotiation","Торг")+'"><option value="">'+tr("All prices","Усі ціни")+'</option><option value="true"'+(filters.negotiable==="true"?" selected":"")+'>'+tr("Negotiable only","З торгом")+'</option><option value="false"'+(filters.negotiable==="false"?" selected":"")+'>'+tr("Fixed price only","Фіксована ціна")+'</option></select></div></div>'+
+ '<div class="market-results-heading"><strong>'+tr("Available listings","Доступні оголошення")+'</strong><span>'+listings.length+' '+tr("items","товарів")+'</span></div>'+
+ '<div class="market-grid" role="list" aria-label="'+tr("Marketplace listings","Оголошення маркетплейсу")+'">'+(listings.length?listings.map(itemCard).join(""):'<div class="market-empty"><h3>'+tr("Nothing found yet","Поки нічого не знайдено")+'</h3><p>'+tr("Try different filters or publish the first real item.","Спробуй інші фільтри або опублікуй перший товар.")+'</p><button class="btn primary" data-market-create="1" type="button">'+tr("＋ Sell an item","＋ Продати товар")+'</button></div>')+'</div>'+
+ '<p class="market-footnote">'+tr("List only goods you legally own and can transfer. Game-account trades may violate rules. Arrange payment and shipping with the seller.","Публікуй лише товари, якими законно володієш. Продаж ігрових акаунтів може порушувати правила. Оплату та доставку узгоджуй із продавцем.")+'</p>';
 }
 function photoQueueMarkup(){
  return '<div class="market-upload-gallery">'+photoPreviews.map((src,i)=>'<div class="market-upload-shot"><img src="'+escape(src)+'" alt="Photo '+(i+1)+'"><button type="button" data-market-photo-remove="'+i+'" aria-label="Remove photo">×</button></div>').join("")+'</div>';
@@ -212,11 +225,15 @@ function fillEditor(){
 }
 function paint(){
  if(authState!=="verified"){
-  root.innerHTML=verifiedGate();return;
+  lastPaintIdentity="";root.innerHTML=verifiedGate();return;
  }
+ const identity=view+"|"+(selected?.id||"")+"|"+(view==="messages"?threadSide+"|"+(chatKey?.listingId||"")+"|"+(chatKey?.buyerId||""):"");
+ const oldScroll=identity===lastPaintIdentity?{main:$("#marketContent")?.scrollTop||0,threads:$(".market-inbox-list")?.scrollTop||0,chat:$("#marketChatMessages")?.scrollTop||0}:null;
  const main=view==="my"?renderMy():view==="wishlist"?(selected?detail(selected):renderWishlist()):view==="messages"?renderMessages():renderBrowse();
- root.innerHTML='<div class="market-shell market-workspace">'+menu()+'<main class="market-main">'+topbar()+main+'</main></div>'+
+ root.innerHTML='<div class="market-shell market-workspace">'+menu()+'<main class="market-main">'+topbar()+'<div class="market-scroll" id="marketContent" role="region" aria-label="'+tr("Marketplace content","Вміст маркетплейсу")+'" tabindex="0">'+main+'</div></main></div>'+
  (shopFormOpen?'<div class="market-modal-backdrop" id="marketEditBackdrop"><div class="market-edit-dialog" role="dialog" aria-modal="true" aria-label="Listing editor"><button type="button" class="market-modal-close" data-market-close="1" aria-label="Close listing editor">×</button>'+renderSell()+'</div></div>':'');
+ lastPaintIdentity=identity;
+ if(oldScroll){const scroll=$("#marketContent"),threads=$(".market-inbox-list"),chat=$("#marketChatMessages");if(scroll)scroll.scrollTop=oldScroll.main;if(threads)threads.scrollTop=oldScroll.threads;if(chat)chat.scrollTop=oldScroll.chat;}
  if(shopFormOpen){fillEditor();void refreshShippingProviders();updateDestinationCount();
   const form=$("#marketSellForm");if(form&&!form.dataset.focused){form.dataset.focused="yes";Promise.resolve().then(()=>form.querySelector('input[name="title"]')?.focus())}
  }
@@ -319,6 +336,7 @@ root.addEventListener("click",async event=>{
   if(target.dataset.marketSide){
    threadSide=target.dataset.marketSide;chatKey=null;paint();return;
   }
+  if(target.dataset.marketToggleFilters){filtersOpen=!filtersOpen;paint();return}
   if(target.dataset.marketSearch){await browse();return}
   if(target.dataset.marketBack){selected=null;paint();return}
   if(target.dataset.marketOpen){
@@ -407,6 +425,7 @@ async function initialize(){
  }catch(err){message("Marketplace could not load: "+err.message,true);paint()}
 }
 window.addEventListener("fw-auth-changed",()=>void initialize());
+window.addEventListener("wrld:language-change",()=>{if(!shopFormOpen&&!document.activeElement?.closest?.("#wrld-market-root form"))paint()});
 document.addEventListener("keydown",event=>{
  if(event.key==="Escape"&&shopFormOpen){shopFormOpen=false;editing=null;paint()}
 });
