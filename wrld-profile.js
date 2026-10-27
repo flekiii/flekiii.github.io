@@ -1,12 +1,12 @@
 /* fleki's wrld interactive profile studio. All public visibility decisions are made by the Worker. */
 (()=>{"use strict";
 const API="https://flekis-wrld-api.flekideveloper.workers.dev";
-const defaults={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public"};
+const defaults={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public",interests:"public"};
 const sections=[["overview","✦","Overview","Огляд"],["appearance","◈","Appearance","Оформлення"],["about","✎","About me","Про мене"],["contact","◎","Location & contact","Локація та контакти"],["games","▣","My games","Мої ігри"],["house","⌂","My house","Мій будинок"],["privacy","♧","Privacy","Приватність"],["security","♢","Security / Auth2FA","Захист / Auth2FA"],["preview","◉","View as others","Погляд зі сторони"]];
 const labels={online:["Online","Онлайн"],away:["Away","Відійшов"],dnd:["Do not disturb","Не турбувати"],offline:["Offline","Офлайн"]};
 const roles={owner:"Owner",aurvex_ceo:"AURVEX CEO",developer:"Developer",god:"God",moderator:"Moderator",creator:"Creator",vip:"VIP",tester:"Tester",member:"Member"};
 const links=["telegram","discord","youtube","twitch","github","instagram","tiktok","steam"];
-const keys=["bio","media","location","phone","links","games","status","roles"];
+const keys=["bio","media","location","phone","links","games","status","roles","interests"];
 const en=()=>document.documentElement.lang!=="uk";
 const tr=(a,b)=>en()?a:b;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -74,7 +74,7 @@ const secure=async(path,opts={})=>{
 };
 function note(text){err=text;const target=document.getElementById("wp-feedback");if(target)target.textContent=text}
 function resetMedia(){for(const url of [avatar,banner,avatarTemp,bannerTemp])if(url?.startsWith("blob:"))URL.revokeObjectURL(url);avatar="";banner="";avatarTemp="";bannerTemp=""}
-function blank(p){return {display_name:p.display_name||"",bio:p.bio||"",status:p.status||"online",country:p.country||"",region:p.region||"",district:p.district||"",phone:p.phone||"",website:p.website||"",socials:{...(p.socials||{})},favorite_games:[...(p.favorite_games||[])],current_games:[...(p.current_games||[])],visibility:{...defaults,...(p.visibility||{})}}}
+function blank(p){return {display_name:p.display_name||"",bio:p.bio||"",status:p.status||"online",country:p.country||"",region:p.region||"",district:p.district||"",phone:p.phone||"",website:p.website||"",socials:{...(p.socials||{})},favorite_games:[...(p.favorite_games||[])],current_games:[...(p.current_games||[])],age:p.age||"",interests:[...(p.interests||[])],status_emoji:p.status_emoji||"",status_text:p.status_text||"",discoverable:p.discoverable===true,visibility:{...defaults,...(p.visibility||{})}}}
 async function imageFor(id,kind){try{const response=await fetch(API+"/profiles/media/"+encodeURIComponent(id)+"/"+kind,{headers:tok()?{Authorization:"Bearer "+tok()}: {},cache:"no-store"});if(!response.ok)return "";const blob=await response.blob();return URL.createObjectURL(blob)}catch{return ""}}
 const refreshAccount=()=>window.dispatchEvent(new Event("wrld:profile-updated"));
 async function load(userId){
@@ -108,7 +108,7 @@ async function load(userId){
  }
 }
 function langStatus(s){return (labels[s]||labels.offline)[en()?0:1]}
-function statusMarkup(s){const x=s||"offline";return '<span class="wp-status '+esc(x)+'"><i></i>'+esc(langStatus(x))+'</span>'}
+function statusMarkup(s,emoji="",custom=""){const x=s||"offline";return '<span class="wp-status '+esc(x)+'"><i></i>'+esc(emoji?emoji+" ":"")+esc(custom||langStatus(x))+'</span>'}
 function roleMarkup(a){return (a||[]).map(r=>'<span class="wp-role" data-role="'+esc(r.role)+'">'+esc(roles[r.role]||r.role)+'</span>').join("")}
 function imageBox(url,alt,fallback,classname){return url?'<img class="'+classname+'" src="'+esc(url)+'" alt="'+esc(alt)+'">':'<div class="'+classname+' wp-image-fallback">'+fallback+'</div>'}
 function card(p,opts={}){
@@ -120,9 +120,10 @@ function card(p,opts={}){
  return '<div class="wp-card">'+
  '<div class="wp-card-banner">'+imageBox(opts.banner??(bannerTemp||banner),"Profile banner","✦","wp-banner-image")+'</div>'+
  '<div class="wp-card-meta">'+imageBox(opts.avatar??(avatarTemp||avatar),"Avatar",esc((n||"?").slice(0,1).toUpperCase()),"wp-avatar-image")+
- '<div class="wp-card-name"><h3>'+esc(n)+'</h3><span>@'+esc(p.username||data?.username||"member")+'</span></div>'+statusMarkup(p.status)+'</div>'+
- '<div class="wp-badges">'+roleMarkup(p.roles)+'</div>'+
+ '<div class="wp-card-name"><h3>'+esc(n)+'</h3><span>@'+esc(p.username||data?.username||"member")+'</span></div>'+statusMarkup(p.status,p.status_emoji,p.status_text)+'</div>'+
+ '<div class="wp-badges">'+roleMarkup(p.roles)+'<span class="wp-role wp-level">★ '+Number(p.level||1)+' · '+Number(p.xp||0)+' XP</span></div>'+
  (p.bio?'<p class="wp-card-bio">'+esc(p.bio)+'</p>':"")+
+  (p.interests?.length?'<div class="wp-interest-tags">'+p.interests.map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>':"")+
  (location?'<p class="wp-card-detail">⌖ '+location+'</p>':"")+
  (p.phone?'<p class="wp-card-detail">☎ '+esc(p.phone)+'</p>':"")+
  (urls.length?'<div class="wp-links">'+urls.join("")+'</div>':"")+
@@ -154,11 +155,22 @@ function content(state){
  const p=draft||blank(state.user),v=p.visibility;
  if(activeTab==="overview")return '<h2>'+tr("Your profile","Твій профіль")+'</h2><p>'+tr("Customize your world, choose what to share and see changes instantly.","Налаштуй свій профіль, обери, що показувати іншим, і переглядай зміни одразу.")+'</p>'+myHousePanel()+'<div class="wp-section-cards">'+sections.filter(s=>!["overview","preview"].includes(s[0])).map(s=>'<button type="button" data-wp="tab" data-id="'+s[0]+'"><strong>'+s[1]+' '+(en()?s[2]:s[3])+'</strong><span>↗</span></button>').join("")+'</div>';
  if(activeTab==="appearance")return '<h2>'+tr("Photos & banners","Фото та банери")+'</h2><p>'+tr("Upload JPG, PNG, WebP or GIF. Animated GIF banners will stay animated. Images are stored with your account.","Завантаж JPG, PNG, WebP або GIF. Анімовані GIF-банери залишаться рухомими. Зображення зберігаються у твоєму акаунті.")+'</p><div class="wp-upload-list">'+["avatar","banner"].map(kind=>'<div class="wp-upload"><strong>'+ (kind==="avatar"?tr("Profile photo","Фото профілю"):tr("Animated banner","Анімований банер"))+'</strong><small>'+ "3 MB max"+'</small><label class="btn"><input hidden type="file" data-wp-upload="'+kind+'" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpeg,image/webp,image/gif">'+tr("Choose image / GIF","Вибрати фото / GIF")+'</label><button class="btn" data-wp="remove-media" data-kind="'+kind+'">'+tr("Remove","Прибрати")+'</button></div>').join("")+'</div>';
- if(activeTab==="about")return '<h2>'+tr("About me","Про мене")+'</h2>'+fld(tr("Display name","Ім'я профілю"),"display_name",p.display_name,"text",60)+textarea(tr("Description","Опис"),"bio",p.bio,350)+'<label class="wp-field"><span>'+tr("My status","Мій статус")+'</span><select class="social-input" data-wp-field="status">'+["online","away","dnd","offline"].map(k=>'<option value="'+k+'" '+(p.status===k?"selected":"")+'>'+langStatus(k)+'</option>').join("")+'</select></label>'+save();
+ if(activeTab==="about")return '<h2>'+tr("About me","Про мене")+'</h2>'+
+ fld(tr("Display name","Ім’я профілю"),"display_name",p.display_name,"text",60)+
+ textarea(tr("Description","Опис"),"bio",p.bio,350)+
+ '<label class="wp-field"><span>'+tr("Presence","Присутність")+'</span><select class="social-input" data-wp-field="status">'+["online","away","dnd","offline"].map(k=>'<option value="'+k+'" '+(p.status===k?"selected":"")+'>'+langStatus(k)+'</option>').join("")+'</select></label>'+
+ fld(tr("Status emoji","Емодзі статусу"),"status_emoji",p.status_emoji,"text",16)+
+ fld(tr("Personal status","Мій текстовий статус"),"status_text",p.status_text,"text",80)+
+ fld(tr("Age (private)","Вік (приватний)"),"age",p.age,"number",3)+
+ '<p class="wp-hint">'+tr("Enter 13–120. Your exact age is not shown in friend discovery.","Вкажи 13–120. Точний вік не показується в пошуку друзів.")+'</p>'+
+ textarea(tr("Interests (up to 12, one per line)","Інтереси (до 12, по одному на рядок)"),"interests",p.interests.join("\n"),450)+
+ '<label class="wp-discovery-opt"><input type="checkbox" data-wp-boolean="discoverable" '+(p.discoverable?"checked":"")+'><span>'+tr("Let people in my age group find me as a friend","Дозволити людям моєї вікової групи знаходити мене як друга")+'</span></label>'+
+ '<p class="wp-hint">'+tr("Optional. Adult/teen searches are separated. Ages are self-reported.","Необов’язково. Пошук дорослих і підлітків розділений. Вік вказують самостійно.")+'</p>'+save();
  if(activeTab==="contact")return '<h2>'+tr("Location & contact","Локація та контакти")+'</h2><p>'+tr("All fields are optional. Never publish an address or a phone number unless you want to.","Усі поля необов'язкові. Не публікуй адресу чи телефон, якщо цього не хочеш.")+'</p>'+fld(tr("Country","Країна"),"country",p.country,"text",60)+fld(tr("State / Oblast / Region","Штат / Область / Регіон"),"region",p.region,"text",80)+fld(tr("District","Район"),"district",p.district,"text",80)+fld(tr("Phone number (optional)","Номер телефону (необов'язково)"),"phone",p.phone,"tel",30)+fld(tr("Website (HTTPS)","Сайт (HTTPS)"),"website",p.website,"url",220)+'<h3>'+tr("Social media links","Посилання на соцмережі")+'</h3>'+links.map(k=>fld(k.charAt(0).toUpperCase()+k.slice(1)+" (https://)","social:"+k,p.socials[k],"url",220)).join("")+save();
  if(activeTab==="house")return '<h2>'+tr("My house","Мій будинок")+'</h2><p>'+tr("Publish your garage or any other home in your profile.","Опублікуй гараж або інший будинок у своєму профілі.")+'</p>'+myHousePanel();
- if(activeTab==="games")return '<h2>'+tr("My games","Мої ігри")+'</h2><p>'+tr("Write one title per line, up to 10 games in each section.","По одній грі на рядок, до 10 у кожному розділі.")+'</p>'+textarea(tr("Favorite games","Улюблені ігри"),"favorite_games",p.favorite_games.join("\n"),570)+textarea(tr("Currently playing","Актуальні ігри"),"current_games",p.current_games.join("\n"),570)+save();
- if(activeTab==="privacy")return '<h2>'+tr("Who can see my profile?","Хто бачить мій профіль?")+'</h2><p>'+tr("Server-enforced permissions. Your phone is private by default.","Доступ перевіряється сервером. Телефон початково прихований.")+'</p><div class="wp-privacy">'+keys.map(k=>'<label class="wp-field"><span>'+({bio:tr("Description","Опис"),media:tr("Avatar & banner","Аватар і банер"),location:tr("Country, region & district","Країна, область і район"),phone:tr("Phone number","Номер телефону"),links:tr("Website & social links","Сайт і соцмережі"),games:tr("Favorite & current games","Улюблені й актуальні ігри"),status:tr("Status & presence","Статус і присутність"),roles:tr("Roles","Ролі")})[k]+'</span><select class="social-input" data-wp-privacy="'+k+'">'+[["public",tr("Everyone","Усі")],["friends",tr("Friends only","Лише друзі")],["private",tr("Only me","Тільки я")]].map(([x,y])=>'<option value="'+x+'" '+(v[k]===x?"selected":"")+'>'+y+'</option>').join("")+'</select></label>').join("")+'</div>'+save();
+ if(activeTab==="games")return '<h2>'+tr("My games","Мої ігри")+'</h2><p>'+tr("Choose real Steam games with cover cards. Up to 10 favorites and 10 currently playing.","Обирай справжні Steam-ігри з обкладинками. До 10 улюблених і 10 активних.")+'</p>'+
+ (window.WrldGamePicker?.render(p)||textarea(tr("Favorite games","Улюблені ігри"),"favorite_games",p.favorite_games.join("\n"),570)+textarea(tr("Currently playing","Зараз граю"),"current_games",p.current_games.join("\n"),570))+save();
+ if(activeTab==="privacy")return '<h2>'+tr("Who can see my profile?","Хто бачить мій профіль?")+'</h2><p>'+tr("Server-enforced permissions. Your phone is private by default.","Доступ перевіряється сервером. Телефон початково прихований.")+'</p><div class="wp-privacy">'+keys.map(k=>'<label class="wp-field"><span>'+({bio:tr("Description","Опис"),media:tr("Avatar & banner","Аватар і банер"),location:tr("Country, region & district","Країна, область і район"),phone:tr("Phone number","Номер телефону"),links:tr("Website & social links","Сайт і соцмережі"),games:tr("Favorite & current games","Улюблені й актуальні ігри"),status:tr("Status & presence","Статус і присутність"),roles:tr("Roles","Ролі"),interests:tr("Interests","Інтереси")})[k]+'</span><select class="social-input" data-wp-privacy="'+k+'">'+[["public",tr("Everyone","Усі")],["friends",tr("Friends only","Лише друзі")],["private",tr("Only me","Тільки я")]].map(([x,y])=>'<option value="'+x+'" '+(v[k]===x?"selected":"")+'>'+y+'</option>').join("")+'</select></label>').join("")+'</div>'+save();
  if(activeTab==="security")return security(state);
  if(activeTab==="preview")return '<h2>'+tr("View profile as others","Перегляд очима інших")+'</h2><p>'+tr("The server filters every field for the selected audience; your private phone and hidden sections will never be included.","Сервер приховає всі поля, не дозволені вибраній аудиторії.")+'</p><div class="wp-actions"><button class="btn primary" data-wp="preview" data-mode="public">'+tr("View as visitor","Очима гостя")+'</button><button class="btn" data-wp="preview" data-mode="friend">'+tr("View as friend","Очима друга")+'</button></div>';
  if(activeTab==="moderation")return moderation();
@@ -292,17 +304,19 @@ document.addEventListener("change",async e=>{
   }
   if(input.dataset.wpPrivacy&&draft){draft.visibility[input.dataset.wpPrivacy]=input.value;liveUpdate()}
  if(input.dataset.wpField&&draft){updateField(input)}
+  if(input.dataset.wpBoolean&&draft){draft[input.dataset.wpBoolean]=input.checked;liveUpdate()}
 });
 function updateField(input){
  const key=input.dataset.wpField;
  if(key.startsWith("social:"))draft.socials[key.slice(7)]=input.value;
- else if(["favorite_games","current_games"].includes(key))draft[key]=input.value.split(/[\n,]/).map(s=>s.trim()).filter(Boolean).slice(0,11);
+ else if(["favorite_games","current_games","interests"].includes(key))draft[key]=input.value.split(/[\n,]/).map(s=>s.trim()).filter(Boolean).slice(0,12);
  else draft[key]=input.value;
  liveUpdate();
 }
 document.addEventListener("input",e=>{if(e.target.matches("[data-wp-field]")&&draft)updateField(e.target)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("wp-public-modal")?.remove()});
 window.addEventListener("wrld:language-change",()=>{if(data)window.dispatchEvent(new Event("wrld:profile-updated"))});
+ window.addEventListener("wrld:profile-game-change",e=>{if(!draft||!["favorite_games","current_games"].includes(e.detail?.kind))return;draft[e.detail.kind]=e.detail.games.slice(0,10);liveUpdate()});
 window.addEventListener("fw-auth-changed",()=>{if(!tok()){++loadRevision;who="";accountToken="";loading=false;err="";data=null;draft=null;myHouse=null;resetMedia()}});
 window.addEventListener("wrld:house-published",e=>{myHouse=e.detail?.house||null;note(tr("Your house is now visible in your profile ✓","Твій будинок тепер видно у профілі ✓"));window.dispatchEvent(new Event("wrld:profile-updated"))});
 window.addEventListener("wrld:house-publish-error",e=>note(e.detail?.message||tr("Publication failed.","Публікація не вдалася.")));
