@@ -20,6 +20,15 @@ jobs:
         run: |
           node --check app.js
           node --check backend/worker.js
+          node --check backend/world.js
+          node --check backend/world-gallery.js
+          node --check backend/world-feed.js
+          node --check backend/world-clubs.js
+          node --check backend/world-discuss.js
+          node --check wrld-world.mjs
+          node --check wrld-world-social.mjs
+          node --test tests/world.test.mjs
+          test -s wrld-world.css
           node --check backend/profiles.js
           node --check wrld-profile.js
           node --test tests/profile-banner.test.mjs
