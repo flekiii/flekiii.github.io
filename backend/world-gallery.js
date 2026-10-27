@@ -24,5 +24,5 @@ export async function xpInfo(req,env,viewer){
  const xp=Number((await dbOne(db,"SELECT COALESCE(SUM(amount),0) xp FROM wrld_world_xp WHERE user_id=?",viewer.id))?.xp||0);
  const posts=Number((await dbOne(db,"SELECT COUNT(*) n FROM wrld_world_posts WHERE author=?",viewer.id))?.n||0);
  const homes=Number((await dbOne(db,"SELECT COUNT(*) n FROM wrld_houses WHERE owner=? AND published=1",viewer.id))?.n||0);
- return ok({progress:{xp,level:Math.floor(Math.sqrt(xp/60))+1,badges:[...(posts?"first-post":[]),...(posts>=10?["author"]:[]),...(homes?["home-designer"]:[]),...(xp>=200?["explorer"]:[])],posts,homes}});
+ return ok({progress:{xp,level:Math.floor(Math.sqrt(xp/60))+1,badges:[...(posts?["first-post"]:[]),...(posts>=10?["author"]:[]),...(homes?["home-designer"]:[]),...(xp>=200?["explorer"]:[])],posts,homes}});
 }
