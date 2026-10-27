@@ -28,5 +28,5 @@ test("Profile banner upload previews instantly and frontend assets refresh",()=>
  assert.match(code,/bannerTemp\|\|banner/);
  assert.match(code,/URL\.createObjectURL\(new Blob\(\[raw\],\{type:mime\}\)\)/);
  assert.match(code,/await uploadMedia\(kind,file\)/);
- assert.match(html,/wrld-profile\.js\?v=7/);
+ assert.match(html,/wrld-profile\.js\?v=8/);
 });
