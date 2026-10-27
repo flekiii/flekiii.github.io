@@ -2,9 +2,9 @@ import test from "node:test";import assert from "node:assert/strict";import {rea
 import {memoryDeck,tttResult,cpuMove,shift2048,newTile2048,canShift2048} from "../wrld-web-games-core.mjs";
 const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 const html=read("index.html"),js=read("wrld-web-games.js");
-test("Web Games comes between Create House and Games",()=>{
- const c=html.indexOf('id:"create-house",name:"Create House"'),w=html.indexOf('id:"web-games",name:"Web Games"'),g=html.indexOf('id:"games",uk:"Ігри"');
- assert.ok(c>=0&&c<w&&w<g);assert.match(html,/wrld-web-games-root/);assert.match(html,/wrld-web-games.js/);
+test("Web Games is available in navigation after house retirement",()=>{
+ const w=html.indexOf('id:"web-games",name:"Web Games"'),g=html.indexOf('id:"games",uk:"Ігри"');
+ assert.ok(w>=0&&w<g);assert.doesNotMatch(html,/id:"create-house",name:"Create House"/);assert.match(html,/wrld-web-games-root/);assert.match(html,/wrld-web-games.js/);
  const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];assert.ok(script);assert.doesNotThrow(()=>new Function(script));
 });
 test("Web Games requires a server-confirmed account but not 2FA",()=>{

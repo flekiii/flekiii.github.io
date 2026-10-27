@@ -9,12 +9,12 @@ test("World navigation loads real feature modules",()=>{
  assert.match(html,/wrld-world-root/);
  assert.match(html,/wrld-world\.mjs\?v=4/);
  assert.match(worker,/worldHandle\(req,env,path/);
- for(const endpoint of ["/world/gallery","/world/feed","/world/clubs","/world/progress"])assert.ok(app.includes(endpoint),endpoint);
+ for(const endpoint of ["/world/feed","/world/clubs","/world/progress","/world/quests"])assert.ok(app.includes(endpoint),endpoint);
 });
-test("Guests can browse public gallery, feed and clubs, but cannot write",async()=>{
+test("Guests can browse public feed and clubs, but cannot write",async()=>{
  const db={prepare(sql){return {bind(){return this},async run(){return {success:true}},async all(){return {results:[]}},async first(){return {n:0}}}}};
  const env={DB:db},auth={auth:async()=>null,authorized:()=>false};
- for(const path of ["/world/gallery","/world/feed","/world/clubs"]){
+ for(const path of ["/world/feed","/world/clubs"]){
   const r=await worldHandle(new Request("https://world.invalid"+path),env,path,auth);
   assert.equal(r.status,200,path);
  }

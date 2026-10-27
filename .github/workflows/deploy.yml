@@ -21,6 +21,12 @@ jobs:
           node --check app.js
           node --check backend/worker.js
           node --check backend/world.js
+          node --check backend/market-media.js
+          node --check backend/showcase.js
+          node --check backend/arcade.js
+          node --check wrld-showcase.mjs
+          node --check wrld-web-games.js
+          node --test tests/site-upgrade.test.mjs
           node --check backend/discover.js
           node --check backend/game-catalog.js
           node --check wrld-discover.mjs
@@ -52,19 +58,6 @@ jobs:
           test -s wrld-web-games.css
           node --test backend/totp.test.mjs backend/marketplace.test.mjs
           node --test tests/wrld-ui.test.mjs
-          node --check backend/houses.js
-          node --check wrld-house-creator.mjs
-          node --check wrld-public-house-3d.mjs
-          node --test tests/public-house-3d.test.mjs
-          node --check wrld-home.mjs
-          node --check wrld-home-core.mjs
-          node --test tests/home-house.test.mjs
-          node --test tests/house-publishing.test.mjs
-          node --test tests/house-quality.test.mjs
-          node --test tests/house-backup.test.mjs
-          node --test tests/house-interaction.test.mjs
-          test -s wrld-home-creator.css
-          test -s wrld-home.css
           node --check backend/oauth.js
           node --check wrld-social.js
           node --test tests/local-auth.test.mjs

@@ -11,10 +11,10 @@ test("Quest XP must be granted only for a real server-side action, with unique c
  assert.match(world,/if\(!found.complete\)return err/);
  assert.match(world,/INSERT OR IGNORE INTO wrld_world_quest_claims/);
  assert.match(world,/Number\(inserted.meta\?\.changes\)!==1/);
- assert.match(world,/const daily=q.id==="share-post"\|\|q.id==="leave-comment",day=daily\?currentDay:-1/);
+ assert.match(world,/const daily=q.id==="share-post"\|\|q.id==="leave-comment"\|\|q.id.startsWith\("arcade-"\),day=daily\?currentDay:-1/);
 });
 test("Profile retains private exact age and controls public interests and status",()=>{
- assert.match(backend,/relationType==="self"\?Number\(extra.age\|\|0\):null/);
+ assert.match(backend,/age:can\("age"\)&&extra.age\?Number\(extra.age\):null/);
  assert.match(backend,/visible\(privacyMap,field,relationType\)/);
  assert.match(backend,/p.discoverable===true/);
  assert.match(backend,/age<13\|\|age>120/);
@@ -24,7 +24,7 @@ test("Profile retains private exact age and controls public interests and status
  assert.match(profile,/interests/);
 });
 test("Discovery requires opt-in and restricts both sides to one self-reported age group",()=>{
- assert.match(discovery,/if\(!mine\?\.age\|\|mine.age<13\)/);
+ assert.match(discovery,/if\(!mine\?\.age\|\|mine.age<15\)/);
  assert.match(discovery,/mine.discoverable!==1/);
  assert.match(discovery,/teen\?"e.age<18":"e.age>=18"/);
  assert.match(discovery,/NOT EXISTS\(SELECT 1 FROM blocks/);
@@ -49,7 +49,7 @@ test("Game catalogue serves SteamSpy real app IDs and has a second 1000-game pag
 test("Versioned assets and Worker routes match",()=>{
  assert.match(worker,/discoverHandle\(req,env,path/);
  assert.match(worker,/gamesCatalog\(req,path\)/);
- assert.match(html,/wrld-profile\.js\?v=7/);
- assert.match(html,/wrld-world\.mjs\?v=4/);
+ assert.match(html,/wrld-profile\.js\?v=8/);
+ assert.match(html,/wrld-world\.mjs\?v=5/);
  assert.match(html,/wrld-discover\.mjs\?v=1/);
 });
