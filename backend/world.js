@@ -13,7 +13,8 @@ async function init(db){
  "CREATE TABLE IF NOT EXISTS wrld_world_follows(follower TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,followed TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,created_at INTEGER NOT NULL,PRIMARY KEY(follower,followed))",
  "CREATE TABLE IF NOT EXISTS wrld_world_clubs(id TEXT PRIMARY KEY,owner TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,name TEXT NOT NULL,description TEXT NOT NULL,created_at INTEGER NOT NULL)",
  "CREATE TABLE IF NOT EXISTS wrld_world_members(club_id TEXT NOT NULL REFERENCES wrld_world_clubs(id) ON DELETE CASCADE,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,joined_at INTEGER NOT NULL,PRIMARY KEY(club_id,user_id))",
- "CREATE TABLE IF NOT EXISTS wrld_world_xp(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,action TEXT NOT NULL,amount INTEGER NOT NULL,created_at INTEGER NOT NULL)"
+ "CREATE TABLE IF NOT EXISTS wrld_world_xp(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,action TEXT NOT NULL,amount INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+ "CREATE TABLE IF NOT EXISTS wrld_world_quest_claims(user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,quest TEXT NOT NULL,day INTEGER NOT NULL,claimed_at INTEGER NOT NULL,PRIMARY KEY(user_id,quest,day))"
  ])await db.prepare(sql).run()})();
  try{await setup}catch(e){setup=null;throw e}
 }
@@ -24,11 +25,41 @@ async function award(db,id,action,xp,limit){
  if(n?.n>=limit)return;
  await db.prepare("INSERT INTO wrld_world_xp(id,user_id,action,amount,created_at) VALUES(?,?,?,?,?)").bind(crypto.randomUUID(),id,action,xp,Date.now()).run();
 }
+
+const QUESTS=[
+ {id:"share-post",emoji:"✍️",title:"Share a post",uk:"Опублікуй допис",xp:30,query:"SELECT COUNT(*) n FROM wrld_world_posts WHERE author=? AND created_at>=?"},
+ {id:"leave-comment",emoji:"💬",title:"Write a comment",uk:"Напиши коментар",xp:20,query:"SELECT COUNT(*) n FROM wrld_world_comments WHERE author=? AND created_at>=?"},
+ {id:"give-like",emoji:"💜",title:"Like a post",uk:"Вподобай допис",xp:15,query:"SELECT COUNT(*) n FROM wrld_world_likes WHERE user_id=?"},
+ {id:"join-club",emoji:"👥",title:"Join a club",uk:"Вступи до клубу",xp:40,query:"SELECT COUNT(*) n FROM wrld_world_members WHERE user_id=?"},
+ {id:"publish-house",emoji:"🏡",title:"Publish a home",uk:"Опублікуй будинок",xp:50,query:"SELECT COUNT(*) n FROM wrld_houses WHERE owner=? AND published=1"}
+];
+async function questHandle(req,db,user){
+ const currentDay=Math.floor(Date.now()/86400000),states=[];
+ for(const q of QUESTS){
+  const daily=q.id==="share-post"||q.id==="leave-comment",day=daily||q.id==="give-like"?currentDay:-1;
+  const row=await (daily?db.prepare(q.query).bind(user.id,currentDay*86400000):db.prepare(q.query).bind(user.id)).first();
+  const claim=await db.prepare("SELECT 1 FROM wrld_world_quest_claims WHERE user_id=? AND quest=? AND day=?").bind(user.id,q.id,day).first();
+  states.push({id:q.id,emoji:q.emoji,title:q.title,uk:q.uk,xp:q.xp,complete:Number(row?.n||0)>0,claimed:!!claim,day});
+ }
+ if(req.method==="GET")return new Response(JSON.stringify({quests:states,reset_at:(currentDay+1)*86400000}),{headers:{"Content-Type":"application/json"}});
+ if(req.method!=="POST")return err("Method not allowed",405);
+ const raw=await req.text();if(raw.length>300)return err("Request too large",413);
+ let input;try{input=JSON.parse(raw)}catch{return err("Invalid JSON",400)}
+ const found=states.find(q=>q.id===input.id);if(!found)return err("Unknown quest",400);
+ if(!found.complete)return err("Finish the quest before claiming",409);
+ if(found.claimed)return err("Quest already claimed",409);
+ const inserted=await db.prepare("INSERT OR IGNORE INTO wrld_world_quest_claims(user_id,quest,day,claimed_at) VALUES(?,?,?,?)").bind(user.id,found.id,found.day,Date.now()).run();
+ if(Number(inserted.meta?.changes)!==1)return err("Quest already claimed",409);
+ await db.prepare("INSERT INTO wrld_world_xp(id,user_id,action,amount,created_at) VALUES(?,?,?,?,?)").bind(crypto.randomUUID(),user.id,"quest:"+found.id,found.xp,Date.now()).run();
+ return new Response(JSON.stringify({ok:true,xp:found.xp}),{headers:{"Content-Type":"application/json"}});
+}
 export async function worldHandle(req,env,path,{auth,authorized}){
  if(!path.startsWith("/world/"))return null;
  await init(env.DB);
  const user=req.headers.get("Authorization")?await auth(req,env.DB):null;
  if(path==="/world/gallery"&&req.method==="GET")return gallery(req,env,user);
+ if(path==="/world/quests"&&req.method==="GET")return user?questHandle(req,env.DB,user):err("Sign in to view quests",401);
+ if(path==="/world/quest/claim"&&req.method==="POST")return user&&authorized(user)?questHandle(req,env.DB,user):err("Verify Auth2FA to claim XP rewards",403);
  if(["/world/ranking","/world/progress"].includes(path)&&req.method==="GET")return xpInfo(req,env,user);
  if(path==="/world/export"&&req.method==="GET")return user&&authorized(user)?worldExport(req,env,user):err("Verify Auth2FA before exporting private data.",403);
  if(req.method!=="GET"&&!authorized(user))return err("Verify Auth2FA for this session before posting.",403);

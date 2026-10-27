@@ -7,8 +7,8 @@ const stmt=(db,q,...p)=>db.prepare(q).bind(...p);
 const one=(db,q,...p)=>stmt(db,q,...p).first();
 const many=async(db,q,...p)=>(await stmt(db,q,...p).all()).results||[];
 const exec=(db,q,...p)=>stmt(db,q,...p).run();
-const visibilityFields=["bio","media","location","phone","links","games","status","roles"];
-const visibilityDefault={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public"};
+const visibilityFields=["bio","media","location","phone","links","games","status","roles","interests"];
+const visibilityDefault={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public",interests:"public"};
 const roleNames=["aurvex_ceo","developer","god","moderator","creator","vip","tester","member"];
 const statuses=["online","away","dnd","offline"];
 // Cloudflare D1 max row/BLOB is 2,000,000 bytes; store larger media in <=512KiB chunks.
@@ -37,6 +37,8 @@ async function buildProfile(db,env,viewer,person,as){
  const t=Date.now(),relationType=await relation(db,viewer,person.id,as);
  const settings=await one(db,"SELECT * FROM wrld_profile_settings WHERE user_id=?",person.id)||{};
  const privacyMap=privacy(settings.visibility);
+ const extra=await one(db,"SELECT age,interests,status_emoji,status_text,discoverable FROM wrld_profile_extras WHERE user_id=?",person.id)||{};
+ const xp=Number((await one(db,"SELECT COALESCE(SUM(amount),0) xp FROM wrld_world_xp WHERE user_id=?",person.id))?.xp||0);
  const can=field=>visible(privacyMap,field,relationType);
  const rawStatus=statuses.includes(settings.status)?settings.status:"offline";
  const online=rawStatus!=="offline"&&Number(settings.last_seen||0)>t-130000;
@@ -46,6 +48,11 @@ async function buildProfile(db,env,viewer,person,as){
   updated_at:settings.updated_at||person.updated_at,
   bio:can("bio")?person.bio:null,
   status:can("status")?(online?rawStatus:"offline"):null,
+   status_emoji:can("status")?extra.status_emoji||"":null,status_text:can("status")?extra.status_text||"":null,
+   age:relationType==="self"?Number(extra.age||0):null,
+   interests:can("interests")?(js(extra.interests)||[]):null,
+   discoverable:relationType==="self"?extra.discoverable===1:undefined,
+   xp,level:Math.floor(Math.sqrt(xp/60))+1,
   country:can("location")?settings.country||"":null,region:can("location")?settings.region||"":null,district:can("location")?settings.district||"":null,
   phone:can("phone")?settings.phone||"":null,
   website:can("links")?settings.website||"":null,socials:can("links")?(js(settings.socials)||{}):null,
@@ -116,14 +123,26 @@ export async function profileHandle(req,env,path,{auth,authorized}){
    const raw=p.socials?.[key];if(raw){const url=safeUrl(raw);if(!url)return fail("Social links must use HTTPS");socials[key]=url}
   }
   const games={};for(const k of ["favorite_games","current_games"]){const g=p[k];if(!Array.isArray(g)||g.length>10||g.some(v=>typeof v!=="string"||v.trim().length>56))return fail("Invalid game list");games[k]=[...new Set(g.map(x=>x.trim()).filter(Boolean))]}
-  const v=privacy(p.visibility);
+  const age=p.age===""||p.age==null?0:Number(p.age);
+   if(!Number.isInteger(age)||(age!==0&&(age<13||age>120)))return fail("Age must be between 13 and 120.");
+   const interests=Array.isArray(p.interests)?p.interests:[];
+   if(interests.length>12||interests.some(x=>typeof x!=="string"||x.trim().length<1||x.trim().length>32))return fail("Choose up to 12 interests, each up to 32 characters.");
+   const uniqueInterests=[...new Set(interests.map(x=>x.trim()))];
+   const emoji=clean(p.status_emoji,16),statusText=clean(p.status_text,81);
+   if([...emoji].length>6||statusText.length>80)return fail("Invalid custom status.");
+   const discoverable=p.discoverable===true;
+   if(discoverable&&!age)return fail("Set your age to enable friend discovery.");
+   const v=privacy(p.visibility);
   if(!p.visibility||typeof p.visibility!=="object")return fail("Invalid privacy settings");
   for(const field of visibilityFields)if(!["public","friends","private"].includes(p.visibility[field]))return fail("Invalid privacy preference");
   await db.batch([
    stmt(db,"UPDATE users SET display_name=?,bio=?,updated_at=? WHERE id=?",display,bio,t,viewer.id),
    stmt(db,`INSERT INTO wrld_profile_settings(user_id,status,country,region,district,phone,website,socials,favorite_games,current_games,visibility,last_seen,updated_at)
    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET status=excluded.status,country=excluded.country,region=excluded.region,district=excluded.district,phone=excluded.phone,website=excluded.website,socials=excluded.socials,favorite_games=excluded.favorite_games,current_games=excluded.current_games,visibility=excluded.visibility,updated_at=excluded.updated_at`,
-   viewer.id,status,country,region,district,phone,website,JSON.stringify(socials),JSON.stringify(games.favorite_games),JSON.stringify(games.current_games),JSON.stringify(v),t,t)
+   viewer.id,status,country,region,district,phone,website,JSON.stringify(socials),JSON.stringify(games.favorite_games),JSON.stringify(games.current_games),JSON.stringify(v),t,t),
+   stmt(db,`INSERT INTO wrld_profile_extras(user_id,age,interests,status_emoji,status_text,discoverable)
+   VALUES(?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET age=excluded.age,interests=excluded.interests,status_emoji=excluded.status_emoji,status_text=excluded.status_text,discoverable=excluded.discoverable`,
+   viewer.id,age,JSON.stringify(uniqueInterests),emoji,statusText,Number(discoverable))
   ]);
   return reply({ok:true});
  }
