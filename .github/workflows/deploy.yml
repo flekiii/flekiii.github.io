@@ -39,6 +39,7 @@ jobs:
           node --check wrld-world.mjs
           node --check wrld-world-social.mjs
           node --test tests/world.test.mjs
+          node --test tests/world-quest-cors.test.mjs
           node --test tests/world-progress-language.test.mjs
           test -s wrld-world.css
           node --check backend/profiles.js

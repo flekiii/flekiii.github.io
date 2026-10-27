@@ -18,7 +18,9 @@ async function init(db){
  ])await db.prepare(sql).run()})();
  try{await setup}catch(e){setup=null;throw e}
 }
-const err=(message,status)=>new Response(JSON.stringify({error:message}),{status,headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"https://flekiii.github.io"}});
+const questHeaders={"Content-Type":"application/json; charset=utf-8","Access-Control-Allow-Origin":"https://flekiii.github.io","Vary":"Origin","Cache-Control":"private, no-store","X-Content-Type-Options":"nosniff"};
+const questReply=(payload,status=200)=>new Response(JSON.stringify(payload),{status,headers:questHeaders});
+const err=(message,status)=>questReply({error:message},status);
 async function award(db,id,action,xp,limit){
  const start=Math.floor(Date.now()/86400000)*86400000;
  const n=await db.prepare("SELECT COUNT(*) n FROM wrld_world_xp WHERE user_id=? AND action=? AND created_at>=?").bind(id,action,start).first();
@@ -43,7 +45,7 @@ async function questHandle(req,db,user){
   const claim=await db.prepare("SELECT 1 FROM wrld_world_quest_claims WHERE user_id=? AND quest=? AND day=?").bind(user.id,q.id,day).first();
   states.push({id:q.id,emoji:q.emoji,title:q.title,uk:q.uk,xp:q.xp,complete:Number(row?.n||0)>=(q.required||1),claimed:!!claim,day});
  }
- if(req.method==="GET")return new Response(JSON.stringify({quests:states,reset_at:(currentDay+1)*86400000}),{headers:{"Content-Type":"application/json"}});
+ if(req.method==="GET")return questReply({quests:states,reset_at:(currentDay+1)*86400000});
  if(req.method!=="POST")return err("Method not allowed",405);
  const raw=await req.text();if(raw.length>300)return err("Request too large",413);
  let input;try{input=JSON.parse(raw)}catch{return err("Invalid JSON",400)}
@@ -53,7 +55,7 @@ async function questHandle(req,db,user){
  const inserted=await db.prepare("INSERT OR IGNORE INTO wrld_world_quest_claims(user_id,quest,day,claimed_at) VALUES(?,?,?,?)").bind(user.id,found.id,found.day,Date.now()).run();
  if(Number(inserted.meta?.changes)!==1)return err("Quest already claimed",409);
  await db.prepare("INSERT INTO wrld_world_xp(id,user_id,action,amount,created_at) VALUES(?,?,?,?,?)").bind(crypto.randomUUID(),user.id,"quest:"+found.id,found.xp,Date.now()).run();
- return new Response(JSON.stringify({ok:true,xp:found.xp}),{headers:{"Content-Type":"application/json"}});
+ return questReply({ok:true,xp:found.xp});
 }
 export async function worldHandle(req,env,path,{auth,authorized}){
  if(!path.startsWith("/world/"))return null;
