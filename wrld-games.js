@@ -21,10 +21,18 @@
  let platform="all",filterOpen=false,genreSearch="",titleQuery="";
  const esc=s=>String(s??"").replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]));
  const label=id=>byId.get(id)?.[1]||"Unknown genre";
+ const tr=(en,uk)=>document.documentElement?.lang==="uk"?uk:en;
+ const ukGenres={action:"Екшен і пригоди",shooter:"Шутери / FPS",horror:"Жахи",survival:"Виживання",coop:"Кооперативні",multiplayer:"Онлайн і мультиплеєр",openworld:"Відкритий світ",rpg:"Рольові ігри",sandbox:"Пісочниці",strategy:"Стратегії",simulation:"Симулятори",racing:"Перегони",sports:"Спорт",puzzle:"Головоломки",casual:"Для відпочинку",story:"Сюжетні",platform:"Платформери",indie:"Інді",vr:"VR-ігри",mobile:"Мобільні ігри"};
+ const ukPlatforms={all:"Усі платформи",windows:"Windows",linux:"Linux",macos:"macOS",android:"Android",ios:"iOS (iPhone / iPad)",console:"Консолі"};
+ const shownGenre=id=>tr(label(id),ukGenres[id]||label(id));
 
  // Game inventory will use intersection (ALL selected genres) when real releases are published.
  // Until then, this interface is intentionally an honest empty catalog.
  function render(){
+  const scrollPositions=[
+   [".games-results","scrollTop"],[".games-genre-options","scrollTop"],
+   [".games-quick-row","scrollLeft"],[".games-applied","scrollLeft"]
+  ].map(([selector,prop])=>({selector,prop,value:root.querySelector?.(selector)?.[prop]||0}));
   const count=selected.size;
   const countLabel=count+" "+(count===1?"genre":"genres")+" selected";
   const hasFilters=count>0||platform!=="all"||!!titleQuery.trim();
@@ -70,6 +78,9 @@
     '</section>'+
    '</section>';
   filterGenreOptions();
+  for(const {selector,prop,value} of scrollPositions){
+   const el=root.querySelector?.(selector);if(el)el[prop]=value;
+  }
  }
  function filterGenreOptions(){
   const q=genreSearch.trim().toLowerCase();
@@ -131,6 +142,9 @@
   if(filterOpen&&!event.target.closest("#wrld-games-root .games-filter-picker")){
    filterOpen=false;genreSearch="";render();
   }
+ });
+ if(typeof window!=="undefined")window.addEventListener("wrld:language-change",()=>{
+  if(!document.activeElement?.closest?.("#wrld-games-root input"))render();
  });
  render();
 })();
