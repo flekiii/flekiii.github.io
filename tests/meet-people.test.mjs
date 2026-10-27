@@ -82,8 +82,8 @@ test("Report/block/privacy and multilingual published assets",()=>{
  assert.match(client,/tr\("Girls","Дівчат"\)/);
  assert.match(client,/tr\("Boys","Хлопців"\)/);
  assert.doesNotMatch(server,/phone|district|address/);
- assert.match(html,/wrld-discover\.mjs\?v=6/);
- assert.match(html,/wrld-discover\.css\?v=5/);
+ assert.match(html,/wrld-discover\.mjs\?v=7/);
+ assert.match(html,/wrld-discover\.css\?v=6/);
 });
 test("Editing a declared age revokes previous dating consent",()=>{
  const profile=get("backend/profiles.js");
@@ -116,4 +116,21 @@ test("Own Friends card remains visible while searching or when the peer list is 
  assert.match(client,/No other questionnaires found yet/);
  assert.match(client,/const summary=error\?/);
  assert.match(css,/\.fd-peer-note/);
+});
+
+test("D1 photo bytes are decoded as real image bytes before constructing the response",()=>{
+ assert.match(server,/Uint8Array\.from\(photo\.data\|\|\[\]\)/);
+ assert.match(server,/return new Response\(bytes,/);
+ assert.doesNotMatch(server,/new Response\(photo\.data,/);
+});
+test("Friends cards have large square photos above all text, and private card has publish action",async()=>{
+ const s=setup();s.events["wrld:page-change"]({detail:{id:"discover"}});await flush();
+ const m=s.root.innerHTML;
+ assert.match(m,/fd-card-photo-wrap/);
+ assert.ok(m.indexOf("fd-card-photo-wrap")<m.indexOf("fd-card-name"));
+ assert.match(css,/aspect-ratio:1\/1/);
+ assert.match(css,/max-width:285px/);
+ assert.match(client,/data-fd="publish-own"/);
+ assert.match(client,/Add a short description, then press Publish questionnaire/);
+ assert.match(client,/Not published/);
 });

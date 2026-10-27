@@ -98,7 +98,11 @@ export async function discoverHandle(req,env,path,{auth}){
   if(target!==user.id&&await db.prepare("SELECT 1 FROM blocks WHERE (blocker=? AND blocked=?) OR (blocked=? AND blocker=?)").bind(user.id,target,user.id,target).first())return respond({error:"Unavailable"},403);
   const photo=await db.prepare("SELECT mime,data FROM wrld_discovery_photos WHERE user_id=? AND mode=?").bind(target,mode).first();
   if(!photo)return respond({error:"Photo not found"},404);
-  return new Response(photo.data,{status:200,headers:{"Content-Type":photo.mime,"Cache-Control":"private,no-store","Access-Control-Allow-Origin":ORIGIN,"X-Content-Type-Options":"nosniff"}});
+  // D1 returns BLOBs as regular number arrays, not a binary Response BodyInit.
+  // Passing the array to Response converts JPEG/PNG bytes to text, breaking images.
+  const bytes=photo.data instanceof Uint8Array?photo.data:Uint8Array.from(photo.data||[]);
+  if(bytes.length<32||bytes.length>900*1024||imageMime(bytes)!==photo.mime)return respond({error:"Invalid stored photo"},500);
+  return new Response(bytes,{status:200,headers:{"Content-Type":photo.mime,"Content-Length":String(bytes.length),"Cache-Control":"private,no-store","Access-Control-Allow-Origin":ORIGIN,"X-Content-Type-Options":"nosniff"}});
  }
  if(path==="/discover/dating/optin"&&req.method==="PUT"){
   if(!peerGroup(mine?.age))return respond({error:"Dating discovery requires a self-declared age of at least 15."},403);

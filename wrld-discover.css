@@ -131,3 +131,21 @@ body.discover-view #main{height:calc(100dvh - 89px);overflow:hidden}
 #fd-own-photo-error{color:var(--accent2)}
 
 .fd-peer-note{display:flex;align-items:center;justify-content:center;min-height:100px;border:1px dashed var(--line);border-radius:14px;background:var(--panel2);color:var(--muted);text-align:center;padding:15px;font-size:12px;line-height:1.6}
+
+/* Photo-first discovery profiles: large square photo ABOVE all text, readable on mobile. */
+.fd-card{position:relative;gap:12px;padding:14px;border-radius:18px;overflow:hidden}
+.fd-card-photo-wrap{position:relative;display:flex;justify-content:center;align-items:center;min-width:0;width:100%;padding:10px 8px;border-radius:15px;background:radial-gradient(circle at 75% 15%,color-mix(in srgb,var(--accent2) 20%,transparent),transparent 65%),var(--panel);border:1px solid var(--line);overflow:hidden}
+.fd-card-photo-wrap .fd-avatar{position:relative;display:grid;place-items:center;flex:none;width:min(100%,285px);max-width:285px;height:auto;aspect-ratio:1/1;border-radius:16px;border:1px solid color-mix(in srgb,var(--accent2) 30%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--accent2) 65%,#333755),#393a55);font:800 clamp(40px,7vw,70px) "Space Grotesk",sans-serif;overflow:hidden}
+.fd-card-photo-wrap .fd-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:var(--panel);z-index:1}
+.fd-card-top{display:block;min-width:0}
+.fd-card-name h3{font-size:17px}
+.fd-card-name p{font-size:11px}
+.fd-own-label{position:absolute;z-index:3;left:13px;right:13px;top:12px;padding:0;border:0;pointer-events:none}
+.fd-own-label strong,.fd-own-label span{border-radius:9px;padding:6px 9px;background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);box-shadow:0 2px 12px #0003;backdrop-filter:blur(9px)}
+.fd-own-label strong{color:var(--accent2)}
+.fd-own-label span{color:var(--text)}
+.fd-publication-tip{margin:0;padding:10px 11px;border-radius:10px;background:color-mix(in srgb,var(--accent2) 11%,var(--panel));color:var(--muted);font-size:11px;line-height:1.55}
+.fd-own-card .fd-card-actions .btn{min-width:0;max-width:none}
+.fd-editor-photo img{position:relative;display:block;max-width:100%;max-height:100%;object-fit:cover}
+@media(max-width:710px){.fd-card-photo-wrap .fd-avatar{width:min(100%,285px)}}
+@media(max-width:390px){.fd-card-photo-wrap{padding:8px}.fd-own-label{left:9px;right:9px;top:9px}.fd-own-label strong,.fd-own-label span{font-size:9px;padding:5px 6px}}

@@ -57,15 +57,16 @@ if(root){
   const name=self.display_name||tr("My questionnaire","Моя анкета");
   const mine={id:self.user_id,display_name:name,media_public:false,has_photo:!!self.card?.has_photo};
   return '<article class="fd-card fd-own-card" data-fd-own="true" aria-label="'+tr("Your friends questionnaire","Твоя анкета для друзів")+'">'+
-   '<div class="fd-own-label"><strong>✦ '+tr("Your questionnaire","Твоя анкета")+'</strong><span class="'+(enabled?"fd-own-public":"fd-own-private")+'">'+(enabled?tr("✓ Published","✓ Опубліковано"):tr("🔒 Only you","🔒 Тільки ти"))+'</span></div>'+
-   '<div class="fd-card-top">'+picture(mine)+'<div class="fd-card-name"><h3>'+esc(name)+'</h3><p class="fd-age">'+esc(self.age_range||group)+'</p></div></div>'+
+   '<div class="fd-card-photo-wrap">'+picture(mine)+'<div class="fd-own-label"><strong>✦ '+tr("Your questionnaire","Твоя анкета")+'</strong><span class="'+(enabled?"fd-own-public":"fd-own-private")+'">'+(enabled?tr("✓ Published","✓ Опубліковано"):tr("🔒 Only you · Not published","🔒 Тільки ти · Не опубліковано"))+'</span></div></div>'+
+   '<div class="fd-card-top"><div class="fd-card-name"><h3>'+esc(name)+'</h3><p class="fd-age">'+esc(self.age_range||group)+'</p></div></div>'+
    (self.card?.bio?'<p class="fd-card-bio">'+esc(self.card.bio)+'</p>':'<p class="fd-card-nointerests">'+tr("Add a description to complete your card.","Додай опис, щоб завершити анкету.")+'</p>')+
    tags({interests:self.interests||[]})+
-   '<div class="fd-card-actions"><button type="button" class="btn primary" data-fd="edit-card">✎ '+tr("Edit my questionnaire","Редагувати анкету")+'</button></div></article>';
+   (!enabled?'<p class="fd-publication-tip">'+tr("Not visible to anyone else yet. Add a short bio and publish your card.","Інші ще не бачать анкету. Додай короткий опис і опублікуй її.")+'</p>':'')+
+   '<div class="fd-card-actions">'+(!enabled?'<button type="button" class="btn primary" data-fd="publish-own">✦ '+tr("Publish my card","Опублікувати анкету")+'</button>':'')+'<button type="button" class="btn" data-fd="edit-card">✎ '+tr("Edit my questionnaire","Редагувати анкету")+'</button></div></article>';
  }
  function card(p){
   const username=String(p.username||""),handle=/^fmail_[a-z0-9]+$/i.test(username)?"":"@"+esc(username);
-  return '<article class="fd-card"><div class="fd-card-top">'+picture(p)+
+  return '<article class="fd-card"><div class="fd-card-photo-wrap">'+picture(p)+'</div><div class="fd-card-top">'+
    '<div class="fd-card-name"><h3>'+esc(p.display_name||username)+'</h3><p>'+(handle?handle+' · ':'')+
    '<span class="fd-age">'+esc(p.age_group||group)+'</span></p></div></div>'+
    (p.bio?'<p class="fd-card-bio">'+esc(p.bio)+'</p>':'')+
@@ -165,6 +166,18 @@ if(root){
   if(action==="search"||action==="refresh"){query=root.querySelector("#fd-query")?.value?.trim()||"";void load();return}
   if(action==="profile-settings"){location.hash="#profile";return}
   if(action==="edit-card"){draft={bio:self.card?.bio||"",gender:self.card?.gender||"undisclosed",seeking:self.card?.seeking||"everyone"};editor=true;render();return}
+  if(action==="publish-own"){
+   if(mode!=="friends"||!self.age_ready||enabled)return;
+   if(!self.card?.bio?.trim()){
+    draft={bio:self.card?.bio||"",gender:"undisclosed",seeking:"everyone"};
+    editor=true;message=tr("Add a short description, then press Publish questionnaire.","Додай короткий опис, а потім натисни «Опублікувати анкету».");render();return;
+   }
+   if(!confirm(tr("Make your questionnaire visible to people in your age range?","Показувати твою анкету іншим людям відповідного віку?")))return;
+   busy=true;button.disabled=true;
+   try{await api("/discover/card","PUT",{mode:"friends",active:true,bio:self.card.bio,gender:self.card.gender||"undisclosed",seeking:self.card.seeking||"everyone"});enabled=true;self.card.active=true;void load()}
+   catch(err){message=err.message;render()}finally{busy=false}
+   return;
+  }
   if(action==="close-card"){editor=false;render();return}
   if(action==="view"){window.WrldProfile?.openPublic?.(button.dataset.username);return}
   if(!token()){location.hash="#profile";return}
