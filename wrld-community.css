@@ -196,3 +196,126 @@
  #page-chat .social-person{padding:12px;min-height:58px}
 }
 @media(prefers-reduced-motion:reduce){#page-chat .social-rail-link{transition:none}}
+
+/* Community v3 · Full-height workspace — the OUTER page never scrolls.
+   Messages, member lists and contact panes scroll independently. */
+body.community-view{height:100dvh;overflow:hidden;overscroll-behavior:none}
+body.community-view #main{height:calc(100dvh - 89px);overflow:hidden}
+body.community-view>.footer{display:none}
+#page-chat.active{display:flex;flex-direction:column;height:calc(100dvh - 89px - 100px);min-height:0;min-width:0;padding:3px 0 0;overflow:hidden}
+#page-chat .page-heading{display:none}
+#page-chat #wrld-community-root{height:100%;flex:1;min-height:0;min-width:0}
+#page-chat .social-modern{display:flex;flex-direction:column;min-height:0;height:100%;margin:0}
+#page-chat .social-workspace{height:100%;min-height:0;max-height:100%;gap:12px;grid-template-columns:minmax(190px,238px) minmax(0,1fr);overflow:hidden}
+#page-chat .social-rail{min-height:0;overflow-y:auto;overscroll-behavior:contain;gap:13px;padding:16px;border-radius:18px}
+#page-chat .social-rail-brand{padding-bottom:13px;gap:12px}
+#page-chat .social-rail-brand>span{width:42px;height:42px;font-size:22px;border-radius:13px}
+#page-chat .social-rail-brand strong{font-size:16px}
+#page-chat .social-rail-brand small{font-size:10px}
+#page-chat .social-rail-nav{gap:6px}
+#page-chat .social-rail-link{min-height:44px;padding:10px 12px;border-radius:12px;font-size:12px;gap:10px}
+#page-chat .social-rail-link>span{width:24px;font-size:18px}
+#page-chat .social-rail-link:focus-visible,.social-mini:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+#page-chat .social-rail-foot{padding-top:12px;gap:9px}
+#page-chat .social-rail-status{font-size:10px;line-height:1.4}
+#page-chat .social-rail-foot .social-mini{min-height:37px;padding:9px 10px;font-size:11px}
+#page-chat .social-workspace-content{min-height:0;overflow:hidden;padding:clamp(10px,1.35vw,19px);border-radius:19px}
+#page-chat .social-feedback:not(:empty){padding-bottom:8px;font-size:11px}
+#page-chat .social-layout{min-height:0;flex:1 1 0;overflow:hidden}
+#page-chat .social-layout-global .social-global{gap:9px;min-height:0;height:100%;overflow:hidden}
+#page-chat .social-global .social-chat-top{min-height:0;gap:10px}
+#page-chat .social-global .social-chat-top h3{font-size:clamp(20px,2vw,26px);margin:4px 0}
+#page-chat .social-global .social-chat-top p{font-size:11px;line-height:1.4}
+#page-chat .social-room-meta{font-size:10px;letter-spacing:.08em}
+#page-chat .social-global .social-chat-top .social-mini{min-height:33px;padding:7px 12px}
+#page-chat .social-global .social-chat-list{min-height:0;max-height:none;flex:1 1 0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:12px;gap:9px;border-radius:14px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+#page-chat .social-chat-item{padding:11px 13px;border-radius:12px;max-width:88%;font-size:12px}
+#page-chat .social-chat-item p{font-size:12px;line-height:1.5;margin:6px 0}
+#page-chat .social-chat-meta strong{font-size:11px}
+#page-chat .social-read-gate{padding:10px 12px;gap:11px;border-radius:11px}
+#page-chat .social-read-gate>span{font-size:19px}
+#page-chat .social-read-gate strong{font-size:12px}
+#page-chat .social-read-gate p{font-size:10px}
+#page-chat .social-read-gate .social-mini{min-height:32px;padding:6px 9px;font-size:10px}
+#page-chat .social-compose{gap:8px;align-items:stretch;min-width:0}
+#page-chat .social-compose .social-textarea{min-height:42px;height:48px;max-height:110px;resize:vertical;padding:12px 13px;font-size:12px;border-radius:12px}
+#page-chat .social-compose .btn{min-height:44px;padding:10px 16px;font-size:12px;flex-shrink:0}
+#page-chat .social-global-rules{font-size:10px;line-height:1.45;color:var(--muted);margin:0}
+#page-chat .social-layout-friends>.social-split,#page-chat .social-layout-direct>.social-split{height:100%;min-height:0;gap:12px}
+#page-chat .social-layout-friends>.social-split{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+#page-chat .social-layout-friends>.social-split>section,#page-chat .social-layout-friends>.social-split>aside{min-height:0;max-height:100%;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+#page-chat .social-layout-friends h3,#page-chat .social-layout-direct h3{font-size:clamp(17px,1.7vw,21px);margin:0 0 12px;line-height:1.3}
+#page-chat .social-layout-friends .social-form{margin-bottom:13px}
+#page-chat .social-layout-friends .social-input{min-height:40px;font-size:12px}
+#page-chat .social-layout-friends .social-form .btn{min-height:38px;padding:8px 12px;font-size:11px}
+#page-chat .social-layout-friends .social-card{padding:13px}
+#page-chat .social-person{min-height:45px;padding:9px 11px;margin:0 0 7px;gap:9px;border-radius:11px}
+#page-chat .social-person strong{font-size:12px}
+#page-chat .social-person small{font-size:10px}
+#page-chat .social-person-actions{gap:6px;flex-wrap:wrap}
+#page-chat .social-mini{min-height:30px;padding:6px 9px;font-size:10px}
+#page-chat .social-layout-direct>.social-split{grid-template-columns:minmax(180px,.7fr) minmax(0,1.7fr)}
+#page-chat .social-layout-direct>.social-split>aside{display:flex;flex-direction:column;min-height:0;overflow:hidden;border-right:1px solid var(--line);padding:0 12px 0 0}
+#page-chat .social-contact-list{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent;display:flex;flex-direction:column;gap:5px}
+#page-chat .social-contact-list .social-person{margin:0;min-height:44px}
+#page-chat .social-contact-list .social-person:has(.social-contact-selected){border-color:var(--accent2);background:var(--soft)}
+#page-chat .social-layout-direct>.social-split>section{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+#page-chat .social-layout-direct .social-chat-list{min-height:0;max-height:none;flex:1 1 0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:12px;margin:0 0 9px;border-radius:13px;scrollbar-width:thin}
+#page-chat .social-layout-direct .social-compose{margin-top:auto}
+#page-chat .social-layout-direct .social-message{font-size:12px;padding:15px;line-height:1.5}
+@media(max-width:850px){
+ #page-chat .social-workspace{grid-template-columns:1fr;display:flex;flex-direction:column;gap:7px}
+ #page-chat .social-rail{display:flex;flex-direction:row;align-items:center;flex:none;overflow:visible;padding:7px 9px;gap:7px;border-radius:14px}
+ #page-chat .social-rail-brand{display:none}
+ #page-chat .social-rail-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;flex:1;min-width:0}
+ #page-chat .social-rail-link{min-height:37px;justify-content:center;padding:7px 6px;gap:6px;font-size:11px}
+ #page-chat .social-rail-link>span{display:inline-grid;width:auto;font-size:15px}
+ #page-chat .social-rail-foot{margin:0;padding:0;flex:none;border:0}
+ #page-chat .social-rail-status{display:none}
+ #page-chat .social-rail-foot .social-mini{width:auto;max-width:115px;min-height:35px;white-space:normal;font-size:10px;padding:6px 9px;text-align:center}
+ #page-chat .social-workspace-content{min-height:0;flex:1 1 0;padding:12px}
+ #page-chat .social-layout-friends>.social-split{grid-template-columns:repeat(2,minmax(0,1fr));overflow:hidden;gap:10px}
+ #page-chat .social-layout-friends>.social-split>section,#page-chat .social-layout-friends>.social-split>aside{min-height:0;overflow-y:auto}
+ #page-chat .social-layout-direct>.social-split{grid-template-columns:minmax(145px,.7fr) minmax(0,1.6fr)}
+}
+@media(max-width:640px){
+ body.community-view #main{height:calc(100dvh - 75px)}
+ #page-chat.active{height:calc(100dvh - 75px - 82px);padding:2px 0 0}
+ #main.shell:has(#page-chat.active){padding-inline:9px}
+ #page-chat .social-workspace{gap:6px}
+ #page-chat .social-rail{padding:6px;gap:4px}
+ #page-chat .social-rail-link{font-size:10px;padding:6px 3px;min-height:35px;gap:4px}
+ #page-chat .social-rail-link>span{font-size:13px}
+ #page-chat .social-rail-foot .social-mini{min-height:33px;max-width:88px;padding:5px 6px;font-size:9px}
+ #page-chat .social-workspace-content{padding:9px;border-radius:14px}
+ #page-chat .social-global .social-chat-top h3{font-size:19px}
+ #page-chat .social-global .social-chat-top p{font-size:10px}
+ #page-chat .social-global .social-chat-list{min-height:0;padding:8px;gap:7px}
+ #page-chat .social-chat-item{padding:9px;max-width:94%}
+ #page-chat .social-chat-item p{font-size:11px}
+ #page-chat .social-compose{flex-direction:row;gap:6px}
+ #page-chat .social-compose .social-textarea{min-height:40px;height:44px;max-height:80px;padding:10px;font-size:12px}
+ #page-chat .social-compose .btn{min-height:42px;width:auto;padding:9px 10px;font-size:11px}
+ #page-chat .social-global-rules{font-size:9px;line-height:1.3}
+ #page-chat .social-layout-friends>.social-split{grid-template-columns:1fr;overflow-y:auto;overscroll-behavior:contain;gap:12px}
+ #page-chat .social-layout-friends>.social-split>section,#page-chat .social-layout-friends>.social-split>aside{min-height:0;max-height:none;overflow:visible}
+ #page-chat .social-layout-direct>.social-split{display:flex;flex-direction:column;gap:7px;min-height:0;overflow:hidden}
+ #page-chat .social-layout-direct>.social-split>aside{flex:0 0 auto;width:100%;max-height:100px;border:0;border-bottom:1px solid var(--line);padding:0 0 8px;overflow:hidden;gap:4px}
+ #page-chat .social-layout-direct>.social-split>aside>h3{font-size:13px;margin:0 0 4px}
+ #page-chat .social-contact-list{display:flex;flex-direction:row;min-height:0;overflow-x:auto;overflow-y:hidden;gap:6px}
+ #page-chat .social-contact-list .social-person{flex:0 0 auto;min-width:115px;max-width:190px;min-height:38px;padding:6px}
+ #page-chat .social-contact-list .social-mini{font-size:10px}
+ #page-chat .social-layout-direct>.social-split>section{min-height:0;flex:1}
+ #page-chat .social-layout-direct>.social-split>section>h3{font-size:15px;margin:2px 0 9px}
+ #page-chat .social-layout-direct .social-chat-list{min-height:0;flex:1 1 0;margin-bottom:7px;padding:8px}
+ #page-chat .social-layout-direct .social-compose{min-height:0}
+}
+@media(max-height:630px){
+ #page-chat .social-global .social-chat-top p{display:none}
+ #page-chat .social-global-rules{display:none}
+ #page-chat .social-rail-link{min-height:33px}
+ #page-chat .social-rail-foot .social-mini{min-height:31px}
+ #page-chat .social-read-gate{padding:7px 9px}
+ #page-chat .social-read-gate p{display:none}
+}
+@media(prefers-reduced-motion:reduce){#page-chat .social-rail-link{transition:none}}
