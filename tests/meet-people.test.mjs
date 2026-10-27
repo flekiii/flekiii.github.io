@@ -112,7 +112,7 @@ test("The own uploaded avatar has an authenticated live target in editor and lis
 });
 
 test("Own Friends card remains visible while searching or when the peer list is empty",()=>{
- assert.match(client,/if\(mode==="friends"&&self\?\.age_ready&&self\.user_id\)/);
+ assert.match(client,/if\(mode==="friends"&&self\?\.age_ready&&self\.user_id&&hasOwnQuestionnaire\(\)\)/);
  assert.match(client,/No other questionnaires found yet/);
  assert.match(client,/const summary=error\?/);
  assert.match(css,/\.fd-peer-note/);
