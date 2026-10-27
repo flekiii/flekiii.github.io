@@ -80,8 +80,8 @@ function createHouse(){
 }
 $("houseCreateButton").addEventListener("click",createHouse);
 function token(){try{return sessionStorage.getItem("fw-token")||""}catch{return ""}}
-async function call(path,method="GET",body){
- const t=token();const response=await fetch(API+path,{
+async function call(path,method="GET",body,authToken=token()){
+ const t=authToken;const response=await fetch(API+path,{
   method,headers:{"Content-Type":"application/json",...(t?{Authorization:"Bearer "+t}:{})},
   ...(body!==undefined?{body:JSON.stringify(body)}:{})
  });
@@ -91,7 +91,9 @@ async function call(path,method="GET",body){
 }
 async function whoAmI(){
  if(!token())throw Error(tr("Sign in to your fleki's wrld account first.","Спочатку увійди в акаунт fleki's wrld."));
- const r=await call("/me");
+ const capturedToken=token();
+ const r=await call("/me","GET",undefined,capturedToken);
+ if(token()!==capturedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
  if(!r.user?.id)throw Error(tr("Account verification failed.","Не вдалося перевірити акаунт."));
  return r.user;
 }
@@ -119,7 +121,8 @@ async function saveCloudDraft({manual=false}={}){
   // First cloud save is explicit: never silently overwrite another device's newer draft.
   if(!syncUser||syncUser!==user.id||syncToken!==startedToken){
    if(!manual)return;
-   const remote=await call("/houses/draft");
+   const remote=await call("/houses/draft","GET",undefined,startedToken);
+   if(token()!==startedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
    if(remote.draft&&(remote.draft.template!==local.template||JSON.stringify(remote.draft.items)!==JSON.stringify(local.items))){
     if(!confirm(tr("Your account already has a private house draft. Replace it with the house on this device?","В акаунті вже є приватна чернетка. Замінити її будинком із цього пристрою?")))return;
    }
@@ -127,7 +130,8 @@ async function saveCloudDraft({manual=false}={}){
   }
   const payload={...local};
   if(syncVersion!==null)payload.expected_updated_at=syncVersion;
-  const saved=await call("/houses/draft","PUT",payload);
+  if(token()!==startedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
+  const saved=await call("/houses/draft","PUT",payload,startedToken);
   if(token()!==startedToken){stopCloudSync();return}
   syncUser=user.id;syncToken=startedToken;syncVersion=saved.updated_at;
   markOwner(user);
@@ -148,15 +152,16 @@ function queueCloudSave(){
  syncTimer=setTimeout(()=>{syncTimer=0;void saveCloudDraft()},1500);
 }
 async function restoreCloudHouse(type="draft"){
- const user=await whoAmI(),expectedToken=token();
- const response=await call(type==="published"?"/houses/mine":"/houses/draft");
+ const expectedToken=token(),user=await whoAmI();
+ if(token()!==expectedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
+ const response=await call(type==="published"?"/houses/mine":"/houses/draft","GET",undefined,expectedToken);
  const source=type==="published"?response.house:response.draft;
  if(!source){setShareStatus(type==="published"?"No published house in your account yet.":"No private cloud draft in your account yet.",type==="published"?"У твоєму акаунті ще немає опублікованого будинку.":"В акаунті ще немає приватної чернетки.");return}
  if(expectedToken!==token())throw Error(tr("Account changed. Try again.","Акаунт змінився. Повтори дію."));
  const local=getSettings();
  if(local?.template&&!confirm(tr("Replace the house on this device with your saved account house? A local backup will be kept.","Замінити будинок на цьому пристрої версією з акаунта? Збережемо локальну резервну копію.")))return;
  backupLocal();stopCloudSync();
- const settings={template:source.template,name:source.name,owner:user.id,createdAt:Date.now()};
+ const settings={template:source.template,name:source.name,owner:user.id,createdAt:Date.now(),...(type==="published"?{published_at:source.updated_at}:{})};
  writeSettings(settings);
  localStorage.removeItem(STORE_KEY);
  selected=source.template;$("houseNameInput").value=source.name;
@@ -168,8 +173,9 @@ async function restoreCloudHouse(type="draft"){
  window.dispatchEvent(new CustomEvent("wrld:house-restored",{detail:{house:source}}));
 }
 async function changeVisibility(published,inProfile){
- const user=await whoAmI();
- const result=await call("/houses/visibility","PATCH",{published,in_profile:inProfile});
+ const capturedToken=token(),user=await whoAmI();
+ if(token()!==capturedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
+ const result=await call("/houses/visibility","PATCH",{published,in_profile:inProfile},capturedToken);
  currentVisibility=result.house;
  window.dispatchEvent(new CustomEvent("wrld:house-published",{detail:{house:result.house}}));
  setShareStatus(published?(inProfile?"House is visible in your profile.":"House is public, but hidden from your profile."):"House hidden from public view. Your furniture remains saved.",published?(inProfile?"Будинок видно в профілі.":"Будинок публічний, але прихований із профілю."):"Будинок приховано від інших. Меблі залишилися збереженими.");
@@ -210,22 +216,31 @@ void refreshVisibility();
 async function publish(profile=true){
  const saved=getSettings();
  if(!saved?.template){$("houseShareStatus").textContent=tr("Create a house first.","Спочатку створи будинок.");return null}
- const current=await whoAmI();
+ const capturedToken=token(),current=await whoAmI();
+ if(token()!==capturedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
  if(localOwnerMismatch(current))throw Error(tr("This browser house belongs to another account. Restore your own house first.","Цей будинок у браузері належить іншому акаунту. Спочатку віднови власний будинок."));
  const layout=snapshot();
  if(!layout){$("houseShareStatus").textContent=tr("Open your house editor and try again.","Відкрий редактор будинку й повтори.");return null}
- const existing=await call("/houses/mine");
+ const existing=await call("/houses/mine","GET",undefined,capturedToken);
+ if(token()!==capturedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
+ if(existing.house?.updated_at&&Number(saved.published_at||0)!==Number(existing.house.updated_at)){
+  const same=existing.house.template===saved.template&&JSON.stringify(existing.house.items)===JSON.stringify(layout.items);
+  if(!same&&!confirm(tr("A different house is already published on this account. Replace it with the current local layout?","У цьому акаунті вже є інший опублікований будинок. Замінити його поточним локальним?")))return null;
+ }
  const showInProfile=profile||existing.house?.in_profile===true;
  const buttons=["housePublishButton","houseProfileButton","houseShareButton"].map($).filter(Boolean);
  buttons.forEach(b=>b.disabled=true);
  $("houseShareStatus").textContent=tr("Publishing and saving furniture…","Публікуємо будинок і зберігаємо меблі…");
  try{
-  const r=await call("/houses/publish","PUT",{name:saved.name||layout.name,template:saved.template,items:layout.items,published:true,in_profile:showInProfile});
+  if(token()!==capturedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
+  const r=await call("/houses/publish","PUT",{name:saved.name||layout.name,template:saved.template,items:layout.items,published:true,in_profile:showInProfile,expected_updated_at:existing.house?.updated_at||0},capturedToken);
   if(!r.published||r.in_profile!==showInProfile)throw Error(tr("The server could not confirm publication.","Сервер не підтвердив публікацію."));
-  const check=await call("/houses/mine");
+  const check=await call("/houses/mine","GET",undefined,capturedToken);
   if(!check.house?.published||check.house.in_profile!==showInProfile)throw Error(tr("Publication did not persist. Retry.","Публікація не збереглася. Спробуй ще."));
   publishedUser=r.username;
-  markOwner(current);currentVisibility=check.house;updateVisibilityButtons();
+  markOwner(current);
+  const currentSettings=getSettings();if(currentSettings?.owner===current.id)writeSettings({...currentSettings,published_at:check.house.updated_at});
+  currentVisibility=check.house;updateVisibilityButtons();
   $("houseShareStatus").textContent=tr("Your house is now visible in your profile!","Твій будинок тепер видно у профілі!");
   window.dispatchEvent(new CustomEvent("wrld:house-published",{detail:{house:check.house}}));
   return r;

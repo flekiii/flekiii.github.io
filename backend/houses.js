@@ -89,6 +89,8 @@ export async function houseHandle(req,env,path,{auth,authorized}){
   const name=String(payload.name||"").trim();
   if(name.length<1||name.length>55||!/[\p{L}\p{N}]/u.test(name))return bad("Enter a house name (1–55 characters).");
   if(!TEMPLATES.has(payload.template)||!validItems(payload.items))return bad("Invalid house plan or furniture.");
+  const previous=await one(db,"SELECT updated_at FROM wrld_houses WHERE owner=?",user.id);
+  if(Object.prototype.hasOwnProperty.call(payload,"expected_updated_at")&&Number(payload.expected_updated_at)!==Number(previous?.updated_at||0))return bad("Published house changed on another device. Refresh before overwriting.",409);
   const published=payload.published===true?1:0,inProfile=published&&payload.in_profile===true?1:0;
   const items=JSON.stringify(payload.items.map(x=>({id:x.id,type:x.type,x:x.x,z:x.z,rot:x.rot})));
   await exec(db,"INSERT INTO wrld_houses(owner,name,template,layout_json,published,in_profile,updated_at) VALUES(?,?,?,?,?,?,?) ON CONFLICT(owner) DO UPDATE SET name=excluded.name,template=excluded.template,layout_json=excluded.layout_json,published=excluded.published,in_profile=excluded.in_profile,updated_at=excluded.updated_at",user.id,name,payload.template,items,published,inProfile,Date.now());
