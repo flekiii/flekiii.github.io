@@ -24,7 +24,8 @@ test("Profile retains private exact age and controls public interests and status
  assert.match(profile,/interests/);
 });
 test("Discovery requires opt-in and restricts both sides to one self-reported age group",()=>{
- assert.match(discovery,/if\(!mine\?\.age\|\|mine.age<15\)/);
+ assert.match(discovery,/if\(!ageRange\(mine\?\.age,"friends"\)\)/);
+ assert.match(discovery,/ageRange\(mine\.age,"dating"\)/);
  assert.match(discovery,/mine.discoverable!==1/);
  assert.match(discovery,/teen\?"e.age<18":"e.age>=18"/);
  assert.match(discovery,/NOT EXISTS\(SELECT 1 FROM blocks/);
@@ -56,5 +57,5 @@ test("Versioned assets and Worker routes match",()=>{
  assert.match(worker,/gamesCatalog\(req,path\)/);
  assert.match(html,/wrld-profile\.js\?v=11/);
  assert.match(html,/wrld-world\.mjs\?v=7/);
- assert.match(html,/wrld-discover\.mjs\?v=3/);
+ assert.match(html,/wrld-discover\.mjs\?v=4/);
 });

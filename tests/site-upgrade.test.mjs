@@ -26,11 +26,12 @@ test("Arcade awards XP only for one-time server-verified answers",()=>{
  assert.match(code,/Number\(update.meta\?\.changes\)!==1/);
  assert.match(get("wrld-web-games.js"),/mathAnswer/);
 });
-test("Meet People is 15+ and separates adult and teen requests on server",()=>{
+test("Meet People supports friends 14+ and dating 15+ with server-enforced ±2 year ranges",()=>{
  const code=get("backend/discover.js");
- assert.match(code,/mine.age<15/);
- assert.match(code,/other.age<15/);
- assert.match(code,/\(mine.age<18\)!==\(other.age<18\)/);
+ assert.match(code,/mode==="friends"\?14:15/);
+ assert.match(code,/Math\.max\(groupMin,n-2\)/);
+ assert.match(code,/Math\.min\(groupMax,n\+2\)/);
+ assert.match(code,/mine.age<theirRange.min\|\|mine.age>theirRange.max/);
  assert.match(get("wrld-discover.mjs"),/\/discover\/request/);
 });
 test("The site supports accessible focus effects and reduced motion",()=>{
