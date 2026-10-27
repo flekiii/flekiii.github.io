@@ -9,11 +9,27 @@ const button=(t,act,id="")=>'<button type="button" class="social-mini" data-acti
 const msg=x=>{S.error=x;for(const id of ["fw-feedback","fw-profile-feedback"]){const n=document.getElementById(id);if(n)n.textContent=x}};
 const openProfile=()=>{const link=document.querySelector("#dock [data-go=\"profile\"]");if(link)link.click();};
 async function api(path,method="GET",body=null){
- const headers={Accept:"application/json"};if(S.token)headers.Authorization="Bearer "+S.token;if(body!==null)headers["Content-Type"]="application/json";
- const response=await fetch(API+path,{method,headers,body:body===null?undefined:JSON.stringify(body),cache:"no-store",mode:"cors"});
- const data=await response.json().catch(()=>({error:"Invalid server response."}));
- if(!response.ok){if(response.status===401&&path!=="/auth/login"){S.token="";sessionStorage.removeItem("fw-token");S.user=null}throw Error(data.error||"Server error "+response.status)}
- return data;
+ const tokenAtStart=S.token;
+ const headers={Accept:"application/json"};
+ if(tokenAtStart)headers.Authorization="Bearer "+tokenAtStart;
+ if(body!==null)headers["Content-Type"]="application/json";
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),18000);
+ try{
+  const response=await fetch(API+path,{method,headers,body:body===null?undefined:JSON.stringify(body),cache:"no-store",mode:"cors",signal:controller.signal});
+  const data=await response.json().catch(()=>({error:"Server returned invalid data. Please try again."}));
+  if(!response.ok){
+   // A failed sign-up / password attempt must never log out an unrelated active session.
+   if(response.status===401&&!path.startsWith("/auth/")&&tokenAtStart&&S.token===tokenAtStart){
+    S.token="";S.user=null;sessionStorage.removeItem("fw-token");
+   }
+   const error=new Error(data.error||"Server error "+response.status);error.status=response.status;throw error;
+  }
+  return data;
+ }catch(error){
+  if(error.name==="AbortError")throw Error("The server took too long to respond. Please retry.");
+  if(error instanceof TypeError)throw Error("Cannot reach fleki's wrld server. Check your internet connection and try again.");
+  throw error;
+ }finally{clearTimeout(timer)}
 }
 function verified(){return !!S.user?.mfa_verified}
 function ensure2fa(){if(!S.user){openProfile();msg("Sign in first.");return false}if(!verified()){openProfile();msg("Verified authenticator 2FA is required.");return false}return true}
@@ -24,7 +40,7 @@ function account(){
  const method=(name,icon,key)=>'<button type="button" class="auth-provider '+(S.providers?.[key]?'ready':'unavailable')+'" data-action="oauth" data-id="'+key+'" '+(S.providers?.[key]?'':'disabled title="Provider setup pending"')+'><span class="auth-provider-icon '+key+'">'+icon+'</span><span>Continue with '+name+'</span><span class="auth-provider-status">'+(S.providers?.[key]?'→':'Soon')+'</span></button>';
  const providers=method('fmail','✦','fmail')+method('Google','G','google')+method('Apple','●','apple')+method('GitHub','⌘','github')+method('Discord','◈','discord');
  const signup=S.mode==="register";
- return '<div class="auth-experience"><section class="auth-main"><div class="auth-kicker">FLEKI’S WRLD ID</div><div class="auth-heading"><span class="auth-logo" aria-hidden="true">f.</span><div><h2>'+(signup?'Create your account':'Welcome back')+'</h2><p>'+(signup?'Start your journey in a world made for everyone.':'Your world, your people. Good to see you again.')+'</p></div></div><div class="auth-switcher" role="group" aria-label="Sign in or register"><button type="button" class="'+(!signup?'active':'')+'" data-action="mode" data-id="login">Sign in</button><button type="button" class="'+(signup?'active':'')+'" data-action="mode" data-id="register">Create account</button></div><form id="fw-auth" class="auth-fields"><label>Username <input class="social-input" name="username" pattern="[a-z][a-z0-9_]{2,23}" maxlength="24" autocomplete="username" placeholder="your_username" required></label>'+(signup?'<label>Display name <input class="social-input" name="display_name" maxlength="60" placeholder="How should we call you?" required></label>':'')+'<label>Password <span class="auth-input-wrap"><input class="social-input" name="password" type="password" minlength="'+(signup?'12':'1')+'" maxlength="128" autocomplete="'+(signup?'new-password':'current-password')+'" placeholder="'+(signup?'At least 12 characters':'Enter your password')+'" required><button type="button" class="auth-show-password" data-action="showpass" aria-label="Show password">Show</button></span></label><button class="btn primary auth-submit" type="submit">'+(signup?'Create my account':'Sign in to my world')+' <span aria-hidden="true">↗</span></button></form><div class="auth-divider"><span>or continue with</span></div><div class="auth-provider-grid">'+providers+'</div><p class="auth-provider-note">Social sign-in becomes available as each provider is securely configured. Your Fleki’s Wrld 2FA is still required before sending messages or adding friends.</p></section><aside class="auth-welcome"><span class="auth-welcome-symbol">✦</span><div class="auth-welcome-content"><span class="auth-kicker">ONE WORLD. INFINITE POSSIBILITIES.</span><h3>Make it <em>your world.</em></h3><p>A community for ideas, friends, games and things still waiting to be created.</p><div class="auth-welcome-points"><span>✦ A space that feels yours</span><span>♡ Find your people</span><span>♧ Privacy and safety first</span></div></div><span class="auth-welcome-orbit" aria-hidden="true"></span></aside></div><p class="auth-bottom-hint">No real name, phone number or email required for username signup. Account recovery by email is unavailable — keep your password and 2FA recovery codes safe.</p>';
+ return '<div class="auth-experience"><section class="auth-main"><div class="auth-kicker">FLEKI’S WRLD ID</div><div class="auth-heading"><span class="auth-logo" aria-hidden="true">f.</span><div><h2>'+(signup?'Create your account':'Welcome back')+'</h2><p>'+(signup?'Start your journey in a world made for everyone.':'Your world, your people. Good to see you again.')+'</p></div></div><div class="auth-switcher" role="group" aria-label="Sign in or register"><button type="button" class="'+(!signup?'active':'')+'" data-action="mode" data-id="login">Sign in</button><button type="button" class="'+(signup?'active':'')+'" data-action="mode" data-id="register">Create account</button></div><form id="fw-auth" class="auth-fields"><label>Username <input class="social-input" name="username" pattern="[a-zA-Z][a-zA-Z0-9_]{2,23}" maxlength="24" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="your_username" required></label>'+(signup?'<label>Display name <input class="social-input" name="display_name" maxlength="60" placeholder="How should we call you?" required></label>':'')+'<label>Password <span class="auth-input-wrap"><input class="social-input" name="password" type="password" minlength="'+(signup?'12':'1')+'" maxlength="128" autocomplete="'+(signup?'new-password':'current-password')+'" placeholder="'+(signup?'At least 12 characters':'Enter your password')+'" required><button type="button" class="auth-show-password" data-action="showpass" aria-label="Show password">Show</button></span></label><button class="btn primary auth-submit" type="submit">'+(signup?'Create my account':'Sign in to my world')+' <span aria-hidden="true">↗</span></button></form><div class="auth-divider"><span>or continue with</span></div><div class="auth-provider-grid">'+providers+'</div><p class="auth-provider-note">Social sign-in becomes available as each provider is securely configured. Your Fleki’s Wrld 2FA is still required before sending messages or adding friends.</p></section><aside class="auth-welcome"><span class="auth-welcome-symbol">✦</span><div class="auth-welcome-content"><span class="auth-kicker">ONE WORLD. INFINITE POSSIBILITIES.</span><h3>Make it <em>your world.</em></h3><p>A community for ideas, friends, games and things still waiting to be created.</p><div class="auth-welcome-points"><span>✦ A space that feels yours</span><span>♡ Find your people</span><span>♧ Privacy and safety first</span></div></div><span class="auth-welcome-orbit" aria-hidden="true"></span></aside></div><p class="auth-bottom-hint">No real name, phone number or email required for username signup. Account recovery by email is unavailable — keep your password and 2FA recovery codes safe.</p>';
  }
  if(window.WrldProfile)return window.WrldProfile.renderAccount({user:S.user,secret:S.secret,verified:verified(),recovery:S.recovery});
  let authPart="";
@@ -76,14 +92,22 @@ function render(){
 async function reload(){
  if(!S.token){
   S.user=null;
-  const feed=await api("/messages/public");
-  S.messages=feed.messages||[];S.pins=[];
+  try{const feed=await api("/messages/public");S.messages=feed.messages||[];S.pins=[]}
+  catch{S.messages=[];S.pins=[]}
   return;
  }
- S.user=(await api("/me")).user;
- const [f,m,n]=await Promise.all([api("/friends"),api("/messages"),api("/notifications")]);
- S.friends=f.friends;S.blocks=f.blocks;S.contactPins=f.contact_pins;S.messages=m.messages;S.pins=m.pins;S.notifications=n.notifications;
- if(S.peer){try{const dm=await api("/messages?peer="+encodeURIComponent(S.peer));S.dm=dm.messages;S.dmPins=dm.pins}catch{S.peer=null;S.dm=[];S.dmPins=[]}}
+ const session=S.token;
+ // Only /me is required to complete sign-in. Chat/friends/notifications must not block access.
+ const me=await api("/me");
+ if(S.token!==session)return;
+ if(!me?.user?.id)throw Error("The server did not return your account. Please retry.");
+ S.user=me.user;
+ const [f,m,n]=await Promise.allSettled([api("/friends"),api("/messages"),api("/notifications")]);
+ if(S.token!==session)return;
+ if(f.status==="fulfilled"){S.friends=f.value.friends||[];S.blocks=f.value.blocks||[];S.contactPins=f.value.contact_pins||[]}
+ if(m.status==="fulfilled"){S.messages=m.value.messages||[];S.pins=m.value.pins||[]}
+ if(n.status==="fulfilled")S.notifications=n.value.notifications||[];
+ if(S.peer){try{const dm=await api("/messages?peer="+encodeURIComponent(S.peer));if(S.token===session){S.dm=dm.messages||[];S.dmPins=dm.pins||[]}}catch{S.peer=null;S.dm=[];S.dmPins=[]}}
 }
 async function action(op,id){
  if(op==="tab"){if(id==="account")return openProfile();S.tab=id;return render()}
@@ -116,7 +140,21 @@ document.addEventListener("submit",async e=>{
  const form=e.target;if(!form.id.startsWith("fw-"))return;e.preventDefault();if(pending)return;pending=true;
  const values=Object.fromEntries(new FormData(form));
  try{
-  if(form.id==="fw-auth"){const r=await api(S.mode==="register"?"/auth/register":"/auth/login","POST",values);S.token=r.token;sessionStorage.setItem("fw-token",r.token);await reload();window.dispatchEvent(new Event("fw-auth-changed"));openProfile()}
+  if(form.id==="fw-auth"){
+    const mode=S.mode==="register"?"register":"login";
+    values.username=String(values.username||"").trim().toLowerCase();
+    if(!/^[a-z][a-z0-9_]{2,23}$/.test(values.username))throw Error("Username: 3–24 Latin letters, numbers or underscores; it must begin with a letter.");
+    if(mode==="register"&&String(values.password||"").length<12)throw Error("Choose a password of at least 12 characters.");
+    S.error="";
+    const result=await api("/auth/"+mode,"POST",values);
+    if(!result?.token)throw Error("The account server did not return a sign-in session. Please retry.");
+    S.token=result.token;sessionStorage.setItem("fw-token",result.token);
+    S.secret=null;S.recovery=null;
+    await reload();
+    if(!S.user?.id)throw Error("Your account was created or signed in, but the profile did not load. Please retry without creating another account.");
+    S.mode="login";S.error="";
+    window.dispatchEvent(new Event("fw-auth-changed"));openProfile();
+   }
   else if(form.id==="fw-activate"){const r=await api("/mfa/activate","POST",values);S.secret=null;S.recovery=r.recovery_codes;await reload();window.dispatchEvent(new Event("fw-auth-changed"))}
   else if(form.id==="fw-verify"){await api("/mfa/verify","POST",values);await reload();window.dispatchEvent(new Event("fw-auth-changed"))}
   else if(form.id==="fw-profile"){if(ensure2fa()){await api("/profile","PUT",values);await reload()}}
@@ -128,5 +166,6 @@ document.addEventListener("submit",async e=>{
 });
 window.addEventListener("wrld:profile",()=>openProfile());
 window.addEventListener("wrld:profile-updated",()=>render());
-(async()=>{try{await api("/health");try{S.providers=(await api("/auth/providers")).providers||S.providers}catch{}let incoming=null;try{incoming=JSON.parse(sessionStorage.getItem("fw-oauth-pending")||"null");sessionStorage.removeItem("fw-oauth-pending")}catch{}if(incoming?.key==="oauth_ticket"){const r=await api("/auth/oauth/redeem","POST",{ticket:incoming.value});S.token=r.token;sessionStorage.setItem("fw-token",r.token);msg("Connected with your external account.")}else if(incoming?.key==="oauth_error"){msg("External sign-in could not be completed: "+incoming.value.replace(/_/g," "))}await reload();window.dispatchEvent(new Event("fw-auth-changed"))}catch(err){msg("Sign-in or API error: "+err.message)}render()})();
+render();
+(async()=>{try{try{await api("/health")}catch{}try{S.providers=(await api("/auth/providers")).providers||S.providers}catch{}let incoming=null;try{incoming=JSON.parse(sessionStorage.getItem("fw-oauth-pending")||"null");sessionStorage.removeItem("fw-oauth-pending")}catch{}if(incoming?.key==="oauth_ticket"){const r=await api("/auth/oauth/redeem","POST",{ticket:incoming.value});S.token=r.token;sessionStorage.setItem("fw-token",r.token);msg("Connected with your external account.")}else if(incoming?.key==="oauth_error"){msg("External sign-in could not be completed: "+incoming.value.replace(/_/g," "))}await reload();window.dispatchEvent(new Event("fw-auth-changed"))}catch(err){msg("Sign-in or API error: "+err.message)}if(!document.activeElement?.closest?.("#fw-auth"))render()})();
 setInterval(async()=>{if(!pending){try{await reload();const typing=document.activeElement?.closest("#wrld-community-root form, #wrld-account-root form");if(!typing&&(S.tab==="global"||S.tab==="direct"))render();else renderNotifications()}catch{}}},12000);
