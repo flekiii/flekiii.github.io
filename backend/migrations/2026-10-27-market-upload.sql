@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS market_uploaded_media(id TEXT PRIMARY KEY,owner TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,mime TEXT NOT NULL,size INTEGER NOT NULL CHECK(size>=32 AND size<=4194304),created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS market_uploaded_chunks(media_id TEXT NOT NULL REFERENCES market_uploaded_media(id) ON DELETE CASCADE,part INTEGER NOT NULL CHECK(part BETWEEN 0 AND 7),data BLOB NOT NULL,PRIMARY KEY(media_id,part));
+CREATE INDEX IF NOT EXISTS market_uploaded_media_owner_idx ON market_uploaded_media(owner,created_at);

@@ -17,7 +17,8 @@ const media=(v,max,type)=>{
  return v.map(x=>{
   if(typeof x!=="string"||x.length>1000)throw Error("Invalid media URL.");
   let u;try{u=new URL(x)}catch{throw Error("Invalid media URL.")}
-  if(u.protocol!=="https:"||u.username||u.password||!rx.test(u.pathname)||u.search||u.hash)throw Error("Use direct HTTPS photo/video file URLs without query parameters.");
+  if(type==="images"&&u.origin==="https://flekis-wrld-api.flekideveloper.workers.dev"&&/^\/market\/media\/[a-f0-9-]{36}$/i.test(u.pathname))return u.href;
+   if(u.protocol!=="https:"||u.username||u.password||!rx.test(u.pathname)||u.search||u.hash)throw Error("Use direct HTTPS photo/video file URLs without query parameters.");
   return u.href;
  });
 };
