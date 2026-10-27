@@ -235,3 +235,18 @@
 .wi-tile:focus-visible,.wi-selected:focus-visible,.wi-category:focus-visible,.wi-custom:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
 @media(max-width:600px){.wi-grid{grid-template-columns:1fr}.wi-tile{min-height:53px}.wi-results{max-height:310px}.wp-interest-shortcut>.btn{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.wi-tile,.wi-search{transition:none}.wi-tile:hover{transform:none}}
+
+/* Keep interest content inset from both the editor and the public card edges. */
+.wp-editor-inner,.wp-studio-layout>.wp-shell,.wp-published-grid,.wp-published-profile,.wp-preview-col,#wp-live-card{min-width:0;max-width:100%}
+.wp-editor-inner{width:100%;overflow-wrap:anywhere}
+.wp-editor .wi-picker{max-width:100%;width:100%;padding-inline:8px 3px;box-sizing:border-box}
+.wp-editor .wi-picker>*{min-width:0;max-width:100%}
+.wp-editor .wi-selected-box,.wp-editor .wi-search,.wp-editor .wi-categories,.wp-editor .wi-results{width:100%;min-width:0;max-width:100%}
+.wp-editor .wi-categories{overflow-anchor:none;scroll-behavior:auto;touch-action:pan-x}
+.wp-editor .wi-results{overflow-anchor:none}
+.wp-editor .wi-category{scroll-snap-align:none}
+.wp-card .wp-interest-tags{margin:13px 14px 15px;padding:0;max-width:calc(100% - 28px);min-width:0}
+.wp-card .wp-interest-tags span{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+.wp-published-profile .wp-card .wp-interest-tags{margin:15px 20px 17px;max-width:calc(100% - 40px)}
+.wp-preview-col .wp-card .wp-interest-tags,.wp-modal-sheet .wp-card .wp-interest-tags{margin-inline:14px;max-width:calc(100% - 28px)}
+@media(max-width:610px){.wp-published-profile .wp-card .wp-interest-tags{margin-inline:14px;max-width:calc(100% - 28px)}.wp-editor .wi-picker{padding-inline:5px 2px}}

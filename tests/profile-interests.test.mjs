@@ -70,7 +70,30 @@ test("Interest choices connect to public profile, discovery, showcase and existi
  assert.match(profile,/secure\("\/profiles\/me",\{method:"PUT",body:payload\}\)/);
  assert.match(discover,/WrldInterests\?\.label/);
  assert.match(showcase,/WrldInterests\?\.label/);
- assert.match(html,/wrld-interests\.js\?v=1/);
+ assert.match(html,/wrld-interests\.js\?v=2/);
  assert.match(html,/wrld-profile\.js\?v=11/);
- assert.match(html,/wrld-profile\.css\?v=9/);
+ assert.match(html,/wrld-profile\.css\?v=10/);
+});
+
+
+test("Horizontal interest category offset and vertical list offset survive selection and filtering",()=>{
+ const s=setup("uk");
+ s.win.WrldInterests.render(["Anime"]);
+ const categories=s.nodes["wi-categories"],results=s.nodes["wi-results"];
+ categories.scrollLeft=173;
+ results.scrollTop=194;
+ s.click("toggle","Gaming");
+ assert.equal(categories.scrollLeft,173);
+ assert.equal(results.scrollTop,194);
+ s.click("category","tech");
+ assert.equal(categories.scrollLeft,173);
+ assert.equal(results.scrollTop,194);
+ s.input("кодинг");
+ assert.equal(categories.scrollLeft,173);
+});
+test("Interest cards and chips stay inside the editor and public preview columns",()=>{
+ const css=get("wrld-profile.css");
+ assert.match(css,/\.wp-editor \.wi-picker\{[^}]*padding-inline:8px 3px/);
+ assert.match(css,/\.wp-published-profile \.wp-card \.wp-interest-tags\{[^}]*margin:15px 20px 17px/);
+ assert.match(css,/\.wp-card \.wp-interest-tags span\{[^}]*overflow-wrap:anywhere/);
 });

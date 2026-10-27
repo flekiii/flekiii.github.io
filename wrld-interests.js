@@ -100,9 +100,15 @@
  function paint(){
   const el=document.getElementById("wi-results"),sel=document.getElementById("wi-selected-list");
   if(!el||!sel)return;
-  el.innerHTML=results();sel.innerHTML=picks();
+  const resultsScroll=el.scrollTop||0;
+  el.innerHTML=results();el.scrollTop=resultsScroll;sel.innerHTML=picks();
   const c=document.getElementById("wi-count");if(c)c.textContent=selected.length+" / 12";
-  const tabsEl=document.getElementById("wi-categories");if(tabsEl)tabsEl.innerHTML=tabs();
+  const tabsEl=document.getElementById("wi-categories");
+  if(tabsEl){
+   const buttons=tabsEl.querySelectorAll?.('[data-wi="category"]');
+   if(buttons){for(const tab of buttons){const active=tab.dataset.value===category;tab.classList.toggle("active",active);tab.setAttribute("aria-pressed",String(active))}}
+   else{const left=tabsEl.scrollLeft||0;tabsEl.innerHTML=tabs();tabsEl.scrollLeft=left}
+  }
   const info=document.getElementById("wi-feedback");if(info)info.textContent=feedback;
  }
  function toggle(raw){
