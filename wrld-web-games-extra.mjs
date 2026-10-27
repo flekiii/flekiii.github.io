@@ -90,7 +90,13 @@ export function createExtraArcade({frame,t}){
   let win=connectWinner(grid);
   if(win){over=true;setMessage(win==="P"?"You won! 🎉":"Draw!","Ти переміг! 🎉");return}
   let cpu=-1;
-  for(const sign of ["C","P"])for(let c=0;c<7;c++){const candidate=dropChip(grid,c,"C");if(!candidate)continue;if(sign==="C"&&connectWinner(candidate)==="C"){cpu=c;break}if(sign==="P"&&connectWinner(dropChip(grid,c,"P"))==="P"){cpu=c;break}} 
+  for(const sign of ["C","P"]){
+   for(let c=0;c<7;c++){
+    const candidate=dropChip(grid,c,sign);
+    if(candidate&&connectWinner(candidate)===sign){cpu=c;break}
+   }
+   if(cpu>=0)break;
+  }
   if(cpu<0){const free=Array.from({length:7},(_,c)=>c).filter(c=>dropChip(grid,c,"C"));cpu=free.length?choose(free):-1}
   if(cpu>=0)grid=dropChip(grid,cpu,"C");
   win=connectWinner(grid);
