@@ -10,7 +10,7 @@ function mockDb(counts={}){
    bind(...params){args=params;return statement},
    async first(){const metric=metrics.find(m=>m.query===sql);return {n:metric?counts[metric.id]||0:0}},
    async all(){return {results:[]}},
-   async run(){writes.push({sql,args});if(sql.includes("INSERT OR IGNORE INTO wrld_world_quest_claims")){const k=args.join(":");if(claims.has(k))return {meta:{changes:0}};claims.add(k)}return {meta:{changes:1}}}
+   async run(){writes.push({sql,args});if(sql.includes("INSERT OR IGNORE INTO wrld_world_quest_claims")){const k=args.slice(0,3).join(":");if(claims.has(k))return {meta:{changes:0}};claims.add(k)}return {meta:{changes:1}}}
   };return statement;
  }};
 }
