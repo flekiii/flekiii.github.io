@@ -7,8 +7,8 @@ const stmt=(db,q,...p)=>db.prepare(q).bind(...p);
 const one=(db,q,...p)=>stmt(db,q,...p).first();
 const many=async(db,q,...p)=>(await stmt(db,q,...p).all()).results||[];
 const exec=(db,q,...p)=>stmt(db,q,...p).run();
-const visibilityFields=["bio","media","location","phone","links","games","status","roles","interests"];
-const visibilityDefault={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public",interests:"public"};
+const visibilityFields=["bio","media","location","phone","links","games","status","roles","interests","age"];
+const visibilityDefault={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public",interests:"public",age:"private"};
 const roleNames=["aurvex_ceo","developer","god","moderator","creator","vip","tester","member"];
 const statuses=["online","away","dnd","offline"];
 // Cloudflare D1 max row/BLOB is 2,000,000 bytes; store larger media in <=512KiB chunks.
@@ -49,7 +49,7 @@ async function buildProfile(db,env,viewer,person,as){
   bio:can("bio")?person.bio:null,
   status:can("status")?(online?rawStatus:"offline"):null,
    status_emoji:can("status")?extra.status_emoji||"":null,status_text:can("status")?extra.status_text||"":null,
-   age:relationType==="self"?Number(extra.age||0):null,
+   age:can("age")&&extra.age?Number(extra.age):null,
    interests:can("interests")?(js(extra.interests)||[]):null,
    discoverable:relationType==="self"?extra.discoverable===1:undefined,
    xp,level:Math.floor(Math.sqrt(xp/60))+1,

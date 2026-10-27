@@ -4,7 +4,7 @@ if(root){
  const esc=x=>String(x??"").replace(/[&<>"']/g,k=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[k]));
  const t=(en,uk)=>document.documentElement.lang==="uk"?uk:en;
  const token=()=>sessionStorage.getItem("fw-token")||"";
- let tab="gallery",loading=false,feedMode="all",gallerySort="popular",search="",nonce=0;
+ let tab="feed",loading=false,feedMode="all",gallerySort="popular",search="",nonce=0;
  const active=()=>document.getElementById("page-world")?.classList.contains("active");
  async function api(path,method="GET",body){
   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);
@@ -15,7 +15,7 @@ if(root){
   }finally{clearTimeout(timeout)}
  }
  const notice=s=>{const n=root.querySelector("#ww-feedback");if(n)n.textContent=s};
- const tabs=[["gallery","🏠","Houses","Будинки"],["feed","✦","Activity","Активність"],["clubs","👥","Clubs","Клуби"],["progress","🏆","Progress","Прогрес"]];
+ const tabs=[["feed","✦","Activity","Активність"],["clubs","👥","Clubs","Клуби"],["progress","🏆","Progress","Прогрес"]];
  function shell(){
   root.innerHTML='<div class="ww-shell"><div class="ww-tabs">'+tabs.map(([id,icon,en,uk])=>'<button class="'+(id===tab?"active":"")+'" data-ww="tab" data-id="'+id+'">'+icon+' '+t(en,uk)+'</button>').join("")+'</div><div id="ww-body" class="ww-body" aria-live="polite"></div><p id="ww-feedback" class="ww-feedback" role="status"></p></div>';
  }
@@ -24,10 +24,7 @@ if(root){
   if(!root||!active()||loading)return;const seq=++nonce;loading=true;shell();body().innerHTML='<p class="ww-empty">'+t("Loading world…","Завантажуємо світ…")+'</p>';
   try{
    let html="";
-   if(tab==="gallery"){
-    const r=await api("/world/gallery?sort="+gallerySort+"&q="+encodeURIComponent(search));
-    html='<div class="ww-toolbar"><input id="ww-search" maxlength="50" placeholder="'+t("Search homes…","Пошук будинків…")+'" value="'+esc(search)+'"><button class="btn" data-ww="search">'+t("Find","Знайти")+'</button><button class="btn" data-ww="sort">'+(gallerySort==="popular"?t("Popular ↓","Популярні ↓"):t("Newest ↓","Нові ↓"))+'</button></div><div class="ww-cards">'+(r.houses?.length?r.houses.map(h=>'<article class="ww-item ww-home"><div class="ww-home-icon">'+(["garage","garagehouse","workshop"].includes(h.template)?"🚗":"🏡")+'</div><h3>'+esc(h.name)+'</h3><p>@'+esc(h.username)+' · '+esc(h.template)+'</p><small>💜 '+Number(h.reactions||0)+'</small><a class="btn primary" href="#house?u='+encodeURIComponent(h.username)+'">'+t("Visit in 3D →","Відвідати в 3D →")+'</a></article>').join(""):'<p class="ww-empty">'+t("No public houses found.","Публічних будинків не знайдено.")+'</p>')+'</div>';
-   }else if(tab==="feed"){
+   if(tab==="feed"){
     const r=await api("/world/feed?mode="+feedMode);html=feedMarkup(r.posts);
    }else if(tab==="clubs"){
     const r=await api("/world/clubs");html=clubsMarkup(r.clubs);
@@ -53,8 +50,8 @@ if(root){
   const a=el.dataset.ww,id=el.dataset.id;
   if(a==="tab"){tab=id;void render();return}
   if(a==="retry"){void render();return}
-  if(a==="search"){search=root.querySelector("#ww-search")?.value||"";void render();return}
-  if(a==="sort"){gallerySort=gallerySort==="new"?"popular":"new";void render();return}
+  
+  
   if(a==="quest-claim"){
    el.disabled=true;
    try{const result=await api("/world/quest/claim","POST",{id});await render();notice(t("Reward claimed: +","Нагорода отримана: +")+result.xp+" XP");window.WrldProfile?.refresh?.()}

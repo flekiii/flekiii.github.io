@@ -30,8 +30,7 @@ const QUESTS=[
  {id:"share-post",emoji:"✍️",title:"Share a post",uk:"Опублікуй допис",xp:30,query:"SELECT COUNT(*) n FROM wrld_world_posts WHERE author=? AND created_at>=?"},
  {id:"leave-comment",emoji:"💬",title:"Write a comment",uk:"Напиши коментар",xp:20,query:"SELECT COUNT(*) n FROM wrld_world_comments WHERE author=? AND created_at>=?"},
  {id:"give-like",emoji:"💜",title:"Like a post",uk:"Вподобай допис",xp:15,query:"SELECT COUNT(*) n FROM wrld_world_likes WHERE user_id=?"},
- {id:"join-club",emoji:"👥",title:"Join a club",uk:"Вступи до клубу",xp:40,query:"SELECT COUNT(*) n FROM wrld_world_members WHERE user_id=?"},
- {id:"publish-house",emoji:"🏡",title:"Publish a home",uk:"Опублікуй будинок",xp:50,query:"SELECT COUNT(*) n FROM wrld_houses WHERE owner=? AND published=1"}
+ {id:"join-club",emoji:"👥",title:"Join a club",uk:"Вступи до клубу",xp:40,query:"SELECT COUNT(*) n FROM wrld_world_members WHERE user_id=?"}
 ];
 async function questHandle(req,db,user){
  const currentDay=Math.floor(Date.now()/86400000),states=[];
@@ -57,9 +56,9 @@ export async function worldHandle(req,env,path,{auth,authorized}){
  if(!path.startsWith("/world/"))return null;
  await init(env.DB);
  const user=req.headers.get("Authorization")?await auth(req,env.DB):null;
- if(path==="/world/gallery"&&req.method==="GET")return gallery(req,env,user);
+ if(path==="/world/gallery")return err("House gallery retired",410);
  if(path==="/world/quests"&&req.method==="GET")return user?questHandle(req,env.DB,user):err("Sign in to view quests",401);
- if(path==="/world/quest/claim"&&req.method==="POST")return user&&authorized(user)?questHandle(req,env.DB,user):err("Verify Auth2FA to claim XP rewards",403);
+ if(path==="/world/quest/claim"&&req.method==="POST")return user?questHandle(req,env.DB,user):err("Sign in before claiming XP",401);
  if(["/world/ranking","/world/progress"].includes(path)&&req.method==="GET")return xpInfo(req,env,user);
  if(path==="/world/export"&&req.method==="GET")return user&&authorized(user)?worldExport(req,env,user):err("Verify Auth2FA before exporting private data.",403);
  if(req.method!=="GET"&&!authorized(user))return err("Verify Auth2FA for this session before posting.",403);

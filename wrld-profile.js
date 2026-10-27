@@ -2,7 +2,7 @@
 (()=>{"use strict";
 const API="https://flekis-wrld-api.flekideveloper.workers.dev";
 const defaults={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public",interests:"public"};
-const sections=[["overview","✦","Overview","Огляд"],["appearance","◈","Appearance","Оформлення"],["about","✎","About me","Про мене"],["contact","◎","Location & contact","Локація та контакти"],["games","▣","My games","Мої ігри"],["house","⌂","My house","Мій будинок"],["privacy","♧","Privacy","Приватність"],["security","♢","Security / Auth2FA","Захист / Auth2FA"],["preview","◉","View as others","Погляд зі сторони"]];
+const sections=[["overview","✦","Overview","Огляд"],["appearance","◈","Appearance","Оформлення"],["about","✎","About me","Про мене"],["contact","◎","Location & contact","Локація та контакти"],["games","▣","My games","Мої ігри"],["privacy","♧","Privacy","Приватність"],["security","♢","Security / Auth2FA","Захист / Auth2FA"],["preview","◉","View as others","Погляд зі сторони"]];
 const labels={online:["Online","Онлайн"],away:["Away","Відійшов"],dnd:["Do not disturb","Не турбувати"],offline:["Offline","Офлайн"]};
 const roles={owner:"Owner",aurvex_ceo:"AURVEX CEO",developer:"Developer",god:"God",moderator:"Moderator",creator:"Creator",vip:"VIP",tester:"Tester",member:"Member"};
 const links=["telegram","discord","youtube","twitch","github","instagram","tiktok","steam"];
@@ -90,9 +90,9 @@ async function load(userId){
   resetMedia();
   loading=false;refreshAccount();
   // Fetch nonessential sections after the profile is already visible.
-  void secure("/houses/mine",{timeoutMs:8000}).then(h=>{
+  void Promise.resolve().then(h=>{
    if(revision!==loadRevision||userId!==who||token!==tok())return;
-   myHouse=h.house||null;refreshAccount();
+   refreshAccount();
   }).catch(()=>{ /* house failure must not block profile */ });
   void Promise.all([imageFor(userId,"avatar"),imageFor(userId,"banner")]).then(([a,b])=>{
    if(revision!==loadRevision||userId!==who||token!==tok()){
@@ -135,23 +135,6 @@ function card(p,opts={}){
 const fld=(label,name,value,type="text",max=120)=>'<label class="wp-field"><span>'+label+'</span><input class="social-input" data-wp-field="'+name+'" type="'+type+'" maxlength="'+max+'" value="'+esc(value||"")+'"></label>';
 const textarea=(label,name,value,max=350)=>'<label class="wp-field"><span>'+label+'</span><textarea class="social-textarea" data-wp-field="'+name+'" maxlength="'+max+'">'+esc(value||"")+'</textarea></label>';
 const save=()=>'<button type="button" class="btn primary" data-wp="save">'+tr("Save changes","Зберегти зміни")+'</button>';
-function housePreview(h){
- if(!h?.published||!h?.in_profile)return "";
- const garage=["garage","garagehouse","workshop"].includes(h.template);
- return '<div class="wp-house-card"><span class="wp-house-icon" aria-hidden="true">'+(garage?"🚗":"🏠")+'</span><div class="wp-house-description"><strong>'+esc(h.name)+'</strong><small>'+tr("Published in profile","Опубліковано в профілі")+' · '+(h.items?.length||0)+' '+tr("items","предметів")+'</small></div><a class="btn" href="#house?u='+encodeURIComponent(h.username)+'">'+tr("Visit","Відвідати")+' ↗</a></div>';
-}
-function savedHouseHere(){try{return !!JSON.parse(localStorage.getItem("fleki_wrld_house_settings")||"null")?.template}catch{return false}}
-function myHousePanel(){
- const h=myHouse,hasLocal=savedHouseHere();
- const preview=housePreview(myHouse);
- return '<div class="wp-my-house">'+(preview||'<div class="wp-house-empty"><span aria-hidden="true">🏠</span><strong>'+tr("Your house is not visible in your profile yet.","Твій будинок ще не показується в профілі.")+'</strong><p>'+tr("Publish a house from your browser to display it here.","Опублікуй будинок із браузера, щоб він з’явився тут.")+'</p></div>')+
- '<div class="wp-actions">'+(hasLocal?'<button type="button" class="btn primary" data-wp="publish-house">'+tr("Publish / update in profile","Опублікувати / оновити в профілі")+'</button><button type="button" class="btn" data-wp="edit-house">'+tr("Edit house","Редагувати будинок")+'</button><button type="button" class="btn" data-wp="save-house-draft">'+tr("☁ Save private draft","☁ Зберегти чернетку")+'</button>':'<button type="button" class="btn primary" data-wp="create-house">'+tr("Create a house","Створити будинок")+'</button>')+
- '<button type="button" class="btn" data-wp="restore-house-draft">'+tr("↺ Restore account draft","↺ Відновити чернетку")+'</button>'+
- '<button type="button" class="btn" data-wp="restore-house-published">'+tr("⌂ Restore published house","⌂ Відновити опублікований")+'</button>'+
- (h?.published?'<button type="button" class="btn" data-wp="house-visibility" data-visibility="profile">'+(h.in_profile?tr("Hide from profile","Приховати з профілю"):tr("Show in profile","Показати в профілі"))+'</button><button type="button" class="btn" data-wp="house-visibility" data-visibility="private">'+tr("Make private","Зробити приватним")+'</button>':'')+
- '</div>'+
- '<p class="wp-house-hint">'+tr("Sign-in is required to publish; 2FA is optional. Your actual furniture is saved on the server.","Для публікації потрібно увійти в акаунт. 2FA необов’язкова. Реальні меблі зберігаються на сервері.")+'</p></div>';
-}
 function progressPanel(profile){
  const level=Math.max(1,Number(profile?.level||1)),xp=Math.max(0,Number(profile?.xp||0));
  const start=60*(level-1)*(level-1),next=60*level*level,percent=Math.max(0,Math.min(100,Math.round(100*(xp-start)/(next-start))));
@@ -161,7 +144,7 @@ function progressPanel(profile){
 }
 function content(state){
  const p=draft||blank(state.user),v=p.visibility;
- if(activeTab==="overview")return '<h2>'+tr("Your profile","Твій профіль")+'</h2><p>'+tr("Customize your world, choose what to share and see changes instantly.","Налаштуй свій профіль, обери, що показувати іншим, і переглядай зміни одразу.")+'</p>'+progressPanel(data)+myHousePanel()+'<div class="wp-section-cards">'+sections.filter(s=>!["overview","preview"].includes(s[0])).map(s=>'<button type="button" data-wp="tab" data-id="'+s[0]+'"><strong>'+s[1]+' '+(en()?s[2]:s[3])+'</strong><span>↗</span></button>').join("")+'</div>';
+ if(activeTab==="overview")return '<h2>'+tr("Your profile","Твій профіль")+'</h2><p>'+tr("Customize your world, choose what to share and see changes instantly.","Налаштуй свій профіль, обери, що показувати іншим, і переглядай зміни одразу.")+'</p>'+progressPanel(data)+'<div class="wp-section-cards">'+sections.filter(s=>!["overview","preview"].includes(s[0])).map(s=>'<button type="button" data-wp="tab" data-id="'+s[0]+'"><strong>'+s[1]+' '+(en()?s[2]:s[3])+'</strong><span>↗</span></button>').join("")+'</div>';
  if(activeTab==="appearance")return '<h2>'+tr("Photos & banners","Фото та банери")+'</h2><p>'+tr("Upload JPG, PNG, WebP or GIF. Animated GIF banners will stay animated. Images are stored with your account.","Завантаж JPG, PNG, WebP або GIF. Анімовані GIF-банери залишаться рухомими. Зображення зберігаються у твоєму акаунті.")+'</p><div class="wp-upload-list">'+["avatar","banner"].map(kind=>'<div class="wp-upload"><strong>'+ (kind==="avatar"?tr("Profile photo","Фото профілю"):tr("Animated banner","Анімований банер"))+'</strong><small>'+ "3 MB max"+'</small><label class="btn"><input hidden type="file" data-wp-upload="'+kind+'" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpeg,image/webp,image/gif">'+tr("Choose image / GIF","Вибрати фото / GIF")+'</label><button class="btn" data-wp="remove-media" data-kind="'+kind+'">'+tr("Remove","Прибрати")+'</button></div>').join("")+'</div>';
  if(activeTab==="about")return '<h2>'+tr("About me","Про мене")+'</h2>'+
  fld(tr("Display name","Ім’я профілю"),"display_name",p.display_name,"text",60)+
@@ -175,7 +158,6 @@ function content(state){
  '<label class="wp-discovery-opt"><input type="checkbox" data-wp-boolean="discoverable" '+(p.discoverable?"checked":"")+'><span>'+tr("Let people in my age group find me as a friend","Дозволити людям моєї вікової групи знаходити мене як друга")+'</span></label>'+
  '<p class="wp-hint">'+tr("Optional. Adult/teen searches are separated. Ages are self-reported.","Необов’язково. Пошук дорослих і підлітків розділений. Вік вказують самостійно.")+'</p>'+save();
  if(activeTab==="contact")return '<h2>'+tr("Location & contact","Локація та контакти")+'</h2><p>'+tr("All fields are optional. Never publish an address or a phone number unless you want to.","Усі поля необов'язкові. Не публікуй адресу чи телефон, якщо цього не хочеш.")+'</p>'+fld(tr("Country","Країна"),"country",p.country,"text",60)+fld(tr("State / Oblast / Region","Штат / Область / Регіон"),"region",p.region,"text",80)+fld(tr("District","Район"),"district",p.district,"text",80)+fld(tr("Phone number (optional)","Номер телефону (необов'язково)"),"phone",p.phone,"tel",30)+fld(tr("Website (HTTPS)","Сайт (HTTPS)"),"website",p.website,"url",220)+'<h3>'+tr("Social media links","Посилання на соцмережі")+'</h3>'+links.map(k=>fld(k.charAt(0).toUpperCase()+k.slice(1)+" (https://)","social:"+k,p.socials[k],"url",220)).join("")+save();
- if(activeTab==="house")return '<h2>'+tr("My house","Мій будинок")+'</h2><p>'+tr("Publish your garage or any other home in your profile.","Опублікуй гараж або інший будинок у своєму профілі.")+'</p>'+myHousePanel();
  if(activeTab==="games")return '<h2>'+tr("My games","Мої ігри")+'</h2><p>'+tr("Choose real Steam games with cover cards. Up to 10 favorites and 10 currently playing.","Обирай справжні Steam-ігри з обкладинками. До 10 улюблених і 10 активних.")+'</p>'+
  (window.WrldGamePicker?.render(p)||textarea(tr("Favorite games","Улюблені ігри"),"favorite_games",p.favorite_games.join("\n"),570)+textarea(tr("Currently playing","Зараз граю"),"current_games",p.current_games.join("\n"),570))+save();
  if(activeTab==="privacy")return '<h2>'+tr("Who can see my profile?","Хто бачить мій профіль?")+'</h2><p>'+tr("Server-enforced permissions. Your phone is private by default.","Доступ перевіряється сервером. Телефон початково прихований.")+'</p><div class="wp-privacy">'+keys.map(k=>'<label class="wp-field"><span>'+({bio:tr("Description","Опис"),media:tr("Avatar & banner","Аватар і банер"),location:tr("Country, region & district","Країна, область і район"),phone:tr("Phone number","Номер телефону"),links:tr("Website & social links","Сайт і соцмережі"),games:tr("Favorite & current games","Улюблені й актуальні ігри"),status:tr("Status & presence","Статус і присутність"),roles:tr("Roles","Ролі"),interests:tr("Interests","Інтереси")})[k]+'</span><select class="social-input" data-wp-privacy="'+k+'">'+[["public",tr("Everyone","Усі")],["friends",tr("Friends only","Лише друзі")],["private",tr("Only me","Тільки я")]].map(([x,y])=>'<option value="'+x+'" '+(v[k]===x?"selected":"")+'>'+y+'</option>').join("")+'</select></label>').join("")+'</div>'+save();
@@ -210,14 +192,14 @@ function side(state){
 }
 function previewPanel(state){
  const draftProfile={...data,...draft,username:data.username,roles:data.roles};
- return '<aside class="wp-preview-col"><div class="wp-preview-title"><span class="overline">LIVE PROFILE PREVIEW</span><button class="social-mini" data-wp="preview" data-mode="public">'+tr("Public view ↗","Публічний вигляд ↗")+'</button></div><div id="wp-live-card">'+card(draftProfile)+'</div>'+housePreview(myHouse)+'<small>'+tr("Preview updates as you edit. Click Save to publish.","Попередній перегляд змінюється одразу. Натисни Зберегти, щоб опублікувати.")+'</small></aside>';
+ return '<aside class="wp-preview-col"><div class="wp-preview-title"><span class="overline">LIVE PROFILE PREVIEW</span><button class="social-mini" data-wp="preview" data-mode="public">'+tr("Public view ↗","Публічний вигляд ↗")+'</button></div><div id="wp-live-card">'+card(draftProfile)+'</div>'+'<small>'+tr("Preview updates as you edit. Click Save to publish.","Попередній перегляд змінюється одразу. Натисни Зберегти, щоб опублікувати.")+'</small></aside>';
 }
 function renderAccount(state){
  if(!state?.user)return null;
  const userId=state.user.id,session=tok();
  if(!userId||!session)return '<div class="wp-load-error" role="alert"><strong>'+tr("Sign-in session unavailable","Сеанс входу недоступний")+'</strong><p>'+tr("Sign out and sign in again to restore profile access.","Вийди з акаунта та увійди знову, щоб відновити доступ до профілю.")+'</p></div>';
  if(who!==userId||accountToken!==session){
-  ++loadRevision;loading=false;who=userId;accountToken=session;data=null;draft=null;myHouse=null;err="";owner=false;mod=false;activeTab="overview";resetMedia();void load(userId);
+  ++loadRevision;loading=false;who=userId;accountToken=session;data=null;draft=null;err="";owner=false;mod=false;activeTab="overview";resetMedia();void load(userId);
  }
  if(!data){
   if(!loading&&err)return '<div class="wp-load-error" role="alert"><strong>'+tr("Couldn't load your profile","Не вдалося завантажити профіль")+'</strong><p>'+esc(err)+'</p><button type="button" class="btn primary" data-wp="retry-profile">'+tr("↻ Retry loading profile","↻ Завантажити профіль знову")+'</button></div>';
@@ -245,7 +227,7 @@ async function showProfile(username,mode){
  const path=mode?"/profiles/preview?as="+encodeURIComponent(mode):"/profiles/public/"+encodeURIComponent(username);
  const result=await secure(path);
  const profile=result.profile;
- const [a,b,house]=await Promise.all([profile.avatar?imageFor(profile.id,"avatar"):"",profile.banner?imageFor(profile.id,"banner"):"",fetch(API+"/houses/profile?user="+encodeURIComponent(profile.username),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(r=>r?.house||null).catch(()=>null)]);
+ const [a,b]=await Promise.all([profile.avatar?imageFor(profile.id,"avatar"):"",profile.banner?imageFor(profile.id,"banner"):""]);
  modal(profile,a,b,house);
  }catch(e){note(e.message)}
 }
@@ -275,20 +257,7 @@ document.addEventListener("click",async e=>{
  try{
  if(a==="retry-profile"){if(!loading&&who){err="";void load(who)}return}
   if(a==="tab"){activeTab=target.dataset.id;window.dispatchEvent(new Event("wrld:profile-updated"));return}
-  if(a==="create-house"||a==="edit-house"){const id=a==="create-house"?"create-house":"house-editor";(document.querySelector('#dock [data-go="'+id+'"]')||document.querySelector('#houseOpenButton[data-go="house-editor"]')||document.querySelector('[data-go="'+id+'"]'))?.click();return}
-  if(a==="publish-house"){
-   if(!savedHouseHere())throw Error(tr("Create a house first.","Спочатку створи будинок."));
-   note(tr("Publishing your house…","Публікуємо твій будинок…"));
-   window.dispatchEvent(new CustomEvent("wrld:house-publish",{detail:{profile:true}}));return
-  }
-  if(a==="save-house-draft"){if(!savedHouseHere())throw Error(tr("Create a house first.","Спочатку створи будинок."));note(tr("Saving private draft…","Зберігаємо приватну чернетку…"));window.dispatchEvent(new CustomEvent("wrld:house-save-cloud"));return}
-  if(a==="restore-house-draft"||a==="restore-house-published"){window.dispatchEvent(new CustomEvent("wrld:house-restore",{detail:{type:a==="restore-house-draft"?"draft":"published"}}));note(tr("Loading house from account…","Завантажуємо будинок з акаунта…"));return}
-  if(a==="house-visibility"){
-   const action=target.dataset.visibility==="private"?"private":"profile";
-   if(action==="private"&&!confirm(tr("Hide this house from everyone? The furniture stays saved.","Приховати будинок від усіх? Меблі залишаться збереженими.")))return;
-   window.dispatchEvent(new CustomEvent("wrld:house-visibility",{detail:{action}}));return
-  }
- if(a==="close-modal"){document.getElementById("wp-public-modal")?.remove();return}
+  if(a==="close-modal"){document.getElementById("wp-public-modal")?.remove();return}
  if(a==="inspect"){await showProfile(target.dataset.username);return}
  if(a==="preview"){await showProfile(null,target.dataset.mode);return}
  if(a==="save"){await saveData();return}
@@ -326,11 +295,6 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementB
 window.addEventListener("wrld:language-change",()=>{if(data)window.dispatchEvent(new Event("wrld:profile-updated"))});
  window.addEventListener("wrld:profile-game-change",e=>{if(!draft||!["favorite_games","current_games"].includes(e.detail?.kind))return;draft[e.detail.kind]=e.detail.games.slice(0,10);liveUpdate()});
 window.addEventListener("fw-auth-changed",()=>{if(!tok()){++loadRevision;who="";accountToken="";loading=false;err="";data=null;draft=null;myHouse=null;resetMedia()}});
-window.addEventListener("wrld:house-published",e=>{myHouse=e.detail?.house||null;note(tr("Your house is now visible in your profile ✓","Твій будинок тепер видно у профілі ✓"));window.dispatchEvent(new Event("wrld:profile-updated"))});
-window.addEventListener("wrld:house-publish-error",e=>note(e.detail?.message||tr("Publication failed.","Публікація не вдалася.")));
-window.addEventListener("wrld:house-restore-error",e=>note(e.detail?.message||tr("Cloud restore failed.","Не вдалося відновити будинок.")));
-window.addEventListener("wrld:house-restored",()=>{note(tr("House restored!","Будинок відновлено!"));window.dispatchEvent(new Event("wrld:profile-updated"))});
-window.addEventListener("wrld:house-cloud-status",e=>note(e.detail?.message||""));
 
 const countrySuggestions=["Ukraine","United States","United Kingdom","Poland","Germany","France","Italy","Spain","Canada","Australia","Austria","Belgium","Czechia","Denmark","Estonia","Finland","Georgia","Greece","Hungary","Ireland","Israel","Japan","Latvia","Lithuania","Netherlands","Norway","Portugal","Romania","Slovakia","Sweden","Switzerland","Türkiye","Moldova","Bulgaria","Croatia","Slovenia","India","Brazil","South Korea"];
 const regionSuggestions=["Ivano-Frankivsk Oblast","Kyiv Oblast","Kyiv","Lviv Oblast","Volyn Oblast","Rivne Oblast","Ternopil Oblast","Khmelnytskyi Oblast","Vinnytsia Oblast","Zakarpattia Oblast","Chernivtsi Oblast","Zhytomyr Oblast","Chernihiv Oblast","Sumy Oblast","Poltava Oblast","Kharkiv Oblast","Dnipropetrovsk Oblast","Odesa Oblast","Mykolaiv Oblast","Kherson Oblast","Kirovohrad Oblast","Cherkasy Oblast","California","Texas","Florida","New York","Washington"];
