@@ -179,3 +179,12 @@
 .market-rail-home{margin-top:auto;font-size:12px;font-weight:730}
 .market-topplus{min-width:47px;min-height:47px}
 @media(max-width:730px){.market-rail .market-shop-top{margin:0}.market-rail-home{margin:0;justify-content:center}}
+
+.market-seller-studio{max-width:900px}.market-studio-intro{padding:18px 21px;border-radius:17px;background:linear-gradient(115deg,color-mix(in srgb,var(--accent) 15%,var(--panel2)),var(--panel2));border:1px solid var(--line);margin-bottom:20px}
+.market-studio-intro h2{margin:7px 0 4px;font-size:clamp(23px,3vw,31px)}.market-studio-intro p{color:var(--muted);line-height:1.6}.market-studio-steps{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.market-studio-steps span{padding:7px 11px;border:1px solid var(--line);border-radius:100px;background:var(--panel);font-size:11px;font-weight:750}
+.market-upload-zone{padding:18px;border:1px dashed var(--accent);border-radius:17px;background:var(--panel2)}.market-upload-zone h3{margin:0 0 6px}.market-upload-zone p{font-size:12px;line-height:1.6;color:var(--muted)}
+.market-upload-trigger{display:inline-flex;cursor:pointer;align-items:center;justify-content:center;margin:12px 0;padding:11px 18px;border-radius:12px;background:var(--accent);color:white;font-weight:750}
+.market-upload-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:10px}.market-upload-shot{position:relative;aspect-ratio:4/3;border:1px solid var(--line);border-radius:11px;overflow:hidden}.market-upload-shot img{width:100%;height:100%;object-fit:cover}.market-upload-shot button{position:absolute;top:5px;right:5px;width:27px;height:27px;border-radius:50%;background:#1d152cde;color:white;font-weight:900;border:0}
+.market-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px var(--shadow)}.market-card{transition:transform .2s ease,box-shadow .2s ease}
+.market-form>label input:focus,.market-form>label textarea:focus,.market-form select:focus{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:540px){.market-studio-intro{padding:12px}.market-upload-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}

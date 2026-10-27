@@ -16,6 +16,8 @@ const countryName=c=>dn.of(c)||c;
 const regionLabels={UA:"Oblast / область",US:"State",CA:"Province or territory",AU:"State or territory",GB:"County or region",DE:"Bundesland",PL:"Województwo",FR:"Région",JP:"Prefecture",IN:"State / Union territory",BR:"Estado",ES:"Comunidad autónoma",IT:"Regione",CH:"Canton"};
 const money=l=>new Intl.NumberFormat("en",{style:"currency",currency:l.currency||"USD"}).format((l.price_minor||0)/100);
 let view="browse",listings=[],own=[],wishlist=[],conversations=[],selected=null,chatKey=null,loading=false,status="",statusError=false;
+let queuedPhotos=[],photoPreviews=[],uploadedPhotos=[];
+const MAX_MARKET_PHOTO=4*1024*1024;
 let authState="loading",myId=null,shopFormOpen=false,editing=null,threadSide="buy";
 let options=null,shippingProviders=[],carrierLoadToken=0;
 let filters={q:"",category:"",subcategory:"",country:"",negotiable:""};
@@ -140,12 +142,32 @@ function renderBrowse(){
  '<p class="market-footnote">Only list goods you legally own and can transfer. Game account/currency trades may violate game rules. Shipping carrier availability and payment methods must be confirmed with the seller; the platform does not take payments.</p>'+
  (selected?detail(selected):'<div class="market-grid">'+(listings.length?listings.map(itemCard).join(""):'<div class="market-empty"><h3>No listings match yet</h3><p>Be the first to publish a real item, or change your search filters.</p><button class="btn primary" data-market-create="1" type="button">＋ Sell an item</button></div>')+'</div>');
 }
+function photoQueueMarkup(){
+ return '<div class="market-upload-gallery">'+photoPreviews.map((src,i)=>'<div class="market-upload-shot"><img src="'+escape(src)+'" alt="Photo '+(i+1)+'"><button type="button" data-market-photo-remove="'+i+'" aria-label="Remove photo">×</button></div>').join("")+'</div>';
+}
+function photoQueueRefresh(){
+ const target=$("#marketPhotoQueue");if(target)target.innerHTML=photoQueueMarkup();
+}
+function photoQueueClear(){
+ for(const url of photoPreviews)URL.revokeObjectURL(url);
+ queuedPhotos=[];photoPreviews=[];uploadedPhotos=[];
+}
+async function uploadQueued(){
+ for(let i=uploadedPhotos.length;i<queuedPhotos.length;i++){
+  const file=queuedPhotos[i],raw=await file.arrayBuffer(),response=await fetch(API+"/market/media",{
+   method:"POST",headers:{"Authorization":"Bearer "+token(),"Content-Type":file.type||"application/octet-stream"},body:raw,cache:"no-store"});
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok)throw Error(result.error||"Unable to upload photo "+(i+1));
+  uploadedPhotos.push(result.url);
+  message("Uploaded photo "+(i+1)+" of "+queuedPhotos.length);
+ }
+}
 function renderSell(){
  if(!options?.categories||!options?.payment_methods)return '<section class="market-panel"><h2>Prepare a listing</h2><p>Category and delivery options are unavailable at the moment. Publishing stays disabled until the options are loaded securely from the server.</p></section>';
  const first=Object.keys(options.categories)[0];
  const destinations=countries.map(x=>'<label class="market-country-option" data-search-country="'+escape(x.name.toLowerCase())+'"><input type="checkbox" name="shipping_countries" value="'+x.code+'"'+(x.code==="UA"?" checked":"")+'><span>'+escape(x.name)+'</span></label>').join("");
  const payments=options.payment_methods.map(x=>'<label class="market-check"><input type="checkbox" name="payment_methods" value="'+escape(x.id)+'"><span>'+escape(x.label)+'</span></label>').join("");
- return '<div class="market-panel"><h2>'+(editing?'Edit listing':'Create a listing')+'</h2><p>Describe your offer and select the delivery and payment conditions.</p><form id="marketSellForm" class="market-form">'+
+ return '<div class="market-panel market-seller-studio"><div class="market-studio-intro"><span class="overline">FLEKI’S WRLD · SELLER STUDIO</span><h2>'+(editing?'✦ Edit your listing':'✦ Create a listing')+'</h2><p>Beautiful offers start with a clear name, real photos, a fair price and trustworthy delivery information.</p><div class="market-studio-steps"><span>① Product</span><span>② Details</span><span>③ Delivery</span><span>④ Publish</span></div></div><form id="marketSellForm" class="market-form">'+
  '<label>Listing title (5–120 characters)<input name="title" minlength="5" maxlength="120" required placeholder="What are you selling?"></label>'+
  '<div class="market-inline"><label>Category<select id="marketSellCategory" name="category" required>'+categoryChoices(first)+'</select></label><label>Specific item type<select id="marketSellSubcategory" name="subcategory" required><option value="" disabled selected>Select item type</option>'+subcategoryChoices(first)+'</select></label></div>'+
  '<label id="marketCustomTypeWrap" hidden>Describe the item type (2–80 characters)<input name="custom_type" minlength="2" maxlength="80" placeholder="e.g. custom-made industrial shelving"></label>'+
@@ -156,9 +178,10 @@ function renderSell(){
  '<fieldset class="market-fieldset"><legend>Deliveries & destinations <span class="market-required">*</span></legend><p class="market-field-help">Separate searchable lists: choose the countries you ship to, and the carriers you use. Confirm that each service operates on your route.</p><div class="market-shipping-columns"><section class="market-picker-column"><h3>Delivery destinations</h3><input id="marketDestinationSearch" type="search" placeholder="Search country…"><div id="marketCountryChoices" class="market-country-choices">'+destinations+'</div><p id="marketDestinationCount" class="market-field-help">1 country selected</p></section><section class="market-picker-column"><h3>Postal services</h3><input id="marketCourierSearch" type="search" placeholder="Search delivery company…"><div id="marketCarrierChoices" class="market-carrier-choices">Loading delivery services…</div><p id="marketCarrierHint" class="market-field-help">Carrier availability depends on the route.</p></section></div></fieldset>'+
  
  '<fieldset class="market-fieldset"><legend>Accepted payment arrangements <span class="market-required">*</span></legend><div class="market-choice-grid">'+payments+'</div><p class="market-field-help">You choose which options you accept. Payment is agreed directly with the buyer — Fleki’s Wrld does not charge cards, transfer money, or guarantee delivery. Never post full card details.</p></fieldset>'+
+ '<section class="market-upload-zone"><h3>📷 Product photos</h3><p>Choose up to 6 photos from your device. Each PNG, JPEG or WebP can be up to <strong>4 MB</strong>. These files are uploaded securely to fleki’s wrld.</p><label class="market-upload-trigger">＋ Select photos<input id="marketPhotoFiles" accept="image/png,image/jpeg,image/webp" type="file" multiple hidden></label><div id="marketPhotoQueue">'+photoQueueMarkup()+'</div></section>'+
  '<label>Photos (up to 30 direct HTTPS image links, one per line)<textarea name="images" rows="3" placeholder="https://example.com/photo.jpg"></textarea></label>'+
  '<label>Videos (up to 5 direct HTTPS MP4/WebM links, one per line)<textarea name="videos" rows="2" placeholder="https://example.com/demo.mp4"></textarea></label>'+
- '<p class="market-footnote">Direct file uploads are not yet available. Use existing public HTTPS URLs for photos and videos. Keep private addresses, banking details, 2FA codes and passwords out of listings. Check publisher terms before selling game accounts or currencies.</p>'+
+ '<p class="market-footnote">You can upload product photos directly (4 MB each) or optionally paste HTTPS image links. Keep private addresses, banking details, 2FA codes and passwords out of listings. Check publisher terms before selling game accounts or currencies.</p>'+
  '<button class="btn primary" type="submit">'+(editing?'Save changes':'Publish listing')+'</button></form></div>';
 }
 function renderMy(){
@@ -236,7 +259,17 @@ async function loadMessages(){
 }
 root.addEventListener("change",async event=>{
  const el=event.target;
- if(el.id==="marketOriginCountry"||el.id==="marketSellCategory"){
+ if(el.id==="marketPhotoFiles"){
+   const images=[...el.files||[]];el.value="";
+   for(const file of images){
+    if(queuedPhotos.length>=6){message("Maximum 6 photos per listing.",true);break}
+    if(file.size>MAX_MARKET_PHOTO||file.size<32||!["image/png","image/jpeg","image/webp"].includes(file.type)){
+     message("Each photo must be a PNG, JPG or WebP of 4 MB or less.",true);continue;
+    }
+    queuedPhotos.push(file);photoPreviews.push(URL.createObjectURL(file));
+   }
+   photoQueueRefresh();
+  }else if(el.id==="marketOriginCountry"||el.id==="marketSellCategory"){
   if(el.id==="marketSellCategory")refreshSubcategories();
   await refreshShippingProviders();
  }else if(el.id==="marketSellSubcategory"){refreshCustomType()}
@@ -258,15 +291,25 @@ root.addEventListener("click",async event=>{
  if(event.target?.id==="marketEditBackdrop"){shopFormOpen=false;editing=null;paint();return}
  const target=event.target.closest("button");if(!target)return;
  try{
-  if(target.dataset.marketRetry){
+  if(target.dataset.marketPhotoRemove!==undefined){
+    const i=Number(target.dataset.marketPhotoRemove);
+    if(Number.isInteger(i)&&i>=0&&i<queuedPhotos.length){
+     URL.revokeObjectURL(photoPreviews[i]);queuedPhotos.splice(i,1);photoPreviews.splice(i,1);
+     // Uploaded queue is positional; a fresh submission must upload remaining images.
+     uploadedPhotos=[];
+     photoQueueRefresh();
+    }
+    return;
+   }
+   if(target.dataset.marketRetry){
     options=await loadOptions();
     const data=await call("/market/listings");listings=data.listings;
     message("Marketplace is ready.");paint();return;
   }
   if(target.dataset.marketProfile){document.querySelector('#dock [data-go="profile"]')?.click();return}
   if(target.dataset.marketCheck){await initialize();return}
-  if(target.dataset.marketClose){shopFormOpen=false;editing=null;paint();return}
-  if(target.dataset.marketCreate){await needLogin();editing=null;shopFormOpen=true;paint();return}
+  if(target.dataset.marketClose){shopFormOpen=false;editing=null;photoQueueClear();paint();return}
+  if(target.dataset.marketCreate){await needLogin();editing=null;photoQueueClear();shopFormOpen=true;paint();return}
   if(target.dataset.marketEdit){
    await needLogin();editing=own.find(x=>x.id===target.dataset.marketEdit);
    if(!editing)throw Error("Your listing was not found.");
@@ -338,9 +381,15 @@ root.addEventListener("submit",async event=>{
     images:lines("images"),videos:lines("videos")};
    if(!shipping.length||!delivery.length||!payments.length)throw Error("Select a delivery destination, carrier and at least one payment method.");
    if(shipping.length>70)throw Error("Select no more than 70 delivery countries.");
-   await call(editing?"/market/listings/"+editing.id:"/market/listings",editing?"PUT":"POST",fields);
+   if(queuedPhotos.length){
+     if(fields.images.length+queuedPhotos.length>30)throw Error("A listing can contain up to 30 photo links and uploads combined.");
+     message("Uploading "+queuedPhotos.length+" photos…");
+     await uploadQueued();
+     fields.images=[...fields.images,...uploadedPhotos];
+    }
+    await call(editing?"/market/listings/"+editing.id:"/market/listings",editing?"PUT":"POST",fields);
    message(editing?"Listing updated.":"Listing published successfully!");
-   shopFormOpen=false;editing=null;view="my";own=(await call("/market/mine")).listings;paint();
+   shopFormOpen=false;editing=null;photoQueueClear();view="my";own=(await call("/market/mine")).listings;paint();
   }else{
    const content=new FormData(form).get("message");
    await call("/market/messages","POST",{listing_id:chatKey.listingId,buyer_id:chatKey.buyerId,content});
