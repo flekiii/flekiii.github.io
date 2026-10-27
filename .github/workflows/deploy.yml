@@ -25,6 +25,8 @@ jobs:
           node --check backend/showcase.js
           node --check backend/arcade.js
           node --check wrld-showcase.mjs
+          node --test tests/showcase-public-profile.test.mjs
+          test -s wrld-showcase.css
           node --check wrld-web-games.js
           node --test tests/site-upgrade.test.mjs
           node --check backend/discover.js
