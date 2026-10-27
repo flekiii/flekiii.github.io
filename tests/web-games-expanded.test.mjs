@@ -7,7 +7,7 @@ const client=read("wrld-web-games.js"),html=read("index.html"),css=read("wrld-we
 test("22 registered games with ten actual extra game modes and menu wiring",()=>{
  assert.equal(EXTRA_GAMES.length,10);
  assert.equal(new Set(EXTRA_GAMES).size,10);
- assert.match(client,/EXTRA_GAMES.includes\(key\)/);
+ assert.match(client,/\.\.\.EXTRA_GAMES\]\.includes\(key\)/);
  assert.match(client,/extra\.action\(b\.dataset\.command,b\.dataset\.choice\)/);
  assert.match(client,/extra\.submit\(e\.target\)/);
  assert.match(html,/wrld-web-games\.js\?v=4/);
