@@ -79,7 +79,7 @@ test("Changed authentication tokens never show cached profile data from a differ
 });
 test("Published asset versions correspond to new profile recovery UI",()=>{
  assert.match(html,/wrld-profile\.js\?v=11/);
- assert.match(html,/wrld-profile\.css\?v=9/);
+ assert.match(html,/wrld-profile\.css\?v=10/);
  assert.match(source,/data-wp="retry-profile"/);
  assert.doesNotMatch(source,/secure\("\/houses\/mine"/);
 });
