@@ -57,7 +57,7 @@ if(root){
   if(a==="sort"){gallerySort=gallerySort==="new"?"popular":"new";void render();return}
   if(a==="quest-claim"){
    el.disabled=true;
-   try{const result=await api("/world/quest/claim","POST",{id});await render();notice(t("Reward claimed: +","Нагорода отримана: +")+result.xp+" XP");window.dispatchEvent(new Event("wrld:profile-updated"))}
+   try{const result=await api("/world/quest/claim","POST",{id});await render();notice(t("Reward claimed: +","Нагорода отримана: +")+result.xp+" XP");window.WrldProfile?.refresh?.()}
    catch(error){notice(error.message)}finally{el.disabled=false}
    return;
   }

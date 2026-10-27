@@ -152,9 +152,16 @@ function myHousePanel(){
  '</div>'+
  '<p class="wp-house-hint">'+tr("Sign-in is required to publish; 2FA is optional. Your actual furniture is saved on the server.","Для публікації потрібно увійти в акаунт. 2FA необов’язкова. Реальні меблі зберігаються на сервері.")+'</p></div>';
 }
+function progressPanel(profile){
+ const level=Math.max(1,Number(profile?.level||1)),xp=Math.max(0,Number(profile?.xp||0));
+ const start=60*(level-1)*(level-1),next=60*level*level,percent=Math.max(0,Math.min(100,Math.round(100*(xp-start)/(next-start))));
+ return '<div class="wp-level-progress"><div class="wp-progress-heading"><strong>★ '+tr("Level","Рівень")+' '+level+'</strong><span>'+xp+' XP</span></div>'+
+ '<div class="wp-progress-track" role="progressbar" aria-label="'+tr("XP to next level","XP до наступного рівня")+'" aria-valuenow="'+(xp-start)+'" aria-valuemin="0" aria-valuemax="'+(next-start)+'"><span style="width:'+percent+'%"></span></div>'+
+ '<small>'+tr("Next level at ","Наступний рівень із ")+next+' XP · '+tr("Complete quests in World → Progress","Виконуй квести у Світ → Прогрес")+'</small></div>';
+}
 function content(state){
  const p=draft||blank(state.user),v=p.visibility;
- if(activeTab==="overview")return '<h2>'+tr("Your profile","Твій профіль")+'</h2><p>'+tr("Customize your world, choose what to share and see changes instantly.","Налаштуй свій профіль, обери, що показувати іншим, і переглядай зміни одразу.")+'</p>'+myHousePanel()+'<div class="wp-section-cards">'+sections.filter(s=>!["overview","preview"].includes(s[0])).map(s=>'<button type="button" data-wp="tab" data-id="'+s[0]+'"><strong>'+s[1]+' '+(en()?s[2]:s[3])+'</strong><span>↗</span></button>').join("")+'</div>';
+ if(activeTab==="overview")return '<h2>'+tr("Your profile","Твій профіль")+'</h2><p>'+tr("Customize your world, choose what to share and see changes instantly.","Налаштуй свій профіль, обери, що показувати іншим, і переглядай зміни одразу.")+'</p>'+progressPanel(data)+myHousePanel()+'<div class="wp-section-cards">'+sections.filter(s=>!["overview","preview"].includes(s[0])).map(s=>'<button type="button" data-wp="tab" data-id="'+s[0]+'"><strong>'+s[1]+' '+(en()?s[2]:s[3])+'</strong><span>↗</span></button>').join("")+'</div>';
  if(activeTab==="appearance")return '<h2>'+tr("Photos & banners","Фото та банери")+'</h2><p>'+tr("Upload JPG, PNG, WebP or GIF. Animated GIF banners will stay animated. Images are stored with your account.","Завантаж JPG, PNG, WebP або GIF. Анімовані GIF-банери залишаться рухомими. Зображення зберігаються у твоєму акаунті.")+'</p><div class="wp-upload-list">'+["avatar","banner"].map(kind=>'<div class="wp-upload"><strong>'+ (kind==="avatar"?tr("Profile photo","Фото профілю"):tr("Animated banner","Анімований банер"))+'</strong><small>'+ "3 MB max"+'</small><label class="btn"><input hidden type="file" data-wp-upload="'+kind+'" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpeg,image/webp,image/gif">'+tr("Choose image / GIF","Вибрати фото / GIF")+'</label><button class="btn" data-wp="remove-media" data-kind="'+kind+'">'+tr("Remove","Прибрати")+'</button></div>').join("")+'</div>';
  if(activeTab==="about")return '<h2>'+tr("About me","Про мене")+'</h2>'+
  fld(tr("Display name","Ім’я профілю"),"display_name",p.display_name,"text",60)+
