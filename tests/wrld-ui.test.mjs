@@ -153,7 +153,9 @@ test("Community uses a full-width responsive viewport workspace for all three pa
  const has=(src,needle)=>assert.ok(src.includes(needle),"Missing "+needle);
  has(communityCss,":has(#page-chat.active)");
  has(communityCss,"#page-chat .social-workspace{");
- has(communityCss,"height:clamp(660px,calc(100dvh - 255px),1400px)");
+ has(communityCss,"body.community-view{height:100dvh;overflow:hidden");
+ has(communityCss,"#page-chat.active{display:flex;flex-direction:column;height:calc(100dvh - 89px - 100px)");
+ has(communityCss,"#page-chat .social-workspace{height:100%;min-height:0;max-height:100%");
  has(communityCss,"#page-chat .social-global .social-chat-list");
  has(communityCss,"#page-chat .social-layout-direct .social-chat-list");
  has(communityCss,"#page-chat .social-layout-friends>");
@@ -162,6 +164,6 @@ test("Community uses a full-width responsive viewport workspace for all three pa
  has(social,'["global","Global chat"');
  has(social,'["friends","Friends"');
  has(social,'["direct","Messages"');
- has(siteHtml,'href="/wrld-community.css?v=2"');
- has(siteHtml,'src="/wrld-social.js?v=17"');
+ has(siteHtml,'href="/wrld-community.css?v=3"');
+ has(siteHtml,'src="/wrld-social.js?v=18"');
 });

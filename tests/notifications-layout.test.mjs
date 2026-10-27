@@ -49,7 +49,7 @@ test("Unread filtering and mark as read only change the selected notification",a
 });
 test("Opening friend requests goes to the Community Friends tab",async()=>{
  const s=await setup();await s.click("notif-open","n1");
- assert.equal(s.page(),"chat");assert.match(s.nodes["wrld-community-root"].innerHTML,/Friends/);
+ assert.equal(s.page(),"chat");assert.match(s.nodes["wrld-community-root"].innerHTML,/Друзі/);
 });
 test("Language can be changed in place",async()=>{
  const s=await setup();s.doc.documentElement.lang="en";s.events["wrld:language-change"]();
