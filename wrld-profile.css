@@ -106,3 +106,16 @@
 .wp-load-error{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:13px;min-height:230px;max-width:670px;margin:12px auto;padding:26px;border:1px solid var(--line);border-radius:20px;background:var(--panel2)}
 .wp-load-error strong{font-size:21px;line-height:1.3}.wp-load-error p{font-size:14px;color:var(--muted);line-height:1.65;overflow-wrap:anywhere}
 .wp-load-error .btn{margin-top:5px}
+
+.wp-level{background:linear-gradient(110deg,#9164b9,#485888);color:#fff!important;border:0}
+.wp-interest-tags{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}.wp-interest-tags span{font-size:11px;border-radius:999px;padding:6px 10px;background:var(--panel2);border:1px solid var(--line)}
+.wp-discovery-opt{display:flex;gap:11px;align-items:center;margin:14px 0;padding:13px;border:1px solid var(--line);border-radius:12px}
+.wp-discovery-opt input{width:18px;height:18px;accent-color:var(--accent)}
+.wp-hint{font-size:12px;color:var(--muted);line-height:1.6}
+.wp-game-browser{display:grid;gap:14px;margin:15px 0}.wp-game-sections,.wp-game-actions,.wp-game-search{display:flex;gap:8px;flex-wrap:wrap}.wp-game-search input{flex:1;min-width:160px}
+.wp-game-count{font-size:12px;color:var(--muted)}.wp-game-error{color:#e98f9b}
+.wp-game-selected{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.wp-game-chip{padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);font-size:11px}
+.wp-game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px;max-height:480px;overflow:auto}
+.wp-game-tile{display:flex;flex-direction:column;align-items:stretch;gap:4px;text-align:left;padding:7px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);min-width:0}
+.wp-game-tile img{aspect-ratio:460/215;width:100%;object-fit:cover;border-radius:7px}.wp-game-tile strong{font-size:12px;overflow-wrap:anywhere}.wp-game-tile small{color:var(--muted);font-size:10px}.wp-game-tile.chosen{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.wp-real-game-mini{display:inline-flex;align-items:center;gap:6px}.wp-real-game-mini img{width:40px;aspect-ratio:460/215;object-fit:cover;border-radius:4px}
