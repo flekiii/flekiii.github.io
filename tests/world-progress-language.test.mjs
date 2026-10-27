@@ -92,7 +92,7 @@ test("Header language selector uses the shared site theme and responsive accessi
  assert.match(html,/id="languageMenu" role="menu"/);
  assert.match(html,/role="menuitemradio" data-lang-option="uk"/);
  assert.match(html,/wrld-lang-caption" data-en="Language" data-uk="Мова"/);
- assert.match(html,/wrld-world\.mjs\?v=7/);
+ assert.match(html,/wrld-world\.mjs\?v=8/);
  assert.match(html,/wrld-polish\.css\?v=3/);
  assert.match(stylesheet,/\.wrld-lang-picker:focus-visible/);
  assert.match(stylesheet,/\.wrld-lang-menu\[hidden\]\{display:none\}/);

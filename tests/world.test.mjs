@@ -7,7 +7,7 @@ const html=read("index.html"),worker=read("backend/worker.js"),app=read("wrld-wo
 test("World navigation loads real feature modules",()=>{
  assert.match(html,/id:"world",name:"World"/);
  assert.match(html,/wrld-world-root/);
- assert.match(html,/wrld-world\.mjs\?v=7/);
+ assert.match(html,/wrld-world\.mjs\?v=8/);
  assert.match(worker,/worldHandle\(req,env,path/);
  for(const endpoint of ["/world/feed","/world/clubs","/world/progress","/world/quests"])assert.ok(app.includes(endpoint),endpoint);
 });

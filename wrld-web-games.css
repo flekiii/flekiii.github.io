@@ -56,3 +56,48 @@
 .wg-rps button{width:92px;height:92px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;font-size:42px}
 .wg-rps button:hover{border-color:var(--accent);transform:translateY(-2px)}
 @media(max-width:600px){.wg-2048{gap:5px}.wg-rps button{width:77px;height:77px;font-size:36px}}
+
+/* Web Arcade v4: all 22 games on a responsive, internally scrolling dashboard */
+body.web-games-view{height:100dvh;overflow:hidden;overscroll-behavior:none}
+body.web-games-view #main{height:calc(100dvh - 89px);overflow:hidden}
+body.web-games-view>.footer{display:none}
+#page-web-games.active{display:flex;flex-direction:column;height:calc(100dvh - 89px - 100px);min-height:0;overflow:hidden;animation:none!important;transform:none!important}
+#page-web-games .page-heading{display:none!important}
+#page-web-games #wrld-web-games-root{display:flex;flex-direction:column;flex:1;min-height:0;width:100%;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;margin:0;padding:4px 5px 14px}
+#page-web-games .wg-head{margin-bottom:9px}
+#page-web-games .wg-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:10px}
+#page-web-games .wg-tile{min-height:204px;padding:11px;gap:7px;border-radius:14px}
+#page-web-games .wg-thumb{height:80px;font-size:35px;border-radius:12px}
+#page-web-games .wg-tile strong{font-size:15px}
+#page-web-games .wg-desc{font-size:11px}
+#page-web-games .wg-play{font-size:11px}
+#page-web-games .wg-panel{width:min(100%,900px);max-width:900px;margin:0 auto;padding:clamp(12px,2vw,21px)}
+.wg-extra-center{display:grid;justify-items:center;gap:12px;margin:8px auto;max-width:740px;text-align:center}
+.wg-extra-kicker{font-size:12px;font-weight:700;color:var(--muted)}
+.wg-extra-word{font:800 clamp(19px,4vw,35px) "Space Grotesk",sans-serif;letter-spacing:.10em;color:var(--accent2);overflow-wrap:anywhere}
+.wg-word-slots{font-size:clamp(15px,4vw,30px)}
+.wg-extra-choices{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.wg-extra-choices button,.wg-letters button,.wg-simon-pads button{min-height:40px;padding:8px 12px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);font-weight:800}
+.wg-letters{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;width:min(100%,450px)}
+.wg-letters button{min-width:0;padding:7px 0;font-size:12px}
+.wg-letters button:disabled{opacity:.28}
+.wg-type-prompt{padding:15px;border:1px solid var(--line);border-radius:13px;background:var(--panel2);font-weight:650;letter-spacing:.04em;line-height:1.5}
+.wg-color-swatch{height:135px;width:min(100%,260px);border:5px solid var(--line);border-radius:18px}
+.wg-simon-preview{min-height:60px;font-size:clamp(17px,5vw,33px)}
+.wg-simon-pads{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;width:min(100%,270px)}
+.wg-simon-pads button{min-height:66px;font-size:27px}
+.wg-mines-board,.wg-lights-board,.wg-slide-board,.wg-connect-board{display:grid;gap:5px;margin:auto}
+.wg-mines-board{grid-template-columns:repeat(5,1fr);width:min(100%,315px)}
+.wg-lights-board{grid-template-columns:repeat(4,1fr);width:min(100%,300px)}
+.wg-slide-board{grid-template-columns:repeat(3,1fr);width:min(100%,300px)}
+.wg-connect-board{grid-template-columns:repeat(7,1fr);width:min(100%,385px);padding:7px;border-radius:13px;background:color-mix(in srgb,var(--accent) 16%,var(--panel2))}
+.wg-mines-board button,.wg-lights-board button,.wg-slide-board button,.wg-connect-board button{aspect-ratio:1;min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font:bold clamp(14px,3vw,24px) "Space Grotesk"}
+.wg-mines-board button.wg-revealed{background:var(--panel);color:var(--accent2)}
+.wg-mines-board button.wg-mine{background:#a74b50}
+.wg-lights-board button.wg-light-on{background:linear-gradient(135deg,#ffd37b,#e6a1c0);color:#2c1a28}
+.wg-slide-board button.wg-gap{background:transparent;border-color:transparent}
+.wg-connect-board button{border-radius:50%}
+.wg-connect-board button.wg-player{background:#8151d0;color:#e8d4ff}
+.wg-connect-board button.wg-cpu{background:#dfaa48;color:#fff2cc}
+@media(max-width:640px){body.web-games-view #main{height:calc(100dvh - 75px)}#page-web-games.active{height:calc(100dvh - 75px - 82px)}#page-web-games .wg-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#page-web-games .wg-tile{min-height:180px;padding:9px}#page-web-games .wg-thumb{height:63px;font-size:30px}#page-web-games .wg-tile strong{font-size:13px}#page-web-games .wg-desc{font-size:10px}.wg-letters{grid-template-columns:repeat(7,1fr)}}
+@media(max-width:350px){#page-web-games .wg-grid{grid-template-columns:1fr}}
