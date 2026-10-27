@@ -16,23 +16,51 @@
 @media(max-width:680px){.page.active{animation-duration:.22s}.btn:hover,.tile:hover,.wg-tile:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
-/* Header language switcher: same themed surface, spacing and hover states as the site. */
+/* One full-width trigger with a polished, keyboard-accessible popover. */
+.wrld-lang-control{position:relative;flex:0 0 auto;z-index:60}
 .wrld-lang-picker{
- display:inline-flex;align-items:center;justify-content:center;gap:8px;
- height:43px;min-width:113px;box-sizing:border-box;padding:0 12px;
- position:relative;border:1px solid var(--line);border-radius:13px;
- color:var(--text);background:var(--panel);
+ display:flex;align-items:center;justify-content:center;gap:9px;
+ width:136px;height:43px;padding:0 29px 0 12px;
+ border:1px solid var(--line);border-radius:13px;color:var(--text);
+ background:var(--panel);cursor:pointer;white-space:nowrap;
  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text) 4%,transparent);
  transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease;
 }
-.wrld-lang-picker:hover{border-color:var(--accent2);background:var(--panel2);box-shadow:0 3px 18px color-mix(in srgb,var(--accent2) 12%,transparent)}
-.wrld-lang-picker:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
-.wrld-lang-icon{display:flex;align-items:center;flex:0 0 auto;color:var(--accent2)}
+.wrld-lang-picker:hover,.wrld-lang-picker.is-open{border-color:var(--accent2);background:var(--panel2);box-shadow:0 3px 18px color-mix(in srgb,var(--accent2) 13%,transparent)}
+.wrld-lang-picker:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrld-lang-icon{display:flex;align-items:center;flex:0 0 auto;color:var(--accent2);pointer-events:none}
 .wrld-lang-icon svg{width:17px;height:17px;stroke:currentColor}
-.wrld-lang-caption{white-space:nowrap;font-size:11px;font-weight:700;letter-spacing:.01em;color:var(--muted)}
-#siteLanguage{appearance:none;-webkit-appearance:none;min-width:35px;max-width:55px;z-index:1;position:relative;cursor:pointer;border:none;outline:none!important;border-radius:5px;margin:0;padding:7px 13px 7px 1px;color:var(--text);background:transparent;font:800 12px "DM Sans",sans-serif;letter-spacing:.02em}
-#siteLanguage option{background:var(--panel);color:var(--text);font-weight:600}
-.wrld-lang-chevron{position:absolute;right:12px;top:50%;width:7px;height:7px;pointer-events:none;border-right:1.7px solid var(--accent2);border-bottom:1.7px solid var(--accent2);transform:translateY(-75%) rotate(45deg)}
-@media(max-width:1020px){.wrld-lang-picker{min-width:81px;padding:0 10px;gap:5px}.wrld-lang-caption{display:none}.wrld-lang-chevron{right:10px}}
-@media(max-width:470px){.wrld-lang-picker{height:39px;min-width:70px;padding:0 8px}.wrld-lang-icon svg{width:15px;height:15px}.wrld-lang-chevron{right:8px}#siteLanguage{font-size:11px;min-width:31px;padding-right:10px}}
-@media(prefers-reduced-motion:reduce){.wrld-lang-picker{transition:none}}
+.wrld-lang-caption{font-size:11px;font-weight:700;letter-spacing:.01em;color:var(--muted);pointer-events:none}
+.wrld-lang-code{font:800 12px "DM Sans",sans-serif;letter-spacing:.02em;pointer-events:none}
+.wrld-lang-chevron{position:absolute;right:13px;top:50%;width:7px;height:7px;pointer-events:none;border-right:1.7px solid var(--accent2);border-bottom:1.7px solid var(--accent2);transform:translateY(-75%) rotate(45deg);transition:transform .2s ease}
+.wrld-lang-picker.is-open .wrld-lang-chevron{transform:translateY(-25%) rotate(225deg)}
+.wrld-lang-menu{
+ position:absolute;top:calc(100% + 11px);right:0;z-index:120;width:239px;max-width:calc(100vw - 22px);
+ padding:7px;border:1px solid var(--line);border-radius:18px;
+ background:var(--panel);color:var(--text);
+ box-shadow:0 16px 50px var(--shadow),0 0 0 1px color-mix(in srgb,var(--accent) 6%,transparent);
+ animation:wrld-language-in .18s ease both;
+}
+.wrld-lang-menu[hidden]{display:none}
+@keyframes wrld-language-in{from{opacity:0;transform:translateY(-6px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.wrld-lang-menu-heading{display:flex;flex-direction:column;gap:4px;padding:11px 12px 13px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.wrld-lang-menu-eyebrow{font-size:10px;font-weight:800;letter-spacing:1.7px;color:var(--accent2)}
+.wrld-lang-menu-heading strong{font:700 16px "Space Grotesk",sans-serif;letter-spacing:-.25px}
+.wrld-lang-option{
+ display:flex;align-items:center;gap:11px;width:100%;padding:10px 9px;
+ border:1px solid transparent;border-radius:11px;background:transparent;
+ color:var(--text);text-align:left;cursor:pointer;
+ transition:background-color .16s ease,border-color .16s ease;
+}
+.wrld-lang-option+.wrld-lang-option{margin-top:4px}
+.wrld-lang-option:hover,.wrld-lang-option:focus-visible{background:var(--panel2);border-color:var(--line)}
+.wrld-lang-option.is-selected{background:color-mix(in srgb,var(--accent) 11%,var(--panel));border-color:color-mix(in srgb,var(--accent2) 29%,var(--line))}
+.wrld-lang-option-code{display:grid;place-items:center;flex:0 0 42px;height:37px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-size:12px;font-weight:800}
+.wrld-lang-option.is-selected .wrld-lang-option-code{background:color-mix(in srgb,var(--accent2) 18%,var(--panel));color:var(--accent)}
+.wrld-lang-option-name{display:flex;flex:1;flex-direction:column;gap:1px;font-size:13px;font-weight:800}
+.wrld-lang-option-name small{font-size:11px;font-weight:500;color:var(--muted)}
+.wrld-lang-check{width:17px;height:17px;color:var(--accent);opacity:0;transition:opacity .15s}
+.wrld-lang-option.is-selected .wrld-lang-check{opacity:1}
+@media(max-width:1020px){.wrld-lang-picker{width:91px;gap:7px;padding-left:11px;padding-right:25px}.wrld-lang-caption{display:none}.wrld-lang-chevron{right:10px}}
+@media(max-width:470px){.wrld-lang-picker{height:39px;width:78px;padding-left:9px;padding-right:23px;gap:5px}.wrld-lang-icon svg{width:15px;height:15px}.wrld-lang-code{font-size:11px}.wrld-lang-chevron{right:9px}.wrld-lang-menu{width:215px}}
+@media(prefers-reduced-motion:reduce){.wrld-lang-picker,.wrld-lang-option,.wrld-lang-chevron{transition:none}.wrld-lang-menu{animation:none}}

@@ -99,9 +99,9 @@ input,textarea,[contenteditable="true"]{cursor:text}
 .wrld-directory-card h2{font-size:27px;margin:4px 0}
 .wrld-directory-card p{color:var(--muted,#aaa8b8);line-height:1.65;flex:1}
 .wrld-directory-card .btn{align-self:flex-start}
-</style><link rel="stylesheet" href="/wrld-market.css?v=7"><link rel="stylesheet" href="/wrld-games.css?v=3"><link rel="stylesheet" href="/wrld-community.css?v=2"><link rel="stylesheet" href="/wrld-web-games.css?v=3"><link rel="stylesheet" href="/wrld-world.css?v=2"><link rel="stylesheet" href="/wrld-discover.css?v=1"><link rel="stylesheet" href="/wrld-showcase.css?v=1"><link rel="stylesheet" href="/wrld-polish.css?v=2"><link rel="manifest" href="/app.webmanifest"></head><body>
+</style><link rel="stylesheet" href="/wrld-market.css?v=7"><link rel="stylesheet" href="/wrld-games.css?v=3"><link rel="stylesheet" href="/wrld-community.css?v=2"><link rel="stylesheet" href="/wrld-web-games.css?v=3"><link rel="stylesheet" href="/wrld-world.css?v=2"><link rel="stylesheet" href="/wrld-discover.css?v=1"><link rel="stylesheet" href="/wrld-showcase.css?v=1"><link rel="stylesheet" href="/wrld-polish.css?v=3"><link rel="manifest" href="/app.webmanifest"></head><body>
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/></symbol><symbol id="i-house-plus" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h4"/><path d="M17 15v6m-3-3h6"/></symbol><symbol id="i-game" viewBox="0 0 24 24"><path d="M6 8h12c2 0 3 2 4 8 1 5-2 5-5 2l-2-2H9l-2 2c-3 3-6 3-5-2 1-6 2-8 4-8Z"/><path d="M6 12h6m-3-3v6m8-2h.01m2-2h.01"/></symbol><symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></symbol><symbol id="i-service" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 5-5 13 0 18m0-18c5 5 5 13 0 18"/></symbol><symbol id="i-shop" viewBox="0 0 24 24"><path d="m4 9 2-6h12l2 6v12H4zM4 9h16M9 21v-8h6v8"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 11c0 5-4 8-9 8H6l-3 2 1-5c-1-1-2-3-2-5 0-5 4-8 9-8s9 3 9 8z"/><path d="M7 11h9"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0v5l-2 4h16l-2-4V8ZM10 21h4"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-9 16-9 16 0"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.5 1.5m11.2 11.2 1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15A8 8 0 0 1 9 4 8 8 0 1 0 20 15Z"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol></svg>
-<header class="shell top"><a href="#home" class="brand" data-go="home"><span class="brandmark">f.</span><span>fleki's wrld<small>Your space on the internet</small></span></a><div class="top-tools"><label class="search"><svg><use href="#i-search"/></svg><input type="search" id="search" placeholder="Search the world..." aria-label="Search sections" autocomplete="off"></label><label class="wrld-lang-picker" title="Site language"><span class="wrld-lang-icon" aria-hidden="true"><svg><use href="#i-service"/></svg></span><span class="wrld-lang-caption" data-en="Language" data-uk="Мова">Language</span><select id="siteLanguage" aria-label="Site language"><option value="en">EN</option><option value="uk">УКР</option></select><span class="wrld-lang-chevron" aria-hidden="true"></span></label><button class="tool" id="themeToggle" aria-label="Switch color theme" title="Switch color theme"><svg><use id="themeIcon" href="#i-sun"/></svg></button><button class="avatar" id="profileBtn" title="My profile" aria-label="My profile">f.</button></div><div class="search-results hidden" id="searchResults"></div></header>
+<header class="shell top"><a href="#home" class="brand" data-go="home"><span class="brandmark">f.</span><span>fleki's wrld<small>Your space on the internet</small></span></a><div class="top-tools"><label class="search"><svg><use href="#i-search"/></svg><input type="search" id="search" placeholder="Search the world..." aria-label="Search sections" autocomplete="off"></label><div class="wrld-lang-control"><button type="button" class="wrld-lang-picker" id="siteLanguage" aria-label="Change language" aria-haspopup="menu" aria-expanded="false" aria-controls="languageMenu" title="Change language"><span class="wrld-lang-icon" aria-hidden="true"><svg><use href="#i-service"/></svg></span><span class="wrld-lang-caption" data-en="Language" data-uk="Мова">Language</span><span class="wrld-lang-code" id="languageCurrent" aria-hidden="true">EN</span><span class="wrld-lang-chevron" aria-hidden="true"></span></button><div class="wrld-lang-menu" id="languageMenu" role="menu" aria-label="Choose site language" hidden><div class="wrld-lang-menu-heading"><span class="wrld-lang-menu-eyebrow" data-en="YOUR LANGUAGE" data-uk="ТВОЯ МОВА">YOUR LANGUAGE</span><strong data-en="Choose a language" data-uk="Оберіть мову">Choose a language</strong></div><button type="button" class="wrld-lang-option" role="menuitemradio" data-lang-option="en" aria-checked="true"><span class="wrld-lang-option-code" aria-hidden="true">EN</span><span class="wrld-lang-option-name">English<small>English</small></span><svg class="wrld-lang-check" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 5 5 9-9"/></svg></button><button type="button" class="wrld-lang-option" role="menuitemradio" data-lang-option="uk" aria-checked="false"><span class="wrld-lang-option-code" aria-hidden="true">УКР</span><span class="wrld-lang-option-name">Українська<small>Ukrainian</small></span><svg class="wrld-lang-check" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 5 5 9-9"/></svg></button></div></div><button class="tool" id="themeToggle" aria-label="Switch color theme" title="Switch color theme"><svg><use id="themeIcon" href="#i-sun"/></svg></button><button class="avatar" id="profileBtn" title="My profile" aria-label="My profile">f.</button></div><div class="search-results hidden" id="searchResults"></div></header>
 <main class="shell" id="main">
 <section class="page active wrld-landing" id="page-home" aria-label="Welcome to Fleki's Wrld">
  <div class="hero wrld-welcome-hero"><div class="hero-copy">
@@ -143,11 +143,19 @@ const SECTIONS=[
 const svg=(key)=>'<svg aria-hidden="true"><use href="#'+ICONS[key]+'"/></svg>';
 const dock=document.getElementById('dock'),pages=document.getElementById('dynamicPages');
 const languagePicker=document.getElementById('siteLanguage');
+const languageMenu=document.getElementById('languageMenu');
+const languageOptions=[...languageMenu.querySelectorAll('[data-lang-option]')];
+const languageCurrent=document.getElementById('languageCurrent');
 let siteLanguage='en';try{siteLanguage=localStorage.getItem('fleki_wrld_lang')||localStorage.getItem('flekiii-lang')||'en'}catch{}siteLanguage=siteLanguage==='uk'?'uk':'en';
 const labelFor=s=>siteLanguage==='uk'?(s.uk||s.name):s.name;
 const descFor=s=>siteLanguage==='uk'?(s.descUk||s.desc):s.desc;
 function applyLanguage(lang){
- siteLanguage=lang==='uk'?'uk':'en';document.documentElement.lang=siteLanguage;languagePicker.value=siteLanguage;
+ siteLanguage=lang==='uk'?'uk':'en';document.documentElement.lang=siteLanguage;
+ languageCurrent.textContent=siteLanguage==='uk'?'УКР':'EN';
+ languagePicker.title=siteLanguage==='uk'?'Змінити мову':'Change language';
+ languagePicker.setAttribute('aria-label',languagePicker.title);
+ languageMenu.setAttribute('aria-label',siteLanguage==='uk'?'Вибір мови сайту':'Choose site language');
+ for(const option of languageOptions){const selected=option.dataset.langOption===siteLanguage;option.setAttribute('aria-checked',String(selected));option.classList.toggle('is-selected',selected)}
  try{localStorage.setItem('fleki_wrld_lang',siteLanguage)}catch{}
  for(const el of document.querySelectorAll('[data-en][data-uk]'))el.textContent=el.dataset[siteLanguage];
  for(const el of document.querySelectorAll('.nav-button')){const s=SECTIONS.find(x=>x.id===el.dataset.go);if(!s)continue;const name=labelFor(s);el.title=name;el.setAttribute('aria-label',name);el.querySelector('span').textContent=name}
@@ -156,7 +164,33 @@ function applyLanguage(lang){
  
  window.dispatchEvent(new CustomEvent('wrld:language-change',{detail:{lang:siteLanguage}}));
 }
-languagePicker.addEventListener('change',()=>applyLanguage(languagePicker.value));
+function setLanguageMenu(open,focusFirst=false){
+ languageMenu.hidden=!open;
+ languagePicker.setAttribute('aria-expanded',String(open));
+ languagePicker.classList.toggle('is-open',open);
+ if(open&&focusFirst)(languageOptions.find(option=>option.dataset.langOption===siteLanguage)||languageOptions[0]).focus();
+}
+languagePicker.addEventListener('click',()=>setLanguageMenu(languageMenu.hidden));
+languagePicker.addEventListener('keydown',e=>{
+ if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+  e.preventDefault();setLanguageMenu(true,true);
+  if(e.key==='ArrowUp')languageOptions[languageOptions.length-1].focus();
+ }else if(e.key==='Escape')setLanguageMenu(false);
+});
+languageMenu.addEventListener('click',e=>{
+ const option=e.target.closest('[data-lang-option]');if(!option)return;
+ applyLanguage(option.dataset.langOption);setLanguageMenu(false);languagePicker.focus();
+});
+languageMenu.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){e.preventDefault();setLanguageMenu(false);languagePicker.focus();return}
+ if(e.key==='Tab'){setLanguageMenu(false);return}
+ if(!['ArrowDown','ArrowUp','Home','End'].includes(e.key))return;
+ e.preventDefault();
+ const index=languageOptions.indexOf(document.activeElement);
+ const next=e.key==='Home'?0:e.key==='End'?languageOptions.length-1:e.key==='ArrowDown'?(index+1)%languageOptions.length:(index+languageOptions.length-1)%languageOptions.length;
+ languageOptions[next].focus();
+});
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('.wrld-lang-control'))setLanguageMenu(false)});
 window.addEventListener('storage',e=>{if(e.key==='fleki_wrld_lang')applyLanguage(e.newValue)});
 
 for(const section of SECTIONS){const nav=document.createElement('button');nav.className='nav-button';nav.dataset.go=section.id;nav.title=labelFor(section);nav.innerHTML=svg(section.icon)+'<span>'+labelFor(section)+'</span>';dock.append(nav)}

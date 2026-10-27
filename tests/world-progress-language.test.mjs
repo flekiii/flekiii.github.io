@@ -88,12 +88,15 @@ test("Guest ranking remains accessible without attempting private quest requests
 
 test("Header language selector uses the shared site theme and responsive accessible controls",()=>{
  assert.match(html,/class="wrld-lang-picker"/);
- assert.match(html,/id="siteLanguage" aria-label="Site language"/);
+ assert.match(html,/id="siteLanguage" aria-label="Change language" aria-haspopup="menu" aria-expanded="false"/);
+ assert.match(html,/id="languageMenu" role="menu"/);
+ assert.match(html,/role="menuitemradio" data-lang-option="uk"/);
  assert.match(html,/wrld-lang-caption" data-en="Language" data-uk="Мова"/);
  assert.match(html,/wrld-world\.mjs\?v=7/);
- assert.match(html,/wrld-polish\.css\?v=2/);
- assert.match(stylesheet,/\.wrld-lang-picker:focus-within/);
- assert.match(stylesheet,/#siteLanguage\{appearance:none/);
+ assert.match(html,/wrld-polish\.css\?v=3/);
+ assert.match(stylesheet,/\.wrld-lang-picker:focus-visible/);
+ assert.match(stylesheet,/\.wrld-lang-menu\[hidden\]\{display:none\}/);
+ assert.match(stylesheet,/\.wrld-lang-option\.is-selected/);
  assert.match(stylesheet,/var\(--panel\)/);
  assert.match(stylesheet,/var\(--accent2\)/);
  assert.match(stylesheet,/@media\(max-width:470px\)/);

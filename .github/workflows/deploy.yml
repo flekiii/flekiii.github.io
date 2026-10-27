@@ -41,6 +41,7 @@ jobs:
           node --test tests/world.test.mjs
           node --test tests/world-quest-cors.test.mjs
           node --test tests/world-progress-language.test.mjs
+          node --test tests/language-menu.test.mjs
           node --test tests/about-layout.test.mjs
           test -s wrld-world.css
           node --check backend/profiles.js
