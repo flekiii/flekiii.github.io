@@ -39,7 +39,7 @@ export async function discoverHandle(req,env,path,{auth}){
   const card=await readCard(db,user.id,meMode);
   const range=ageRange(mine?.age,meMode);
   const hasPhoto=await tryPhoto(db,user.id,meMode);
-  return respond({mode:meMode,age_range:groupLabel(range),age_ready:!!range,
+  return respond({mode:meMode,user_id:user.id,display_name:user.display_name||user.username||"Member",age_range:groupLabel(range),age_ready:!!range,
    age_verified:false,enabled:consentActive(meMode,mine,dating,card),
    card:{bio:card?.bio||"",gender:card?.gender||"undisclosed",seeking:card?.seeking||"everyone",has_photo:hasPhoto},
    interests:(()=>{try{const x=JSON.parse(mine?.interests||"[]");return Array.isArray(x)?x:[]}catch{return []}})()});
@@ -114,7 +114,7 @@ export async function discoverHandle(req,env,path,{auth}){
   const self=await db.prepare("SELECT enabled FROM wrld_discovery_dating WHERE user_id=?").bind(user.id).first();
   if(self?.enabled!==1)return respond({members:[],enabled:false,age_group:ageGroup,mode:"dating",verified_age:false});
   const query=(new URL(req.url).searchParams.get("q")||"").trim().toLowerCase().slice(0,32);
-  const rows=(await db.prepare(`SELECT u.id,u.username,u.display_name,e.age,e.interests,e.status_emoji,e.status_text,s.visibility,dc.bio as card_bio,dc.gender as card_gender,dc.seeking as card_seeking,dc.active as card_active,
+  const rows=(await db.prepare(`SELECT u.id,u.username,u.display_name,e.age,e.interests,e.status_emoji,e.status_text,s.visibility,dc.bio as card_bio,dc.gender as card_gender,dc.seeking as card_seeking,dc.active as card_active,(SELECT 1 FROM wrld_discovery_photos ph WHERE ph.user_id=u.id AND ph.mode=dc.mode) as has_photo,
    (SELECT COUNT(*) FROM friendships f WHERE f.status='accepted' AND ((f.user_low=? AND f.user_high=u.id) OR (f.user_high=? AND f.user_low=u.id))) as already_friends
    FROM wrld_discovery_dating d JOIN wrld_profile_extras e ON e.user_id=d.user_id
    JOIN users u ON u.id=e.user_id LEFT JOIN wrld_profile_settings s ON s.user_id=u.id LEFT JOIN wrld_discovery_cards dc ON dc.user_id=u.id AND dc.mode='dating'
@@ -132,8 +132,8 @@ export async function discoverHandle(req,env,path,{auth}){
    return {id:row.id,username:row.username,display_name:row.display_name,age_group:ageGroup,
     interests:shown,status_emoji:v.status==="private"||v.status==="friends"&&!row.already_friends?"":row.status_emoji||"",
     status_text:v.status==="private"||v.status==="friends"&&!row.already_friends?"":row.status_text||"",
-    media_public:v.media==="public"||!v.media,has_photo:row.card_active===1,bio:row.card_bio||"",gender:row.card_gender||"undisclosed",common:overlap,already_friends:row.already_friends>0};
-  }).filter(x=>!query||(x.username+" "+x.display_name+" "+x.interests.join(" ")).toLowerCase().includes(query));
+    media_public:v.media==="public"||!v.media,has_photo:row.has_photo===1,bio:row.card_bio||"",gender:row.card_gender||"undisclosed",common:overlap,already_friends:row.already_friends>0};
+  }).filter(x=>!query||(x.username+" "+x.display_name+" "+x.interests.join(" ")+" "+x.bio).toLowerCase().includes(query));
   members.sort((a,b)=>b.common-a.common);
   return respond({members:members.slice(0,40),enabled:true,age_group:ageGroup,mode:"dating",verified_age:false});
  }
@@ -142,7 +142,7 @@ export async function discoverHandle(req,env,path,{auth}){
   if(mine.discoverable!==1)return respond({error:"Publish your friend questionnaire here to browse and appear in results.",members:[]},403);
   const teen=mine.age<18,range=ageRange(mine.age,"friends");
   const query=(new URL(req.url).searchParams.get("q")||"").trim().toLowerCase().slice(0,32);
-  const rows=(await db.prepare(`SELECT u.id,u.username,u.display_name,e.age,e.interests,e.status_emoji,e.status_text,s.visibility,dc.bio as card_bio,dc.gender as card_gender,dc.seeking as card_seeking,dc.active as card_active,
+  const rows=(await db.prepare(`SELECT u.id,u.username,u.display_name,e.age,e.interests,e.status_emoji,e.status_text,s.visibility,dc.bio as card_bio,dc.gender as card_gender,dc.seeking as card_seeking,dc.active as card_active,(SELECT 1 FROM wrld_discovery_photos ph WHERE ph.user_id=u.id AND ph.mode=dc.mode) as has_photo,
   (SELECT COUNT(*) FROM friendships f WHERE f.status='accepted' AND ((f.user_low=? AND f.user_high=u.id) OR (f.user_high=? AND f.user_low=u.id))) as already_friends
   FROM wrld_profile_extras e JOIN users u ON u.id=e.user_id LEFT JOIN wrld_profile_settings s ON s.user_id=u.id LEFT JOIN wrld_discovery_cards dc ON dc.user_id=u.id AND dc.mode='friends'
   WHERE e.discoverable=1 AND (dc.active IS NULL OR dc.active=1) AND e.age BETWEEN ? AND ? AND e.user_id<>? AND ${teen?"e.age<18":"e.age>=18"}
@@ -156,9 +156,9 @@ export async function discoverHandle(req,env,path,{auth}){
    const shown=privacy.interests==="private"||privacy.interests==="friends"&&!row.already_friends?[]:interests;
    const overlap=shown.filter(tag=>mineInterests.some(my=>typeof my==="string"&&typeof tag==="string"&&my.toLowerCase()===tag.toLowerCase())).length;
    return {id:row.id,username:row.username,display_name:row.display_name,age_group:groupLabel(range),
-    interests:shown,media_public:privacy.media==="public"||!privacy.media,has_photo:row.card_active===1,bio:row.card_bio||"",common:overlap,status_emoji:privacy.status==="private"||privacy.status==="friends"&&!row.already_friends?"":row.status_emoji||"",
+    interests:shown,media_public:privacy.media==="public"||!privacy.media,has_photo:row.has_photo===1,bio:row.card_bio||"",common:overlap,status_emoji:privacy.status==="private"||privacy.status==="friends"&&!row.already_friends?"":row.status_emoji||"",
     status_text:privacy.status==="private"||privacy.status==="friends"&&!row.already_friends?"":row.status_text||"",common:overlap,already_friends:row.already_friends>0};
-  }).filter(x=>!query||(x.username+" "+x.display_name+" "+x.interests.join(" ")).toLowerCase().includes(query));
+  }).filter(x=>!query||(x.username+" "+x.display_name+" "+x.interests.join(" ")+" "+x.bio).toLowerCase().includes(query));
   candidates.sort((a,b)=>b.common-a.common);
   return respond({members:candidates.slice(0,40),age_group:groupLabel(range),mode:"friends",verified_age:false});
  }
