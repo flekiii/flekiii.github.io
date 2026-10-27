@@ -29,7 +29,7 @@ export async function discoverHandle(req,env,path,{auth}){
     status_text:privacy.status==="private"?"":row.status_text||"",common:overlap,already_friends:row.already_friends>0};
   }).filter(x=>!query||(x.username+" "+x.display_name+" "+x.interests.join(" ")).toLowerCase().includes(query));
   candidates.sort((a,b)=>b.common-a.common);
-  return respond({members:candidates.slice(0,40),age_group:teen?"13–17":"18+",mode:"friends",verified_age:false});
+  return respond({members:candidates.slice(0,40),age_group:teen?"15–17":"18+",mode:"friends",verified_age:false});
  }
  if(path==="/discover/request"&&req.method==="POST"){
   if(!mine?.age||mine.age<15||mine.discoverable!==1)return respond({error:"Enable 15+ friend discovery to send requests"},403);
