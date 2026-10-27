@@ -73,6 +73,7 @@ jobs:
           node --test backend/totp.test.mjs backend/marketplace.test.mjs
           node --test tests/wrld-ui.test.mjs
           node --test tests/marketplace-viewport.test.mjs
+          node --test tests/marketplace-viewport.test.mjs
           node --test tests/community-viewport.test.mjs
           node --check backend/oauth.js
           node --check wrld-social.js
