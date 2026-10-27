@@ -101,3 +101,8 @@
 .wp-house-description{min-width:0;flex:1}.wp-house-description strong{display:block;font-size:13px;overflow-wrap:anywhere}.wp-house-description small{font-size:11px;color:var(--muted);display:block;margin-top:3px}
 .wp-house-card .btn{font-size:11px;flex-shrink:0}.wp-modal-sheet>.wp-house-card{margin:17px}.wp-preview-col>.wp-house-card{flex-wrap:wrap}
 @media(max-width:610px){.wp-house-card{flex-wrap:wrap}.wp-house-card .btn{margin-left:66px}}
+
+/* Loading must never mask account/API errors forever. */
+.wp-load-error{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:13px;min-height:230px;max-width:670px;margin:12px auto;padding:26px;border:1px solid var(--line);border-radius:20px;background:var(--panel2)}
+.wp-load-error strong{font-size:21px;line-height:1.3}.wp-load-error p{font-size:14px;color:var(--muted);line-height:1.65;overflow-wrap:anywhere}
+.wp-load-error .btn{margin-top:5px}

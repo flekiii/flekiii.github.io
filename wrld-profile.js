@@ -51,25 +51,61 @@ async function uploadMedia(kind,file){
  }
 }
 
-let activeTab="overview",who="",data=null,draft=null,loading=false,err="",owner=false,mod=false,view="self",avatar="",banner="",avatarTemp="",bannerTemp="",people=[],query="",lastSecret=null,myHouse=null;
+let activeTab="overview",who="",data=null,draft=null,loading=false,err="",owner=false,mod=false,view="self",avatar="",banner="",avatarTemp="",bannerTemp="",people=[],query="",lastSecret=null,myHouse=null,accountToken="",loadRevision=0;
 const secure=async(path,opts={})=>{
- const token=tok();if(!token)throw Error("Please sign in");
+ const token=tok();
+ if(!token)throw Error(tr("Your sign-in session is missing. Please sign in again.","Відсутній сеанс входу. Увійди в акаунт знову."));
  const headers={Authorization:"Bearer "+token,...opts.headers};
  if(opts.body&&!(opts.body instanceof Uint8Array))headers["Content-Type"]="application/json";
- const r=await fetch(API+path,{...opts,headers,cache:"no-store",body:opts.body instanceof Uint8Array?opts.body:opts.body?JSON.stringify(opts.body):undefined});
- const json=await r.json().catch(()=>({error:"Server error"}));if(!r.ok)throw Error(json.error||"Request failed");return json;
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),opts.timeoutMs??16000);
+ try{
+  const response=await fetch(API+path,{...opts,headers,signal:controller.signal,cache:"no-store",body:opts.body instanceof Uint8Array?opts.body:opts.body?JSON.stringify(opts.body):undefined});
+  const json=await response.json().catch(()=>({}));
+  if(!response.ok){
+   const error=new Error(response.status===401?tr("Session expired. Sign out and sign in again.","Сеанс завершився. Вийди з акаунта та увійди знову."):response.status>=500?tr("Profile server is temporarily unavailable. Please retry.","Сервер профілю тимчасово недоступний. Спробуй знову."):json.error||tr("Request failed.","Не вдалося виконати запит."));
+   error.status=response.status;throw error;
+  }
+  return json;
+ }catch(error){
+  if(error.name==="AbortError")throw Error(tr("The server did not respond in time. Retry loading.","Сервер не відповів вчасно. Повтори завантаження."));
+  if(error instanceof TypeError)throw Error(tr("Cannot reach the profile server. Check your connection and retry.","Не вдалося з'єднатися із сервером профілю. Перевір інтернет та спробуй ще раз."));
+  throw error;
+ }finally{clearTimeout(timeout)}
 };
 function note(text){err=text;const target=document.getElementById("wp-feedback");if(target)target.textContent=text}
 function resetMedia(){for(const url of [avatar,banner,avatarTemp,bannerTemp])if(url?.startsWith("blob:"))URL.revokeObjectURL(url);avatar="";banner="";avatarTemp="";bannerTemp=""}
 function blank(p){return {display_name:p.display_name||"",bio:p.bio||"",status:p.status||"online",country:p.country||"",region:p.region||"",district:p.district||"",phone:p.phone||"",website:p.website||"",socials:{...(p.socials||{})},favorite_games:[...(p.favorite_games||[])],current_games:[...(p.current_games||[])],visibility:{...defaults,...(p.visibility||{})}}}
 async function imageFor(id,kind){try{const response=await fetch(API+"/profiles/media/"+encodeURIComponent(id)+"/"+kind,{headers:tok()?{Authorization:"Bearer "+tok()}: {},cache:"no-store"});if(!response.ok)return "";const blob=await response.blob();return URL.createObjectURL(blob)}catch{return ""}}
+const refreshAccount=()=>window.dispatchEvent(new Event("wrld:profile-updated"));
 async function load(userId){
- if(loading||!userId)return;loading=true;try{
- const [obj,home]=await Promise.all([secure("/profiles/me"),secure("/houses/mine").catch(()=>({house:null}))]);
- if(userId!==who||!tok())return;
- data=obj.profile;draft=blank(data);owner=obj.owner===true;mod=obj.moderator===true;myHouse=home.house||null;
- resetMedia();[avatar,banner]=await Promise.all([imageFor(data.id,"avatar"),imageFor(data.id,"banner")]);
- }catch(e){note(e.message)}finally{loading=false;window.dispatchEvent(new Event("wrld:profile-updated"))}
+ if(loading||!userId)return;
+ const token=tok(),revision=++loadRevision;
+ loading=true;err="";refreshAccount();
+ try{
+  // Profile is critical. House, avatar and banner are optional and must never block it.
+  const result=await secure("/profiles/me",{timeoutMs:14000});
+  if(revision!==loadRevision||userId!==who||token!==tok())return;
+  if(!result.profile||result.profile.id!==userId)throw Error(tr("Profile data is incomplete. Please retry.","Неповні дані профілю. Спробуй знову."));
+  data=result.profile;draft=blank(data);owner=result.owner===true;mod=result.moderator===true;
+  resetMedia();
+  loading=false;refreshAccount();
+  // Fetch nonessential sections after the profile is already visible.
+  void secure("/houses/mine",{timeoutMs:8000}).then(h=>{
+   if(revision!==loadRevision||userId!==who||token!==tok())return;
+   myHouse=h.house||null;refreshAccount();
+  }).catch(()=>{ /* house failure must not block profile */ });
+  void Promise.all([imageFor(userId,"avatar"),imageFor(userId,"banner")]).then(([a,b])=>{
+   if(revision!==loadRevision||userId!==who||token!==tok()){
+    for(const url of [a,b])if(url?.startsWith("blob:"))URL.revokeObjectURL(url);
+    return;
+   }
+   resetMedia();avatar=a;banner=b;refreshAccount();
+  }).catch(()=>{ /* images are optional */ });
+ }catch(e){
+  if(revision===loadRevision&&userId===who&&token===tok()){data=null;draft=null;err=e.message||tr("Failed to load profile.","Не вдалося завантажити профіль.")}
+ }finally{
+  if(revision===loadRevision){loading=false;refreshAccount()}
+ }
 }
 function langStatus(s){return (labels[s]||labels.offline)[en()?0:1]}
 function statusMarkup(s){const x=s||"offline";return '<span class="wp-status '+esc(x)+'"><i></i>'+esc(langStatus(x))+'</span>'}
@@ -158,9 +194,15 @@ function previewPanel(state){
 }
 function renderAccount(state){
  if(!state?.user)return null;
- const userId=state.user.id;
- if(who!==userId){who=userId;data=null;draft=null;myHouse=null;owner=false;mod=false;activeTab="overview";resetMedia();void load(userId)}
- if(!data)return '<div class="wp-loading">'+tr("Loading your profile settings…","Завантажуємо налаштування профілю…")+'</div>';
+ const userId=state.user.id,session=tok();
+ if(!userId||!session)return '<div class="wp-load-error" role="alert"><strong>'+tr("Sign-in session unavailable","Сеанс входу недоступний")+'</strong><p>'+tr("Sign out and sign in again to restore profile access.","Вийди з акаунта та увійди знову, щоб відновити доступ до профілю.")+'</p></div>';
+ if(who!==userId||accountToken!==session){
+  ++loadRevision;loading=false;who=userId;accountToken=session;data=null;draft=null;myHouse=null;err="";owner=false;mod=false;activeTab="overview";resetMedia();void load(userId);
+ }
+ if(!data){
+  if(!loading&&err)return '<div class="wp-load-error" role="alert"><strong>'+tr("Couldn't load your profile","Не вдалося завантажити профіль")+'</strong><p>'+esc(err)+'</p><button type="button" class="btn primary" data-wp="retry-profile">'+tr("↻ Retry loading profile","↻ Завантажити профіль знову")+'</button></div>';
+  return '<div class="wp-loading" role="status">'+tr("Loading your profile settings…","Завантажуємо налаштування профілю…")+'</div>';
+ }
  if(!draft)draft=blank(data);
  return '<div class="wp-shell">'+side(state)+'<div class="wp-editor"><div class="wp-editor-inner">'+content(state)+'<p class="wp-feedback" id="wp-feedback" role="status">'+esc(err)+'</p></div></div>'+previewPanel(state)+'</div>';
 }
@@ -211,7 +253,8 @@ document.addEventListener("click",async e=>{
  const target=e.target.closest("[data-wp]");if(!target)return;
  e.preventDefault();const a=target.dataset.wp;
  try{
- if(a==="tab"){activeTab=target.dataset.id;window.dispatchEvent(new Event("wrld:profile-updated"));return}
+ if(a==="retry-profile"){if(!loading&&who){err="";void load(who)}return}
+  if(a==="tab"){activeTab=target.dataset.id;window.dispatchEvent(new Event("wrld:profile-updated"));return}
   if(a==="create-house"||a==="edit-house"){const id=a==="create-house"?"create-house":"house-editor";(document.querySelector('#dock [data-go="'+id+'"]')||document.querySelector('#houseOpenButton[data-go="house-editor"]')||document.querySelector('[data-go="'+id+'"]'))?.click();return}
   if(a==="publish-house"){
    if(!savedHouseHere())throw Error(tr("Create a house first.","Спочатку створи будинок."));
@@ -260,7 +303,7 @@ function updateField(input){
 document.addEventListener("input",e=>{if(e.target.matches("[data-wp-field]")&&draft)updateField(e.target)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("wp-public-modal")?.remove()});
 window.addEventListener("wrld:language-change",()=>{if(data)window.dispatchEvent(new Event("wrld:profile-updated"))});
-window.addEventListener("fw-auth-changed",()=>{if(!tok()){who="";data=null;draft=null;myHouse=null;resetMedia()}});
+window.addEventListener("fw-auth-changed",()=>{if(!tok()){++loadRevision;who="";accountToken="";loading=false;err="";data=null;draft=null;myHouse=null;resetMedia()}});
 window.addEventListener("wrld:house-published",e=>{myHouse=e.detail?.house||null;note(tr("Your house is now visible in your profile ✓","Твій будинок тепер видно у профілі ✓"));window.dispatchEvent(new Event("wrld:profile-updated"))});
 window.addEventListener("wrld:house-publish-error",e=>note(e.detail?.message||tr("Publication failed.","Публікація не вдалася.")));
 window.addEventListener("wrld:house-restore-error",e=>note(e.detail?.message||tr("Cloud restore failed.","Не вдалося відновити будинок.")));
@@ -270,5 +313,5 @@ window.addEventListener("wrld:house-cloud-status",e=>note(e.detail?.message||"")
 const countrySuggestions=["Ukraine","United States","United Kingdom","Poland","Germany","France","Italy","Spain","Canada","Australia","Austria","Belgium","Czechia","Denmark","Estonia","Finland","Georgia","Greece","Hungary","Ireland","Israel","Japan","Latvia","Lithuania","Netherlands","Norway","Portugal","Romania","Slovakia","Sweden","Switzerland","Türkiye","Moldova","Bulgaria","Croatia","Slovenia","India","Brazil","South Korea"];
 const regionSuggestions=["Ivano-Frankivsk Oblast","Kyiv Oblast","Kyiv","Lviv Oblast","Volyn Oblast","Rivne Oblast","Ternopil Oblast","Khmelnytskyi Oblast","Vinnytsia Oblast","Zakarpattia Oblast","Chernivtsi Oblast","Zhytomyr Oblast","Chernihiv Oblast","Sumy Oblast","Poltava Oblast","Kharkiv Oblast","Dnipropetrovsk Oblast","Odesa Oblast","Mykolaiv Oblast","Kherson Oblast","Kirovohrad Oblast","Cherkasy Oblast","California","Texas","Florida","New York","Washington"];
 document.addEventListener("focusin",event=>{const field=event.target?.dataset?.wpField;if(!["country","region"].includes(field))return;const id="wp-"+field+"-suggestions";let list=document.getElementById(id);if(!list){list=document.createElement("datalist");list.id=id;for(const name of (field==="country"?countrySuggestions:regionSuggestions)){const opt=document.createElement("option");opt.value=name;list.append(opt)}document.body.append(list)}event.target.setAttribute("list",id)});
-window.WrldProfile={renderAccount,openPublic:showProfile,refresh:()=>{if(who){data=null;draft=null;void load(who)}}};
+window.WrldProfile={renderAccount,openPublic:showProfile,refresh:()=>{if(who&&!loading){data=null;draft=null;err="";void load(who)}}};
 })();
