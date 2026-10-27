@@ -74,7 +74,7 @@ input,textarea,[contenteditable="true"]{cursor:text}
  <div class="hero wrld-welcome-hero"><div class="hero-copy">
  <span class="overline" data-en="WELCOME TO FLEKI'S WRLD" data-uk="ЛАСКАВО ПРОСИМО У FLEKI'S WRLD">WELCOME TO FLEKI'S WRLD</span>
  <h1><span data-en="A world to call" data-uk="Місце, яке можна назвати">A world to call</span> <em data-en="your own." data-uk="своїм.">your own.</em></h1>
- <p data-en="Games, useful apps, a community and a home you can make your own. Explore, create and find your people." data-uk="Ігри, застосунки, спільнота та дім, який ти облаштуєш сам. Досліджуй, створюй і знаходь друзів.">Games, useful apps, a community and a home you can make your own. Explore, create and find your people.</p>
+ <p data-en="Games, useful apps, a community and a home you can make your own. Explore, create and find your people." data-uk="Ігри, застосунки, спільнота, профілі та знайомства. Досліджуй, створюй і знаходь друзів.">Games, useful apps, a community and a home you can make your own. Explore, create and find your people.</p>
  <div class="actions"><button class="btn" data-go="games" data-en="Explore games" data-uk="Переглянути ігри">Explore games</button></div>
  </div><div class="wrld-orbital" aria-hidden="true"><span>f.</span></div></div>
  <div class="section wrld-landing-section"><div class="section-head"><div><span class="overline" data-en="EXPLORE THE WRLD" data-uk="ДОСЛІДЖУЙ WRLD">EXPLORE THE WRLD</span><h2 data-en="Find your place." data-uk="Знайди своє місце.">Find your place.</h2><p class="section-sub" data-en="A few ways to begin." data-uk="З чого можна почати.">A few ways to begin.</p></div></div>
@@ -96,7 +96,7 @@ const SECTIONS=[
 {id:"home",name:"Home",uk:"Головна",desc:"Welcome to your world.",descUk:"Твій світ починається тут.",icon:"home"},
 
 {id:"web-games",name:"Web Games",uk:"Вебігри",desc:"Playable browser games for account holders, without 2FA.",descUk:"Браузерні ігри з акаунтом, без обов’язкової 2FA.",icon:"web-games"},
-{id:"world",name:"World",uk:"Світ",desc:"Discover homes, activity, clubs and achievements.",descUk:"Відкривай будинки, дописи, клуби та нагороди.",icon:"world"},
+{id:"world",name:"World",uk:"Світ",desc:"Discover activity, clubs, quests and achievements.",descUk:"Відкривай дописи, клуби, квести та нагороди.",icon:"world"},
 {id:"games",uk:"Ігри",name:"Games",desc:"Explore games and interactive worlds.",icon:"games"},
 {id:"apps",uk:"Застосунки",name:"Apps",desc:"Tools made for real life.",icon:"apps"},
 {id:"services",uk:"Сервіси",name:"Services",desc:"Useful things, all in one place.",icon:"services"},
@@ -113,7 +113,6 @@ const languagePicker=document.getElementById('siteLanguage');
 let siteLanguage='en';try{siteLanguage=localStorage.getItem('fleki_wrld_lang')||localStorage.getItem('flekiii-lang')||'en'}catch{}siteLanguage=siteLanguage==='uk'?'uk':'en';
 const labelFor=s=>siteLanguage==='uk'?(s.uk||s.name):s.name;
 const descFor=s=>siteLanguage==='uk'?(s.descUk||s.desc):s.desc;
-function hasHouse(){try{return !!JSON.parse(localStorage.getItem('fleki_wrld_house_settings')||'null')?.template}catch{return false}}
 function applyLanguage(lang){
  siteLanguage=lang==='uk'?'uk':'en';document.documentElement.lang=siteLanguage;languagePicker.value=siteLanguage;
  try{localStorage.setItem('fleki_wrld_lang',siteLanguage)}catch{}

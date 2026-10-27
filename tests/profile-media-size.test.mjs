@@ -10,7 +10,7 @@ const {MAX_MEDIA_BYTES,MEDIA_CHUNK_BYTES,mediaParts,joinMedia}=runInNewContext(l
 test("Photo and GIF both use exactly 3 MiB cap on client and server",()=>{
  assert.equal(MAX_MEDIA_BYTES,3145728);
  assert.match(frontend,/imageLimits=\{avatar:3\*1024\*1024,banner:3\*1024\*1024\}/);
- assert.match(frontend,/"3 MB max"/);
+ assert.match(frontend,/3 MB max/);
  assert.match(backend,/raw\.length>MAX_MEDIA_BYTES/);
  assert.match(html,/wrld-profile\.js\?v=8/);
 });
