@@ -216,6 +216,7 @@ async function changeVisibility(published,inProfile){
  if(token()!==capturedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
  const result=await call("/houses/visibility","PATCH",{published,in_profile:inProfile},capturedToken);
  currentVisibility=result.house;
+ const settings=getSettings();if(settings?.owner===user.id)writeSettings({...settings,published_at:result.house.updated_at});
  window.dispatchEvent(new CustomEvent("wrld:house-published",{detail:{house:result.house}}));
  setShareStatus(published?(inProfile?"House is visible in your profile.":"House is public, but hidden from your profile."):"House hidden from public view. Your furniture remains saved.",published?(inProfile?"Будинок видно в профілі.":"Будинок публічний, але прихований із профілю."):"Будинок приховано від інших. Меблі залишилися збереженими.");
  updateVisibilityButtons();
