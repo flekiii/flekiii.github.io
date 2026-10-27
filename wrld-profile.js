@@ -2,7 +2,7 @@
 (()=>{"use strict";
 const API="https://flekis-wrld-api.flekideveloper.workers.dev";
 const defaults={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public",interests:"public",age:"private"};
-const sections=[["overview","✦","Overview","Огляд"],["appearance","◈","Appearance","Оформлення"],["about","✎","About me","Про мене"],["contact","◎","Location & contact","Локація та контакти"],["games","▣","My games","Мої ігри"],["privacy","♧","Privacy","Приватність"],["security","♢","Security / Auth2FA","Захист / Auth2FA"],["preview","◉","View as others","Погляд зі сторони"]];
+const sections=[["overview","✦","Overview","Огляд"],["appearance","◈","Appearance","Оформлення"],["about","✎","About me","Про мене"],["interests","♡","Interests","Інтереси"],["contact","◎","Location & contact","Локація та контакти"],["games","▣","My games","Мої ігри"],["privacy","♧","Privacy","Приватність"],["security","♢","Security / Auth2FA","Захист / Auth2FA"],["preview","◉","View as others","Погляд зі сторони"]];
 const labels={online:["Online","Онлайн"],away:["Away","Відійшов"],dnd:["Do not disturb","Не турбувати"],offline:["Offline","Офлайн"]};
 const roles={owner:"Owner",aurvex_ceo:"AURVEX CEO",developer:"Developer",god:"God",moderator:"Moderator",creator:"Creator",vip:"VIP",tester:"Tester",member:"Member"};
 const links=["telegram","discord","youtube","twitch","github","instagram","tiktok","steam"];
@@ -142,7 +142,7 @@ function card(p,opts={}){
  '<div class="wp-badges">'+roleMarkup(p.roles)+'<span class="wp-role wp-level">★ '+Number(p.level||1)+' · '+Number(p.xp||0)+' XP</span></div>'+
  (p.bio?'<p class="wp-card-bio">'+esc(p.bio)+'</p>':"")+
   (p.age?'<p class="wp-card-detail">🎂 '+tr("Age","Вік")+': '+Number(p.age)+'</p>':"")+
-  (p.interests?.length?'<div class="wp-interest-tags">'+p.interests.map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>':"")+
+  (p.interests?.length?'<div class="wp-interest-tags">'+p.interests.map(x=>'<span>'+esc(window.WrldInterests?.label?.(x)||x)+'</span>').join("")+'</div>':"")+
  (location?'<p class="wp-card-detail">⌖ '+location+'</p>':"")+
  (p.phone?'<p class="wp-card-detail">☎ '+esc(p.phone)+'</p>':"")+
  (urls.length?'<div class="wp-links">'+urls.join("")+'</div>':"")+
@@ -176,9 +176,10 @@ function content(state){
  fld(tr("Personal status","Мій текстовий статус"),"status_text",p.status_text,"text",80)+
  fld(tr("Age (private)","Вік (приватний)"),"age",p.age,"number",3)+
  '<p class="wp-hint">'+tr("Enter 13–120. Your exact age is not shown in friend discovery.","Вкажи 13–120. Точний вік не показується в пошуку друзів.")+'</p>'+
- textarea(tr("Interests (up to 12, one per line)","Інтереси (до 12, по одному на рядок)"),"interests",p.interests.join("\n"),450)+
+ '<div class="wp-interest-shortcut"><div><strong>♡ '+tr("Your interests","Твої інтереси")+'</strong><small>'+tr("Choose your interests from a searchable catalogue.","Обери захоплення зі зручного каталогу з пошуком.")+'</small></div><button type="button" class="btn" data-wp="open-interests">'+tr("Choose interests","Обрати інтереси")+' ↗</button></div>'+
  '<label class="wp-discovery-opt"><input type="checkbox" data-wp-boolean="discoverable" '+(p.discoverable?"checked":"")+'><span>'+tr("Let people in my age group find me as a friend","Дозволити людям моєї вікової групи знаходити мене як друга")+'</span></label>'+
  '<p class="wp-hint">'+tr("Optional. Adult/teen searches are separated. Ages are self-reported.","Необов’язково. Пошук дорослих і підлітків розділений. Вік вказують самостійно.")+'</p>'+save();
+ if(activeTab==="interests")return '<h2>♡ '+tr("Your interests","Твої інтереси")+'</h2><p>'+tr("Games, anime, coding, music and more — choose what you enjoy.","Ігри, аніме, програмування, музика та багато іншого — обери те, що любиш.")+'</p>'+(window.WrldInterests?.render(p.interests)||textarea(tr("Interests (up to 12)","Інтереси (до 12)"),"interests",p.interests.join("\n"),450))+save();
  if(activeTab==="contact")return '<h2>'+tr("Location & contact","Локація та контакти")+'</h2><p>'+tr("All fields are optional. Never publish an address or a phone number unless you want to.","Усі поля необов'язкові. Не публікуй адресу чи телефон, якщо цього не хочеш.")+'</p>'+fld(tr("Country","Країна"),"country",p.country,"text",60)+fld(tr("State / Oblast / Region","Штат / Область / Регіон"),"region",p.region,"text",80)+fld(tr("District","Район"),"district",p.district,"text",80)+fld(tr("Phone number (optional)","Номер телефону (необов'язково)"),"phone",p.phone,"tel",30)+fld(tr("Website (HTTPS)","Сайт (HTTPS)"),"website",p.website,"url",220)+'<h3>'+tr("Social media links","Посилання на соцмережі")+'</h3>'+links.map(k=>fld(k.charAt(0).toUpperCase()+k.slice(1)+" (https://)","social:"+k,p.socials[k],"url",220)).join("")+save();
  if(activeTab==="games")return '<h2>'+tr("My games","Мої ігри")+'</h2><p>'+tr("Find games across PC stores, Epic, consoles and mobile. Add any missing game by its name. Up to 10 in each list.","Шукай ігри для ПК, Epic, консолей і телефонів. Відсутню гру можна додати за назвою. До 10 у кожному списку.")+'</p>'+
  (window.WrldGamePicker?.render(p)||textarea(tr("Favorite games","Улюблені ігри"),"favorite_games",p.favorite_games.join("\n"),570)+textarea(tr("Currently playing","Зараз граю"),"current_games",p.current_games.join("\n"),570))+save();
@@ -222,7 +223,7 @@ function publicAccount(){
  const stage=publicProfile?card(p,{avatar:p.avatar?avatar:"",banner:p.banner?banner:""}):publicError?
  '<div class="wp-public-failure" role="alert"><strong>'+tr("Public view unavailable","Публічний вигляд недоступний")+'</strong><p>'+esc(publicError)+'</p><button type="button" class="btn" data-wp="retry-public">↻ '+tr("Retry","Повторити")+'</button></div>':
  '<div class="wp-loading" role="status">'+tr("Loading public profile…","Завантажуємо публічний профіль…")+'</div>';
- const sidebar='<aside class="wp-published-aside"><div class="wp-published-tip"><span class="wp-published-symbol">✦</span><strong>'+tr("Your space. Your rules.","Твій простір. Твої правила.")+'</strong><p>'+tr("Only information visible to everyone appears here. Adjust what you share whenever you like.","Тут лише те, що відкрито для всіх. Ти сам обираєш, чим ділитися.")+'</p><button type="button" class="wp-published-link" data-wp="edit-privacy">♧ '+tr("Privacy settings","Налаштування приватності")+' ↗</button></div><div class="wp-published-tip"><strong>'+tr("Make your profile yours","Зроби профіль своїм")+'</strong><p>'+tr("Change your photo, banner, colors, bio and games in the editor.","Змінюй фото, банер, кольори, опис та ігри в редакторі.")+'</p><button type="button" class="wp-published-link" data-wp="open-editor">✎ '+tr("Edit appearance","Редагувати оформлення")+' ↗</button></div>'+(p?'<div class="wp-published-tip"><strong>'+tr("Your progress","Твій прогрес")+'</strong>'+progressPanel(p)+'</div>':'')+'</aside>';
+ const sidebar='<aside class="wp-published-aside"><div class="wp-published-tip"><span class="wp-published-symbol">✦</span><strong>'+tr("Your space. Your rules.","Твій простір. Твої правила.")+'</strong><p>'+tr("Only information visible to everyone appears here. Adjust what you share whenever you like.","Тут лише те, що відкрито для всіх. Ти сам обираєш, чим ділитися.")+'</p><button type="button" class="wp-published-link" data-wp="edit-privacy">♧ '+tr("Privacy settings","Налаштування приватності")+' ↗</button></div><div class="wp-published-tip"><strong>'+tr("Make your profile yours","Зроби профіль своїм")+'</strong><p>'+tr("Change your photo, banner, colors, bio and games in the editor.","Змінюй фото, банер, кольори, опис та ігри в редакторі.")+'</p><button type="button" class="wp-published-link" data-wp="open-interests">♡ '+tr("Choose interests","Обрати інтереси")+' ↗</button><button type="button" class="wp-published-link" data-wp="open-editor">✎ '+tr("Edit appearance","Редагувати оформлення")+' ↗</button></div>'+(p?'<div class="wp-published-tip"><strong>'+tr("Your progress","Твій прогрес")+'</strong>'+progressPanel(p)+'</div>':'')+'</aside>';
  return '<div class="wp-published wp-shell">'+top+'<div class="wp-published-grid"><section class="wp-published-profile" aria-label="'+tr("Public profile","Публічний профіль")+'">'+stage+'</section>'+sidebar+'</div><p class="wp-feedback" id="wp-feedback" role="status">'+esc(err)+'</p></div>';
 }
 function studioAccount(state){
@@ -292,6 +293,7 @@ document.addEventListener("click",async e=>{
  if(a==="open-editor"){view="studio";activeTab="overview";refreshAccount();return}
   if(a==="open-security"){view="studio";activeTab="security";refreshAccount();return}
   if(a==="edit-privacy"){view="studio";activeTab="privacy";refreshAccount();return}
+  if(a==="open-interests"){view="studio";activeTab="interests";refreshAccount();return}
   if(a==="back-public"){view="public";refreshAccount();return}
   if(a==="retry-public"){if(!publicLoading&&who)void loadPublic(who);return}
   if(a==="accent"){if(draft&&/^#[0-9a-f]{6}$/i.test(target.dataset.color)){draft.accent=target.dataset.color;liveUpdate();window.dispatchEvent(new Event("wrld:profile-updated"))}return}
@@ -334,6 +336,7 @@ document.addEventListener("input",e=>{if(e.target.matches("[data-wp-field]")&&dr
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("wp-public-modal")?.remove()});
 window.addEventListener("wrld:language-change",()=>{if(data)window.dispatchEvent(new Event("wrld:profile-updated"))});
  window.addEventListener("wrld:profile-game-change",e=>{if(!draft||!["favorite_games","current_games"].includes(e.detail?.kind))return;draft[e.detail.kind]=e.detail.games.slice(0,10);liveUpdate()});
+ window.addEventListener("wrld:profile-interest-change",e=>{if(!draft||!Array.isArray(e.detail?.interests))return;draft.interests=e.detail.interests.slice(0,12);liveUpdate()});
 window.addEventListener("fw-auth-changed",()=>{if(!tok()){++loadRevision;who="";accountToken="";loading=false;err="";data=null;draft=null;myHouse=null;publicProfile=null;publicError="";publicLoading=false;view="public";resetMedia()}});
 
 const countrySuggestions=["Ukraine","United States","United Kingdom","Poland","Germany","France","Italy","Spain","Canada","Australia","Austria","Belgium","Czechia","Denmark","Estonia","Finland","Georgia","Greece","Hungary","Ireland","Israel","Japan","Latvia","Lithuania","Netherlands","Norway","Portugal","Romania","Slovakia","Sweden","Switzerland","Türkiye","Moldova","Bulgaria","Croatia","Slovenia","India","Brazil","South Korea"];

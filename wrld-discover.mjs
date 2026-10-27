@@ -29,7 +29,7 @@ if(root){
    '<div class="fd-grid">'+(members.length?members.map(p=>
    '<article class="fd-card"><div class="fd-card-top"><span class="fd-avatar">'+esc((p.display_name||p.username).slice(0,1).toUpperCase())+'</span><div><h3>'+esc(p.display_name)+'</h3><small>'+( /^fmail_[a-z0-9]+$/i.test(p.username)?'':'@'+esc(p.username)+' · ')+esc(p.age_group)+'</small></div></div>'+
    (p.status_text?'<p>'+esc(p.status_emoji||"💬")+' '+esc(p.status_text)+'</p>':"")+
-   '<div class="fd-tags">'+(p.interests||[]).map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>'+
+   '<div class="fd-tags">'+(p.interests||[]).map(x=>'<span>'+esc(window.WrldInterests?.label?.(x)||x)+'</span>').join("")+'</div>'+
    '<small>'+p.common+' '+tr("shared interests","спільних інтересів")+'</small>'+
    '<div class="fd-actions"><button type="button" class="btn primary" data-fd="friend" data-id="'+esc(p.id)+'" '+(p.already_friends?"disabled":"")+'>'+(p.already_friends?tr("Already friends","Вже друзі"):tr("Add friend","Додати в друзі"))+'</button>'+
    '<button class="btn" data-fd="view" data-username="'+esc(p.username)+'">'+tr("Profile","Профіль")+'</button>'+

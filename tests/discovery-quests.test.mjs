@@ -52,7 +52,7 @@ test("Game picker searches cross-platform titles without rate-limited 1,000-game
 test("Versioned assets and Worker routes match",()=>{
  assert.match(worker,/discoverHandle\(req,env,path/);
  assert.match(worker,/gamesCatalog\(req,path\)/);
- assert.match(html,/wrld-profile\.js\?v=10/);
+ assert.match(html,/wrld-profile\.js\?v=11/);
  assert.match(html,/wrld-world\.mjs\?v=7/);
  assert.match(html,/wrld-discover\.mjs\?v=2/);
 });

@@ -185,3 +185,53 @@
 .wp-game-tile small{font-size:10px;color:var(--accent2)}
 .wp-real-game-mini>span:last-child{min-width:0;overflow-wrap:anywhere}
 @media(max-width:560px){.wp-game-browser .wp-game-search .btn{padding:10px;font-size:12px}.wp-game-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Bilingual interest chooser in Profile Studio */
+.wp-interest-shortcut{display:flex;flex-wrap:wrap;align-items:center;gap:13px;justify-content:space-between;padding:15px 16px;margin:17px 0;border:1px solid var(--line);background:var(--panel2);border-radius:14px}
+.wp-interest-shortcut>div{flex:1;min-width:0;display:grid;gap:4px}
+.wp-interest-shortcut strong{font-size:14px}
+.wp-interest-shortcut small{color:var(--muted);font-size:12px;line-height:1.55}
+.wp-interest-shortcut .btn{margin:0;font-size:12px}
+.wi-picker{display:grid;gap:14px;margin:16px 0;min-width:0}
+.wi-top{display:flex;align-items:center;justify-content:space-between;gap:13px}
+.wi-top>div{min-width:0}
+.wi-overline{display:block;font-size:10px;letter-spacing:1px;font-weight:800;color:var(--accent2);margin-bottom:7px}
+.wi-top strong{display:block;font:700 clamp(17px,2.6vw,21px)/1.25 "Space Grotesk",sans-serif}
+.wi-top p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.55}
+.wi-count{flex:none;padding:10px 13px;border-radius:12px;color:var(--accent2);border:1px solid color-mix(in srgb,var(--accent2) 36%,var(--line));background:color-mix(in srgb,var(--accent2) 12%,var(--panel2));font:800 14px "Space Grotesk",sans-serif;font-variant-numeric:tabular-nums}
+.wi-selected-box{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:14px}
+.wi-selected-list{display:flex;align-items:center;flex-wrap:wrap;gap:7px;min-height:33px}
+.wi-empty{font-size:12px;line-height:1.55;color:var(--muted)}
+.wi-selected{display:inline-flex;align-items:center;gap:10px;border:1px solid color-mix(in srgb,var(--accent2) 44%,var(--line));background:color-mix(in srgb,var(--accent2) 12%,var(--panel));padding:7px 10px;border-radius:9px;color:var(--text);font-size:11px;font-weight:750;max-width:100%}
+.wi-selected span:first-child{overflow-wrap:anywhere}
+.wi-selected span:last-child{font-size:16px;line-height:1;color:var(--accent2)}
+.wi-selected:hover{border-color:var(--accent2)}
+.wi-search{display:flex;align-items:center;gap:10px;min-height:47px;border:1px solid var(--line);border-radius:13px;padding:0 13px;background:var(--panel2);transition:border-color .15s,box-shadow .15s}
+.wi-search:focus-within{border-color:var(--accent2);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent2) 14%,transparent)}
+.wi-search>span{font-size:24px;color:var(--accent2)}
+.wi-search input{border:0;outline:none;background:transparent;color:var(--text);font-size:13px;min-width:0;flex:1}
+.wi-search input::placeholder{color:var(--muted)}
+.wi-categories{display:flex;gap:6px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent;padding:0 0 5px}
+.wi-category{white-space:nowrap;flex:none;padding:9px 12px;font-size:11px;font-weight:750;color:var(--muted);border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.wi-category:hover{border-color:var(--accent2);color:var(--text)}
+.wi-category.active{color:var(--text);background:color-mix(in srgb,var(--accent2) 15%,var(--panel));border-color:color-mix(in srgb,var(--accent2) 55%,var(--line))}
+.wi-results{max-height:345px;min-height:110px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent;padding-right:4px}
+.wi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.wi-tile{display:flex;align-items:center;min-width:0;min-height:61px;gap:10px;padding:10px;text-align:left;border-radius:12px;border:1px solid var(--line);background:var(--panel2);transition:border-color .15s,transform .15s}
+.wi-tile:hover{border-color:var(--accent2);transform:translateY(-1px)}
+.wi-tile.chosen{border-color:color-mix(in srgb,var(--accent2) 67%,var(--line));background:color-mix(in srgb,var(--accent2) 12%,var(--panel2))}
+.wi-emoji{flex:0 0 36px;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--panel);font-size:19px}
+.wi-name{flex:1;display:grid;gap:3px;min-width:0}
+.wi-name strong{font:700 12px/1.3 "Space Grotesk",sans-serif;overflow-wrap:anywhere}
+.wi-name small{font-size:10px;color:var(--muted);overflow-wrap:anywhere}
+.wi-mark{flex:0 0 22px;display:grid;place-items:center;width:22px;height:22px;border-radius:7px;border:1px solid var(--line);font-size:15px;font-weight:800;color:var(--muted)}
+.wi-tile.chosen .wi-mark{color:var(--text);background:var(--accent2);border-color:var(--accent2)}
+.wi-no-results{text-align:center;font-size:12px;color:var(--muted);padding:14px}
+.wi-custom{width:100%;margin-top:10px;padding:13px;text-align:left;border:1px dashed var(--accent2);border-radius:12px;background:color-mix(in srgb,var(--accent2) 10%,var(--panel2));color:var(--text);font-size:12px}
+.wi-custom:hover{border-style:solid}
+.wi-custom strong{overflow-wrap:anywhere;color:var(--accent2)}
+.wi-feedback{margin:0;min-height:15px;color:var(--accent2);font-size:12px}
+.wi-hint{margin:0;padding-top:13px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.6}
+.wi-tile:focus-visible,.wi-selected:focus-visible,.wi-category:focus-visible,.wi-custom:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+@media(max-width:600px){.wi-grid{grid-template-columns:1fr}.wi-tile{min-height:53px}.wi-results{max-height:310px}.wp-interest-shortcut>.btn{width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.wi-tile,.wi-search{transition:none}.wi-tile:hover{transform:none}}

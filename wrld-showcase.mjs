@@ -21,7 +21,7 @@ if(root){
      '<article class="sc-profile"><div class="sc-cover"><span class="sc-spark">✧</span><span class="sc-level">★ '+Number(p.level||1)+'</span></div><div class="sc-profile-inner"><div class="sc-person"><div class="sc-avatar">'+esc(p.display_name.slice(0,1).toUpperCase())+'</div><div><h3>'+esc(p.display_name)+'</h3>'+( /^fmail_[a-z0-9]+$/i.test(p.username)?'':'<p>@'+esc(p.username)+'</p>')+'</div></div>'+
      (p.status_text?'<p class="sc-status">'+esc(p.status_emoji||"💬")+' '+esc(p.status_text)+'</p>':'')+
      '<p class="sc-bio">'+esc(p.bio||tr("A world of creativity.","Світ творчості."))+'</p>'+
-     '<div class="sc-interests">'+(p.interests||[]).slice(0,6).map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>'+
+     '<div class="sc-interests">'+(p.interests||[]).slice(0,6).map(x=>'<span>'+esc(window.WrldInterests?.label?.(x)||x)+'</span>').join("")+'</div>'+
      '<div class="sc-count">★ '+(Number(p.score||0).toFixed(1))+' / 5 <small>('+Number(p.votes||0)+' '+tr("ratings","оцінок")+')</small> · '+Number(p.xp||0)+' XP</div>'+
      '<div class="sc-stars" aria-label="'+tr("Rate profile","Оцінити профіль")+'">'+[1,2,3,4,5].map(x=>'<button type="button" data-sc="rate" data-username="'+esc(p.username)+'" data-stars="'+x+'" '+(!token()||p.own?"disabled":"")+' aria-label="'+x+' stars">★</button>').join("")+'</div>'+
      '<button class="btn" data-sc="open" data-username="'+esc(p.username)+'">'+tr("View profile ↗","Переглянути профіль ↗")+'</button></div></article>'

@@ -46,6 +46,8 @@ jobs:
           test -s wrld-world.css
           node --check backend/profiles.js
           node --check wrld-profile.js
+          node --check wrld-interests.js
+          node --test tests/profile-interests.test.mjs
           node --test tests/profile-banner.test.mjs
           node --test tests/profile-media-size.test.mjs
           node --test tests/profile-studio.test.mjs

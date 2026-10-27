@@ -12,7 +12,7 @@ test("Photo and GIF both use exactly 3 MiB cap on client and server",()=>{
  assert.match(frontend,/imageLimits=\{avatar:3\*1024\*1024,banner:3\*1024\*1024\}/);
  assert.match(frontend,/3 MB max/);
  assert.match(backend,/raw\.length>MAX_MEDIA_BYTES/);
- assert.match(html,/wrld-profile\.js\?v=10/);
+ assert.match(html,/wrld-profile\.js\?v=11/);
 });
 test("3 MiB GIF data round-trips across safe D1 chunks without losing frames",()=>{
  const data=new Uint8Array(MAX_MEDIA_BYTES);data.set(Uint8Array.from(Buffer.from("GIF89a","ascii")));data[data.length-1]=77;
