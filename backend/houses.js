@@ -14,6 +14,7 @@ async function tables(db){
  initial=(async()=>{
   await exec(db,"CREATE TABLE IF NOT EXISTS wrld_houses (owner TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,name TEXT NOT NULL,template TEXT NOT NULL,layout_json TEXT NOT NULL,published INTEGER NOT NULL DEFAULT 0,in_profile INTEGER NOT NULL DEFAULT 0,updated_at INTEGER NOT NULL)");
   await exec(db,"CREATE TABLE IF NOT EXISTS wrld_house_reactions (owner TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,reactor TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,emoji TEXT NOT NULL,created_at INTEGER NOT NULL,PRIMARY KEY(owner,reactor))");
+  await exec(db,"CREATE TABLE IF NOT EXISTS wrld_house_drafts (owner TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,name TEXT NOT NULL,template TEXT NOT NULL,layout_json TEXT NOT NULL,updated_at INTEGER NOT NULL)");
  })();
  try{await initial}catch(e){initial=null;throw e}
 }
@@ -53,6 +54,35 @@ export async function houseHandle(req,env,path,{auth,authorized}){
   return j({house:house(row)});
  }
 
+ if(method==="GET"&&path==="/houses/draft"){
+  const row=await one(db,"SELECT d.*,u.username FROM wrld_house_drafts d JOIN users u ON u.id=d.owner WHERE d.owner=?",user.id);
+  return j({draft:house(row)});
+ }
+ if(method==="PUT"&&path==="/houses/draft"){
+  const raw=await req.text();if(raw.length>14500)return bad("House draft is too large.",413);
+  let payload;try{payload=JSON.parse(raw)}catch{return bad("Invalid JSON.")}
+  const name=String(payload.name||"").trim();
+  if(name.length<1||name.length>55||!/[\p{L}\p{N}]/u.test(name))return bad("Enter a house name (1–55 characters).");
+  if(!TEMPLATES.has(payload.template)||!validItems(payload.items))return bad("Invalid house plan or furniture.");
+  const previous=await one(db,"SELECT updated_at FROM wrld_house_drafts WHERE owner=?",user.id);
+  if(Number.isSafeInteger(payload.expected_updated_at)&&previous?.updated_at!==payload.expected_updated_at)return bad("Cloud draft changed elsewhere. Reload before overwriting.",409);
+  const timestamp=Math.max(Date.now(),Number(previous?.updated_at||0)+1);
+  const items=JSON.stringify(payload.items.map(x=>({id:x.id,type:x.type,x:x.x,z:x.z,rot:x.rot})));
+  await exec(db,"INSERT INTO wrld_house_drafts(owner,name,template,layout_json,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(owner) DO UPDATE SET name=excluded.name,template=excluded.template,layout_json=excluded.layout_json,updated_at=excluded.updated_at",user.id,name,payload.template,items,timestamp);
+  return j({ok:true,updated_at:timestamp,private:true});
+ }
+ if(method==="PATCH"&&path==="/houses/visibility"){
+  const raw=await req.text();if(raw.length>500)return bad("Request too large.",413);
+  let payload;try{payload=JSON.parse(raw)}catch{return bad("Invalid JSON.")}
+  if(typeof payload.published!=="boolean"||typeof payload.in_profile!=="boolean")return bad("Invalid visibility.",400);
+  const row=await one(db,"SELECT updated_at FROM wrld_houses WHERE owner=?",user.id);
+  if(!row)return bad("Publish a house first.",404);
+  const updated=Math.max(Date.now(),Number(row.updated_at||0)+1);
+  const visible=payload.published&&payload.in_profile;
+  await exec(db,"UPDATE wrld_houses SET published=?,in_profile=?,updated_at=? WHERE owner=?",Number(payload.published),Number(visible),updated,user.id);
+  const result=await one(db,"SELECT h.*,u.username,u.display_name FROM wrld_houses h JOIN users u ON u.id=h.owner WHERE h.owner=?",user.id);
+  return j({ok:true,house:house(result)});
+ }
  if(method==="PUT"&&path==="/houses/publish"){
   const raw=await req.text();if(raw.length>14500)return bad("House is too large.",413);
   let payload;try{payload=JSON.parse(raw)}catch{return bad("Invalid JSON.")}
