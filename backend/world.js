@@ -1,4 +1,4 @@
-import {gallery,xpInfo} from "./world-gallery.js";
+import {xpInfo} from "./world-gallery.js";
 import {worldFeed} from "./world-feed.js";
 import {worldClubs} from "./world-clubs.js";
 import {worldDiscuss} from "./world-discuss.js";
