@@ -51,6 +51,7 @@ jobs:
           node --test tests/profile-studio.test.mjs
           node --test tests/profile-loading.test.mjs
           node --test tests/profile-public-mode.test.mjs
+          node --test tests/profile-games.test.mjs
           test -s wrld-profile.css
           test -s vendor/qrcode.js
           node --check backend/marketplace.js

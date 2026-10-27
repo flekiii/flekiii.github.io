@@ -169,5 +169,19 @@
 .wp-studio-heading{padding:18px 22px;margin:0;border:1px solid var(--line);background:var(--panel);border-radius:19px}
 .wp-studio-heading h2{font-size:25px}
 .wp-studio-layout>.wp-shell{width:100%}
+.wp-published-actions .btn{white-space:nowrap}
 @media(max-width:890px){.wp-published-grid{grid-template-columns:1fr}.wp-published-aside{grid-template-columns:repeat(2,minmax(0,1fr))}.wp-published-tip:last-child:nth-child(3){grid-column:1/-1}}
-@media(max-width:610px){.wp-published-head{align-items:stretch;gap:12px}.wp-published-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;width:100%}.wp-published-actions .btn{font-size:12px;padding:10px}.wp-published-grid{gap:12px}.wp-published-aside{grid-template-columns:1fr}.wp-published-tip:last-child:nth-child(3){grid-column:auto}.wp-published-profile .wp-card-banner{height:163px}.wp-published-profile .wp-avatar-image{width:76px;height:76px;margin-top:-25px;border-width:3px}.wp-published-profile .wp-card-meta{padding:0 13px}.wp-published-profile .wp-card-bio,.wp-published-profile .wp-card-detail,.wp-published-profile .wp-games-text,.wp-published-profile .wp-badges,.wp-published-profile .wp-links{margin-left:14px;margin-right:14px}.wp-studio-heading{padding:14px}.wp-studio-heading h2{font-size:22px}.wp-studio-heading>.btn{width:100%;justify-content:center}}
+@media(max-width:610px){.wp-published-head{align-items:stretch;gap:12px}.wp-published-actions{display:flex;flex-wrap:wrap;width:100%}.wp-published-actions .btn{flex:1 1 auto}.wp-published-actions .btn{font-size:12px;padding:10px}.wp-published-grid{gap:12px}.wp-published-aside{grid-template-columns:1fr}.wp-published-tip:last-child:nth-child(3){grid-column:auto}.wp-published-profile .wp-card-banner{height:163px}.wp-published-profile .wp-avatar-image{width:76px;height:76px;margin-top:-25px;border-width:3px}.wp-published-profile .wp-card-meta{padding:0 13px}.wp-published-profile .wp-card-bio,.wp-published-profile .wp-card-detail,.wp-published-profile .wp-games-text,.wp-published-profile .wp-badges,.wp-published-profile .wp-links{margin-left:14px;margin-right:14px}.wp-studio-heading{padding:14px}.wp-studio-heading h2{font-size:22px}.wp-studio-heading>.btn{width:100%;justify-content:center}}
+
+/* Multi-platform game finder: compact tiles and safe fallbacks without cover art. */
+.wp-game-browser .wp-game-search{display:flex;align-items:center;gap:8px}
+.wp-game-browser .wp-game-search input{min-width:0;flex:1}
+.wp-game-browser .wp-game-search .btn{flex:none}
+.wp-game-no-cover{display:grid;place-items:center;width:100%;aspect-ratio:460/215;border-radius:8px;background:radial-gradient(circle at 70% 30%,var(--wash),transparent 70%),var(--panel);font-size:25px}
+.wp-game-no-results{padding:12px;font-size:12px;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+.wp-game-tile{min-height:107px}
+.wp-game-tile img{width:100%}
+.wp-game-tile strong{font-size:12px;line-height:1.35}
+.wp-game-tile small{font-size:10px;color:var(--accent2)}
+.wp-real-game-mini>span:last-child{min-width:0;overflow-wrap:anywhere}
+@media(max-width:560px){.wp-game-browser .wp-game-search .btn{padding:10px;font-size:12px}.wp-game-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

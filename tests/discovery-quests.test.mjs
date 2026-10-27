@@ -37,19 +37,22 @@ test("Discovery requires opt-in and restricts both sides to one self-reported ag
  assert.match(html,/id="wrld-discover-root"/);
  assert.match(html,/id:"discover"/);
 });
-test("Game catalogue serves SteamSpy real app IDs and has a second 1000-game page",()=>{
+test("Game picker searches cross-platform titles without rate-limited 1,000-game paging",()=>{
  assert.match(games,/steamspy\.com\/api\.php\?request=all&page=/);
  assert.match(games,/slice\(0,1000\)/);
  assert.match(games,/next_page:n\+1/);
- assert.match(picker,/Load 1,000 more real games/);
+ assert.match(picker,/cheapshark\.com\/api\/1\.0\/games/);
+ assert.match(picker,/freetogame\.com\/api\/games/);
+ assert.match(picker,/Fortnite/);
+ assert.doesNotMatch(picker,/\/games\/catalog\?page=/);
  assert.match(picker,/cdn\.akamai\.steamstatic\.com\/steam\/apps/);
  assert.match(profile,/WrldGamePicker\?\.render/);
- assert.match(html,/wrld-game-picker\.js\?v=1/);
+ assert.match(html,/wrld-game-picker\.js\?v=2/);
 });
 test("Versioned assets and Worker routes match",()=>{
  assert.match(worker,/discoverHandle\(req,env,path/);
  assert.match(worker,/gamesCatalog\(req,path\)/);
- assert.match(html,/wrld-profile\.js\?v=9/);
+ assert.match(html,/wrld-profile\.js\?v=10/);
  assert.match(html,/wrld-world\.mjs\?v=7/);
  assert.match(html,/wrld-discover\.mjs\?v=1/);
 });
