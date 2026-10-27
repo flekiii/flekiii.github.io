@@ -84,7 +84,7 @@ const notifWords={
 };
 function renderNotifications(){
  if(!alerts)return;
- const lang=document.documentElement.lang==="uk"?"uk":"en",w=notifWords[lang],all=S.user?S.notifications:[],count=all.filter(n=>!n.read_at).length;
+ const lang=document.documentElement?.lang==="uk"?"uk":"en",w=notifWords[lang],all=S.user?S.notifications:[],count=all.filter(n=>!n.read_at).length;
  const items=notifFilter==="unread"?all.filter(n=>!n.read_at):all;
  const snapshot=JSON.stringify([S.user?.id||"",all,lang,notifFilter,S.notificationError]);
  if(snapshot===notifSnapshot)return;
