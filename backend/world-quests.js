@@ -20,7 +20,8 @@ export const metrics=[
  {id:"math-multiply",emoji:"✖️",title:"Win multiplication rounds",uk:"Перемагай у множенні",period:"once",query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND mode='multiply'"},
  {id:"math-total",emoji:"🎯",title:"Win math challenges",uk:"Математичні перемоги",period:"once",query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=?"},
  {id:"math-today",emoji:"⚡",title:"Win challenges today",uk:"Перемоги сьогодні",period:"daily",query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND created_at>=?"},
- {id:"math-add-today",emoji:"🌟",title:"Win addition today",uk:"Додавання сьогодні",period:"daily",query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND mode='add' AND created_at>=?"}
+ {id:"math-add-today",emoji:"🌟",title:"Win addition today",uk:"Додавання сьогодні",period:"daily",query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND mode='add' AND created_at>=?"},
+ {id:"math-multiply-today",emoji:"💠",title:"Win multiplication today",uk:"Множення сьогодні",period:"daily",query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND mode='multiply' AND created_at>=?"}
 ];
 const legacy=[
  {id:"share-post",emoji:"✍️",title:"Share a post",uk:"Опублікуй допис",xp:30,metric:"posts-today",required:1,period:"daily"},
@@ -28,10 +29,10 @@ const legacy=[
  {id:"give-like",emoji:"💜",title:"Like a post",uk:"Вподобай допис",xp:15,metric:"likes",required:1,period:"once"},
  {id:"join-club",emoji:"👥",title:"Join a club",uk:"Вступи до клубу",xp:40,metric:"clubs-joined",required:1,period:"once"},
  {id:"arcade-add",emoji:"➕",title:"Win Math Add challenge",uk:"Виграй додавання",xp:15,metric:"math-add-today",required:1,period:"daily"},
- {id:"arcade-multiply",emoji:"✖️",title:"Win Math Multiply challenge",uk:"Виграй множення",xp:20,metric:"math-today",required:1,period:"daily",override:"multiply-today"},
+ {id:"arcade-multiply",emoji:"✖️",title:"Win Math Multiply challenge",uk:"Виграй множення",xp:20,metric:"math-multiply-today",required:1,period:"daily"},
  {id:"arcade-three",emoji:"🎯",title:"Win 3 math rounds today",uk:"Виграй 3 математичні раунди",xp:35,metric:"math-today",required:3,period:"daily"}
 ];
-const extra=metrics.flatMap(m=>(m.period==="daily"?dailyMilestones:milestones).map((n,index)=>({
+const extra=metrics.flatMap(m=>(m.id==="clubs-created"?[1,2,3]:m.id==="math-multiply-today"?[1,2,3,4,5,6,8]:m.period==="daily"?dailyMilestones:milestones).map((n,index)=>({
  id:m.id+"-"+n,emoji:m.emoji,title:m.title+" · "+n,uk:m.uk+" · "+n,
  xp:Math.min(30,3+index*2),metric:m.id,required:n,period:m.period,group:m.id
 })));
@@ -47,25 +48,21 @@ export async function questHandle(req,db,user){
   if(!QUESTS.some(q=>q.id===requestId))return reply({error:"Unknown quest"},400);
  }
  const metricIds=new Set(req.method==="POST"?[QUESTS.find(q=>q.id===requestId).metric]:metrics.map(m=>m.id));
- if(req.method==="POST"&&requestId==="arcade-multiply")metricIds.add("math-today");
+
  const metricQueries=metrics.filter(m=>metricIds.has(m.id));
  const counts=new Map(await Promise.all(metricQueries.map(async metric=>{
   const bind=metric.period==="daily"?[user.id,dayStart]:[user.id];
   const row=await db.prepare(metric.query).bind(...bind).first();
   return [metric.id,Number(row?.n||0)];
  })));
- // Legacy multiply quest is checked against multiplication-only wins today.
- if(req.method==="GET"||requestId==="arcade-multiply"){
-  const row=await db.prepare("SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND mode='multiply' AND created_at>=?").bind(user.id,dayStart).first();
-  counts.set("multiply-today",Number(row?.n||0));
- }
+
  const relevant=req.method==="POST"?QUESTS.filter(q=>q.id===requestId):QUESTS;
  const claimRows=req.method==="GET"?(await db.prepare("SELECT quest,day FROM wrld_world_quest_claims WHERE user_id=? AND (day=? OR day=-1)").bind(user.id,currentDay).all()).results||[]:[];
  const claimed=new Set(claimRows.map(row=>row.quest+"|"+row.day));
  const states=relevant.map(q=>{
   const day=q.period==="daily"?currentDay:-1;
-  const completed=(counts.get(q.override||q.metric)||0)>=q.required;
-  return {...q,complete:completed,claimed:claimed.has(q.id+"|"+day),day,current:counts.get(q.override||q.metric)||0};
+  const completed=(counts.get(q.metric)||0)>=q.required;
+  return {...q,complete:completed,claimed:claimed.has(q.id+"|"+day),day,current:counts.get(q.metric)||0};
  });
  if(req.method==="GET")return reply({quests:states,reset_at:(currentDay+1)*DAY,total:QUESTS.length,groups:metrics.map(m=>({id:m.id,title:m.title,uk:m.uk,emoji:m.emoji}))});
  const found=states[0];

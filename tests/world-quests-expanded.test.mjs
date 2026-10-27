@@ -15,9 +15,11 @@ function mockDb(counts={}){
  }};
 }
 test("137 unique milestone quests require persisted world or arcade actions",()=>{
- assert.equal(metrics.length,13);
+ assert.equal(metrics.length,14);
  assert.equal(QUESTS.length,137);
  assert.equal(new Set(QUESTS.map(q=>q.id)).size,137);
+ assert.deepEqual(QUESTS.filter(q=>q.metric==="clubs-created").map(q=>q.required),[1,2,3]);
+ assert.deepEqual(QUESTS.filter(q=>q.metric==="math-multiply-today").map(q=>q.required).slice(1),[1,2,3,4,5,6,8]);
  for(const q of QUESTS){assert.ok(q.required>=1);assert.ok(q.xp>0&&q.xp<=40);assert.ok(["daily","once"].includes(q.period));assert.ok(metrics.some(m=>m.id===q.metric))}
  assert.ok(metrics.every(m=>m.query.startsWith("SELECT COUNT(*) n FROM wrld_")));
 });
