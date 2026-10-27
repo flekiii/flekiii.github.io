@@ -36,7 +36,7 @@ const QUESTS=[
 async function questHandle(req,db,user){
  const currentDay=Math.floor(Date.now()/86400000),states=[];
  for(const q of QUESTS){
-  const daily=q.id==="share-post"||q.id==="leave-comment",day=daily||q.id==="give-like"?currentDay:-1;
+  const daily=q.id==="share-post"||q.id==="leave-comment",day=daily?currentDay:-1;
   const row=await (daily?db.prepare(q.query).bind(user.id,currentDay*86400000):db.prepare(q.query).bind(user.id)).first();
   const claim=await db.prepare("SELECT 1 FROM wrld_world_quest_claims WHERE user_id=? AND quest=? AND day=?").bind(user.id,q.id,day).first();
   states.push({id:q.id,emoji:q.emoji,title:q.title,uk:q.uk,xp:q.xp,complete:Number(row?.n||0)>0,claimed:!!claim,day});

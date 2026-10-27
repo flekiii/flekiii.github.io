@@ -117,6 +117,7 @@ function card(p,opts={}){
  const showUrl=u=>{try{const url=new URL(u);return url.protocol==="https:"?'<a href="'+esc(url.href)+'" target="_blank" rel="noopener noreferrer">'+esc(url.hostname)+'</a>':""}catch{return ""}};
  const urls=[p.website&&showUrl(p.website),...links.filter(k=>social[k]).map(k=>showUrl(social[k]))].filter(Boolean);
  const fav=p.favorite_games||[],playing=p.current_games||[];
+ const gameCard=x=>window.WrldGamePicker?.miniCard?.(x)||"<span>"+esc(x)+"</span>";
  return '<div class="wp-card">'+
  '<div class="wp-card-banner">'+imageBox(opts.banner??(bannerTemp||banner),"Profile banner","✦","wp-banner-image")+'</div>'+
  '<div class="wp-card-meta">'+imageBox(opts.avatar??(avatarTemp||avatar),"Avatar",esc((n||"?").slice(0,1).toUpperCase()),"wp-avatar-image")+
@@ -127,8 +128,8 @@ function card(p,opts={}){
  (location?'<p class="wp-card-detail">⌖ '+location+'</p>':"")+
  (p.phone?'<p class="wp-card-detail">☎ '+esc(p.phone)+'</p>':"")+
  (urls.length?'<div class="wp-links">'+urls.join("")+'</div>':"")+
- (fav.length?'<div class="wp-games-text"><strong>'+tr("Favorite games","Улюблені ігри")+'</strong><div>'+fav.map(x=>'<span>'+esc(x)+'</span>').join("")+'</div></div>':"")+
- (playing.length?'<div class="wp-games-text"><strong>'+tr("Currently playing","Зараз граю")+'</strong><div>'+playing.map(x=>'<span>'+esc(x)+'</span>').join("")+'</div></div>':"")+
+ (fav.length?'<div class="wp-games-text"><strong>'+tr("Favorite games","Улюблені ігри")+'</strong><div>'+fav.map(gameCard).join("")+'</div></div>':"")+
+ (playing.length?'<div class="wp-games-text"><strong>'+tr("Currently playing","Зараз граю")+'</strong><div>'+playing.map(gameCard).join("")+'</div></div>':"")+
  '</div>';
 }
 const fld=(label,name,value,type="text",max=120)=>'<label class="wp-field"><span>'+label+'</span><input class="social-input" data-wp-field="'+name+'" type="'+type+'" maxlength="'+max+'" value="'+esc(value||"")+'"></label>';
