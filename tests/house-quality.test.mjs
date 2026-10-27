@@ -50,6 +50,11 @@ test("Private cloud drafts are only accessible to the account owner and stay unp
 test("Publishing and privacy controls never erase the private house draft",async()=>{
  const pub=await api("/houses/publish","PUT",{...layout,published:true,in_profile:true});
  assert.equal(pub.status,200);
+ const stalePublish=await api("/houses/publish","PUT",{...layout,published:true,in_profile:true,expected_updated_at:0});
+ assert.equal(stalePublish.status,409,"A stale device must not overwrite a newer published house");
+ const currentVersion=houses.get("alice-1").updated_at;
+ const freshPublish=await api("/houses/publish","PUT",{...layout,published:true,in_profile:true,expected_updated_at:currentVersion});
+ assert.equal(freshPublish.status,200,"The up-to-date device may publish");
  assert.equal((await api("/houses/public?user=alice")).status,200);
  const hidden=await api("/houses/visibility","PATCH",{published:false,in_profile:false});
  assert.equal(hidden.status,200);
