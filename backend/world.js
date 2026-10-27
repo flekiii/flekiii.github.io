@@ -2,6 +2,7 @@ import {gallery,xpInfo} from "./world-gallery.js";
 import {worldFeed} from "./world-feed.js";
 import {worldClubs} from "./world-clubs.js";
 import {worldDiscuss} from "./world-discuss.js";
+import {worldExport} from "./world-export.js";
 let setup=null;
 async function init(db){
  if(setup)return setup;
@@ -29,6 +30,7 @@ export async function worldHandle(req,env,path,{auth,authorized}){
  const user=req.headers.get("Authorization")?await auth(req,env.DB):null;
  if(path==="/world/gallery"&&req.method==="GET")return gallery(req,env,user);
  if(["/world/ranking","/world/progress"].includes(path)&&req.method==="GET")return xpInfo(req,env,user);
+ if(path==="/world/export"&&req.method==="GET")return user&&authorized(user)?worldExport(req,env,user):err("Verify Auth2FA before exporting private data.",403);
  if(req.method!=="GET"&&!authorized(user))return err("Verify Auth2FA for this session before posting.",403);
  let result;
  if(["/world/feed","/world/post","/world/like","/world/comments","/world/comment","/world/follow"].includes(path))result=await worldFeed(req,env.DB,user);
