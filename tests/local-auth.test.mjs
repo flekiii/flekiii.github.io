@@ -63,6 +63,7 @@ test("First-party username/password registration signs in without any third-part
  assert.equal(s.state.profileOpened,1);
  assert.match(s.elements["wrld-account-root"].innerHTML,/Local Tester/);
  assert.match(s.elements["wrld-account-root"].innerHTML,/@localtester/);
+ assert.match(script,/NO EXTERNAL ACCOUNT NEEDED/);
  assert.equal(s.state.calls.some(c=>/\/auth\/(google|apple|fmail|oauth)/.test(c.path)),false);
 });
 test("Existing local account can log in even when chat, friends and notifications are down",async()=>{
@@ -88,5 +89,5 @@ test("Native auth form is reachable immediately, without waiting on optional OAu
  assert.match(s.elements["wrld-account-root"].innerHTML,/id="fw-auth"/);
  assert.match(s.elements["wrld-account-root"].innerHTML,/Create account/);
  assert.match(script,/Promise\.allSettled\(\[api\("\/friends"\),api\("\/messages"\),api\("\/notifications"\)\]\)/);
- assert.match(html,/wrld-social\.js\?v=13/);
+ assert.match(html,/wrld-social\.js\?v=14/);
 });

@@ -19,7 +19,7 @@ async function api(path,method="GET",body=null){
   const data=await response.json().catch(()=>({error:"Server returned invalid data. Please try again."}));
   if(!response.ok){
    // A failed sign-up / password attempt must never log out an unrelated active session.
-   if(response.status===401&&!path.startsWith("/auth/")&&tokenAtStart&&S.token===tokenAtStart){
+   if(response.status===401&&path==="/me"&&tokenAtStart&&S.token===tokenAtStart){
     S.token="";S.user=null;sessionStorage.removeItem("fw-token");
    }
    const error=new Error(data.error||"Server error "+response.status);error.status=response.status;throw error;
@@ -40,7 +40,7 @@ function account(){
  const method=(name,icon,key)=>'<button type="button" class="auth-provider '+(S.providers?.[key]?'ready':'unavailable')+'" data-action="oauth" data-id="'+key+'" '+(S.providers?.[key]?'':'disabled title="Provider setup pending"')+'><span class="auth-provider-icon '+key+'">'+icon+'</span><span>Continue with '+name+'</span><span class="auth-provider-status">'+(S.providers?.[key]?'→':'Soon')+'</span></button>';
  const providers=method('fmail','✦','fmail')+method('Google','G','google')+method('Apple','●','apple')+method('GitHub','⌘','github')+method('Discord','◈','discord');
  const signup=S.mode==="register";
- return '<div class="auth-experience"><section class="auth-main"><div class="auth-kicker">FLEKI’S WRLD ID</div><div class="auth-heading"><span class="auth-logo" aria-hidden="true">f.</span><div><h2>'+(signup?'Create your account':'Welcome back')+'</h2><p>'+(signup?'Start your journey in a world made for everyone.':'Your world, your people. Good to see you again.')+'</p></div></div><div class="auth-switcher" role="group" aria-label="Sign in or register"><button type="button" class="'+(!signup?'active':'')+'" data-action="mode" data-id="login">Sign in</button><button type="button" class="'+(signup?'active':'')+'" data-action="mode" data-id="register">Create account</button></div><form id="fw-auth" class="auth-fields"><label>Username <input class="social-input" name="username" pattern="[a-zA-Z][a-zA-Z0-9_]{2,23}" maxlength="24" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="your_username" required></label>'+(signup?'<label>Display name <input class="social-input" name="display_name" maxlength="60" placeholder="How should we call you?" required></label>':'')+'<label>Password <span class="auth-input-wrap"><input class="social-input" name="password" type="password" minlength="'+(signup?'12':'1')+'" maxlength="128" autocomplete="'+(signup?'new-password':'current-password')+'" placeholder="'+(signup?'At least 12 characters':'Enter your password')+'" required><button type="button" class="auth-show-password" data-action="showpass" aria-label="Show password">Show</button></span></label><button class="btn primary auth-submit" type="submit">'+(signup?'Create my account':'Sign in to my world')+' <span aria-hidden="true">↗</span></button></form><div class="auth-divider"><span>or continue with</span></div><div class="auth-provider-grid">'+providers+'</div><p class="auth-provider-note">Social sign-in becomes available as each provider is securely configured. Your Fleki’s Wrld 2FA is still required before sending messages or adding friends.</p></section><aside class="auth-welcome"><span class="auth-welcome-symbol">✦</span><div class="auth-welcome-content"><span class="auth-kicker">ONE WORLD. INFINITE POSSIBILITIES.</span><h3>Make it <em>your world.</em></h3><p>A community for ideas, friends, games and things still waiting to be created.</p><div class="auth-welcome-points"><span>✦ A space that feels yours</span><span>♡ Find your people</span><span>♧ Privacy and safety first</span></div></div><span class="auth-welcome-orbit" aria-hidden="true"></span></aside></div><p class="auth-bottom-hint">No real name, phone number or email required for username signup. Account recovery by email is unavailable — keep your password and 2FA recovery codes safe.</p>';
+ return '<div class="auth-experience"><section class="auth-main"><div class="auth-kicker">FLEKI’S WRLD ID · NO EXTERNAL ACCOUNT NEEDED</div><div class="auth-heading"><span class="auth-logo" aria-hidden="true">f.</span><div><h2>'+(signup?'Create your account':'Welcome back')+'</h2><p>'+(signup?'Start your journey in a world made for everyone.':'Your world, your people. Good to see you again.')+'</p></div></div><div class="auth-switcher" role="group" aria-label="Sign in or register"><button type="button" class="'+(!signup?'active':'')+'" data-action="mode" data-id="login">Sign in</button><button type="button" class="'+(signup?'active':'')+'" data-action="mode" data-id="register">Create account</button></div><form id="fw-auth" class="auth-fields"><label>Username <input class="social-input" name="username" pattern="[a-zA-Z][a-zA-Z0-9_]{2,23}" maxlength="24" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="your_username" required></label>'+(signup?'<label>Display name <input class="social-input" name="display_name" maxlength="60" placeholder="How should we call you?" required></label>':'')+'<label>Password <span class="auth-input-wrap"><input class="social-input" name="password" type="password" minlength="'+(signup?'12':'1')+'" maxlength="128" autocomplete="'+(signup?'new-password':'current-password')+'" placeholder="'+(signup?'At least 12 characters':'Enter your password')+'" required><button type="button" class="auth-show-password" data-action="showpass" aria-label="Show password">Show</button></span></label><button class="btn primary auth-submit" type="submit">'+(signup?'Create my account':'Sign in to my world')+' <span aria-hidden="true">↗</span></button></form><div class="auth-divider"><span>or continue with</span></div><div class="auth-provider-grid">'+providers+'</div><p class="auth-provider-note">Social sign-in becomes available as each provider is securely configured. Your Fleki’s Wrld 2FA is still required before sending messages or adding friends.</p></section><aside class="auth-welcome"><span class="auth-welcome-symbol">✦</span><div class="auth-welcome-content"><span class="auth-kicker">ONE WORLD. INFINITE POSSIBILITIES.</span><h3>Make it <em>your world.</em></h3><p>A community for ideas, friends, games and things still waiting to be created.</p><div class="auth-welcome-points"><span>✦ A space that feels yours</span><span>♡ Find your people</span><span>♧ Privacy and safety first</span></div></div><span class="auth-welcome-orbit" aria-hidden="true"></span></aside></div><p class="auth-bottom-hint">No real name, phone number or email required for username signup. Account recovery by email is unavailable — keep your password and 2FA recovery codes safe.</p>';
  }
  if(window.WrldProfile)return window.WrldProfile.renderAccount({user:S.user,secret:S.secret,verified:verified(),recovery:S.recovery});
  let authPart="";
@@ -92,8 +92,9 @@ function render(){
 async function reload(){
  if(!S.token){
   S.user=null;
-  try{const feed=await api("/messages/public");S.messages=feed.messages||[];S.pins=[]}
-  catch{S.messages=[];S.pins=[]}
+  const session=S.token;
+  try{const feed=await api("/messages/public");if(S.token===session){S.messages=feed.messages||[];S.pins=[]}}
+  catch{if(S.token===session){S.messages=[];S.pins=[]}}
   return;
  }
  const session=S.token;
@@ -138,6 +139,11 @@ async function action(op,id){
 document.addEventListener("click",async e=>{const target=e.target.closest("[data-action]");if(!target||pending)return;pending=true;try{await action(target.dataset.action,target.dataset.id||"")}catch(err){msg(err.message)}finally{pending=false}});
 document.addEventListener("submit",async e=>{
  const form=e.target;if(!form.id.startsWith("fw-"))return;e.preventDefault();if(pending)return;pending=true;
+ const submit=form.querySelector?.('button[type="submit"]'),oldLabel=submit?.innerHTML;
+ if(form.id==="fw-auth"){
+  msg("");
+  if(submit){submit.disabled=true;submit.textContent=S.mode==="register"?"Creating your account…":"Signing in…"}
+ }
  const values=Object.fromEntries(new FormData(form));
  try{
   if(form.id==="fw-auth"){
@@ -162,7 +168,10 @@ document.addEventListener("submit",async e=>{
   else if(form.id==="fw-global"){if(ensure2fa()){await api("/messages","POST",{content:values.content});await reload()}}
   else if(form.id==="fw-dm"){if(ensure2fa()&&S.peer){await api("/messages","POST",{content:values.content,recipient:S.peer});await reload()}}
   render();
- }catch(err){msg(err.message)}finally{pending=false}
+ }catch(err){msg(err.message)}finally{
+  pending=false;
+  if(submit){submit.disabled=false;if(oldLabel!==undefined)submit.innerHTML=oldLabel}
+ }
 });
 window.addEventListener("wrld:profile",()=>openProfile());
 window.addEventListener("wrld:profile-updated",()=>render());
