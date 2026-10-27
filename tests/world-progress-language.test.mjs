@@ -90,7 +90,7 @@ test("Header language selector uses the shared site theme and responsive accessi
  assert.match(html,/class="wrld-lang-picker"/);
  assert.match(html,/id="siteLanguage" aria-label="Site language"/);
  assert.match(html,/wrld-lang-caption" data-en="Language" data-uk="Мова"/);
- assert.match(html,/wrld-world\\.mjs\\?v=7/);
+ assert.match(html,/wrld-world\.mjs\?v=7/);
  assert.match(html,/wrld-polish\.css\?v=2/);
  assert.match(stylesheet,/\.wrld-lang-picker:focus-within/);
  assert.match(stylesheet,/#siteLanguage\{appearance:none/);
