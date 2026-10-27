@@ -85,3 +85,35 @@ body.discover-view #main{height:calc(100dvh - 89px);overflow:hidden}
 @media(max-width:380px){.fd-hero p{display:none}.fd-hero-icon{display:none}.fd-hero-group{font-size:10px}.fd-notice p{line-height:1.3}.fd-card-actions{flex-direction:column;align-items:stretch}}
 @media(max-height:620px){.fd-hero p{display:none}.fd-notice{padding-top:6px;padding-bottom:6px}.fd-state-icon{width:42px;height:42px;font-size:20px}.fd-state{padding:12px}}
 @media(prefers-reduced-motion:reduce){.fd-shell *{transition:none!important}}
+
+
+/* Independent Friend / Dating questionnaire */
+.fd-create{flex:none!important;min-height:38px;padding:9px 12px!important;font-size:11px!important}
+.fd-editor{width:100%;display:grid;gap:16px;max-width:860px;margin:0 auto;padding:8px 12px 20px}
+.fd-editor-head{display:flex;justify-content:space-between;gap:15px;align-items:center}
+.fd-editor-head>div{min-width:0}
+.fd-editor-kicker{display:block;font-size:10px;color:var(--accent2);font-weight:800;letter-spacing:1px}
+.fd-editor-head h3{margin:4px 0;font:700 22px "Space Grotesk",sans-serif}
+.fd-editor-head p{margin:5px 0 0;font-size:12px;line-height:1.6;color:var(--muted)}
+.fd-editor-head .btn{flex:none}
+.fd-editor-grid{display:grid;grid-template-columns:205px minmax(0,1fr);gap:20px;align-items:start}
+.fd-photo-panel{display:grid;gap:9px}
+.fd-editor-photo{width:100%;aspect-ratio:1;border:1px dashed var(--accent2);display:grid;place-items:center;border-radius:19px;overflow:hidden;background:var(--panel2);font-size:38px}
+.fd-editor-photo img{width:100%;height:100%;object-fit:cover}
+.fd-photo-panel small,.fd-field small{font-size:10px;line-height:1.55;color:var(--muted)}
+.fd-upload{display:flex;justify-content:center;align-items:center;text-align:center;padding:10px 12px;cursor:pointer}
+.fd-remove-photo,.fd-hide{border:0;background:transparent;color:var(--muted);padding:8px;font-size:11px;text-align:center}
+.fd-remove-photo:hover,.fd-hide:hover{color:var(--accent2)}
+.fd-editor-fields{display:grid;gap:13px;min-width:0}
+.fd-field{display:grid;gap:7px;min-width:0}
+.fd-field>span{font-size:12px;font-weight:750}
+.fd-field textarea,.fd-field select{width:100%;min-width:0;border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:11px 12px;color:var(--text);font-size:12px;outline:0;resize:vertical}
+.fd-field textarea:focus,.fd-field select:focus{border-color:var(--accent2)}
+.fd-editor-selects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fd-editor-age{font-size:11px;line-height:1.6;background:var(--panel2);border:1px solid var(--line);padding:12px;border-radius:11px;margin:0;color:var(--muted)}
+.fd-editor-age strong{color:var(--accent2)}
+.fd-editor-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fd-editor-actions .btn{min-height:39px;font-size:11px;padding:9px 12px}
+.fd-card-bio{font-size:11px;line-height:1.65;color:var(--text);margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+@media(max-width:640px){.fd-create{width:100%}.fd-editor{padding:0 2px 12px}.fd-editor-grid{grid-template-columns:1fr;gap:13px}.fd-photo-panel{grid-template-columns:100px 1fr;align-items:center}.fd-editor-photo{grid-row:span 3}.fd-editor-head h3{font-size:20px}.fd-editor-head{align-items:start}.fd-editor-head .btn{font-size:11px;padding:8px}.fd-photo-panel small{grid-column:2}}
+@media(max-width:380px){.fd-editor-selects{grid-template-columns:1fr}.fd-photo-panel{grid-template-columns:80px 1fr}}
