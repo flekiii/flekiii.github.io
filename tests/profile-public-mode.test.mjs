@@ -50,9 +50,9 @@ test("Unavailable public preview never falls back to private account fields",asy
  assert.match(markup,/data-wp="open-editor"/);
 });
 test("Published profile assets and presentation keep a clear public/edit split",()=>{
- assert.match(html,/wrld-profile\\.js\\?v=9/);
- assert.match(html,/wrld-profile\\.css\\?v=7/);
- assert.match(css,/\\.wp-published-grid/);
- assert.match(css,/\\.wp-studio-layout/);
- assert.match(script,/modal\\(profile,a,b,null\\)/);
+ assert.match(html,/wrld-profile\.js\?v=9/);
+ assert.match(html,/wrld-profile\.css\?v=7/);
+ assert.match(css,/\.wp-published-grid/);
+ assert.match(css,/\.wp-studio-layout/);
+ assert.match(script,/modal\(profile,a,b,null\)/);
 });
