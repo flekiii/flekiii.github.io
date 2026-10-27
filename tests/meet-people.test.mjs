@@ -82,8 +82,8 @@ test("Report/block/privacy and multilingual published assets",()=>{
  assert.match(client,/tr\("Girls","Дівчат"\)/);
  assert.match(client,/tr\("Boys","Хлопців"\)/);
  assert.doesNotMatch(server,/phone|district|address/);
- assert.match(html,/wrld-discover\.mjs\?v=7/);
- assert.match(html,/wrld-discover\.css\?v=6/);
+ assert.match(html,/wrld-discover\.mjs\?v=8/);
+ assert.match(html,/wrld-discover\.css\?v=7/);
 });
 test("Editing a declared age revokes previous dating consent",()=>{
  const profile=get("backend/profiles.js");
@@ -133,4 +133,26 @@ test("Friends cards have large square photos above all text, and private card ha
  assert.match(client,/data-fd="publish-own"/);
  assert.match(client,/Add a short description, then press Publish questionnaire/);
  assert.match(client,/Not published/);
+});
+
+test("Delete button is shown for an existing questionnaire in Friends card and both editors",()=>{
+ assert.match(client,/data-fd="delete-card"/);
+ assert.match(client,/hasOwnQuestionnaire\(\)\?'<div class="fd-editor-danger"/);
+ assert.match(client,/mode==="friends"&&self\?\.age_ready&&!hasOwnQuestionnaire\(\)/);
+ assert.match(client,/mode==="friends"&&self\?\.age_ready&&self.user_id&&hasOwnQuestionnaire\(\)/);
+});
+test("Deletion requires confirmation, is mode-specific and refreshes the view",()=>{
+ assert.match(client,/if\(action==="delete-card"\)/);
+ assert.match(client,/if\(!confirm\(tr\("Permanently delete your "/);
+ assert.match(client,/api\("\/discover\/card\?mode="\+encodeURIComponent\(currentMode\),"DELETE"\)/);
+ assert.match(client,/clearPhotoCache\(currentMode,self.user_id\)/);
+ assert.match(client,/await load\(\)/);
+});
+test("Back end deletion removes just the selected card and photo, and disables that mode",()=>{
+ assert.match(server,/if\(path==="\/discover\/card"&&req.method==="DELETE"\)/);
+ assert.match(server,/DELETE FROM wrld_discovery_cards WHERE user_id=\? AND mode=\?/);
+ assert.match(server,/DELETE FROM wrld_discovery_photos WHERE user_id=\? AND mode=\?/);
+ assert.match(server,/UPDATE wrld_profile_extras SET discoverable=0 WHERE user_id=\?/);
+ assert.match(server,/DELETE FROM wrld_discovery_dating WHERE user_id=\?/);
+ assert.match(server,/card:\{exists:!!card/);
 });

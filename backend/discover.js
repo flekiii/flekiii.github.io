@@ -41,8 +41,23 @@ export async function discoverHandle(req,env,path,{auth}){
   const hasPhoto=await tryPhoto(db,user.id,meMode);
   return respond({mode:meMode,user_id:user.id,display_name:user.display_name||user.username||"Member",age_range:groupLabel(range),age_ready:!!range,
    age_verified:false,enabled:consentActive(meMode,mine,dating,card),
-   card:{bio:card?.bio||"",gender:card?.gender||"undisclosed",seeking:card?.seeking||"everyone",has_photo:hasPhoto},
+   card:{exists:!!card,bio:card?.bio||"",gender:card?.gender||"undisclosed",seeking:card?.seeking||"everyone",has_photo:hasPhoto},
    interests:(()=>{try{const x=JSON.parse(mine?.interests||"[]");return Array.isArray(x)?x:[]}catch{return []}})()});
+ }
+ // Deletes only the signed-in account's selected mode; other mode and main profile stay intact.
+ if(path==="/discover/card"&&req.method==="DELETE"){
+  const mode=url.searchParams.get("mode");
+  if(!allowedModes.has(mode))return respond({error:"Choose friends or dating questionnaire to delete."},400);
+  await db.batch([
+   db.prepare("DELETE FROM wrld_discovery_cards WHERE user_id=? AND mode=?").bind(user.id,mode),
+   db.prepare("DELETE FROM wrld_discovery_photos WHERE user_id=? AND mode=?").bind(user.id,mode),
+   ...(mode==="friends"?[
+    db.prepare("UPDATE wrld_profile_extras SET discoverable=0 WHERE user_id=?").bind(user.id)
+   ]:[
+    db.prepare("DELETE FROM wrld_discovery_dating WHERE user_id=?").bind(user.id)
+   ])
+  ]);
+  return respond({ok:true,deleted:true,mode,has_photo:false,enabled:false});
  }
  if(path==="/discover/card"&&req.method==="PUT"){
   const raw=await req.text();if(raw.length>900)return respond({error:"Card too large"},413);

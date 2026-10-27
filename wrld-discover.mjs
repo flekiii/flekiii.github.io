@@ -11,6 +11,12 @@ if(root){
  let editor=false,self={card:{},age_ready:false},draft={bio:"",gender:"undisclosed",seeking:"everyone"},revision=0;
  const photos=new Map();
  let ownPhotoError="";
+ const hasOwnQuestionnaire=()=>!!(self.card?.exists||self.card?.has_photo||enabled);
+ const clearPhotoCache=(m,id)=>{
+  const key=picKey(m,id),src=photos.get(key);
+  if(src&&typeof URL.revokeObjectURL==="function")URL.revokeObjectURL(src);
+  photos.delete(key);
+ };
  async function api(path,method="GET",body){
   const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),12000);
   try{
@@ -62,7 +68,8 @@ if(root){
    (self.card?.bio?'<p class="fd-card-bio">'+esc(self.card.bio)+'</p>':'<p class="fd-card-nointerests">'+tr("Add a description to complete your card.","Додай опис, щоб завершити анкету.")+'</p>')+
    tags({interests:self.interests||[]})+
    (!enabled?'<p class="fd-publication-tip">'+tr("Not visible to anyone else yet. Add a short bio and publish your card.","Інші ще не бачать анкету. Додай короткий опис і опублікуй її.")+'</p>':'')+
-   '<div class="fd-card-actions">'+(!enabled?'<button type="button" class="btn primary" data-fd="publish-own">✦ '+tr("Publish my card","Опублікувати анкету")+'</button>':'')+'<button type="button" class="btn" data-fd="edit-card">✎ '+tr("Edit my questionnaire","Редагувати анкету")+'</button></div></article>';
+   '<div class="fd-card-actions">'+(!enabled?'<button type="button" class="btn primary" data-fd="publish-own">✦ '+tr("Publish my card","Опублікувати анкету")+'</button>':'')+'<button type="button" class="btn" data-fd="edit-card">✎ '+tr("Edit my questionnaire","Редагувати анкету")+'</button></div>'+
+    (hasOwnQuestionnaire()?'<button type="button" class="fd-delete-card fd-delete-on-card" data-fd="delete-card">🗑 '+tr("Delete questionnaire","Видалити анкету")+'</button>':'')+'</article>';
  }
  function card(p){
   const username=String(p.username||""),handle=/^fmail_[a-z0-9]+$/i.test(username)?"":"@"+esc(username);
@@ -93,13 +100,16 @@ if(root){
    (self.interests?.length?'<div class="fd-tags">'+self.interests.slice(0,12).map(x=>'<span>'+esc(window.WrldInterests?.label?.(x)||x)+'</span>').join("")+'</div>':'')+
    '<div class="fd-editor-actions"><button type="button" class="btn primary" data-fd="publish-card">'+(enabled?tr("Save questionnaire","Зберегти анкету"):tr("Publish questionnaire","Опублікувати анкету"))+'</button>'+
    '<button type="button" class="btn" data-fd="save-hidden">'+tr("Save privately","Зберегти приватно")+'</button>'+
-   (enabled?'<button type="button" class="fd-hide" data-fd="hide-card">'+tr("Hide my questionnaire","Приховати анкету")+'</button>':'')+'</div></div></div></div>';
+   (enabled?'<button type="button" class="fd-hide" data-fd="hide-card">'+tr("Hide my questionnaire","Приховати анкету")+'</button>':'')+'</div>'+
+    (hasOwnQuestionnaire()?'<div class="fd-editor-danger"><p>'+tr("Permanently remove this questionnaire and its separate photo. Your other questionnaire and profile remain unchanged.","Назавжди видалити цю анкету та її фото. Інша анкета й профіль залишаться.")+'</p><button type="button" class="fd-delete-card" data-fd="delete-card">🗑 '+tr("Delete questionnaire","Видалити анкету")+'</button></div>':'')+
+    '</div></div></div>';
  }
  function state(){
   if(!token())return '<div class="fd-state"><span class="fd-state-icon">🔐</span><h3>'+tr("Sign in to meet people","Увійди, щоб знайомитися")+'</h3>'+profileLink()+'</div>';
   if(editor)return form();
   if(!self.age_ready&&!loading)return '<div class="fd-state"><span class="fd-state-icon">🎂</span><h3>'+tr("Set your age first","Спершу вкажи свій вік")+'</h3><p>'+tr("Meet People uses the age saved in Profile → About me.","Meet People використовує вік із Профіль → Про мене.")+'</p>'+profileLink()+'</div>';
-  if(mode==="friends"&&self?.age_ready&&self.user_id){
+  if(mode==="friends"&&self?.age_ready&&!hasOwnQuestionnaire()&&!loading&&!error)return '<div class="fd-state"><span class="fd-state-icon">👥</span><h3>'+tr("Create your friends questionnaire","Створи анкету для друзів")+'</h3><p>'+tr("Add a photo and a description to start meeting friends.","Додай фото та опис, щоб почати знаходити друзів.")+'</p><button type="button" class="btn primary" data-fd="edit-card">'+tr("＋ Create questionnaire","＋ Створити анкету")+'</button></div>';
+  if(mode==="friends"&&self?.age_ready&&self.user_id&&hasOwnQuestionnaire()){
    const peers=members.filter(x=>x.id!==self.user_id);
    const summary=error?'<div class="fd-peer-note" role="status">'+esc(error)+'</div>':
     loading?'<div class="fd-peer-note" role="status">'+tr("Searching for friends…","Шукаємо друзів…")+'</div>':
@@ -122,7 +132,7 @@ if(root){
    (token()?'<button type="button" class="btn fd-create" data-fd="edit-card">✎ '+(enabled?tr("My questionnaire","Моя анкета"):tr("＋ Create a questionnaire","＋ Створити анкету"))+'</button>':'')+'</div>'+
    '<div class="fd-notice"><span aria-hidden="true">🛡️</span><p>'+tr("Separate teen and adult groups. Your age comes from your profile and is not verified. You can hide your card anytime. Never share your address, phone or passwords.","Підлітки й дорослі окремо. Вік узято з профілю без перевірки. Анкету можна приховати будь-коли. Не поширюй адресу, телефон чи паролі.")+'</p></div>'+
    (editor?'':'<div class="fd-toolbar"><label class="fd-search"><span aria-hidden="true">⌕</span><input type="search" id="fd-query" maxlength="32" autocomplete="off" value="'+esc(query)+'" placeholder="'+tr("Search people or interests…","Пошук людей чи інтересів…")+'"></label><button type="button" class="btn primary" data-fd="search">'+tr("Search","Шукати")+'</button><button type="button" class="btn fd-refresh" data-fd="refresh" title="'+tr("Refresh","Оновити")+'">↻</button></div>')+
-   '<div class="fd-results-header"><strong>'+(editor?tr("Edit your questionnaire","Редагуй свою анкету"):tr("People for you","Люди для тебе"))+'</strong><span>'+esc(group||"")+(!editor?' · '+(members.length+(mode==="friends"&&self?.age_ready&&self.user_id?1:0))+' '+tr("profiles","анкет"):'')+'</span></div>'+
+   '<div class="fd-results-header"><strong>'+(editor?tr("Edit your questionnaire","Редагуй свою анкету"):tr("People for you","Люди для тебе"))+'</strong><span>'+esc(group||"")+(!editor?' · '+(members.length+(mode==="friends"&&self?.age_ready&&self.user_id&&hasOwnQuestionnaire()?1:0))+' '+tr("profiles","анкет"):'')+'</span></div>'+
    (message?'<p class="fd-feedback" role="status">'+esc(message)+'</p>':'')+
    '<section class="fd-results" aria-label="'+tr("People discovery","Пошук людей")+'">'+state()+'</section></div></div>';
  }
@@ -179,6 +189,23 @@ if(root){
    return;
   }
   if(action==="close-card"){editor=false;render();return}
+  if(action==="delete-card"){
+   if(!token()||!hasOwnQuestionnaire())return;
+   const currentMode=mode;
+   const name=currentMode==="dating"?tr("Dating","Знайомства"):tr("Friends","Друзі");
+   if(!confirm(tr("Permanently delete your ","Назавжди видалити анкету «")+name+tr(" questionnaire and its photo? This cannot be undone. Your other questionnaire and main profile remain.","» та її фото? Скасувати це неможливо. Інша анкета та основний профіль залишаться.")))return;
+   busy=true;button.disabled=true;
+   try{
+    await api("/discover/card?mode="+encodeURIComponent(currentMode),"DELETE");
+    clearPhotoCache(currentMode,self.user_id);
+    ownPhotoError="";editor=false;enabled=false;members=[];
+    self={...self,enabled:false,card:{exists:false,bio:"",gender:"undisclosed",seeking:"everyone",has_photo:false}};
+    await load();
+    message=tr("Questionnaire and photo permanently deleted.","Анкету та фото назавжди видалено.");render();
+   }catch(err){message=err.message||tr("Could not delete questionnaire.","Не вдалося видалити анкету.");render()}
+   finally{busy=false}
+   return;
+  }
   if(action==="view"){window.WrldProfile?.openPublic?.(button.dataset.username);return}
   if(!token()){location.hash="#profile";return}
   if(action==="publish-card"||action==="save-hidden"||action==="hide-card"){
