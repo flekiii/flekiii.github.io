@@ -1,12 +1,12 @@
 /* fleki's wrld interactive profile studio. All public visibility decisions are made by the Worker. */
 (()=>{"use strict";
 const API="https://flekis-wrld-api.flekideveloper.workers.dev";
-const defaults={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public",interests:"public"};
+const defaults={bio:"public",media:"public",location:"friends",phone:"private",links:"public",games:"public",status:"public",roles:"public",interests:"public",age:"private"};
 const sections=[["overview","✦","Overview","Огляд"],["appearance","◈","Appearance","Оформлення"],["about","✎","About me","Про мене"],["contact","◎","Location & contact","Локація та контакти"],["games","▣","My games","Мої ігри"],["privacy","♧","Privacy","Приватність"],["security","♢","Security / Auth2FA","Захист / Auth2FA"],["preview","◉","View as others","Погляд зі сторони"]];
 const labels={online:["Online","Онлайн"],away:["Away","Відійшов"],dnd:["Do not disturb","Не турбувати"],offline:["Offline","Офлайн"]};
 const roles={owner:"Owner",aurvex_ceo:"AURVEX CEO",developer:"Developer",god:"God",moderator:"Moderator",creator:"Creator",vip:"VIP",tester:"Tester",member:"Member"};
 const links=["telegram","discord","youtube","twitch","github","instagram","tiktok","steam"];
-const keys=["bio","media","location","phone","links","games","status","roles","interests"];
+const keys=["bio","media","location","phone","links","games","status","roles","interests","age"];
 const en=()=>document.documentElement.lang!=="uk";
 const tr=(a,b)=>en()?a:b;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -124,6 +124,7 @@ function card(p,opts={}){
  '<div class="wp-card-name"><h3>'+esc(n)+'</h3><span>@'+esc(p.username||data?.username||"member")+'</span></div>'+statusMarkup(p.status,p.status_emoji,p.status_text)+'</div>'+
  '<div class="wp-badges">'+roleMarkup(p.roles)+'<span class="wp-role wp-level">★ '+Number(p.level||1)+' · '+Number(p.xp||0)+' XP</span></div>'+
  (p.bio?'<p class="wp-card-bio">'+esc(p.bio)+'</p>':"")+
+  (p.age?'<p class="wp-card-detail">🎂 '+tr("Age","Вік")+': '+Number(p.age)+'</p>':"")+
   (p.interests?.length?'<div class="wp-interest-tags">'+p.interests.map(x=>'<span>'+esc(x)+'</span>').join("")+'</div>':"")+
  (location?'<p class="wp-card-detail">⌖ '+location+'</p>':"")+
  (p.phone?'<p class="wp-card-detail">☎ '+esc(p.phone)+'</p>':"")+
@@ -160,7 +161,7 @@ function content(state){
  if(activeTab==="contact")return '<h2>'+tr("Location & contact","Локація та контакти")+'</h2><p>'+tr("All fields are optional. Never publish an address or a phone number unless you want to.","Усі поля необов'язкові. Не публікуй адресу чи телефон, якщо цього не хочеш.")+'</p>'+fld(tr("Country","Країна"),"country",p.country,"text",60)+fld(tr("State / Oblast / Region","Штат / Область / Регіон"),"region",p.region,"text",80)+fld(tr("District","Район"),"district",p.district,"text",80)+fld(tr("Phone number (optional)","Номер телефону (необов'язково)"),"phone",p.phone,"tel",30)+fld(tr("Website (HTTPS)","Сайт (HTTPS)"),"website",p.website,"url",220)+'<h3>'+tr("Social media links","Посилання на соцмережі")+'</h3>'+links.map(k=>fld(k.charAt(0).toUpperCase()+k.slice(1)+" (https://)","social:"+k,p.socials[k],"url",220)).join("")+save();
  if(activeTab==="games")return '<h2>'+tr("My games","Мої ігри")+'</h2><p>'+tr("Choose real Steam games with cover cards. Up to 10 favorites and 10 currently playing.","Обирай справжні Steam-ігри з обкладинками. До 10 улюблених і 10 активних.")+'</p>'+
  (window.WrldGamePicker?.render(p)||textarea(tr("Favorite games","Улюблені ігри"),"favorite_games",p.favorite_games.join("\n"),570)+textarea(tr("Currently playing","Зараз граю"),"current_games",p.current_games.join("\n"),570))+save();
- if(activeTab==="privacy")return '<h2>'+tr("Who can see my profile?","Хто бачить мій профіль?")+'</h2><p>'+tr("Server-enforced permissions. Your phone is private by default.","Доступ перевіряється сервером. Телефон початково прихований.")+'</p><div class="wp-privacy">'+keys.map(k=>'<label class="wp-field"><span>'+({bio:tr("Description","Опис"),media:tr("Avatar & banner","Аватар і банер"),location:tr("Country, region & district","Країна, область і район"),phone:tr("Phone number","Номер телефону"),links:tr("Website & social links","Сайт і соцмережі"),games:tr("Favorite & current games","Улюблені й актуальні ігри"),status:tr("Status & presence","Статус і присутність"),roles:tr("Roles","Ролі"),interests:tr("Interests","Інтереси")})[k]+'</span><select class="social-input" data-wp-privacy="'+k+'">'+[["public",tr("Everyone","Усі")],["friends",tr("Friends only","Лише друзі")],["private",tr("Only me","Тільки я")]].map(([x,y])=>'<option value="'+x+'" '+(v[k]===x?"selected":"")+'>'+y+'</option>').join("")+'</select></label>').join("")+'</div>'+save();
+ if(activeTab==="privacy")return '<h2>'+tr("Who can see my profile?","Хто бачить мій профіль?")+'</h2><p>'+tr("Server-enforced permissions. Your phone is private by default.","Доступ перевіряється сервером. Телефон початково прихований.")+'</p><div class="wp-privacy">'+keys.map(k=>'<label class="wp-field"><span>'+({bio:tr("Description","Опис"),media:tr("Avatar & banner","Аватар і банер"),location:tr("Country, region & district","Країна, область і район"),phone:tr("Phone number","Номер телефону"),links:tr("Website & social links","Сайт і соцмережі"),games:tr("Favorite & current games","Улюблені й актуальні ігри"),status:tr("Status & presence","Статус і присутність"),roles:tr("Roles","Ролі"),interests:tr("Interests","Інтереси"),age:tr("Age","Вік")})[k]+'</span><select class="social-input" data-wp-privacy="'+k+'">'+[["public",tr("Everyone","Усі")],["friends",tr("Friends only","Лише друзі")],["private",tr("Only me","Тільки я")]].map(([x,y])=>'<option value="'+x+'" '+(v[k]===x?"selected":"")+'>'+y+'</option>').join("")+'</select></label>').join("")+'</div>'+save();
  if(activeTab==="security")return security(state);
  if(activeTab==="preview")return '<h2>'+tr("View profile as others","Перегляд очима інших")+'</h2><p>'+tr("The server filters every field for the selected audience; your private phone and hidden sections will never be included.","Сервер приховає всі поля, не дозволені вибраній аудиторії.")+'</p><div class="wp-actions"><button class="btn primary" data-wp="preview" data-mode="public">'+tr("View as visitor","Очима гостя")+'</button><button class="btn" data-wp="preview" data-mode="friend">'+tr("View as friend","Очима друга")+'</button></div>';
  if(activeTab==="moderation")return moderation();
@@ -219,7 +220,7 @@ async function saveData(){
 function modal(profile,a,b,house){
  document.getElementById("wp-public-modal")?.remove();
  const el=document.createElement("div");el.id="wp-public-modal";el.className="wp-modal";
- el.innerHTML='<div class="wp-modal-sheet" role="dialog" aria-modal="true" aria-label="Public profile"><div class="wp-modal-top"><strong>'+tr("Profile preview","Перегляд профілю")+'</strong><button class="btn" data-wp="close-modal">✕</button></div>'+card(profile,{avatar:a||"",banner:b||""})+housePreview(house)+'</div>';
+ el.innerHTML='<div class="wp-modal-sheet" role="dialog" aria-modal="true" aria-label="Public profile"><div class="wp-modal-top"><strong>'+tr("Profile preview","Перегляд профілю")+'</strong><button class="btn" data-wp="close-modal">✕</button></div>'+card(profile,{avatar:a||"",banner:b||""})+'</div>';
  document.body.append(el);
 }
 async function showProfile(username,mode){

@@ -50,7 +50,7 @@ if(root){
   if(!token()){location.hash="#profile";return}
   button.disabled=true;
   try{
-   if(action==="friend"){await api("/friends/request","POST",{target_id:button.dataset.id});message=tr("Friend request sent!","Запит у друзі надіслано!")}
+   if(action==="friend"){await api("/discover/request","POST",{target_id:button.dataset.id});message=tr("Friend request sent!","Запит у друзі надіслано!")}
    if(action==="block"){
     if(!confirm(tr("Block this account?","Заблокувати цей акаунт?")))return;
     await api("/blocks","POST",{target_id:button.dataset.id});members=members.filter(x=>x.id!==button.dataset.id);message=tr("Account blocked","Акаунт заблоковано");
