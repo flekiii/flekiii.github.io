@@ -36,8 +36,8 @@ export async function discoverHandle(req,env,path,{auth}){
    const shown=v.interests==="private"||v.interests==="friends"&&!row.already_friends?[]:interests;
    const overlap=shown.filter(tag=>mineInterests.some(my=>typeof my==="string"&&typeof tag==="string"&&my.toLowerCase()===tag.toLowerCase())).length;
    return {id:row.id,username:row.username,display_name:row.display_name,age_group:ageGroup,
-    interests:shown,status_emoji:v.status==="private"?"":row.status_emoji||"",
-    status_text:v.status==="private"?"":row.status_text||"",
+    interests:shown,status_emoji:v.status==="private"||v.status==="friends"&&!row.already_friends?"":row.status_emoji||"",
+    status_text:v.status==="private"||v.status==="friends"&&!row.already_friends?"":row.status_text||"",
     media_public:v.media==="public"||!v.media,common:overlap,already_friends:row.already_friends>0};
   }).filter(x=>!query||(x.username+" "+x.display_name+" "+x.interests.join(" ")).toLowerCase().includes(query));
   members.sort((a,b)=>b.common-a.common);
@@ -62,8 +62,8 @@ export async function discoverHandle(req,env,path,{auth}){
    const shown=privacy.interests==="private"||privacy.interests==="friends"&&!row.already_friends?[]:interests;
    const overlap=shown.filter(tag=>mineInterests.some(my=>typeof my==="string"&&typeof tag==="string"&&my.toLowerCase()===tag.toLowerCase())).length;
    return {id:row.id,username:row.username,display_name:row.display_name,age_group:teen?"15–17":"18+",
-    interests:shown,media_public:privacy.media==="public"||!privacy.media,status_emoji:privacy.status==="private"?"":row.status_emoji||"",
-    status_text:privacy.status==="private"?"":row.status_text||"",common:overlap,already_friends:row.already_friends>0};
+    interests:shown,media_public:privacy.media==="public"||!privacy.media,status_emoji:privacy.status==="private"||privacy.status==="friends"&&!row.already_friends?"":row.status_emoji||"",
+    status_text:privacy.status==="private"||privacy.status==="friends"&&!row.already_friends?"":row.status_text||"",common:overlap,already_friends:row.already_friends>0};
   }).filter(x=>!query||(x.username+" "+x.display_name+" "+x.interests.join(" ")).toLowerCase().includes(query));
   candidates.sort((a,b)=>b.common-a.common);
   return respond({members:candidates.slice(0,40),age_group:teen?"15–17":"18+",mode:"friends",verified_age:false});

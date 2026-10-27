@@ -71,3 +71,15 @@ test("Report/block and limited public data are included",()=>{
  assert.match(html,/wrld-discover\.mjs\?v=3/);
  assert.match(html,/wrld-discover\.css\?v=2/);
 });
+
+
+test("Editing a self-declared age revokes previous dating consent",()=>{
+ const profile=get("backend/profiles.js");
+ assert.match(profile,/const previousAge=Number/);
+ assert.match(profile,/const resetDating=previousAge!==age/);
+ assert.match(profile,/UPDATE wrld_discovery_dating SET enabled=0,updated_at/);
+});
+test("Friends-only status is not leaked to strangers in either mode",()=>{
+ assert.match(server,/v\.status==="friends"&&!row\.already_friends/);
+ assert.match(server,/privacy\.status==="friends"&&!row\.already_friends/);
+});

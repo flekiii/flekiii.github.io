@@ -140,6 +140,9 @@ export async function profileHandle(req,env,path,{auth,authorized}){
    const v=privacy(p.visibility);
   if(!p.visibility||typeof p.visibility!=="object")return fail("Invalid privacy settings");
   for(const field of visibilityFields)if(!["public","friends","private"].includes(p.visibility[field]))return fail("Invalid privacy preference");
+  const previousAge=Number((await one(db,"SELECT age FROM wrld_profile_extras WHERE user_id=?",viewer.id))?.age||0);
+  // A changed age always requires fresh dating consent, even if the bracket remains the same.
+  const resetDating=previousAge!==age;
   await db.batch([
    stmt(db,"UPDATE users SET display_name=?,bio=?,updated_at=? WHERE id=?",display,bio,t,viewer.id),
    stmt(db,`INSERT INTO wrld_profile_settings(user_id,status,country,region,district,phone,website,socials,favorite_games,current_games,visibility,last_seen,updated_at)
@@ -147,7 +150,8 @@ export async function profileHandle(req,env,path,{auth,authorized}){
    viewer.id,status,country,region,district,phone,website,JSON.stringify(socials),JSON.stringify(games.favorite_games),JSON.stringify(games.current_games),JSON.stringify(v),t,t),
    stmt(db,`INSERT INTO wrld_profile_extras(user_id,age,interests,status_emoji,status_text,discoverable,accent,card_style)
    VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET age=excluded.age,interests=excluded.interests,status_emoji=excluded.status_emoji,status_text=excluded.status_text,discoverable=excluded.discoverable,accent=excluded.accent,card_style=excluded.card_style`,
-   viewer.id,age,JSON.stringify(uniqueInterests),emoji,statusText,Number(discoverable),accent,cardStyle)
+   viewer.id,age,JSON.stringify(uniqueInterests),emoji,statusText,Number(discoverable),accent,cardStyle),
+   ...(resetDating?[stmt(db,"UPDATE wrld_discovery_dating SET enabled=0,updated_at=? WHERE user_id=?",t,viewer.id)]:[])
   ]);
   return reply({ok:true});
  }
