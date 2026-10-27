@@ -30,15 +30,18 @@ const QUESTS=[
  {id:"share-post",emoji:"✍️",title:"Share a post",uk:"Опублікуй допис",xp:30,query:"SELECT COUNT(*) n FROM wrld_world_posts WHERE author=? AND created_at>=?"},
  {id:"leave-comment",emoji:"💬",title:"Write a comment",uk:"Напиши коментар",xp:20,query:"SELECT COUNT(*) n FROM wrld_world_comments WHERE author=? AND created_at>=?"},
  {id:"give-like",emoji:"💜",title:"Like a post",uk:"Вподобай допис",xp:15,query:"SELECT COUNT(*) n FROM wrld_world_likes WHERE user_id=?"},
- {id:"join-club",emoji:"👥",title:"Join a club",uk:"Вступи до клубу",xp:40,query:"SELECT COUNT(*) n FROM wrld_world_members WHERE user_id=?"}
+ {id:"join-club",emoji:"👥",title:"Join a club",uk:"Вступи до клубу",xp:40,query:"SELECT COUNT(*) n FROM wrld_world_members WHERE user_id=?"},
+ {id:"arcade-add",emoji:"➕",title:"Win Math Add challenge",uk:"Виграй додавання",xp:15,required:1,query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND mode='add' AND created_at>=?"},
+ {id:"arcade-multiply",emoji:"✖️",title:"Win Math Multiply challenge",uk:"Виграй множення",xp:20,required:1,query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND mode='multiply' AND created_at>=?"},
+ {id:"arcade-three",emoji:"🎯",title:"Win 3 math rounds today",uk:"Виграй 3 математичні раунди",xp:35,required:3,query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND created_at>=?"}
 ];
 async function questHandle(req,db,user){
  const currentDay=Math.floor(Date.now()/86400000),states=[];
  for(const q of QUESTS){
-  const daily=q.id==="share-post"||q.id==="leave-comment",day=daily?currentDay:-1;
+  const daily=q.id==="share-post"||q.id==="leave-comment"||q.id.startsWith("arcade-"),day=daily?currentDay:-1;
   const row=await (daily?db.prepare(q.query).bind(user.id,currentDay*86400000):db.prepare(q.query).bind(user.id)).first();
   const claim=await db.prepare("SELECT 1 FROM wrld_world_quest_claims WHERE user_id=? AND quest=? AND day=?").bind(user.id,q.id,day).first();
-  states.push({id:q.id,emoji:q.emoji,title:q.title,uk:q.uk,xp:q.xp,complete:Number(row?.n||0)>0,claimed:!!claim,day});
+  states.push({id:q.id,emoji:q.emoji,title:q.title,uk:q.uk,xp:q.xp,complete:Number(row?.n||0)>=(q.required||1),claimed:!!claim,day});
  }
  if(req.method==="GET")return new Response(JSON.stringify({quests:states,reset_at:(currentDay+1)*86400000}),{headers:{"Content-Type":"application/json"}});
  if(req.method!=="POST")return err("Method not allowed",405);

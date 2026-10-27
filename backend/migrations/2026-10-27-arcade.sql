@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS wrld_arcade_rounds(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,mode TEXT NOT NULL CHECK(mode IN ('add','multiply')),answer INTEGER NOT NULL,used INTEGER NOT NULL DEFAULT 0,created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS wrld_arcade_wins(round_id TEXT PRIMARY KEY REFERENCES wrld_arcade_rounds(id) ON DELETE CASCADE,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,mode TEXT NOT NULL,created_at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS wrld_arcade_rounds_owner ON wrld_arcade_rounds(user_id,created_at);
+CREATE INDEX IF NOT EXISTS wrld_arcade_wins_owner ON wrld_arcade_wins(user_id,created_at);
