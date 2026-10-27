@@ -2,7 +2,8 @@
 const API="https://flekis-wrld-api.flekideveloper.workers.dev";
 const root=document.getElementById("wrld-community-root"),alerts=document.getElementById("wrld-notifications-root"),accountRoot=document.getElementById("wrld-account-root");
 const esc=x=>String(x??"").replace(/[&<>"']/g,k=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[k]));
-const time=x=>new Date(x).toLocaleString("en",{dateStyle:"short",timeStyle:"short"});
+const tr=(en,uk)=>document.documentElement?.lang==="uk"?uk:en;
+const time=x=>new Date(x).toLocaleString(document.documentElement?.lang==="uk"?"uk-UA":"en-GB",{dateStyle:"short",timeStyle:"short"});
 const S={token:sessionStorage.getItem("fw-token")||"",user:null,providers:{google:false,apple:false,github:false,discord:false},tab:"global",mode:"login",friends:[],blocks:[],contactPins:[],messages:[],pins:[],dm:[],dmPins:[],notifications:[],notificationOwner:null,notificationError:"",people:[],query:"",peer:null,secret:null,recovery:null,error:""};
 let pending=false;
 let notifFilter="all",notifSnapshot="";
@@ -53,30 +54,30 @@ function account(){
  (S.recovery?'<div class="social-message warn"><strong>Save these one-time recovery codes now!</strong><div class="social-mfa-secret">'+S.recovery.map(esc).join("<hr>")+'</div>'+button("I saved them","saved")+'</div>':"")+'<a class="authenticator-launch" href="/auth2fa/"><span class="authenticator-launch-mark">✦</span><span><strong>Auth2FA · Downloads ↗</strong><small>Install Auth2FA for Windows, Linux or Android. Generate genuine 30-second one-time codes offline; your setup key never leaves your device.</small></span></a><p class="social-muted">Private messages are stored on the server and are not end-to-end encrypted.</p>'+button("Log out","logout")+'</aside></div>';
 }
 function showMessages(records,pins){
- if(!records.length)return '<p class="social-message">No messages yet.</p>';
+ if(!records.length)return '<p class="social-message">'+tr("No messages yet. Start the conversation!","Повідомлень поки немає. Почни розмову!")+'</p>';
  const sorted=[...records].sort((a,b)=>Number(pins.includes(b.id))-Number(pins.includes(a.id))||a.created_at-b.created_at);
  return sorted.map(m=>'<article class="social-chat-item '+(S.user&&m.author===S.user.id?"mine":"")+'"><div class="social-chat-meta"><strong>'+esc(m.display_name||m.username)+'</strong><span class="social-muted">'+esc(time(m.created_at))+'</span>'+(pins.includes(m.id)?"📌":"")+'</div><p>'+esc(m.content)+'</p>'+(verified()?'<div class="social-person-actions">'+button(pins.includes(m.id)?"Unpin":"Pin","pin",m.id)+(m.author===S.user.id?button("Delete","delete",m.id):button("Block","block",m.author)+button("Report","report",m.id))+'</div>':"")+'</article>').join("");
 }
-function compose(id,placeholder){return '<form class="social-compose" id="'+id+'"><textarea class="social-textarea" name="content" maxlength="2000" placeholder="'+esc(placeholder)+'" required></textarea><button class="btn primary" type="submit" '+(verified()?"":"disabled")+'>Send →</button></form>'}
+function compose(id,placeholder){return '<form class="social-compose" id="'+id+'"><textarea class="social-textarea" name="content" maxlength="2000" placeholder="'+esc(placeholder)+'" required></textarea><button class="btn primary" type="submit" '+(verified()?"":"disabled")+'>'+tr("Send →","Надіслати →")+'</button></form>'}
 function globalChat(){
  const gate=!S.user?'<div class="social-read-gate"><span aria-hidden="true">🔐</span><div><strong>Read freely. Join to talk.</strong><p>Everyone can see the global chat. Sign in and verify Auth2FA to post a message.</p></div>'+button("Sign in / Register","openprofile")+'</div>':
  !verified()?'<div class="social-read-gate"><span aria-hidden="true">🛡</span><div><strong>One quick security check</strong><p>Verify your Auth2FA code in Profile to send messages.</p></div>'+button("Verify 2FA","openprofile")+'</div>':'';
- return '<div class="social-global"><div class="social-chat-top"><div><span class="social-room-meta">PUBLIC ROOM · LIVE COMMUNITY</span><h3># Global chat</h3><p>Read without an account. Posting requires verified 2FA.</p></div>'+button("Refresh","refresh")+'</div><div class="social-chat-list">'+showMessages(S.messages,S.pins)+'</div>'+gate+(verified()?compose("fw-global","Message everyone…"):"")+'<p class="social-global-rules">Be respectful. Messages are public and visible to visitors. Do not share secrets, passwords or private information.</p></div>';
+ return '<div class="social-global"><div class="social-chat-top"><div><span class="social-room-meta">PUBLIC ROOM · LIVE COMMUNITY</span><h3>'+tr("# Global chat","# Загальний чат")+'</h3><p>Read without an account. Posting requires verified 2FA.</p></div>'+button(tr("Refresh","Оновити"),"refresh")+'</div><div class="social-chat-list">'+showMessages(S.messages,S.pins)+'</div>'+gate+(verified()?compose("fw-global",tr("Message everyone…","Повідомлення для всіх…")):"")+'<p class="social-global-rules">Be respectful. Messages are public and visible to visitors. Do not share secrets, passwords or private information.</p></div>';
 }
 const other=f=>f.user_low===S.user.id?{id:f.user_high,username:f.high_username,display_name:f.high_name}:{id:f.user_low,username:f.low_username,display_name:f.low_name};
 function friends(){
  if(!S.user)return '<h3>Friends</h3>'+button("Sign in","openprofile");
  const accepted=S.friends.filter(f=>f.status==="accepted"),pending=S.friends.filter(f=>f.status==="pending");
- return '<div class="social-split"><section><h3>Find members</h3><form class="social-form" id="fw-search"><label>Username<input class="social-input" name="q" minlength="2" maxlength="35" value="'+esc(S.query)+'" placeholder="Search" required></label><button class="btn" type="submit">Search →</button></form>'+S.people.map(u=>userRow(u,button("Add friend","add",u.id)+button("Block","block",u.id))).join("")+'</section>'+
- '<aside class="social-card"><h3>Friends ('+accepted.length+')</h3>'+ (accepted.map(f=>userRow(other(f),button("Message","peer",other(f).id)+button("Remove","unfriend",f.id))).join("")||'<p class="social-muted">No friends yet.</p>')+
- '<h3>Requests</h3>'+ (pending.map(f=>userRow(other(f),f.requester===S.user.id?button("Cancel","unfriend",f.id):button("Accept","accept",f.id)+button("Decline","decline",f.id))).join("")||'<p class="social-muted">No requests.</p>')+
- '<h3>Blocked</h3>'+(S.blocks.map(b=>userRow(b,button("Unblock","unblock",b.blocked))).join("")||'<p class="social-muted">Nobody blocked.</p>')+'</aside></div>';
+ return '<div class="social-split"><section><h3>'+tr("Find members","Знайти користувачів")+'</h3><form class="social-form" id="fw-search"><label>Username<input class="social-input" name="q" minlength="2" maxlength="35" value="'+esc(S.query)+'" placeholder="Search" required></label><button class="btn" type="submit">Search →</button></form>'+S.people.map(u=>userRow(u,button("Add friend","add",u.id)+button("Block","block",u.id))).join("")+'</section>'+
+ '<aside class="social-card"><h3>'+tr("Friends","Друзі")+' ('+accepted.length+')</h3>'+ (accepted.map(f=>userRow(other(f),button("Message","peer",other(f).id)+button("Remove","unfriend",f.id))).join("")||'<p class="social-muted">No friends yet.</p>')+
+ '<h3>'+tr("Requests","Заявки")+'</h3>'+ (pending.map(f=>userRow(other(f),f.requester===S.user.id?button("Cancel","unfriend",f.id):button("Accept","accept",f.id)+button("Decline","decline",f.id))).join("")||'<p class="social-muted">No requests.</p>')+
+ '<h3>'+tr("Blocked","Заблоковані")+'</h3>'+(S.blocks.map(b=>userRow(b,button("Unblock","unblock",b.blocked))).join("")||'<p class="social-muted">Nobody blocked.</p>')+'</aside></div>';
 }
 function direct(){
  if(!S.user)return '<h3>Private conversations</h3>'+button("Sign in","openprofile");
  const peers=S.friends.filter(f=>f.status==="accepted").map(other);
  peers.sort((a,b)=>Number(S.contactPins.includes(b.id))-Number(S.contactPins.includes(a.id)));
- return '<div class="social-split"><aside><h3>Friends</h3>'+ (peers.map(p=>'<div class="social-person">'+button(p.display_name,"peer",p.id)+button(S.contactPins.includes(p.id)?"Unpin":"Pin","pincontact",p.id)+'</div>').join("")||'<p class="social-muted">No friends yet.</p>')+'</aside><section><h3>'+(S.peer?"Chat with "+esc(peers.find(p=>p.id===S.peer)?.display_name||"friend"):"Choose a friend")+'</h3>'+(S.peer?'<div class="social-chat-list">'+showMessages(S.dm,S.dmPins)+'</div>'+compose("fw-dm","Message this friend…"):'<p class="social-message">Select a friend to view the conversation.</p>')+'</section></div>';
+ return '<div class="social-split"><aside><h3>'+tr("Conversations","Розмови")+'</h3><div class="social-contact-list">'+ (peers.map(p=>'<div class="social-person">'+button(p.display_name,"peer",p.id)+button(S.contactPins.includes(p.id)?"Unpin":"Pin","pincontact",p.id)+'</div>').join("")||'<p class="social-muted">No friends yet.</p>')+'</div></aside><section><h3>'+(S.peer?"Chat with "+esc(peers.find(p=>p.id===S.peer)?.display_name||"friend"):"Choose a friend")+'</h3>'+(S.peer?'<div class="social-chat-list">'+showMessages(S.dm,S.dmPins)+'</div>'+compose("fw-dm","Message this friend…"):'<p class="social-message">Select a friend to view the conversation.</p>')+'</section></div>';
 }
 const notifWords={
  en:{heading:"Your notifications",section:"NOTIFICATIONS",sub:"Stay in the loop, without the clutter.",all:"All",unread:"Unread",new:"new",markAll:"Mark all read",refresh:"Refresh",view:"View",mark:"Mark as read",signIn:"Sign in",guest:"Sign in to see your messages and friend requests.",guestTitle:"Your world awaits",empty:"Nothing new yet",emptyDesc:"Your updates will appear here.",clear:"All caught up!",clearDesc:"No unread notifications.",loadingError:"Notifications couldn't be refreshed.",member:"Member",friend_request:"sent you a friend request",friend_accepted:"accepted your friend request",direct_message:"sent you a private message",other:"New activity"},
@@ -106,13 +107,46 @@ function renderNotifications(){
  if(focusData){const node=[...(alerts.querySelectorAll?.("[data-action]")||[])].find(el=>el.dataset.action===focusData.act&&(el.dataset.id||"")===focusData.id);node?.focus?.({preventScroll:true})}
 }
 
+// Preserve scroll positions when polling refreshes the Community DOM.
+const communityScrollSelectors=[
+ ".social-global .social-chat-list",
+ ".social-layout-friends>.social-split",
+ ".social-layout-friends>.social-split>section",
+ ".social-layout-friends>.social-split>aside",
+ ".social-layout-direct .social-contact-list",
+ ".social-layout-direct .social-chat-list"
+];
+function communityScrollSnapshot(){
+ if(!root?.querySelector?.(".social-layout-"+S.tab))return null;
+ return communityScrollSelectors.map(selector=>{
+  const node=root.querySelector?.(selector);
+  if(!node)return null;
+  const top=Number(node.scrollTop)||0,sh=Number(node.scrollHeight)||0,ch=Number(node.clientHeight)||0;
+  return {selector,top,atBottom:sh>ch&&sh-ch-top<45};
+ }).filter(Boolean);
+}
+function restoreCommunityScroll(snapshot){
+ if(!root?.querySelector)return;
+ if(snapshot?.length){
+  for(const item of snapshot){
+   const node=root.querySelector(item.selector);
+   if(node)node.scrollTop=item.atBottom?node.scrollHeight:item.top;
+  }
+ }else if(S.tab==="global"||S.tab==="direct"){
+  const node=root.querySelector(S.tab==="global"?".social-global .social-chat-list":".social-layout-direct .social-chat-list");
+  if(node)node.scrollTop=node.scrollHeight;
+ }
+}
 let renderedAccountSession="";
 function render(options={}){
  if(!root||!accountRoot)return;
+ const scrollSnapshot=communityScrollSnapshot();
  const session=(S.token||"guest")+"|"+(S.user?.id||"");
  const repaintAccount=!options.preserveAccount||session!==renderedAccountSession;
  const tabs=[["global","Global chat","🌐"],["friends","Friends","👥"],["direct","Messages","✉"]];
- root.innerHTML='<div class="social-wrap social-modern"><div class="social-workspace"><aside class="social-rail"><div class="social-rail-brand"><span>✦</span><div><strong>Community</strong><small>Fleki’s Wrld</small></div></div><nav class="social-rail-nav" aria-label="Community sections">'+tabs.map(x=>'<button type="button" class="social-rail-link '+(S.tab===x[0]?"active":"")+'" data-action="tab" data-id="'+x[0]+'"><span aria-hidden="true">'+x[2]+'</span>'+x[1]+'</button>').join("")+'</nav><div class="social-rail-foot"><span class="social-rail-status">'+(verified()?"● Verified with 2FA":S.user?"○ Verify Auth2FA to post":"○ Public reading enabled")+'</span>'+button(S.user?"Open my profile":"Sign in / Register","openprofile")+'</div></aside><div class="social-workspace-content"><p class="social-feedback" id="fw-feedback" role="status">'+esc(S.error)+'</p><div class="social-layout social-layout-'+S.tab+'">'+(S.tab==="global"?globalChat():S.tab==="friends"?friends():direct())+'</div></div></div></div>';
+ const labels={global:tr("Global chat","Загальний чат"),friends:tr("Friends","Друзі"),direct:tr("Messages","Повідомлення")};
+ root.innerHTML='<div class="social-wrap social-modern"><div class="social-workspace"><aside class="social-rail"><div class="social-rail-brand"><span>✦</span><div><strong>Community</strong><small>Fleki’s Wrld</small></div></div><nav class="social-rail-nav" aria-label="Community sections">'+tabs.map(x=>'<button type="button" class="social-rail-link '+(S.tab===x[0]?"active":"")+'" data-action="tab" data-id="'+x[0]+'" aria-pressed="'+(S.tab===x[0])+'"><span aria-hidden="true">'+x[2]+'</span>'+esc(labels[x[0]])+'</button>').join("")+'</nav><div class="social-rail-foot"><span class="social-rail-status">'+(verified()?"● Verified with 2FA":S.user?"○ Verify Auth2FA to post":"○ Public reading enabled")+'</span>'+button(S.user?"Open my profile":"Sign in / Register","openprofile")+'</div></aside><div class="social-workspace-content"><p class="social-feedback" id="fw-feedback" role="status">'+esc(S.error)+'</p><div class="social-layout social-layout-'+S.tab+'">'+(S.tab==="global"?globalChat():S.tab==="friends"?friends():direct())+'</div></div></div></div>';
+ restoreCommunityScroll(scrollSnapshot);
  if(repaintAccount){accountRoot.innerHTML='<div class="social-wrap social-account-wrap"><div class="social-bar"><div class="social-id"><span class="social-avatar">'+(S.user?esc(S.user.username.slice(0,1).toUpperCase()):"✦")+'</span><div><strong>'+(S.user?esc(S.user.display_name):"Welcome to Fleki’s Wrld")+'</strong><small>'+(S.user?"@"+esc(S.user.username)+" · "+(verified()?"2FA verified":"Security setup required"):"A dedicated home for your account and security")+'</small></div></div><span class="social-status">'+(!S.user?"NOT SIGNED IN":verified()?"2FA ACTIVE":"2FA REQUIRED")+'</span></div><p class="social-feedback" id="fw-profile-feedback" role="status">'+esc(S.error)+'</p><div class="social-layout social-account-layout">'+account()+'</div></div>';
  renderedAccountSession=session;}
  renderNotifications();
@@ -213,7 +247,7 @@ document.addEventListener("submit",async e=>{
 });
 window.addEventListener("wrld:profile",()=>openProfile());
 window.addEventListener("wrld:profile-updated",()=>render());
-window.addEventListener("wrld:language-change",()=>renderNotifications());
+window.addEventListener("wrld:language-change",()=>{renderNotifications();if(document.getElementById("page-chat")?.classList.contains("active")&&!document.activeElement?.closest?.("#wrld-community-root form"))render({preserveAccount:true})});
 render();
 (async()=>{try{try{await api("/health")}catch{}try{S.providers=(await api("/auth/providers")).providers||S.providers}catch{}let incoming=null;try{incoming=JSON.parse(sessionStorage.getItem("fw-oauth-pending")||"null");sessionStorage.removeItem("fw-oauth-pending")}catch{}if(incoming?.key==="oauth_ticket"){const r=await api("/auth/oauth/redeem","POST",{ticket:incoming.value});S.token=r.token;sessionStorage.setItem("fw-token",r.token);msg("Connected with your external account.")}else if(incoming?.key==="oauth_error"){msg("External sign-in could not be completed: "+incoming.value.replace(/_/g," "))}await reload();window.dispatchEvent(new Event("fw-auth-changed"))}catch(err){msg("Sign-in or API error: "+err.message)}if(!document.activeElement?.closest?.("#fw-auth"))render()})();
 setInterval(async()=>{if(!pending){try{await reload();const typing=document.activeElement?.closest("#wrld-community-root form, #wrld-account-root form");if(!typing&&(S.tab==="global"||S.tab==="direct"))render({preserveAccount:true});else renderNotifications()}catch{}}},12000);
