@@ -34,7 +34,7 @@ export function createExtraArcade({frame,t}){
   cancel();id=next;score=0;stage=0;turn=0;message="";over=false;
   if(next==="wordmix"){word=choose(lexicon);answer=scramble(word)}
   if(next==="hangman"){word=choose(lexicon);misses=new Set();letters=new Set()}
-  if(next==="typing"){word=choose(["THE STARS ARE BRIGHT TONIGHT","GAMES MAKE EVERY DAY BETTER","SMALL STEPS CREATE BIG WINS","PRACTICE MAKES PROGRESS","CURIOUS MINDS DISCOVER MORE"]);startAt=0}
+  if(next==="typing"){word=choose(["THE STARS ARE BRIGHT TONIGHT","GAMES MAKE EVERY DAY BETTER","SMALL STEPS CREATE BIG WINS","PRACTICE MAKES PROGRESS","CURIOUS MINDS DISCOVER MORE"]);startAt=performance.now()}
   if(next==="sequence")makeSequence();
   if(next==="colors"){const palette=["RED","BLUE","GREEN","PURPLE","ORANGE","YELLOW"];word=choose(palette);opts=shuffle([word,...shuffle(palette.filter(x=>x!==word)).slice(0,3)])}
   if(next==="simon"){pattern=[Math.floor(Math.random()*4),Math.floor(Math.random()*4)];stage=1;simonShow()}
@@ -88,7 +88,7 @@ export function createExtraArcade({frame,t}){
   if(over)return;
   const next=dropChip(grid,col,"P");if(!next)return;grid=next;
   let win=connectWinner(grid);
-  if(win){over=true;setMessage(win==="P"?"You won! 🎉":"Draw!","Ти переміг! 🎉");return}
+  if(win){over=true;setMessage(win==="P"?"You won! 🎉":"Draw!",win==="P"?"Ти переміг! 🎉":"Нічия!");return}
   let cpu=-1;
   for(const sign of ["C","P"]){
    for(let c=0;c<7;c++){
@@ -100,7 +100,7 @@ export function createExtraArcade({frame,t}){
   if(cpu<0){const free=Array.from({length:7},(_,c)=>c).filter(c=>dropChip(grid,c,"C"));cpu=free.length?choose(free):-1}
   if(cpu>=0)grid=dropChip(grid,cpu,"C");
   win=connectWinner(grid);
-  if(win){over=true;setMessage(win==="C"?"Computer connects four!":"Draw!","Комп’ютер зібрав чотири!")}
+  if(win){over=true;setMessage(win==="C"?"Computer connects four!":"Draw!",win==="C"?"Комп’ютер зібрав чотири!":"Нічия!")}
  }
  function action(cmd,value){
   if(!id)return;
