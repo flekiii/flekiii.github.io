@@ -193,6 +193,19 @@ window.addEventListener("wrld:house-saved",()=>queueCloudSave());
 window.addEventListener("fw-auth-changed",()=>{stopCloudSync();void refreshVisibility()});
 window.addEventListener("wrld:page-change",e=>{if(e.detail?.id==="create-house")void refreshVisibility()});
 window.addEventListener("wrld:house-restore",async e=>{try{await restoreCloudHouse(e.detail?.type==="published"?"published":"draft")}catch(error){window.dispatchEvent(new CustomEvent("wrld:house-restore-error",{detail:{message:error.message}}))}});
+window.addEventListener("wrld:house-save-cloud",async()=>{
+ try{await saveCloudDraft({manual:true});window.dispatchEvent(new CustomEvent("wrld:house-cloud-status",{detail:{message:tr("Private cloud draft saved ✓","Приватну чернетку збережено ✓")}}))}
+ catch(error){window.dispatchEvent(new CustomEvent("wrld:house-cloud-status",{detail:{message:error.message}}))}
+});
+window.addEventListener("wrld:house-visibility",async e=>{
+ try{
+  if(!currentVisibility){await refreshVisibility()}
+  const action=e.detail?.action;
+  if(action==="private")await changeVisibility(false,false);
+  else if(action==="profile")await changeVisibility(true,!currentVisibility?.in_profile);
+ }catch(error){window.dispatchEvent(new CustomEvent("wrld:house-cloud-status",{detail:{message:error.message}}))}
+});
+
 void refreshVisibility();
 async function publish(profile=true){
  const saved=getSettings();
