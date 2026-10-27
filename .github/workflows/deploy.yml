@@ -45,6 +45,7 @@ jobs:
           node --check wrld-home-core.mjs
           node --test tests/home-house.test.mjs
           node --test tests/house-publishing.test.mjs
+          node --test tests/house-quality.test.mjs
           node --test tests/house-interaction.test.mjs
           test -s wrld-home-creator.css
           test -s wrld-home.css
