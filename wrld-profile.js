@@ -107,7 +107,11 @@ function myHousePanel(){
  const hasLocal=savedHouseHere();
  const preview=housePreview(myHouse);
  return '<div class="wp-my-house">'+(preview||'<div class="wp-house-empty"><span aria-hidden="true">🏠</span><strong>'+tr("Your house is not visible in your profile yet.","Твій будинок ще не показується в профілі.")+'</strong><p>'+tr("Publish a house from your browser to display it here.","Опублікуй будинок із браузера, щоб він з’явився тут.")+'</p></div>')+
- '<div class="wp-actions">'+(hasLocal?'<button type="button" class="btn primary" data-wp="publish-house">'+tr("Publish / update in profile","Опублікувати / оновити в профілі")+'</button><button type="button" class="btn" data-wp="edit-house">'+tr("Edit house","Редагувати будинок")+'</button>':'<button type="button" class="btn primary" data-wp="create-house">'+tr("Create a house","Створити будинок")+'</button>')+'</div>'+
+ '<div class="wp-actions">'+(hasLocal?'<button type="button" class="btn primary" data-wp="publish-house">'+tr("Publish / update in profile","Опублікувати / оновити в профілі")+'</button><button type="button" class="btn" data-wp="edit-house">'+tr("Edit house","Редагувати будинок")+'</button><button type="button" class="btn" data-wp="save-house-draft">'+tr("☁ Save private draft","☁ Зберегти чернетку")+'</button>':'<button type="button" class="btn primary" data-wp="create-house">'+tr("Create a house","Створити будинок")+'</button>')+
+ '<button type="button" class="btn" data-wp="restore-house-draft">'+tr("↺ Restore account draft","↺ Відновити чернетку")+'</button>'+
+ '<button type="button" class="btn" data-wp="restore-house-published">'+tr("⌂ Restore published house","⌂ Відновити опублікований")+'</button>'+
+ (h?.published?'<button type="button" class="btn" data-wp="house-visibility" data-visibility="profile">'+(h.in_profile?tr("Hide from profile","Приховати з профілю"):tr("Show in profile","Показати в профілі"))+'</button><button type="button" class="btn" data-wp="house-visibility" data-visibility="private">'+tr("Make private","Зробити приватним")+'</button>':'')+
+ '</div>'+
  '<p class="wp-house-hint">'+tr("Sign-in is required to publish; 2FA is optional. Your actual furniture is saved on the server.","Для публікації потрібно увійти в акаунт. 2FA необов’язкова. Реальні меблі зберігаються на сервері.")+'</p></div>';
 }
 function content(state){
@@ -214,6 +218,13 @@ document.addEventListener("click",async e=>{
    note(tr("Publishing your house…","Публікуємо твій будинок…"));
    window.dispatchEvent(new CustomEvent("wrld:house-publish",{detail:{profile:true}}));return
   }
+  if(a==="save-house-draft"){if(!savedHouseHere())throw Error(tr("Create a house first.","Спочатку створи будинок."));note(tr("Saving private draft…","Зберігаємо приватну чернетку…"));window.dispatchEvent(new CustomEvent("wrld:house-save-cloud"));return}
+  if(a==="restore-house-draft"||a==="restore-house-published"){window.dispatchEvent(new CustomEvent("wrld:house-restore",{detail:{type:a==="restore-house-draft"?"draft":"published"}}));note(tr("Loading house from account…","Завантажуємо будинок з акаунта…"));return}
+  if(a==="house-visibility"){
+   const action=target.dataset.visibility==="private"?"private":"profile";
+   if(action==="private"&&!confirm(tr("Hide this house from everyone? The furniture stays saved.","Приховати будинок від усіх? Меблі залишаться збереженими.")))return;
+   window.dispatchEvent(new CustomEvent("wrld:house-visibility",{detail:{action}}));return
+  }
  if(a==="close-modal"){document.getElementById("wp-public-modal")?.remove();return}
  if(a==="inspect"){await showProfile(target.dataset.username);return}
  if(a==="preview"){await showProfile(null,target.dataset.mode);return}
@@ -252,6 +263,9 @@ window.addEventListener("wrld:language-change",()=>{if(data)window.dispatchEvent
 window.addEventListener("fw-auth-changed",()=>{if(!tok()){who="";data=null;draft=null;myHouse=null;resetMedia()}});
 window.addEventListener("wrld:house-published",e=>{myHouse=e.detail?.house||null;note(tr("Your house is now visible in your profile ✓","Твій будинок тепер видно у профілі ✓"));window.dispatchEvent(new Event("wrld:profile-updated"))});
 window.addEventListener("wrld:house-publish-error",e=>note(e.detail?.message||tr("Publication failed.","Публікація не вдалася.")));
+window.addEventListener("wrld:house-restore-error",e=>note(e.detail?.message||tr("Cloud restore failed.","Не вдалося відновити будинок.")));
+window.addEventListener("wrld:house-restored",()=>{note(tr("House restored!","Будинок відновлено!"));window.dispatchEvent(new Event("wrld:profile-updated"))});
+window.addEventListener("wrld:house-cloud-status",e=>note(e.detail?.message||""));
 
 const countrySuggestions=["Ukraine","United States","United Kingdom","Poland","Germany","France","Italy","Spain","Canada","Australia","Austria","Belgium","Czechia","Denmark","Estonia","Finland","Georgia","Greece","Hungary","Ireland","Israel","Japan","Latvia","Lithuania","Netherlands","Norway","Portugal","Romania","Slovakia","Sweden","Switzerland","Türkiye","Moldova","Bulgaria","Croatia","Slovenia","India","Brazil","South Korea"];
 const regionSuggestions=["Ivano-Frankivsk Oblast","Kyiv Oblast","Kyiv","Lviv Oblast","Volyn Oblast","Rivne Oblast","Ternopil Oblast","Khmelnytskyi Oblast","Vinnytsia Oblast","Zakarpattia Oblast","Chernivtsi Oblast","Zhytomyr Oblast","Chernihiv Oblast","Sumy Oblast","Poltava Oblast","Kharkiv Oblast","Dnipropetrovsk Oblast","Odesa Oblast","Mykolaiv Oblast","Kherson Oblast","Kirovohrad Oblast","Cherkasy Oblast","California","Texas","Florida","New York","Washington"];
