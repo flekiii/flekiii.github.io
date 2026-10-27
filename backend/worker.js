@@ -64,7 +64,7 @@ async function endpoints(req,env,path,ip){
  if(is("POST","/auth/register")){
   const p=await read(req),username=String(p.username||"").trim().toLowerCase(),display=String(p.display_name||username).trim();
   if(!validUser(username)||!validName(display)||typeof p.password!=="string"||p.password.length<12||p.password.length>128)return bad("Username: 3–24 lowercase letters, digits or _. Password: 12–128 characters.");
-  if(!await limited(db,"register",ip,3,3600000))return bad("Registration rate limit. Try later.",429);
+  if(!await limited(db,"register",ip,8,3600000))return bad("Too many account creations from this network. Please try again in about an hour.",429);
   if(await one(db,"SELECT id FROM users WHERE username=?",username))return bad("Username already taken.",409);
   const id=crypto.randomUUID(),salt=b64(bytes(16)),digest=await pwd(p.password,salt);
   await exec(db,"INSERT INTO users(id,username,display_name,bio,salt,password_hash,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)",id,username,display,"",salt,digest,t,t);
