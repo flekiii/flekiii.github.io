@@ -140,7 +140,7 @@ function housePreview(h){
 }
 function savedHouseHere(){try{return !!JSON.parse(localStorage.getItem("fleki_wrld_house_settings")||"null")?.template}catch{return false}}
 function myHousePanel(){
- const hasLocal=savedHouseHere();
+ const h=myHouse,hasLocal=savedHouseHere();
  const preview=housePreview(myHouse);
  return '<div class="wp-my-house">'+(preview||'<div class="wp-house-empty"><span aria-hidden="true">🏠</span><strong>'+tr("Your house is not visible in your profile yet.","Твій будинок ще не показується в профілі.")+'</strong><p>'+tr("Publish a house from your browser to display it here.","Опублікуй будинок із браузера, щоб він з’явився тут.")+'</p></div>')+
  '<div class="wp-actions">'+(hasLocal?'<button type="button" class="btn primary" data-wp="publish-house">'+tr("Publish / update in profile","Опублікувати / оновити в профілі")+'</button><button type="button" class="btn" data-wp="edit-house">'+tr("Edit house","Редагувати будинок")+'</button><button type="button" class="btn" data-wp="save-house-draft">'+tr("☁ Save private draft","☁ Зберегти чернетку")+'</button>':'<button type="button" class="btn primary" data-wp="create-house">'+tr("Create a house","Створити будинок")+'</button>')+
