@@ -10,7 +10,7 @@ test("22 registered games with ten actual extra game modes and menu wiring",()=>
  assert.match(client,/\.\.\.EXTRA_GAMES\]\.includes\(key\)/);
  assert.match(client,/extra\.action\(b\.dataset\.command,b\.dataset\.choice\)/);
  assert.match(client,/extra\.submit\(e\.target\)/);
- assert.match(html,/wrld-web-games\.js\?v=4/);
+ assert.match(html,/wrld-web-games\.js\?v=5/);
  assert.match(css,/body\.web-games-view\{height:100dvh;overflow:hidden/);
 });
 test("Word scramble changes order without modifying letters",()=>{
