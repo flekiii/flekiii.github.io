@@ -22,8 +22,23 @@ if(root&&stage&&canvas&&ctx){
  if(!ROOMS[state.room])state.room=Object.keys(ROOMS)[0];
  state.next=state.items.reduce((max,i)=>Math.max(max,Number(i.id.match(/^item-(\d+)$/)?.[1]||0)+1),11);
  const get=id=>state.items.find(item=>item.id===id);
+ const undoStack=[],redoStack=[];
+ function historyButtons(){$("houseUndo").disabled=undoStack.length===0;$("houseRedo").disabled=redoStack.length===0}
+ function remember(snapshot=cloneItems(state.items)){
+  undoStack.push(cloneItems(snapshot));if(undoStack.length>40)undoStack.shift();
+  redoStack.length=0;historyButtons();
+ }
+ function historyMove(direction){
+  const source=direction==="undo"?undoStack:redoStack,other=direction==="undo"?redoStack:undoStack;
+  if(!source.length)return;
+  other.push(cloneItems(state.items));state.items=source.pop();
+  state.selected=get(state.selected)?.id||null;
+  state.next=Math.max(11,...state.items.map(x=>Number(x.id.match(/^item-(\d+)$/)?.[1]||0)+1));
+  save();refreshFurniture3d();updateUi();historyButtons();
+  announce(direction==="undo"?(houseLang()==="uk"?"Дію скасовано.":"Change undone."):(houseLang()==="uk"?"Дію повернуто.":"Change restored."));
+ }
  const announce=message=>{notice.textContent=message;};
- function save(){try{localStorage.setItem(STORE_KEY,encode(state.items));$("houseStorage").textContent=houseLang()==="uk"?"Збережено на цьому пристрої":"Saved on this device";return true}
+ function save(){try{localStorage.setItem(STORE_KEY,encode(state.items));$("houseStorage").textContent=houseLang()==="uk"?"Збережено на цьому пристрої":"Saved on this device";window.dispatchEvent?.(new CustomEvent("wrld:house-saved",{detail:{updatedAt:Date.now()}}));return true}
   catch{$("houseStorage").textContent=houseLang()==="uk"?"Збереження недоступне":"Storage unavailable";announce("Unable to save here. Browser storage might be disabled.");return false}}
  const preferred=()=>state.choice;
 
@@ -60,7 +75,7 @@ if(root&&stage&&canvas&&ctx){
   updateUi();
  }
  function replaceHouse(template,name,items=null){
-  setLayout(template);
+  setLayout(template);undoStack.length=0;redoStack.length=0;historyButtons();
   state.room=Object.keys(ROOMS)[0];
   state.items=Array.isArray(items)?restore(JSON.stringify({version:1,items})):cloneItems(START_ITEMS);
   state.selected=null;
@@ -110,15 +125,15 @@ if(root&&stage&&canvas&&ctx){
   const spot=findPlace(type,state.items,state.room);
   if(!spot){announce("Not enough room here. Choose another room or move some furniture.");return}
   const item={...spot,id:"item-"+state.next++};
-  state.items.push(item);state.selected=item.id;save();
+  remember();state.items.push(item);state.selected=item.id;save();
   if(state.view==="3d")refreshFurniture3d();else draw2d();
   updateUi();announce(TYPE_BY_ID[type].name+" added. Drag to move it, or use Rotate.");
  }
- function rotateSelected(){const item=get(state.selected);if(!item)return; if(changeItem(item.id,item.x,item.z,item.rot+1)){save();refreshFurniture3d();updateUi();announce("Furniture rotated.")}else announce("Not enough space to rotate here. Move the item first.")}
- function deleteSelected(){const item=get(state.selected);if(!item)return;state.items=state.items.filter(x=>x.id!==item.id);state.selected=null;save();refreshFurniture3d();updateUi();announce("Furniture removed.")}
+ function rotateSelected(){const item=get(state.selected);if(!item)return;const before=cloneItems(state.items);if(changeItem(item.id,item.x,item.z,item.rot+1)){remember(before);save();refreshFurniture3d();updateUi();announce("Furniture rotated.")}else announce("Not enough space to rotate here. Move the item first.")}
+ function deleteSelected(){const item=get(state.selected);if(!item)return;remember();state.items=state.items.filter(x=>x.id!==item.id);state.selected=null;save();refreshFurniture3d();updateUi();announce("Furniture removed.")}
  function clearAll(){
   if(!confirm(houseLang()==="uk"?"Скинути будинок? Поточна розстановка меблів на цьому пристрої буде замінена.":"Reset your house? Your saved furniture arrangement on this device will be replaced."))return;
-  state.items=cloneItems(START_ITEMS);state.selected=null;state.next=11;save();refreshFurniture3d();updateUi();announce("House reset to its original arrangement.");
+  remember();state.items=cloneItems(START_ITEMS);state.selected=null;state.next=11;save();refreshFurniture3d();updateUi();announce("House reset to its original arrangement.");
  }
  function background2d(width,height){
   ctx.fillStyle="#131523";ctx.fillRect(0,0,width,height);
@@ -223,7 +238,7 @@ if(root&&stage&&canvas&&ctx){
  function down2d(ev){
   if(ev.button!==0&&ev.pointerType==="mouse")return;
   const p=pointerLocation(ev),id=pick2d(p);
-  if(id){select(id);const world=unproject(p.x,p.y),item=get(id);state.drag={kind:"piece",id,dx:item.x-world.x,dz:item.z-world.z,moved:false};}
+  if(id){select(id);const world=unproject(p.x,p.y),item=get(id);state.drag={kind:"piece",id,dx:item.x-world.x,dz:item.z-world.z,moved:false,before:cloneItems(state.items)};}
   else{select(null);state.drag=null;}
   if(state.drag)stage.setPointerCapture?.(ev.pointerId);
  }
@@ -232,7 +247,7 @@ if(root&&stage&&canvas&&ctx){
   const pt=unproject(pointerLocation(ev).x,pointerLocation(ev).y);
   d.moved=changeItem(d.id,pt.x+d.dx,pt.z+d.dz,get(d.id)?.rot??0)||d.moved;
  }
- function up2d(){if(state.drag?.moved)save();state.drag=null;}
+ function up2d(){if(state.drag?.moved){remember(state.drag.before);save();}state.drag=null;}
  function dispose3d(){
   const env=state.three;if(!env)return;
   if(env.raf)cancelAnimationFrame(env.raf);
@@ -458,7 +473,7 @@ if(root&&stage&&canvas&&ctx){
   if(ev.button!==0&&ev.pointerType==="mouse")return;
   const env=state.three;if(!env)return;
   const id=env.pick(ev);if(id){select(id);const pos=env.pointerToWorld(ev),item=get(id);
-   env.pointer={kind:"piece",id,x:pos?.x??item.x,z:pos?.z??item.z,ox:item.x-(pos?.x??item.x),oz:item.z-(pos?.z??item.z),changed:false};
+   env.pointer={kind:"piece",id,x:pos?.x??item.x,z:pos?.z??item.z,ox:item.x-(pos?.x??item.x),oz:item.z-(pos?.z??item.z),changed:false,before:cloneItems(state.items)};
   }else{select(null);env.pointer={kind:"camera",x:ev.clientX,y:ev.clientY}};
   stage.setPointerCapture?.(ev.pointerId);
  }
@@ -472,7 +487,7 @@ if(root&&stage&&canvas&&ctx){
    if(changeItem(p.id,point.x+p.ox,point.z+p.oz,item.rot))p.changed=true;
   }
  }
- function up3d(){if(state.three?.pointer?.changed)save();if(state.three)state.three.pointer=null}
+ function up3d(){if(state.three?.pointer?.changed){remember(state.three.pointer.before);save();}if(state.three)state.three.pointer=null}
  async function switchView(){
   if(state.busy)return;
   const wanted=preferred();
@@ -510,6 +525,8 @@ if(root&&stage&&canvas&&ctx){
   const mode=e.target.closest("[data-house-mode]");if(mode){setMode(mode.dataset.houseMode);return}
   const command=e.target.closest("[data-house-action]");if(!command)return;
   switch(command.dataset.houseAction){
+   case "undo":historyMove("undo");break;
+   case "redo":historyMove("redo");break;
    case "rotate":rotateSelected();break;
    case "delete":deleteSelected();break;
    case "reset":clearAll();break;
@@ -517,13 +534,15 @@ if(root&&stage&&canvas&&ctx){
   }
  });
  document.addEventListener("keydown",e=>{
-  if(!sceneActive()||!root.contains(document.activeElement)&&document.activeElement?.matches("input,textarea,select,[contenteditable]"))return;
+  if(!sceneActive()||document.activeElement?.matches?.("input,textarea,select,[contenteditable]"))return;
+  if((e.ctrlKey||e.metaKey)&&!e.altKey&&e.key.toLowerCase()==="z"){e.preventDefault();historyMove(e.shiftKey?"redo":"undo");return}
+  if((e.ctrlKey||e.metaKey)&&!e.altKey&&e.key.toLowerCase()==="y"){e.preventDefault();historyMove("redo");return}
   if(document.activeElement===stage&&get(state.selected)&&["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key)){
    e.preventDefault();
    const item=get(state.selected),step=e.shiftKey?.5:.25;
    const x=item.x+(e.key==="ArrowLeft"?-step:e.key==="ArrowRight"?step:0);
    const z=item.z+(e.key==="ArrowUp"?step:e.key==="ArrowDown"?-step:0);
-   if(changeItem(item.id,x,z,item.rot)){save();updateUi()}
+   const before=cloneItems(state.items);if(changeItem(item.id,x,z,item.rot)){remember(before);save();updateUi()}
    else announce("The furniture cannot pass through walls or overlap other pieces.");
   }else if(e.key==="Delete"||e.key==="Backspace"){if(get(state.selected)){e.preventDefault();deleteSelected()}}
   else if(e.key.toLowerCase()==="r"&&!e.ctrlKey&&!e.metaKey){if(get(state.selected)){e.preventDefault();rotateSelected()}}
@@ -550,7 +569,8 @@ if(root&&stage&&canvas&&ctx){
   const d=event.detail||{};replaceHouse(d.template,d.name,d.items);
  });
  window.addEventListener("wrld:house-get",event=>{
-  const d=event.detail||{};d.onResult?.({items:cloneItems(state.items),template:(JSON.parse(localStorage.getItem("fleki_wrld_house_settings")||"{}").template||"starter"),name:$("houseNameDisplay").textContent});
+  const d=event.detail||{};let settings=null;try{settings=JSON.parse(localStorage.getItem("fleki_wrld_house_settings")||"null")}catch{}
+  d.onResult?.({items:cloneItems(state.items),template:settings?.template||"starter",name:$("houseNameDisplay").textContent});
  });
- updateUi();if(sceneActive())switchView();
+ historyButtons();updateUi();if(sceneActive())switchView();
 }
