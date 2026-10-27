@@ -163,5 +163,5 @@ test("Community uses a full-width responsive viewport workspace for all three pa
  has(social,'["friends","Friends"');
  has(social,'["direct","Messages"');
  has(siteHtml,'href="/wrld-community.css?v=2"');
- has(siteHtml,'src="/wrld-social.js?v=16"');
+ has(siteHtml,'src="/wrld-social.js?v=17"');
 });

@@ -89,5 +89,5 @@ test("Native auth form is reachable immediately, without waiting on optional OAu
  assert.match(s.elements["wrld-account-root"].innerHTML,/id="fw-auth"/);
  assert.match(s.elements["wrld-account-root"].innerHTML,/Create account/);
  assert.match(script,/Promise\.allSettled\(\[api\("\/friends"\),api\("\/messages"\),api\("\/notifications"\)\]\)/);
- assert.match(html,/wrld-social\.js\?v=16/);
+ assert.match(html,/wrld-social\.js\?v=17/);
 });

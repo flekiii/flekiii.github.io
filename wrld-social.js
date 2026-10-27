@@ -106,11 +106,15 @@ function renderNotifications(){
  if(focusData){const node=[...(alerts.querySelectorAll?.("[data-action]")||[])].find(el=>el.dataset.action===focusData.act&&(el.dataset.id||"")===focusData.id);node?.focus?.({preventScroll:true})}
 }
 
-function render(){
+let renderedAccountSession="";
+function render(options={}){
  if(!root||!accountRoot)return;
+ const session=(S.token||"guest")+"|"+(S.user?.id||"");
+ const repaintAccount=!options.preserveAccount||session!==renderedAccountSession;
  const tabs=[["global","Global chat","🌐"],["friends","Friends","👥"],["direct","Messages","✉"]];
  root.innerHTML='<div class="social-wrap social-modern"><div class="social-workspace"><aside class="social-rail"><div class="social-rail-brand"><span>✦</span><div><strong>Community</strong><small>Fleki’s Wrld</small></div></div><nav class="social-rail-nav" aria-label="Community sections">'+tabs.map(x=>'<button type="button" class="social-rail-link '+(S.tab===x[0]?"active":"")+'" data-action="tab" data-id="'+x[0]+'"><span aria-hidden="true">'+x[2]+'</span>'+x[1]+'</button>').join("")+'</nav><div class="social-rail-foot"><span class="social-rail-status">'+(verified()?"● Verified with 2FA":S.user?"○ Verify Auth2FA to post":"○ Public reading enabled")+'</span>'+button(S.user?"Open my profile":"Sign in / Register","openprofile")+'</div></aside><div class="social-workspace-content"><p class="social-feedback" id="fw-feedback" role="status">'+esc(S.error)+'</p><div class="social-layout social-layout-'+S.tab+'">'+(S.tab==="global"?globalChat():S.tab==="friends"?friends():direct())+'</div></div></div></div>';
- accountRoot.innerHTML='<div class="social-wrap social-account-wrap"><div class="social-bar"><div class="social-id"><span class="social-avatar">'+(S.user?esc(S.user.username.slice(0,1).toUpperCase()):"✦")+'</span><div><strong>'+(S.user?esc(S.user.display_name):"Welcome to Fleki’s Wrld")+'</strong><small>'+(S.user?"@"+esc(S.user.username)+" · "+(verified()?"2FA verified":"Security setup required"):"A dedicated home for your account and security")+'</small></div></div><span class="social-status">'+(!S.user?"NOT SIGNED IN":verified()?"2FA ACTIVE":"2FA REQUIRED")+'</span></div><p class="social-feedback" id="fw-profile-feedback" role="status">'+esc(S.error)+'</p><div class="social-layout social-account-layout">'+account()+'</div></div>';
+ if(repaintAccount){accountRoot.innerHTML='<div class="social-wrap social-account-wrap"><div class="social-bar"><div class="social-id"><span class="social-avatar">'+(S.user?esc(S.user.username.slice(0,1).toUpperCase()):"✦")+'</span><div><strong>'+(S.user?esc(S.user.display_name):"Welcome to Fleki’s Wrld")+'</strong><small>'+(S.user?"@"+esc(S.user.username)+" · "+(verified()?"2FA verified":"Security setup required"):"A dedicated home for your account and security")+'</small></div></div><span class="social-status">'+(!S.user?"NOT SIGNED IN":verified()?"2FA ACTIVE":"2FA REQUIRED")+'</span></div><p class="social-feedback" id="fw-profile-feedback" role="status">'+esc(S.error)+'</p><div class="social-layout social-account-layout">'+account()+'</div></div>';
+ renderedAccountSession=session;}
  renderNotifications();
 }
 async function reload(){
@@ -212,4 +216,4 @@ window.addEventListener("wrld:profile-updated",()=>render());
 window.addEventListener("wrld:language-change",()=>renderNotifications());
 render();
 (async()=>{try{try{await api("/health")}catch{}try{S.providers=(await api("/auth/providers")).providers||S.providers}catch{}let incoming=null;try{incoming=JSON.parse(sessionStorage.getItem("fw-oauth-pending")||"null");sessionStorage.removeItem("fw-oauth-pending")}catch{}if(incoming?.key==="oauth_ticket"){const r=await api("/auth/oauth/redeem","POST",{ticket:incoming.value});S.token=r.token;sessionStorage.setItem("fw-token",r.token);msg("Connected with your external account.")}else if(incoming?.key==="oauth_error"){msg("External sign-in could not be completed: "+incoming.value.replace(/_/g," "))}await reload();window.dispatchEvent(new Event("fw-auth-changed"))}catch(err){msg("Sign-in or API error: "+err.message)}if(!document.activeElement?.closest?.("#fw-auth"))render()})();
-setInterval(async()=>{if(!pending){try{await reload();const typing=document.activeElement?.closest("#wrld-community-root form, #wrld-account-root form");if(!typing&&(S.tab==="global"||S.tab==="direct"))render();else renderNotifications()}catch{}}},12000);
+setInterval(async()=>{if(!pending){try{await reload();const typing=document.activeElement?.closest("#wrld-community-root form, #wrld-account-root form");if(!typing&&(S.tab==="global"||S.tab==="direct"))render({preserveAccount:true});else renderNotifications()}catch{}}},12000);

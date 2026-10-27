@@ -65,6 +65,7 @@
  function paint(){
   const root=document.getElementById("wp-game-results");if(!root)return;
   const all=matches(),shown=all.slice(0,viewLimit),chosen=current(),chosenKeys=new Set(chosen.map(x=>x.toLocaleLowerCase()));
+  const gridScroll=root.querySelector?.(".wp-game-grid")?.scrollTop||0;
   root.innerHTML='<div class="wp-game-count">'+tr("Matches: ","Знайдено: ")+all.length+' · '+tr("Selected: ","Обрано: ")+chosen.length+'/10'+(loading?' · '+tr("Searching more stores…","Шукаємо в інших магазинах…"):'')+'</div>'+
     '<div class="wp-game-selected">'+(chosen.length?chosen.map(selectedTag).join(""):'<small>'+tr("Pick up to ten games for each list.","Обери до десяти ігор для кожного списку.")+'</small>')+'</div>'+
     (error?'<p class="wp-game-error" role="status">'+E(error)+'</p>':'')+
@@ -79,6 +80,7 @@
     '<div class="wp-game-actions">'+(all.length>viewLimit?'<button type="button" class="btn" data-gp="more">'+tr("Show more matches","Показати більше збігів")+'</button>':'')+
     '<button type="button" class="btn" data-gp="custom">✎ '+tr("Add game by title","Додати гру за назвою")+'</button></div>'+
     '<p class="wp-hint">'+tr("Results from CheapShark and FreeToGame where available. Missing titles can be added manually; no library covers every game.","Дані CheapShark і FreeToGame за наявності. Якщо гри немає, додай її вручну: жоден каталог не містить абсолютно всіх ігор.")+'</p>';
+  const newGrid=root.querySelector?.(".wp-game-grid");if(newGrid)newGrid.scrollTop=gridScroll;
  }
  async function getFree(signal){
   if(freeLibrary)return freeLibrary;
@@ -127,8 +129,9 @@
   const action=button.dataset.gp;
   if(action==="section"){
    section=button.dataset.id==="current_games"?"current_games":"favorite_games";
-   const block=document.querySelector(".wp-game-browser");
-   if(block)block.outerHTML=render({favorite_games,current_games});
+   // Keep the existing browser DOM and search focus; only the active list changes.
+   const tabs=document.querySelectorAll?.('.wp-game-sections [data-gp="section"]')||[];
+   for(const tab of tabs){const active=tab.dataset.id===section;tab.classList.toggle("primary",active);tab.setAttribute("aria-pressed",String(active))}
    paint();return;
   }
   if(action==="search"){query=document.getElementById("wp-game-query")?.value?.trim()||"";viewLimit=48;void searchNetwork(query);return}

@@ -42,5 +42,15 @@ test("Public view hides internal Fmail-generated username but keeps visitor prev
  assert.match(profile,/fmail_\[a-z0-9\]/);
  assert.match(profile,/data-wp="preview" data-mode="public"/);
  assert.match(profile,/Побачити збоку/);
- assert.match(html,/wrld-game-picker\.js\?v=2/);
+ assert.match(html,/wrld-game-picker\.js\?v=3/);
+});
+
+
+test("Switching game lists does not remove the picker or reset its list scroll",()=>{
+ assert.doesNotMatch(source,/block\.outerHTML=render/);
+ assert.match(source,/const gridScroll=root\.querySelector\?\./);
+ assert.match(source,/newGrid\.scrollTop=gridScroll/);
+ const social=get("wrld-social.js");
+ assert.match(social,/render\(\{preserveAccount:true\}\)/);
+ assert.match(social,/if\(repaintAccount\)\{accountRoot\.innerHTML=/);
 });
