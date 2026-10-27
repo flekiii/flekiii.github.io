@@ -98,10 +98,17 @@ if(root){
   if(!token())return '<div class="fd-state"><span class="fd-state-icon">🔐</span><h3>'+tr("Sign in to meet people","Увійди, щоб знайомитися")+'</h3>'+profileLink()+'</div>';
   if(editor)return form();
   if(!self.age_ready&&!loading)return '<div class="fd-state"><span class="fd-state-icon">🎂</span><h3>'+tr("Set your age first","Спершу вкажи свій вік")+'</h3><p>'+tr("Meet People uses the age saved in Profile → About me.","Meet People використовує вік із Профіль → Про мене.")+'</p>'+profileLink()+'</div>';
+  if(mode==="friends"&&self?.age_ready&&self.user_id){
+   const peers=members.filter(x=>x.id!==self.user_id);
+   const summary=error?'<div class="fd-peer-note" role="status">'+esc(error)+'</div>':
+    loading?'<div class="fd-peer-note" role="status">'+tr("Searching for friends…","Шукаємо друзів…")+'</div>':
+    !peers.length?'<div class="fd-peer-note">'+tr("No other questionnaires found yet. Your own card is shown above.","Інших анкет поки немає. Твоя анкета відображається вище.")+'</div>':"";
+   return '<div class="fd-cards">'+ownCard()+peers.map(card).join("")+summary+'</div>';
+  }
   if(mode==="dating"&&!enabled&&!loading&&!error)return '<div class="fd-state fd-dating-consent"><span class="fd-state-icon">💜</span><h3>'+tr("Meet people your age","Знайомся з однолітками")+'</h3><p>'+tr("Create your own dating card. Only others in your age range who also opted in can see it.","Створи власну анкету. Її побачать лише користувачі відповідного віку, які також погодилися.")+'</p><button type="button" class="btn primary" data-fd="edit-card">'+tr("💜 Create my dating card","💜 Створити анкету знайомств")+'</button><small>'+tr("Ages are self-declared, not verified.","Вік указують самостійно, без перевірки.")+'</small></div>';
   if(error)return '<div class="fd-state" role="status"><span class="fd-state-icon">✦</span><h3>'+tr("Set up your questionnaire","Налаштуй свою анкету")+'</h3><p>'+esc(error)+'</p><button type="button" class="btn primary" data-fd="edit-card">'+tr("＋ Create my card","＋ Створити анкету")+'</button></div>';
   if(loading)return '<div class="fd-state" role="status"><span class="fd-loader">◌</span><p>'+tr("Finding people…","Шукаємо людей…")+'</p></div>';
-  if(mode==="friends"&&self?.age_ready&&self.user_id)return '<div class="fd-cards">'+ownCard()+members.filter(x=>x.id!==self.user_id).map(card).join("")+'</div>';
+
   if(!members.length)return '<div class="fd-state"><span class="fd-state-icon">✦</span><h3>'+tr("Nobody here yet","Поки нікого немає")+'</h3><p>'+tr("Only profiles shared voluntarily in your eligible age range are shown. Try refreshing later.","Показуємо тільки добровільно опубліковані анкети відповідного віку. Спробуй оновити пізніше.")+'</p><button type="button" class="btn" data-fd="edit-card">'+tr("Edit my questionnaire","Моя анкета")+'</button></div>';
   return '<div class="fd-cards">'+members.map(card).join("")+'</div>';
  }

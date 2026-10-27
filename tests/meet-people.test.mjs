@@ -82,8 +82,8 @@ test("Report/block/privacy and multilingual published assets",()=>{
  assert.match(client,/tr\("Girls","Дівчат"\)/);
  assert.match(client,/tr\("Boys","Хлопців"\)/);
  assert.doesNotMatch(server,/phone|district|address/);
- assert.match(html,/wrld-discover\.mjs\?v=5/);
- assert.match(html,/wrld-discover\.css\?v=4/);
+ assert.match(html,/wrld-discover\.mjs\?v=6/);
+ assert.match(html,/wrld-discover\.css\?v=5/);
 });
 test("Editing a declared age revokes previous dating consent",()=>{
  const profile=get("backend/profiles.js");
@@ -109,4 +109,11 @@ test("The own uploaded avatar has an authenticated live target in editor and lis
  assert.match(client,/placeholder\.remove\(\)/);
  assert.match(client,/loadPhoto\(\{id:self\.user_id,has_photo:true\}\)/);
  assert.match(css,/\.fd-own-card/);
+});
+
+test("Own Friends card remains visible while searching or when the peer list is empty",()=>{
+ assert.match(client,/if\(mode==="friends"&&self\?\.age_ready&&self\.user_id\)/);
+ assert.match(client,/No other questionnaires found yet/);
+ assert.match(client,/const summary=error\?/);
+ assert.match(css,/\.fd-peer-note/);
 });
