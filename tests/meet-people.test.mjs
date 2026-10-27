@@ -13,7 +13,7 @@ function setup(){
   const path=new URL(url).pathname,m=new URL(url).searchParams.get("mode");
   requests.push({path,method:opt.method,body:opt.body?JSON.parse(opt.body):null,mode:m});
   const json=body=>({ok:true,json:async()=>body});
-  if(path==="/discover/me")return json({user_id:minor,display_name:"Member",age_range:m==="dating"?"15–17":"14–17",age_ready:true,enabled:m==="friends",card:{bio:"",gender:"undisclosed",seeking:"everyone",has_photo:false},interests:["Anime"]});
+  if(path==="/discover/me")return json({user_id:"223e4567-e89b-42d3-a456-426614174001",display_name:"Owner",age_range:m==="dating"?"15–17":"14–17",age_ready:true,enabled:m==="friends",card:{bio:"",gender:"undisclosed",seeking:"everyone",has_photo:false},interests:["Anime"]});
   if(path==="/discover/friends")return json({members:[{id:minor,username:"tester",display_name:"Member",age_group:"14–17",interests:["Anime"],common:1,media_public:false,has_photo:false}],age_group:"14–17"});
   if(path==="/discover/dating")return json({members:[],age_group:"15–17",enabled:false});
   if(path==="/discover/card")return json({ok:true,enabled:true});
@@ -103,7 +103,7 @@ test("The own Friends questionnaire is pinned and not duplicated by discovery",a
 });
 test("The own uploaded avatar has an authenticated live target in editor and list",async()=>{
  const s=setup();s.events["wrld:page-change"]({detail:{id:"discover"}});await flush();
- assert.match(s.root.innerHTML,/data-fd-photo="123e4567-e89b-42d3-a456-426614174000"/);
+ assert.match(s.root.innerHTML,/data-fd-photo="223e4567-e89b-42d3-a456-426614174001"/);
  await s.click("edit-card");
  assert.match(s.root.innerHTML,/class="fd-editor-photo" data-fd-photo="/);
  assert.match(client,/placeholder\.remove\(\)/);
