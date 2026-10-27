@@ -131,3 +131,43 @@
 .wp-card .wp-level{background:var(--wp-custom-accent,#9b73e4)}
 .wp-editor-inner{animation:wp-pane-in .32s ease both}@keyframes wp-pane-in{from{opacity:.6;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.wp-editor-inner{animation:none}.wp-card{transition:none}}
+
+
+/* Profile: public view first, editor behind a dedicated action. */
+#page-profile .social-account-wrap{max-width:1190px;margin:0 auto 48px}
+#page-profile .social-account-wrap:has(.wp-published,.wp-studio-layout)>.social-bar{display:none}
+#page-profile .social-account-wrap:has(.wp-published,.wp-studio-layout)>.social-feedback{min-height:0;margin:0;padding:0}
+.wp-published.wp-shell{display:block;width:100%;max-width:1120px;margin:0 auto}
+.wp-published-head,.wp-studio-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;margin:10px 0 20px}
+.wp-published-head h2,.wp-studio-heading h2{font:700 clamp(27px,4vw,42px)/1.15 "Space Grotesk",sans-serif;letter-spacing:-1.3px;margin:6px 0}
+.wp-published-head p{color:var(--muted);font-size:13px;margin:6px 0 0;line-height:1.6}
+.wp-published-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.wp-published-actions .btn{min-height:44px;justify-content:center}
+.wp-published-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(245px,.8fr);align-items:start;gap:17px}
+.wp-published-profile{min-width:0}
+.wp-published-profile .wp-card{border-radius:20px;padding-bottom:20px}
+.wp-published-profile .wp-card:hover{transform:none}
+.wp-published-profile .wp-card-banner{height:clamp(170px,22vw,240px)}
+.wp-published-profile .wp-avatar-image{width:98px;height:98px;border-width:5px;border-radius:26px;margin-top:-39px}
+.wp-published-profile .wp-card-meta{padding:0 20px;gap:13px}
+.wp-published-profile .wp-card-name h3{font-size:clamp(21px,2.8vw,29px)}
+.wp-published-profile .wp-card-bio{font-size:14px;margin:17px 20px;line-height:1.65}
+.wp-published-profile .wp-card-detail,.wp-published-profile .wp-games-text,.wp-published-profile .wp-badges,.wp-published-profile .wp-links{margin-left:20px;margin-right:20px}
+.wp-published-aside{display:grid;gap:12px}
+.wp-published-tip{border-radius:18px;border:1px solid var(--line);background:var(--panel);padding:19px}
+.wp-published-tip>strong{display:block;font:700 17px "Space Grotesk",sans-serif}
+.wp-published-tip>p{font-size:12px;line-height:1.7;color:var(--muted);margin:9px 0 15px}
+.wp-published-symbol{display:grid;place-items:center;width:43px;height:43px;margin-bottom:13px;border-radius:13px;background:var(--grad);font-size:23px;color:#29153e}
+.wp-published-link{width:100%;display:block;padding:12px 13px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text);font-size:12px;font-weight:800;text-align:left}
+.wp-published-link:hover{border-color:var(--accent2);color:var(--accent)}
+.wp-published-tip .wp-level-progress{margin:13px 0 0}
+.wp-public-failure{padding:30px;border:1px solid var(--line);border-radius:19px;background:var(--panel);display:grid;gap:14px}
+.wp-public-failure strong{font:700 20px "Space Grotesk",sans-serif}
+.wp-public-failure p{font-size:13px;color:var(--muted);line-height:1.6;margin:0}
+.wp-public-failure .btn{justify-self:start}
+.wp-studio-layout{display:grid;gap:14px}
+.wp-studio-heading{padding:18px 22px;margin:0;border:1px solid var(--line);background:var(--panel);border-radius:19px}
+.wp-studio-heading h2{font-size:25px}
+.wp-studio-layout>.wp-shell{width:100%}
+@media(max-width:890px){.wp-published-grid{grid-template-columns:1fr}.wp-published-aside{grid-template-columns:repeat(2,minmax(0,1fr))}.wp-published-tip:last-child:nth-child(3){grid-column:1/-1}}
+@media(max-width:610px){.wp-published-head{align-items:stretch;gap:12px}.wp-published-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;width:100%}.wp-published-actions .btn{font-size:12px;padding:10px}.wp-published-grid{gap:12px}.wp-published-aside{grid-template-columns:1fr}.wp-published-tip:last-child:nth-child(3){grid-column:auto}.wp-published-profile .wp-card-banner{height:163px}.wp-published-profile .wp-avatar-image{width:76px;height:76px;margin-top:-25px;border-width:3px}.wp-published-profile .wp-card-meta{padding:0 13px}.wp-published-profile .wp-card-bio,.wp-published-profile .wp-card-detail,.wp-published-profile .wp-games-text,.wp-published-profile .wp-badges,.wp-published-profile .wp-links{margin-left:14px;margin-right:14px}.wp-studio-heading{padding:14px}.wp-studio-heading h2{font-size:22px}.wp-studio-heading>.btn{width:100%;justify-content:center}}

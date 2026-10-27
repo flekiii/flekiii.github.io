@@ -51,7 +51,7 @@ async function uploadMedia(kind,file){
  }
 }
 
-let activeTab="overview",who="",data=null,draft=null,loading=false,err="",owner=false,mod=false,view="self",avatar="",banner="",avatarTemp="",bannerTemp="",people=[],query="",lastSecret=null,myHouse=null,accountToken="",loadRevision=0;
+let activeTab="overview",who="",data=null,draft=null,loading=false,err="",owner=false,mod=false,view="self",avatar="",banner="",avatarTemp="",bannerTemp="",people=[],query="",lastSecret=null,myHouse=null,accountToken="",loadRevision=0,publicProfile=null,publicLoading=false,publicError="";
 const secure=async(path,opts={})=>{
  const token=tok();
  if(!token)throw Error(tr("Your sign-in session is missing. Please sign in again.","Відсутній сеанс входу. Увійди в акаунт знову."));
@@ -87,8 +87,9 @@ async function load(userId){
   if(revision!==loadRevision||userId!==who||token!==tok())return;
   if(!result.profile||result.profile.id!==userId)throw Error(tr("Profile data is incomplete. Please retry.","Неповні дані профілю. Спробуй знову."));
   data=result.profile;draft=blank(data);owner=result.owner===true;mod=result.moderator===true;
-  resetMedia();
+  publicProfile=null;publicLoading=false;publicError="";resetMedia();
   loading=false;refreshAccount();
+  void loadPublic(userId,revision,token);
   // Fetch nonessential sections after the profile is already visible.
   void Promise.resolve().then(h=>{
    if(revision!==loadRevision||userId!==who||token!==tok())return;
@@ -105,6 +106,20 @@ async function load(userId){
   if(revision===loadRevision&&userId===who&&token===tok()){data=null;draft=null;err=e.message||tr("Failed to load profile.","Не вдалося завантажити профіль.")}
  }finally{
   if(revision===loadRevision){loading=false;refreshAccount()}
+ }
+}
+async function loadPublic(userId,revision=loadRevision,token=tok()){
+ if(!userId||!token)return;
+ publicProfile=null;publicError="";publicLoading=true;refreshAccount();
+ try{
+  const result=await secure("/profiles/preview?as=public",{timeoutMs:14000});
+  if(revision!==loadRevision||who!==userId||tok()!==token)return;
+  if(!result.profile||result.profile.id!==userId)throw Error(tr("Public profile unavailable.","Публічний профіль недоступний."));
+  publicProfile=result.profile;
+ }catch(error){
+  if(revision===loadRevision&&who===userId&&tok()===token)publicError=error.message||tr("Could not load public profile.","Не вдалося завантажити публічний профіль.");
+ }finally{
+  if(revision===loadRevision&&who===userId&&tok()===token){publicLoading=false;refreshAccount()}
  }
 }
 function langStatus(s){return (labels[s]||labels.offline)[en()?0:1]}
@@ -201,19 +216,31 @@ function previewPanel(state){
  const draftProfile={...data,...draft,username:data.username,roles:data.roles};
  return '<aside class="wp-preview-col"><div class="wp-preview-title"><span class="overline">LIVE PROFILE PREVIEW</span><button class="social-mini" data-wp="preview" data-mode="public">'+tr("Public view ↗","Публічний вигляд ↗")+'</button></div><div id="wp-live-card">'+card(draftProfile)+'</div>'+'<small>'+tr("Preview updates as you edit. Click Save to publish.","Попередній перегляд змінюється одразу. Натисни Зберегти, щоб опублікувати.")+'</small></aside>';
 }
+function publicAccount(){
+ const p=publicProfile;
+ const top='<header class="wp-published-head"><div><span class="overline">'+tr("MY SPACE · PUBLIC PROFILE","МІЙ ПРОСТІР · ПУБЛІЧНИЙ ПРОФІЛЬ")+'</span><h2>'+tr("Your profile","Твій профіль")+'</h2><p>'+tr("This is your profile as visitors see it.","Саме так твій профіль бачать відвідувачі.")+'</p></div><div class="wp-published-actions"><button type="button" class="btn primary" data-wp="open-editor">✎ '+tr("Customize profile","Налаштувати профіль")+'</button><button type="button" class="btn" data-wp="open-security">♢ '+tr("Security","Безпека")+'</button></div></header>';
+ const stage=publicProfile?card(p,{avatar:p.avatar?avatar:"",banner:p.banner?banner:""}):publicError?
+ '<div class="wp-public-failure" role="alert"><strong>'+tr("Public view unavailable","Публічний вигляд недоступний")+'</strong><p>'+esc(publicError)+'</p><button type="button" class="btn" data-wp="retry-public">↻ '+tr("Retry","Повторити")+'</button></div>':
+ '<div class="wp-loading" role="status">'+tr("Loading public profile…","Завантажуємо публічний профіль…")+'</div>';
+ const sidebar='<aside class="wp-published-aside"><div class="wp-published-tip"><span class="wp-published-symbol">✦</span><strong>'+tr("Your space. Your rules.","Твій простір. Твої правила.")+'</strong><p>'+tr("Only information visible to everyone appears here. Adjust what you share whenever you like.","Тут лише те, що відкрито для всіх. Ти сам обираєш, чим ділитися.")+'</p><button type="button" class="wp-published-link" data-wp="edit-privacy">♧ '+tr("Privacy settings","Налаштування приватності")+' ↗</button></div><div class="wp-published-tip"><strong>'+tr("Make your profile yours","Зроби профіль своїм")+'</strong><p>'+tr("Change your photo, banner, colors, bio and games in the editor.","Змінюй фото, банер, кольори, опис та ігри в редакторі.")+'</p><button type="button" class="wp-published-link" data-wp="open-editor">✎ '+tr("Edit appearance","Редагувати оформлення")+' ↗</button></div>'+(p?'<div class="wp-published-tip"><strong>'+tr("Your progress","Твій прогрес")+'</strong>'+progressPanel(p)+'</div>':'')+'</aside>';
+ return '<div class="wp-published wp-shell">'+top+'<div class="wp-published-grid"><section class="wp-published-profile" aria-label="'+tr("Public profile","Публічний профіль")+'">'+stage+'</section>'+sidebar+'</div><p class="wp-feedback" id="wp-feedback" role="status">'+esc(err)+'</p></div>';
+}
+function studioAccount(state){
+ return '<div class="wp-studio-layout"><div class="wp-studio-heading"><div><span class="overline">'+tr("PROFILE STUDIO","РЕДАКТОР ПРОФІЛЮ")+'</span><h2>'+tr("Customize profile","Налаштування профілю")+'</h2></div><button type="button" class="btn" data-wp="back-public">← '+tr("Back to profile","До профілю")+'</button></div><div class="wp-shell">'+side(state)+'<div class="wp-editor"><div class="wp-editor-inner">'+content(state)+'<p class="wp-feedback" id="wp-feedback" role="status">'+esc(err)+'</p></div></div>'+previewPanel(state)+'</div></div>';
+}
 function renderAccount(state){
  if(!state?.user)return null;
  const userId=state.user.id,session=tok();
  if(!userId||!session)return '<div class="wp-load-error" role="alert"><strong>'+tr("Sign-in session unavailable","Сеанс входу недоступний")+'</strong><p>'+tr("Sign out and sign in again to restore profile access.","Вийди з акаунта та увійди знову, щоб відновити доступ до профілю.")+'</p></div>';
  if(who!==userId||accountToken!==session){
-  ++loadRevision;loading=false;who=userId;accountToken=session;data=null;draft=null;err="";owner=false;mod=false;activeTab="overview";resetMedia();void load(userId);
+  ++loadRevision;loading=false;who=userId;accountToken=session;data=null;draft=null;err="";owner=false;mod=false;activeTab="overview";view="public";publicProfile=null;publicError="";publicLoading=false;resetMedia();void load(userId);
  }
  if(!data){
   if(!loading&&err)return '<div class="wp-load-error" role="alert"><strong>'+tr("Couldn't load your profile","Не вдалося завантажити профіль")+'</strong><p>'+esc(err)+'</p><button type="button" class="btn primary" data-wp="retry-profile">'+tr("↻ Retry loading profile","↻ Завантажити профіль знову")+'</button></div>';
   return '<div class="wp-loading" role="status">'+tr("Loading your profile settings…","Завантажуємо налаштування профілю…")+'</div>';
  }
  if(!draft)draft=blank(data);
- return '<div class="wp-shell">'+side(state)+'<div class="wp-editor"><div class="wp-editor-inner">'+content(state)+'<p class="wp-feedback" id="wp-feedback" role="status">'+esc(err)+'</p></div></div>'+previewPanel(state)+'</div>';
+ return view==="studio"?studioAccount(state):publicAccount();
 }
 const liveUpdate=()=>{const p=document.getElementById("wp-live-card");if(p&&data&&draft)p.innerHTML=card({...data,...draft,username:data.username,roles:data.roles})};
 async function saveData(){
@@ -221,7 +248,7 @@ async function saveData(){
  const payload={...draft,visibility:{...draft.visibility}};
  if(payload.favorite_games.length>10||payload.current_games.length>10)throw Error("Max 10 games per list");
  await secure("/profiles/me",{method:"PUT",body:payload});
- const result=await secure("/profiles/me");data=result.profile;draft=blank(data);note(tr("Profile saved ✓","Профіль збережено ✓"));window.dispatchEvent(new Event("wrld:profile-updated"));window.dispatchEvent(new Event("fw-auth-changed"));
+ const result=await secure("/profiles/me");data=result.profile;draft=blank(data);publicProfile=null;void loadPublic(data.id);note(tr("Profile saved ✓","Профіль збережено ✓"));window.dispatchEvent(new Event("wrld:profile-updated"));window.dispatchEvent(new Event("fw-auth-changed"));
 }
 function modal(profile,a,b,house){
  document.getElementById("wp-public-modal")?.remove();
@@ -235,7 +262,7 @@ async function showProfile(username,mode){
  const result=await secure(path);
  const profile=result.profile;
  const [a,b]=await Promise.all([profile.avatar?imageFor(profile.id,"avatar"):"",profile.banner?imageFor(profile.id,"banner"):""]);
- modal(profile,a,b,house);
+ modal(profile,a,b,null);
  }catch(e){note(e.message)}
 }
 function days(v){const n=Number(v);return n===0?0:Date.now()+n*86400000}
@@ -262,7 +289,12 @@ document.addEventListener("click",async e=>{
  const target=e.target.closest("[data-wp]");if(!target)return;
  e.preventDefault();const a=target.dataset.wp;
  try{
- if(a==="accent"){if(draft&&/^#[0-9a-f]{6}$/i.test(target.dataset.color)){draft.accent=target.dataset.color;liveUpdate();window.dispatchEvent(new Event("wrld:profile-updated"))}return}
+ if(a==="open-editor"){view="studio";activeTab="overview";refreshAccount();return}
+  if(a==="open-security"){view="studio";activeTab="security";refreshAccount();return}
+  if(a==="edit-privacy"){view="studio";activeTab="privacy";refreshAccount();return}
+  if(a==="back-public"){view="public";refreshAccount();return}
+  if(a==="retry-public"){if(!publicLoading&&who)void loadPublic(who);return}
+  if(a==="accent"){if(draft&&/^#[0-9a-f]{6}$/i.test(target.dataset.color)){draft.accent=target.dataset.color;liveUpdate();window.dispatchEvent(new Event("wrld:profile-updated"))}return}
   if(a==="retry-profile"){if(!loading&&who){err="";void load(who)}return}
   if(a==="tab"){activeTab=target.dataset.id;window.dispatchEvent(new Event("wrld:profile-updated"));return}
   if(a==="close-modal"){document.getElementById("wp-public-modal")?.remove();return}
@@ -302,10 +334,11 @@ document.addEventListener("input",e=>{if(e.target.matches("[data-wp-field]")&&dr
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("wp-public-modal")?.remove()});
 window.addEventListener("wrld:language-change",()=>{if(data)window.dispatchEvent(new Event("wrld:profile-updated"))});
  window.addEventListener("wrld:profile-game-change",e=>{if(!draft||!["favorite_games","current_games"].includes(e.detail?.kind))return;draft[e.detail.kind]=e.detail.games.slice(0,10);liveUpdate()});
-window.addEventListener("fw-auth-changed",()=>{if(!tok()){++loadRevision;who="";accountToken="";loading=false;err="";data=null;draft=null;myHouse=null;resetMedia()}});
+window.addEventListener("fw-auth-changed",()=>{if(!tok()){++loadRevision;who="";accountToken="";loading=false;err="";data=null;draft=null;myHouse=null;publicProfile=null;publicError="";publicLoading=false;view="public";resetMedia()}});
 
 const countrySuggestions=["Ukraine","United States","United Kingdom","Poland","Germany","France","Italy","Spain","Canada","Australia","Austria","Belgium","Czechia","Denmark","Estonia","Finland","Georgia","Greece","Hungary","Ireland","Israel","Japan","Latvia","Lithuania","Netherlands","Norway","Portugal","Romania","Slovakia","Sweden","Switzerland","Türkiye","Moldova","Bulgaria","Croatia","Slovenia","India","Brazil","South Korea"];
 const regionSuggestions=["Ivano-Frankivsk Oblast","Kyiv Oblast","Kyiv","Lviv Oblast","Volyn Oblast","Rivne Oblast","Ternopil Oblast","Khmelnytskyi Oblast","Vinnytsia Oblast","Zakarpattia Oblast","Chernivtsi Oblast","Zhytomyr Oblast","Chernihiv Oblast","Sumy Oblast","Poltava Oblast","Kharkiv Oblast","Dnipropetrovsk Oblast","Odesa Oblast","Mykolaiv Oblast","Kherson Oblast","Kirovohrad Oblast","Cherkasy Oblast","California","Texas","Florida","New York","Washington"];
 document.addEventListener("focusin",event=>{const field=event.target?.dataset?.wpField;if(!["country","region"].includes(field))return;const id="wp-"+field+"-suggestions";let list=document.getElementById(id);if(!list){list=document.createElement("datalist");list.id=id;for(const name of (field==="country"?countrySuggestions:regionSuggestions)){const opt=document.createElement("option");opt.value=name;list.append(opt)}document.body.append(list)}event.target.setAttribute("list",id)});
-window.WrldProfile={renderAccount,openPublic:showProfile,refresh:()=>{if(who&&!loading){data=null;draft=null;err="";void load(who)}}};
+window.addEventListener("wrld:page-change",e=>{if(e.detail?.id==="profile"&&view!=="public"){view="public";if(data)refreshAccount()}});
+window.WrldProfile={renderAccount,openPublic:showProfile,refresh:()=>{if(who&&!loading){data=null;draft=null;publicProfile=null;publicError="";err="";void load(who)}}};
 })();
