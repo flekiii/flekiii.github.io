@@ -33,7 +33,7 @@ export async function worldHandle(req,env,path,{auth,authorized}){
  if(path==="/world/export"&&req.method==="GET")return user&&authorized(user)?worldExport(req,env,user):err("Verify Auth2FA before exporting private data.",403);
  if(req.method!=="GET"&&!authorized(user))return err("Verify Auth2FA for this session before posting.",403);
  let result;
- if(["/world/feed","/world/post","/world/like","/world/comments","/world/comment","/world/follow"].includes(path))result=await worldFeed(req,env.DB,user);
+ if(["/world/feed","/world/post","/world/like","/world/comments"].includes(path))result=await worldFeed(req,env.DB,user);
  else if(["/world/clubs","/world/club","/world/join"].includes(path))result=await worldClubs(req,env.DB,user);
  else if(["/world/comment","/world/follow"].includes(path))result=await worldDiscuss(req,env.DB,user);
  else return err("Not found",404);

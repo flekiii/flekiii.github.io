@@ -3,7 +3,10 @@ const one=(d,q,...a)=>d.prepare(q).bind(...a).first(),run=(d,q,...a)=>d.prepare(
 export async function worldFeed(req,db,me){
  const url=new URL(req.url),p=url.pathname;
  if(p==="/world/feed"){
-  const rows=(await db.prepare("SELECT p.id,p.author,p.body,p.created_at,u.username,u.display_name,(SELECT COUNT(*) FROM wrld_world_likes l WHERE l.post_id=p.id) likes FROM wrld_world_posts p JOIN users u ON u.id=p.author ORDER BY p.created_at DESC LIMIT 35").all()).results||[];
+  const following=url.searchParams.get("mode")==="following";
+  if(following&&!me)return out({posts:[]});
+  const sql="SELECT p.id,p.author,p.body,p.created_at,u.username,u.display_name,(SELECT COUNT(*) FROM wrld_world_likes l WHERE l.post_id=p.id) likes FROM wrld_world_posts p JOIN users u ON u.id=p.author "+(following?"WHERE (p.author=? OR EXISTS (SELECT 1 FROM wrld_world_follows f WHERE f.follower=? AND f.followed=p.author)) ":"")+"ORDER BY p.created_at DESC LIMIT 35";
+  const rows=(await (following?db.prepare(sql).bind(me.id,me.id):db.prepare(sql)).all()).results||[];
   return out({posts:rows});
  }
  if(p==="/world/comments"&&req.method==="GET"){
