@@ -114,16 +114,17 @@ export async function discoverHandle(req,env,path,{auth}){
   const self=await db.prepare("SELECT enabled FROM wrld_discovery_dating WHERE user_id=?").bind(user.id).first();
   if(self?.enabled!==1)return respond({members:[],enabled:false,age_group:ageGroup,mode:"dating",verified_age:false});
   const query=(new URL(req.url).searchParams.get("q")||"").trim().toLowerCase().slice(0,32);
-  const rows=(await db.prepare(`SELECT u.id,u.username,u.display_name,e.age,e.interests,e.status_emoji,e.status_text,s.visibility,
+  const rows=(await db.prepare(`SELECT u.id,u.username,u.display_name,e.age,e.interests,e.status_emoji,e.status_text,s.visibility,dc.bio as card_bio,dc.gender as card_gender,dc.seeking as card_seeking,dc.active as card_active,
    (SELECT COUNT(*) FROM friendships f WHERE f.status='accepted' AND ((f.user_low=? AND f.user_high=u.id) OR (f.user_high=? AND f.user_low=u.id))) as already_friends
    FROM wrld_discovery_dating d JOIN wrld_profile_extras e ON e.user_id=d.user_id
-   JOIN users u ON u.id=e.user_id LEFT JOIN wrld_profile_settings s ON s.user_id=u.id
-   WHERE d.enabled=1 AND e.age>=15 AND e.user_id<>? AND ${teen?"e.age<18":"e.age>=18"}
+   JOIN users u ON u.id=e.user_id LEFT JOIN wrld_profile_settings s ON s.user_id=u.id LEFT JOIN wrld_discovery_cards dc ON dc.user_id=u.id AND dc.mode='dating'
+   WHERE d.enabled=1 AND (dc.active IS NULL OR dc.active=1) AND e.age BETWEEN ? AND ? AND e.user_id<>? AND ${teen?"e.age<18":"e.age>=18"}
    AND NOT EXISTS(SELECT 1 FROM blocks b WHERE (b.blocker=? AND b.blocked=u.id) OR (b.blocked=? AND b.blocker=u.id))
    AND NOT EXISTS(SELECT 1 FROM wrld_profile_bans b WHERE b.user_id=u.id AND (b.expires_at=0 OR b.expires_at>?))
-   ORDER BY u.created_at DESC LIMIT 120`).bind(user.id,user.id,user.id,user.id,user.id,Date.now()).all()).results||[];
+   ORDER BY u.created_at DESC LIMIT 120`).bind(user.id,user.id,range.min,range.max,user.id,user.id,user.id,Date.now()).all()).results||[];
   let mineInterests=[];try{const v=JSON.parse(mine.interests||"[]");mineInterests=Array.isArray(v)?v:[]}catch{}
-  const members=rows.map(row=>{
+  const myCard=await readCard(db,user.id,"dating");
+  const members=rows.filter(row=>{const their=ageRange(row.age,"dating");if(!their||mine.age<their.min||mine.age>their.max)return false;const wanted=myCard?.seeking||"everyone";return wanted==="everyone"||(wanted==="girls"&&row.card_gender==="girl")||(wanted==="boys"&&row.card_gender==="boy");}).map(row=>{
    let v={};try{v=JSON.parse(row.visibility||"{}")}catch{}
    let interests=[];try{const list=JSON.parse(row.interests||"[]");interests=Array.isArray(list)?list:[]}catch{}
    const shown=v.interests==="private"||v.interests==="friends"&&!row.already_friends?[]:interests;
@@ -131,7 +132,7 @@ export async function discoverHandle(req,env,path,{auth}){
    return {id:row.id,username:row.username,display_name:row.display_name,age_group:ageGroup,
     interests:shown,status_emoji:v.status==="private"||v.status==="friends"&&!row.already_friends?"":row.status_emoji||"",
     status_text:v.status==="private"||v.status==="friends"&&!row.already_friends?"":row.status_text||"",
-    media_public:v.media==="public"||!v.media,common:overlap,already_friends:row.already_friends>0};
+    media_public:v.media==="public"||!v.media,has_photo:row.card_active===1,bio:row.card_bio||"",gender:row.card_gender||"undisclosed",common:overlap,already_friends:row.already_friends>0};
   }).filter(x=>!query||(x.username+" "+x.display_name+" "+x.interests.join(" ")).toLowerCase().includes(query));
   members.sort((a,b)=>b.common-a.common);
   return respond({members:members.slice(0,40),enabled:true,age_group:ageGroup,mode:"dating",verified_age:false});
@@ -141,25 +142,25 @@ export async function discoverHandle(req,env,path,{auth}){
   if(mine.discoverable!==1)return respond({error:"Publish your friend questionnaire here to browse and appear in results.",members:[]},403);
   const teen=mine.age<18,range=ageRange(mine.age,"friends");
   const query=(new URL(req.url).searchParams.get("q")||"").trim().toLowerCase().slice(0,32);
-  const rows=(await db.prepare(`SELECT u.id,u.username,u.display_name,e.age,e.interests,e.status_emoji,e.status_text,s.visibility,
+  const rows=(await db.prepare(`SELECT u.id,u.username,u.display_name,e.age,e.interests,e.status_emoji,e.status_text,s.visibility,dc.bio as card_bio,dc.gender as card_gender,dc.seeking as card_seeking,dc.active as card_active,
   (SELECT COUNT(*) FROM friendships f WHERE f.status='accepted' AND ((f.user_low=? AND f.user_high=u.id) OR (f.user_high=? AND f.user_low=u.id))) as already_friends
-  FROM wrld_profile_extras e JOIN users u ON u.id=e.user_id LEFT JOIN wrld_profile_settings s ON s.user_id=u.id
-  WHERE e.discoverable=1 AND e.age>=15 AND e.user_id<>? AND ${teen?"e.age<18":"e.age>=18"}
+  FROM wrld_profile_extras e JOIN users u ON u.id=e.user_id LEFT JOIN wrld_profile_settings s ON s.user_id=u.id LEFT JOIN wrld_discovery_cards dc ON dc.user_id=u.id AND dc.mode='friends'
+  WHERE e.discoverable=1 AND (dc.active IS NULL OR dc.active=1) AND e.age BETWEEN ? AND ? AND e.user_id<>? AND ${teen?"e.age<18":"e.age>=18"}
   AND NOT EXISTS(SELECT 1 FROM blocks b WHERE (b.blocker=? AND b.blocked=u.id) OR (b.blocked=? AND b.blocker=u.id))
   AND NOT EXISTS(SELECT 1 FROM wrld_profile_bans b WHERE b.user_id=u.id AND (b.expires_at=0 OR b.expires_at>?))
-  ORDER BY u.created_at DESC LIMIT 120`).bind(user.id,user.id,user.id,user.id,user.id,Date.now()).all()).results||[];
+  ORDER BY u.created_at DESC LIMIT 120`).bind(user.id,user.id,range.min,range.max,user.id,user.id,user.id,Date.now()).all()).results||[];
   let mineInterests=[];try{const v=JSON.parse(mine.interests||"[]");mineInterests=Array.isArray(v)?v:[]}catch{}
-  const candidates=rows.map(row=>{
+  const candidates=rows.filter(row=>{const their=ageRange(row.age,"friends");return !!their&&mine.age>=their.min&&mine.age<=their.max}).map(row=>{
    let privacy={};try{privacy=JSON.parse(row.visibility||"{}")}catch{}
    let interests=[];try{interests=JSON.parse(row.interests||"[]")}catch{}
    const shown=privacy.interests==="private"||privacy.interests==="friends"&&!row.already_friends?[]:interests;
    const overlap=shown.filter(tag=>mineInterests.some(my=>typeof my==="string"&&typeof tag==="string"&&my.toLowerCase()===tag.toLowerCase())).length;
-   return {id:row.id,username:row.username,display_name:row.display_name,age_group:teen?"15–17":"18+",
-    interests:shown,media_public:privacy.media==="public"||!privacy.media,status_emoji:privacy.status==="private"||privacy.status==="friends"&&!row.already_friends?"":row.status_emoji||"",
+   return {id:row.id,username:row.username,display_name:row.display_name,age_group:groupLabel(range),
+    interests:shown,media_public:privacy.media==="public"||!privacy.media,has_photo:row.card_active===1,bio:row.card_bio||"",common:overlap,status_emoji:privacy.status==="private"||privacy.status==="friends"&&!row.already_friends?"":row.status_emoji||"",
     status_text:privacy.status==="private"||privacy.status==="friends"&&!row.already_friends?"":row.status_text||"",common:overlap,already_friends:row.already_friends>0};
   }).filter(x=>!query||(x.username+" "+x.display_name+" "+x.interests.join(" ")).toLowerCase().includes(query));
   candidates.sort((a,b)=>b.common-a.common);
-  return respond({members:candidates.slice(0,40),age_group:teen?"15–17":"18+",mode:"friends",verified_age:false});
+  return respond({members:candidates.slice(0,40),age_group:groupLabel(range),mode:"friends",verified_age:false});
  }
  if(path==="/discover/request"&&req.method==="POST"){
   if(!ageRange(mine?.age,"friends"))return respond({error:"Meet People requires age 14+"},403);
