@@ -56,6 +56,6 @@ test("Versioned assets and Worker routes match",()=>{
  assert.match(worker,/discoverHandle\(req,env,path/);
  assert.match(worker,/gamesCatalog\(req,path\)/);
  assert.match(html,/wrld-profile\.js\?v=11/);
- assert.match(html,/wrld-world\.mjs\?v=8/);
+ assert.match(html,/wrld-world\.mjs\?v=9/);
  assert.match(html,/wrld-discover\.mjs\?v=8/);
 });
