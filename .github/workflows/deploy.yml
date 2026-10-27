@@ -33,6 +33,7 @@ jobs:
           node --check backend/game-catalog.js
           node --check wrld-discover.mjs
           node --test tests/meet-people.test.mjs
+          node --test tests/meet-people-delete.test.mjs
           test -s wrld-discover.css
           node --check wrld-game-picker.js
           node --test tests/discovery-quests.test.mjs
