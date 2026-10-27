@@ -1,4 +1,5 @@
 import {xpInfo} from "./world-gallery.js";
+import {questHandle} from "./world-quests.js";
 import {worldFeed} from "./world-feed.js";
 import {worldClubs} from "./world-clubs.js";
 import {worldDiscuss} from "./world-discuss.js";
@@ -28,35 +29,6 @@ async function award(db,id,action,xp,limit){
  await db.prepare("INSERT INTO wrld_world_xp(id,user_id,action,amount,created_at) VALUES(?,?,?,?,?)").bind(crypto.randomUUID(),id,action,xp,Date.now()).run();
 }
 
-const QUESTS=[
- {id:"share-post",emoji:"✍️",title:"Share a post",uk:"Опублікуй допис",xp:30,query:"SELECT COUNT(*) n FROM wrld_world_posts WHERE author=? AND created_at>=?"},
- {id:"leave-comment",emoji:"💬",title:"Write a comment",uk:"Напиши коментар",xp:20,query:"SELECT COUNT(*) n FROM wrld_world_comments WHERE author=? AND created_at>=?"},
- {id:"give-like",emoji:"💜",title:"Like a post",uk:"Вподобай допис",xp:15,query:"SELECT COUNT(*) n FROM wrld_world_likes WHERE user_id=?"},
- {id:"join-club",emoji:"👥",title:"Join a club",uk:"Вступи до клубу",xp:40,query:"SELECT COUNT(*) n FROM wrld_world_members WHERE user_id=?"},
- {id:"arcade-add",emoji:"➕",title:"Win Math Add challenge",uk:"Виграй додавання",xp:15,required:1,query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND mode='add' AND created_at>=?"},
- {id:"arcade-multiply",emoji:"✖️",title:"Win Math Multiply challenge",uk:"Виграй множення",xp:20,required:1,query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND mode='multiply' AND created_at>=?"},
- {id:"arcade-three",emoji:"🎯",title:"Win 3 math rounds today",uk:"Виграй 3 математичні раунди",xp:35,required:3,query:"SELECT COUNT(*) n FROM wrld_arcade_wins WHERE user_id=? AND created_at>=?"}
-];
-async function questHandle(req,db,user){
- const currentDay=Math.floor(Date.now()/86400000),states=[];
- for(const q of QUESTS){
-  const daily=q.id==="share-post"||q.id==="leave-comment"||q.id.startsWith("arcade-"),day=daily?currentDay:-1;
-  const row=await (daily?db.prepare(q.query).bind(user.id,currentDay*86400000):db.prepare(q.query).bind(user.id)).first();
-  const claim=await db.prepare("SELECT 1 FROM wrld_world_quest_claims WHERE user_id=? AND quest=? AND day=?").bind(user.id,q.id,day).first();
-  states.push({id:q.id,emoji:q.emoji,title:q.title,uk:q.uk,xp:q.xp,complete:Number(row?.n||0)>=(q.required||1),claimed:!!claim,day});
- }
- if(req.method==="GET")return questReply({quests:states,reset_at:(currentDay+1)*86400000});
- if(req.method!=="POST")return err("Method not allowed",405);
- const raw=await req.text();if(raw.length>300)return err("Request too large",413);
- let input;try{input=JSON.parse(raw)}catch{return err("Invalid JSON",400)}
- const found=states.find(q=>q.id===input.id);if(!found)return err("Unknown quest",400);
- if(!found.complete)return err("Finish the quest before claiming",409);
- if(found.claimed)return err("Quest already claimed",409);
- const inserted=await db.prepare("INSERT OR IGNORE INTO wrld_world_quest_claims(user_id,quest,day,claimed_at) VALUES(?,?,?,?)").bind(user.id,found.id,found.day,Date.now()).run();
- if(Number(inserted.meta?.changes)!==1)return err("Quest already claimed",409);
- await db.prepare("INSERT INTO wrld_world_xp(id,user_id,action,amount,created_at) VALUES(?,?,?,?,?)").bind(crypto.randomUUID(),user.id,"quest:"+found.id,found.xp,Date.now()).run();
- return questReply({ok:true,xp:found.xp});
-}
 export async function worldHandle(req,env,path,{auth,authorized}){
  if(!path.startsWith("/world/"))return null;
  // Quest tables are already provisioned in D1: never require schema writes just to read quests.
