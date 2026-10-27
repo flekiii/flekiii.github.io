@@ -7,7 +7,7 @@ const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
 const flush=async()=>{for(let i=0;i<12;i++)await new Promise(resolve=>setImmediate(resolve))};
 function setup({passwordIsValid=true,privateServicesWork=false,initialToken=""}={}){
  const state={session:initialToken,calls:[],submit:null,click:null,profileOpened:0};
- const elements=Object.fromEntries(["wrld-community-root","wrld-account-root","wrld-notifications-root"].map(id=>[id,{innerHTML:"",id}]));
+ const elements=Object.fromEntries(["wrld-community-root","wrld-account-root","wrld-notifications-root","fw-profile-feedback","fw-feedback"].map(id=>[id,{innerHTML:"",id}]));
  const doc={
   getElementById:id=>elements[id]||null,
   querySelector:selector=>selector.startsWith("#dock")?{click(){state.profileOpened++}}:null,
@@ -80,7 +80,7 @@ test("Bad password remains a clear login error and does not create a session",as
  await flush();
  await fire(s,"login",{username:"localtester",password:"wrong-password"});
  assert.equal(s.state.session,"");
- assert.match(s.elements["wrld-account-root"].innerHTML,/Wrong username or password/);
+ assert.match(s.elements["fw-profile-feedback"].textContent,/Wrong username or password/);
  assert.equal(s.state.profileOpened,0);
 });
 test("Native auth form is reachable immediately, without waiting on optional OAuth providers",()=>{
