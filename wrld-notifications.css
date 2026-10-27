@@ -1,0 +1,56 @@
+/* Notifications keeps the page stationary; only the list can scroll. */
+body.notifications-view{height:100dvh;overflow:hidden;overscroll-behavior:none}
+body.notifications-view #main{height:calc(100dvh - 89px);overflow:hidden}
+#page-notifications.active{display:flex;flex-direction:column;height:calc(100dvh - 89px - 96px);min-height:0;overflow:hidden;padding:5px 0 0}
+#wrld-notifications-root{flex:1;min-height:0;width:100%}
+.fn-shell{height:100%;min-height:0;max-width:980px;margin:0 auto;padding-bottom:3px;display:flex;flex-direction:column;gap:13px}
+.fn-header{display:flex;align-items:center;gap:15px;flex:none;padding:17px 21px;background:radial-gradient(circle at 90% 6%,var(--wash),transparent 55%),var(--panel);border:1px solid var(--line);border-radius:21px}
+.fn-bell{display:grid;place-items:center;width:49px;height:49px;flex:0 0 49px;border-radius:16px;background:linear-gradient(135deg,#e5b4ff,#a78cff);color:#311d4a;box-shadow:0 5px 18px #ab7bff24}
+.fn-bell svg{width:24px;height:24px}
+.fn-heading{min-width:0;flex:1}.fn-heading .overline{font-size:10px;letter-spacing:1.7px}
+.fn-heading h1{font:700 clamp(22px,3vw,29px)/1.15 "Space Grotesk",sans-serif;letter-spacing:-.8px;margin:4px 0}
+.fn-heading p{font-size:12px;color:var(--muted);margin:0}
+.fn-counter{display:flex;align-items:center;justify-content:center;flex-direction:column;flex:0 0 73px;min-height:57px;padding:7px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);font:800 21px "Space Grotesk",sans-serif;font-variant-numeric:tabular-nums}
+.fn-counter small{font:600 10px "DM Sans",sans-serif;color:var(--muted)}
+.fn-panel{display:flex;flex:1;min-height:0;overflow:hidden;flex-direction:column;border:1px solid var(--line);border-radius:21px;background:var(--panel)}
+.fn-toolbar{display:flex;align-items:center;justify-content:space-between;gap:9px;flex:none;padding:13px 16px;border-bottom:1px solid var(--line)}
+.fn-filters{display:flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--line);background:var(--panel2);border-radius:12px}
+.fn-filter{padding:9px 16px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:12px;font-weight:800}
+.fn-filter.active{background:var(--panel);color:var(--text);box-shadow:0 2px 8px var(--shadow)}.fn-filter:hover:not(.active){color:var(--text)}
+.fn-tools{display:flex;align-items:center;gap:8px}
+.fn-action{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:35px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--text);font-size:12px;font-weight:700;white-space:nowrap}
+.fn-action:hover:not(:disabled){border-color:var(--accent2);color:var(--accent)}
+.fn-action:disabled{opacity:.45;cursor:default}.fn-refresh{width:35px;padding:8px;font-size:18px}.fn-readall{color:var(--accent2)}
+.fn-error{flex:none;margin:0;padding:9px 16px;font-size:12px;background:color-mix(in srgb,#e1a05c 12%,var(--panel))}
+.fn-list{display:flex;flex-direction:column;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent;padding:12px 15px;gap:8px}
+.fn-list:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+.fn-item{display:flex;align-items:center;gap:13px;min-width:0;padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--panel2)}
+.fn-item.unread{border-color:color-mix(in srgb,var(--accent2) 40%,var(--line));background:color-mix(in srgb,var(--accent2) 8%,var(--panel2))}
+.fn-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:13px;background:var(--panel);font-size:20px}
+.fn-copy{flex:1;min-width:0;overflow-wrap:anywhere}.fn-name{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fn-name strong{font:700 13px "Space Grotesk",sans-serif}.fn-new{padding:4px 7px;border-radius:50px;background:color-mix(in srgb,var(--accent) 17%,var(--panel));color:var(--accent2);font-size:10px;font-weight:800}
+.fn-copy p{font-size:12px;color:var(--muted);line-height:1.5;margin:4px 0}.fn-copy time{font-size:10px;color:var(--muted)}
+.fn-row-actions{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}.fn-row-actions .fn-action:not(.fn-open){background:transparent}
+.fn-open{border-color:color-mix(in srgb,var(--accent2) 30%,var(--line))}
+.fn-empty{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:18px;text-align:center}
+.fn-empty-icon{display:grid;place-items:center;width:65px;height:65px;border-radius:22px;background:color-mix(in srgb,var(--accent2) 14%,var(--panel2));border:1px solid var(--line);color:var(--accent2);font-size:27px}
+.fn-empty h2{font:700 22px "Space Grotesk",sans-serif;letter-spacing:-.4px;margin:3px 0 0}
+.fn-empty p{font-size:13px;color:var(--muted);line-height:1.5;max-width:300px;margin:0}.fn-empty .btn{margin-top:6px}
+@media(max-width:640px){
+body.notifications-view #main{height:calc(100dvh - 75px)}
+#page-notifications.active{height:calc(100dvh - 75px - 78px);padding-top:2px}
+.fn-shell{gap:9px}.fn-header{padding:11px 12px;gap:11px;border-radius:16px}
+.fn-bell{width:40px;height:40px;flex-basis:40px;border-radius:13px}
+.fn-heading h1{font-size:21px;margin:2px 0}.fn-heading p{font-size:11px}
+.fn-counter{flex-basis:56px;min-height:49px;font-size:18px}
+.fn-panel{border-radius:16px}.fn-toolbar{padding:9px;gap:6px}
+.fn-filter{padding:8px 10px;font-size:11px}
+.fn-action{min-height:33px;padding:7px 9px;font-size:11px}.fn-refresh{width:33px;padding:7px}
+.fn-list{padding:9px;gap:7px}
+.fn-item{align-items:flex-start;flex-wrap:wrap;padding:11px;gap:9px}
+.fn-icon{flex-basis:36px;width:36px;height:36px;font-size:18px}
+.fn-copy{flex-basis:calc(100% - 49px)}
+.fn-row-actions{width:100%;justify-content:flex-end}
+}
+@media(max-width:390px){.fn-heading p{display:none}.fn-toolbar{flex-wrap:wrap}.fn-filters,.fn-tools{flex:1}.fn-readall{flex:1}.fn-empty-icon{width:50px;height:50px;border-radius:17px}}
+@media(max-height:590px){.fn-header{padding-top:8px;padding-bottom:8px}.fn-heading p{display:none}.fn-bell{width:36px;height:36px;flex-basis:36px}.fn-toolbar{padding-top:6px;padding-bottom:6px}.fn-empty{padding:10px}}

@@ -65,6 +65,8 @@ jobs:
           node --check backend/oauth.js
           node --check wrld-social.js
           node --test tests/local-auth.test.mjs
+          node --test tests/notifications-layout.test.mjs
+          test -s wrld-notifications.css
           node --check jar3d.js
           node --check earth3d.js
           node --check tether.js

@@ -3,8 +3,9 @@ const API="https://flekis-wrld-api.flekideveloper.workers.dev";
 const root=document.getElementById("wrld-community-root"),alerts=document.getElementById("wrld-notifications-root"),accountRoot=document.getElementById("wrld-account-root");
 const esc=x=>String(x??"").replace(/[&<>"']/g,k=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[k]));
 const time=x=>new Date(x).toLocaleString("en",{dateStyle:"short",timeStyle:"short"});
-const S={token:sessionStorage.getItem("fw-token")||"",user:null,providers:{google:false,apple:false,github:false,discord:false},tab:"global",mode:"login",friends:[],blocks:[],contactPins:[],messages:[],pins:[],dm:[],dmPins:[],notifications:[],people:[],query:"",peer:null,secret:null,recovery:null,error:""};
+const S={token:sessionStorage.getItem("fw-token")||"",user:null,providers:{google:false,apple:false,github:false,discord:false},tab:"global",mode:"login",friends:[],blocks:[],contactPins:[],messages:[],pins:[],dm:[],dmPins:[],notifications:[],notificationOwner:null,notificationError:"",people:[],query:"",peer:null,secret:null,recovery:null,error:""};
 let pending=false;
+let notifFilter="all",notifSnapshot="";
 const button=(t,act,id="")=>'<button type="button" class="social-mini" data-action="'+esc(act)+'" data-id="'+esc(id)+'">'+esc(t)+'</button>';
 const msg=x=>{S.error=x;for(const id of ["fw-feedback","fw-profile-feedback"]){const n=document.getElementById(id);if(n)n.textContent=x}};
 const openProfile=()=>{const link=document.querySelector("#dock [data-go=\"profile\"]");if(link)link.click();};
@@ -77,11 +78,34 @@ function direct(){
  peers.sort((a,b)=>Number(S.contactPins.includes(b.id))-Number(S.contactPins.includes(a.id)));
  return '<div class="social-split"><aside><h3>Friends</h3>'+ (peers.map(p=>'<div class="social-person">'+button(p.display_name,"peer",p.id)+button(S.contactPins.includes(p.id)?"Unpin":"Pin","pincontact",p.id)+'</div>').join("")||'<p class="social-muted">No friends yet.</p>')+'</aside><section><h3>'+(S.peer?"Chat with "+esc(peers.find(p=>p.id===S.peer)?.display_name||"friend"):"Choose a friend")+'</h3>'+(S.peer?'<div class="social-chat-list">'+showMessages(S.dm,S.dmPins)+'</div>'+compose("fw-dm","Message this friend…"):'<p class="social-message">Select a friend to view the conversation.</p>')+'</section></div>';
 }
+const notifWords={
+ en:{heading:"Your notifications",section:"NOTIFICATIONS",sub:"Stay in the loop, without the clutter.",all:"All",unread:"Unread",new:"new",markAll:"Mark all read",refresh:"Refresh",view:"View",mark:"Mark as read",signIn:"Sign in",guest:"Sign in to see your messages and friend requests.",guestTitle:"Your world awaits",empty:"Nothing new yet",emptyDesc:"Your updates will appear here.",clear:"All caught up!",clearDesc:"No unread notifications.",loadingError:"Notifications couldn't be refreshed.",member:"Member",friend_request:"sent you a friend request",friend_accepted:"accepted your friend request",direct_message:"sent you a private message",other:"New activity"},
+ uk:{heading:"Твої сповіщення",section:"СПОВІЩЕННЯ",sub:"Усе важливе з твого світу в одному місці.",all:"Усі",unread:"Непрочитані",new:"нових",markAll:"Прочитати всі",refresh:"Оновити",view:"Відкрити",mark:"Прочитати",signIn:"Увійти",guest:"Увійди, щоб побачити повідомлення та заявки в друзі.",guestTitle:"Твій світ чекає",empty:"Поки немає сповіщень",emptyDesc:"Нові події з'являться тут.",clear:"Усе прочитано!",clearDesc:"Непрочитаних сповіщень немає.",loadingError:"Не вдалося оновити сповіщення.",member:"Користувач",friend_request:"надіслав(-ла) запит у друзі",friend_accepted:"прийняв(-ла) твій запит у друзі",direct_message:"надіслав(-ла) особисте повідомлення",other:"Нова подія"}
+};
 function renderNotifications(){
  if(!alerts)return;
- const verbs={friend_request:"sent a friend request",friend_accepted:"accepted your friend request",direct_message:"sent a private message"};
- alerts.innerHTML='<div class="social-wrap"><div class="social-bar"><strong>Notifications</strong>'+button("Mark all read","readall")+'</div><div class="social-card">'+(!S.user?'<p>Sign in to see notifications.</p>':S.notifications.map(n=>'<div class="social-person"><div><strong>'+esc(n.display_name||n.username||"Member")+'</strong><p class="social-muted">'+esc(verbs[n.kind]||"New activity")+' · '+esc(time(n.created_at))+'</p></div>'+(n.read_at?'<span class="social-muted">Read</span>':button("Mark read","read",n.id))+'</div>').join("")||'<p>Nothing new yet.</p>')+'</div></div>';
+ const lang=document.documentElement.lang==="uk"?"uk":"en",w=notifWords[lang],all=S.user?S.notifications:[],count=all.filter(n=>!n.read_at).length;
+ const items=notifFilter==="unread"?all.filter(n=>!n.read_at):all;
+ const snapshot=JSON.stringify([S.user?.id||"",all,lang,notifFilter,S.notificationError]);
+ if(snapshot===notifSnapshot)return;
+ notifSnapshot=snapshot;
+ const prev=alerts.querySelector?.(".fn-list"),pos=prev?.scrollTop||0;
+ const focus=document.activeElement?.closest?.("#wrld-notifications-root [data-action]");
+ const focusData=focus?{act:focus.dataset.action,id:focus.dataset.id||""}:null;
+ const toggle=(key,text)=>'<button type="button" class="fn-filter'+(notifFilter===key?' active':'')+'" data-action="notif-filter" data-id="'+key+'" aria-pressed="'+(notifFilter===key)+'">'+text+'</button>';
+ const empty=(title,desc,guest)=>'<div class="fn-empty"><span class="fn-empty-icon" aria-hidden="true">'+(guest?'✦':notifFilter==="unread"?'✓':'✉')+'</span><h2>'+title+'</h2><p>'+desc+'</p>'+(guest?'<button class="btn" type="button" data-action="openprofile">'+w.signIn+' →</button>':'')+'</div>';
+ const icons={friend_request:"👋",friend_accepted:"🤝",direct_message:"✉️"};
+ const rows=items.map(n=>{
+  const fresh=!n.read_at,d=new Date(n.created_at);
+  const stamp=Number.isNaN(d.getTime())?"":d.toLocaleString(lang==="uk"?"uk-UA":"en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+  return '<article class="fn-item'+(fresh?' unread':'')+'"><span class="fn-icon" aria-hidden="true">'+(icons[n.kind]||"✦")+'</span><div class="fn-copy"><div class="fn-name"><strong>'+esc(n.display_name||n.username||w.member)+'</strong>'+(fresh?'<span class="fn-new">'+w.new+'</span>':'')+'</div><p>'+esc(w[n.kind]||w.other)+'</p><time>'+esc(stamp)+'</time></div><div class="fn-row-actions"><button type="button" class="fn-action fn-open" data-action="notif-open" data-id="'+esc(n.id)+'">'+w.view+' →</button>'+(fresh?'<button type="button" class="fn-action" data-action="read" data-id="'+esc(n.id)+'">'+w.mark+'</button>':'')+'</div></article>';
+ }).join("");
+ const body=!S.user?empty(w.guestTitle,w.guest,true):items.length?rows:notifFilter==="unread"?empty(w.clear,w.clearDesc,false):empty(w.empty,w.emptyDesc,false);
+ alerts.innerHTML='<div class="fn-shell"><header class="fn-header"><span class="fn-bell" aria-hidden="true"><svg><use href="#i-bell"/></svg></span><div class="fn-heading"><span class="overline">'+w.section+'</span><h1>'+w.heading+'</h1><p>'+w.sub+'</p></div><span class="fn-counter">'+count+' <small>'+w.new+'</small></span></header><section class="fn-panel" aria-label="'+w.heading+'"><div class="fn-toolbar"><div class="fn-filters" role="group" aria-label="'+w.section+'">'+toggle("all",w.all)+toggle("unread",w.unread)+'</div><div class="fn-tools"><button type="button" class="fn-action fn-refresh" data-action="notif-refresh" aria-label="'+w.refresh+'" title="'+w.refresh+'">↻</button><button type="button" class="fn-action fn-readall" data-action="readall"'+(!count?' disabled':'')+'>✓ '+w.markAll+'</button></div></div>'+(S.user&&S.notificationError?'<p class="fn-error" role="status">'+w.loadingError+'</p>':'')+'<div class="fn-list" role="region" aria-label="'+w.heading+'" tabindex="0">'+body+'</div></section></div>';
+ const next=alerts.querySelector?.(".fn-list");if(next)next.scrollTop=pos;
+ if(focusData){const node=[...(alerts.querySelectorAll?.("[data-action]")||[])].find(el=>el.dataset.action===focusData.act&&(el.dataset.id||"")===focusData.id);node?.focus?.({preventScroll:true})}
 }
+
 function render(){
  if(!root||!accountRoot)return;
  const tabs=[["global","Global chat","🌐"],["friends","Friends","👥"],["direct","Messages","✉"]];
@@ -91,7 +115,7 @@ function render(){
 }
 async function reload(){
  if(!S.token){
-  S.user=null;
+  S.user=null;S.notifications=[];S.notificationOwner=null;S.notificationError="";
   const session=S.token;
   try{const feed=await api("/messages/public");if(S.token===session){S.messages=feed.messages||[];S.pins=[]}}
   catch{if(S.token===session){S.messages=[];S.pins=[]}}
@@ -103,14 +127,24 @@ async function reload(){
  if(S.token!==session)return;
  if(!me?.user?.id)throw Error("The server did not return your account. Please retry.");
  S.user=me.user;
+ if(S.notificationOwner!==me.user.id){S.notifications=[];S.notificationOwner=me.user.id;S.notificationError=""}
  const [f,m,n]=await Promise.allSettled([api("/friends"),api("/messages"),api("/notifications")]);
  if(S.token!==session)return;
  if(f.status==="fulfilled"){S.friends=f.value.friends||[];S.blocks=f.value.blocks||[];S.contactPins=f.value.contact_pins||[]}
  if(m.status==="fulfilled"){S.messages=m.value.messages||[];S.pins=m.value.pins||[]}
- if(n.status==="fulfilled")S.notifications=n.value.notifications||[];
+ if(n.status==="fulfilled"){S.notifications=n.value.notifications||[];S.notificationError=""}
+ else S.notificationError=n.reason?.message||"Notifications unavailable";
  if(S.peer){try{const dm=await api("/messages?peer="+encodeURIComponent(S.peer));if(S.token===session){S.dm=dm.messages||[];S.dmPins=dm.pins||[]}}catch{S.peer=null;S.dm=[];S.dmPins=[]}}
 }
 async function action(op,id){
+ if(op==="notif-filter"){notifFilter=id==="unread"?"unread":"all";renderNotifications();return}
+ if(op==="notif-refresh"){await reload();renderNotifications();return}
+ if(op==="notif-open"){
+  const n=S.notifications.find(x=>String(x.id)===String(id));if(!n)return;
+  if(n.kind==="direct_message"){S.tab="direct";S.peer=n.actor||null;if(S.peer)await reload()}
+  else S.tab=n.kind==="friend_request"||n.kind==="friend_accepted"?"friends":"global";
+  document.querySelector('#dock [data-go="chat"]')?.click();render();return;
+ }
  if(op==="tab"){if(id==="account")return openProfile();S.tab=id;return render()}
  if(op==="openprofile"){openProfile();return}
  if(op==="mode"){S.mode=id;return render()}
@@ -175,6 +209,7 @@ document.addEventListener("submit",async e=>{
 });
 window.addEventListener("wrld:profile",()=>openProfile());
 window.addEventListener("wrld:profile-updated",()=>render());
+window.addEventListener("wrld:language-change",()=>renderNotifications());
 render();
 (async()=>{try{try{await api("/health")}catch{}try{S.providers=(await api("/auth/providers")).providers||S.providers}catch{}let incoming=null;try{incoming=JSON.parse(sessionStorage.getItem("fw-oauth-pending")||"null");sessionStorage.removeItem("fw-oauth-pending")}catch{}if(incoming?.key==="oauth_ticket"){const r=await api("/auth/oauth/redeem","POST",{ticket:incoming.value});S.token=r.token;sessionStorage.setItem("fw-token",r.token);msg("Connected with your external account.")}else if(incoming?.key==="oauth_error"){msg("External sign-in could not be completed: "+incoming.value.replace(/_/g," "))}await reload();window.dispatchEvent(new Event("fw-auth-changed"))}catch(err){msg("Sign-in or API error: "+err.message)}if(!document.activeElement?.closest?.("#fw-auth"))render()})();
 setInterval(async()=>{if(!pending){try{await reload();const typing=document.activeElement?.closest("#wrld-community-root form, #wrld-account-root form");if(!typing&&(S.tab==="global"||S.tab==="direct"))render();else renderNotifications()}catch{}}},12000);
