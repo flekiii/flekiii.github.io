@@ -105,3 +105,100 @@
 @media(max-width:760px){.games-title-search{grid-column:1/-1}.games-reset{grid-column:1/-1;grid-row:auto}}
 @media(max-width:530px){.games-title-search{grid-column:1}.games-filter-menu{position:relative;z-index:4}.games-reset{grid-column:1}}
 @media(prefers-reduced-motion:reduce){.games-filter-toggle .games-toggle-chevron,.games-title-search-box{transition:none}}
+
+/* Games v4: app-style viewport; genre results scroll, not the entire page. */
+body.games-view{height:100dvh;overflow:hidden;overscroll-behavior:none}
+body.games-view #main{height:calc(100dvh - 89px);overflow:hidden}
+body.games-view>.footer{display:none}
+#main.shell:has(#page-games.active){max-width:none;width:100%;padding-inline:clamp(10px,2vw,28px)}
+#page-games.active{height:calc(100dvh - 89px - 100px);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;padding:3px 0 0;animation:none!important;transform:none!important}
+#page-games .page-heading{display:none!important}
+#page-games #wrld-games-root{display:flex;flex-direction:column;flex:1 1 0;min-height:0;min-width:0;margin:0;width:100%;height:100%}
+#page-games .games-hub{display:flex;flex-direction:column;gap:9px;flex:1 1 0;min-height:0;max-width:none;width:100%;height:100%}
+#page-games .games-hub-head{flex:0 0 auto;min-height:0;padding:13px 18px;gap:13px;border-radius:17px}
+#page-games .games-hub-head small{font-size:9px}
+#page-games .games-hub-head h2{font-size:clamp(19px,2.4vw,28px);margin:4px 0}
+#page-games .games-hub-head p{font-size:11px;line-height:1.45;margin:0}
+#page-games .games-hub-decor{font-size:42px}
+#page-games .games-discovery{display:flex;flex-direction:column;flex:1 1 0;min-height:0;min-width:0;margin:0;padding:clamp(10px,1.4vw,18px);border-radius:17px}
+#page-games .games-discovery-title{margin-bottom:10px;flex:0 0 auto}
+#page-games .games-discovery-title h3{font-size:clamp(18px,2vw,24px);margin:3px 0 0}
+#page-games .games-discovery-title small{font-size:9px}
+#page-games .games-discovery-count{font-size:10px;padding:7px 10px}
+#page-games .games-toolbar{display:grid;grid-template-columns:minmax(155px,1.5fr) minmax(125px,1fr) minmax(130px,.9fr) auto;gap:8px;align-items:end;flex:0 0 auto}
+#page-games .games-title-search{grid-column:1;grid-row:1}
+#page-games .games-filter-picker{grid-column:2;grid-row:1}
+#page-games .games-system-picker{grid-column:3;grid-row:1}
+#page-games .games-reset{grid-column:4;grid-row:1;padding:0 13px}
+#page-games .games-field-label{font-size:10px}
+#page-games .games-filter-toggle,#page-games .games-title-search-box,#page-games .games-system-picker select,#page-games .games-reset{height:40px;min-height:40px;border-radius:11px;font-size:11px}
+#page-games .games-title-search-box{gap:8px;padding:0 10px}
+#page-games .games-title-search-box input{font-size:11px}
+#page-games .games-filter-toggle{padding:0 9px;gap:7px}
+#page-games .games-filter-toggle .games-filter-icon{width:17px;height:17px;flex-basis:17px}
+#page-games .games-filter-toggle .games-toggle-chevron{width:15px;height:15px;flex-basis:15px}
+#page-games .games-system-picker select{padding-left:9px;padding-right:22px}
+#page-games .games-filter-menu{z-index:60;max-height:min(58dvh,470px);overflow-y:auto;overscroll-behavior:contain;padding:12px;scrollbar-width:thin}
+#page-games .games-genre-options{max-height:min(29dvh,240px);gap:6px;padding:8px 2px}
+#page-games .games-genre-choice{min-height:41px;padding:7px 9px;font-size:11px}
+#page-games .games-quick-row{display:flex;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;white-space:nowrap;gap:7px;margin-top:10px;padding-bottom:6px;flex:0 0 auto}
+#page-games .games-quick-row>span{flex:none;align-self:center;font-size:10px}
+#page-games .games-quick-btn{flex:0 0 auto;min-height:29px;padding:6px 10px;font-size:10px}
+#page-games .games-applied{display:flex;flex:0 0 auto;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;gap:7px;margin-top:6px;padding:8px}
+#page-games .games-applied>strong{flex:none;align-self:center;white-space:nowrap}
+#page-games .games-selected-tag{flex:0 0 auto;white-space:nowrap;min-height:28px;padding:5px 8px;font-size:10px}
+#page-games .games-results{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;display:flex;justify-content:center;align-items:center;gap:14px;margin-top:8px;padding:clamp(12px,2vw,22px);border-radius:13px}
+#page-games .games-results>div{flex:0 1 520px}
+#page-games .games-results h3{font-size:clamp(15px,1.8vw,21px)}
+#page-games .games-results p{font-size:11px;line-height:1.55}
+#page-games .games-result-icon{flex:0 0 45px;width:45px;height:45px}
+#page-games .games-status-tag{flex:none;margin:0;padding:7px 10px;font-size:10px}
+@media(max-width:1020px){
+ #page-games .games-toolbar{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto}
+ #page-games .games-title-search{grid-column:1/-1;grid-row:1}
+ #page-games .games-filter-picker{grid-column:1;grid-row:2}
+ #page-games .games-system-picker{grid-column:2;grid-row:2}
+ #page-games .games-reset{grid-column:3;grid-row:2}
+}
+@media(max-width:650px){
+ body.games-view #main{height:calc(100dvh - 75px)}
+ #page-games.active{height:calc(100dvh - 75px - 82px)}
+ #main.shell:has(#page-games.active){padding-inline:9px}
+ #page-games .games-hub{gap:6px}
+ #page-games .games-hub-head{padding:10px 12px;border-radius:12px}
+ #page-games .games-hub-head h2{font-size:18px}
+ #page-games .games-hub-head p{font-size:10px}
+ #page-games .games-hub-decor{font-size:28px}
+ #page-games .games-discovery{padding:10px;border-radius:13px}
+ #page-games .games-discovery-title{margin-bottom:7px}
+ #page-games .games-discovery-title h3{font-size:17px}
+ #page-games .games-discovery-count{display:none}
+ #page-games .games-toolbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:6px}
+ #page-games .games-title-search{grid-column:1/-1;grid-row:1}
+ #page-games .games-filter-picker{grid-column:1;grid-row:2}
+ #page-games .games-system-picker{grid-column:2;grid-row:2}
+ #page-games .games-reset{grid-column:3;grid-row:2;padding:0 7px}
+ #page-games .games-field-label{font-size:9px}
+ #page-games .games-title-search-box,#page-games .games-filter-toggle,#page-games .games-system-picker select,#page-games .games-reset{height:36px;min-height:36px;font-size:10px}
+ #page-games .games-quick-row{margin-top:7px}
+ #page-games .games-results{margin-top:6px;padding:9px;gap:8px}
+ #page-games .games-results h3{font-size:15px}
+ #page-games .games-results p{font-size:10px}
+ #page-games .games-filter-menu{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,480px);max-width:92vw;max-height:min(72dvh,510px);margin:0;padding:12px;z-index:140;box-shadow:0 22px 70px #0009}
+ #page-games .games-genre-options{max-height:min(40dvh,280px)}
+}
+@media(max-width:440px){
+ #page-games .games-hub-head p{display:none}
+ #page-games .games-hub-head h2{font-size:17px}
+ #page-games .games-toolbar{grid-template-columns:minmax(0,1fr) auto}
+ #page-games .games-title-search{grid-column:1/-1;grid-row:1}
+ #page-games .games-filter-picker{grid-column:1;grid-row:2}
+ #page-games .games-system-picker{grid-column:1;grid-row:3}
+ #page-games .games-reset{grid-column:2;grid-row:3}
+ #page-games .games-genre-options{grid-template-columns:1fr}
+ #page-games .games-results{flex-direction:column;text-align:center}
+ #page-games .games-results>div{flex:0 1 auto}
+ #page-games .games-status-tag{white-space:normal}
+ #page-games .games-applied>strong{flex-basis:auto}
+}
+@media(max-height:560px){#page-games .games-hub-head p{display:none}#page-games .games-hub-head{padding:7px 11px}#page-games .games-hub-head h2{font-size:16px;margin:1px 0}#page-games .games-discovery-title{margin-bottom:5px}#page-games .games-quick-row{margin-top:5px}#page-games .games-results{margin-top:5px}}
