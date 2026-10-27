@@ -36,6 +36,7 @@ if(root){
     const p=own.progress;
     html='<div class="ww-progress"><h2>'+t("Your level and rewards","Твій рівень і нагороди")+'</h2>'+(p?'<div class="ww-level">★ '+p.level+'</div><strong>'+p.xp+' XP</strong><p>'+t("Earn XP by posting and creating clubs. Daily caps stop easy farming.","Отримуй XP за публікації та створення клубів. Є щоденні обмеження від накрутки.")+'</p><div class="ww-badges">'+(p.badges?.length?p.badges.map(x=>'<span class="ww-badge">'+esc(x.replaceAll("-"," "))+'</span>').join(""):t("Badges are waiting for you.","Значки вже чекають на тебе."))+'</div>':'<p>'+t("Sign in to see your achievements.","Увійди, щоб побачити досягнення.")+'</p>')+'</div><h2>'+t("Community ranking","Рейтинг спільноти")+'</h2><div class="ww-ranking">'+(rank.ranking?.length?rank.ranking.map((r,i)=>'<p><strong>#'+(i+1)+' · @'+esc(r.username)+'</strong><span>★ '+r.level+' · '+r.xp+' XP</span></p>').join(""):'<p>'+t("Nobody has earned XP yet.","Ще ніхто не отримав XP.")+'</p>')+'</div>';
    }
+   if(tab==="progress")html+='<p><a class="btn" href="/account-export.html">↓ '+t("Export my data","Експорт моїх даних")+'</a></p>';
    if(seq===nonce&&active())body().innerHTML=html;
   }catch(error){if(seq===nonce&&body())body().innerHTML='<p class="ww-empty">'+esc(error.message)+' <button class="btn" data-ww="retry">'+t("Retry","Повторити")+'</button></p>'}
   finally{loading=false}
