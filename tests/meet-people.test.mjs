@@ -82,11 +82,31 @@ test("Report/block/privacy and multilingual published assets",()=>{
  assert.match(client,/tr\("Girls","Дівчат"\)/);
  assert.match(client,/tr\("Boys","Хлопців"\)/);
  assert.doesNotMatch(server,/phone|district|address/);
- assert.match(html,/wrld-discover\.mjs\?v=4/);
- assert.match(html,/wrld-discover\.css\?v=3/);
+ assert.match(html,/wrld-discover\.mjs\?v=5/);
+ assert.match(html,/wrld-discover\.css\?v=4/);
 });
 test("Editing a declared age revokes previous dating consent",()=>{
  const profile=get("backend/profiles.js");
  assert.match(profile,/const resetDating=previousAge!==age/);
  assert.match(profile,/UPDATE wrld_discovery_dating SET enabled=0/);
+});
+
+test("The own Friends questionnaire is pinned and not duplicated by discovery",async()=>{
+ const s=setup();s.events["wrld:page-change"]({detail:{id:"discover"}});await flush();
+ const markup=s.root.innerHTML;
+ assert.match(markup,/data-fd-own="true"/);
+ assert.match(markup,/Твоя анкета/);
+ assert.match(markup,/Опубліковано/);
+ assert.match(markup,/data-fd="edit-card"/);
+ assert.equal((markup.match(/data-fd-own="true"/g)||[]).length,1);
+ assert.ok(markup.indexOf('data-fd-own="true"')<markup.indexOf("tester"));
+});
+test("The own uploaded avatar has an authenticated live target in editor and list",async()=>{
+ const s=setup();s.events["wrld:page-change"]({detail:{id:"discover"}});await flush();
+ assert.match(s.root.innerHTML,/data-fd-photo="123e4567-e89b-42d3-a456-426614174000"/);
+ await s.click("edit-card");
+ assert.match(s.root.innerHTML,/class="fd-editor-photo" data-fd-photo="/);
+ assert.match(client,/placeholder\.remove\(\)/);
+ assert.match(client,/loadPhoto\(\{id:self\.user_id,has_photo:true\}\)/);
+ assert.match(css,/\.fd-own-card/);
 });

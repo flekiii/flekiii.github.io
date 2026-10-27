@@ -117,3 +117,15 @@ body.discover-view #main{height:calc(100dvh - 89px);overflow:hidden}
 .fd-card-bio{font-size:11px;line-height:1.65;color:var(--text);margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
 @media(max-width:640px){.fd-create{width:100%}.fd-editor{padding:0 2px 12px}.fd-editor-grid{grid-template-columns:1fr;gap:13px}.fd-photo-panel{grid-template-columns:100px 1fr;align-items:center}.fd-editor-photo{grid-row:span 3}.fd-editor-head h3{font-size:20px}.fd-editor-head{align-items:start}.fd-editor-head .btn{font-size:11px;padding:8px}.fd-photo-panel small{grid-column:2}}
 @media(max-width:380px){.fd-editor-selects{grid-template-columns:1fr}.fd-photo-panel{grid-template-columns:80px 1fr}}
+
+/* Pinned personal card: safe local-only preview, never added to other accounts' search. */
+.fd-own-card{border-color:color-mix(in srgb,var(--accent2) 58%,var(--line));background:color-mix(in srgb,var(--accent2) 7%,var(--panel2))}
+.fd-own-label{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.fd-own-label strong{font:800 11px "Space Grotesk",sans-serif;color:var(--accent2)}
+.fd-own-label span{font-size:10px;font-weight:750;border-radius:8px;padding:5px 8px}
+.fd-own-public{color:var(--accent2);background:color-mix(in srgb,var(--accent2) 13%,var(--panel))}
+.fd-own-private{color:var(--muted);background:var(--panel)}
+.fd-own-card .fd-card-actions .btn{max-width:100%}
+.fd-photo-placeholder{display:grid;place-items:center;width:100%;height:100%;font-size:38px}
+#fd-own-photo-error:empty{display:none}
+#fd-own-photo-error{color:var(--accent2)}

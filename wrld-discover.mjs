@@ -10,6 +10,7 @@ if(root){
  let mode="friends",query="",loading=false,busy=false,members=[],message="",error="",group="",enabled=false;
  let editor=false,self={card:{},age_ready:false},draft={bio:"",gender:"undisclosed",seeking:"everyone"},revision=0;
  const photos=new Map();
+ let ownPhotoError="";
  async function api(path,method="GET",body){
   const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),12000);
   try{
@@ -28,17 +29,18 @@ if(root){
    const r=await fetch(API+"/discover/photo/"+m+"/"+p.id,{headers:{Authorization:"Bearer "+token()},cache:"no-store"});
    if(!r.ok)throw Error("Not available");
    const blob=await r.blob();if(blob.size>900*1024)throw Error("Too large");
-   const url=URL.createObjectURL(blob);photos.set(key,url);
+   const url=URL.createObjectURL(blob);photos.set(key,url);if(p.id===self.user_id)ownPhotoError="";
    if(mode===m&&root.querySelectorAll){
     for(const element of root.querySelectorAll('[data-fd-photo="'+p.id+'"]')){
      let img=element.querySelector("img");
      if(!img){img=document.createElement("img");img.alt="";element.append(img)}
      img.src=url;
+     const placeholder=element.querySelector?.(".fd-photo-placeholder");if(placeholder)placeholder.remove();
     }
    }
-  }catch{photos.delete(key)}
+  }catch(err){photos.delete(key);if(p.id===self.user_id){ownPhotoError=tr("Photo could not be displayed. Try uploading again.","Фото не вдалося показати. Спробуй завантажити ще раз.");const hint=root.querySelector?.("#fd-own-photo-error");if(hint)hint.textContent=ownPhotoError;}}
  }
- function hydrate(){for(const person of members)void loadPhoto(person);}
+ function hydrate(){for(const person of members)void loadPhoto(person);if(self?.card?.has_photo&&self.user_id)void loadPhoto({id:self.user_id,has_photo:true});}
  function picture(p){
   const initial=esc(String(p.display_name||p.username||"?").slice(0,1).toUpperCase());
   const cache=photos.get(picKey(mode,p.id));
@@ -49,6 +51,17 @@ if(root){
   const list=Array.isArray(p.interests)?p.interests.slice(0,8):[];
   return list.length?'<div class="fd-tags">'+list.map(x=>'<span>'+esc(window.WrldInterests?.label?.(x)||x)+'</span>').join("")+'</div>':
    '<p class="fd-card-nointerests">'+tr("No shared interests listed yet","Поки немає вказаних інтересів")+'</p>';
+ }
+ function ownCard(){
+  if(mode!=="friends"||!self?.age_ready||!self.user_id)return "";
+  const name=self.display_name||tr("My questionnaire","Моя анкета");
+  const mine={id:self.user_id,display_name:name,media_public:false,has_photo:!!self.card?.has_photo};
+  return '<article class="fd-card fd-own-card" data-fd-own="true" aria-label="'+tr("Your friends questionnaire","Твоя анкета для друзів")+'">'+
+   '<div class="fd-own-label"><strong>✦ '+tr("Your questionnaire","Твоя анкета")+'</strong><span class="'+(enabled?"fd-own-public":"fd-own-private")+'">'+(enabled?tr("✓ Published","✓ Опубліковано"):tr("🔒 Only you","🔒 Тільки ти"))+'</span></div>'+
+   '<div class="fd-card-top">'+picture(mine)+'<div class="fd-card-name"><h3>'+esc(name)+'</h3><p class="fd-age">'+esc(self.age_range||group)+'</p></div></div>'+
+   (self.card?.bio?'<p class="fd-card-bio">'+esc(self.card.bio)+'</p>':'<p class="fd-card-nointerests">'+tr("Add a description to complete your card.","Додай опис, щоб завершити анкету.")+'</p>')+
+   tags({interests:self.interests||[]})+
+   '<div class="fd-card-actions"><button type="button" class="btn primary" data-fd="edit-card">✎ '+tr("Edit my questionnaire","Редагувати анкету")+'</button></div></article>';
  }
  function card(p){
   const username=String(p.username||""),handle=/^fmail_[a-z0-9]+$/i.test(username)?"":"@"+esc(username);
@@ -68,10 +81,10 @@ if(root){
   const photo=photos.get(picKey(mode,self.user_id));
   const name=mode==="dating"?tr("Your dating questionnaire","Твоя анкета знайомств"):tr("Your friends questionnaire","Твоя анкета для друзів");
   return '<div class="fd-editor"><header class="fd-editor-head"><div><span class="fd-editor-kicker">'+(mode==="dating"?"💜 DATING":"👥 FRIENDS")+'</span><h3>'+name+'</h3><p>'+tr("Customize what other people see in this section.","Налаштуй, що інші бачать саме в цьому розділі.")+'</p></div><button type="button" class="btn" data-fd="close-card">× '+tr("Close","Закрити")+'</button></header>'+
-   '<div class="fd-editor-grid"><div class="fd-photo-panel"><div class="fd-editor-photo">'+(photo?'<img src="'+photo+'" alt="">':'<span aria-hidden="true">📸</span>')+'</div>'+
+   '<div class="fd-editor-grid"><div class="fd-photo-panel"><div class="fd-editor-photo" data-fd-photo="'+esc(self.user_id||"")+'">'+(photo?'<img src="'+photo+'" alt="">':'<span class="fd-photo-placeholder" aria-hidden="true">📸</span>')+'</div>'+
    '<label class="btn fd-upload"><input id="fd-photo" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" hidden>＋ '+tr("Upload your photo","Додати своє фото")+'</label>'+
    (self.card?.has_photo?'<button type="button" class="fd-remove-photo" data-fd="remove-photo">'+tr("Remove photo","Прибрати фото")+'</button>':'')+
-   '<small>'+tr("PNG/JPG/GIF/WebP, up to 900 KB. Your main profile avatar stays unchanged.","PNG/JPG/GIF/WebP, до 900 КБ. Аватар основного профілю не зміниться.")+'</small></div>'+
+   '<small>'+tr("PNG/JPG/GIF/WebP, up to 900 KB. Your main profile avatar stays unchanged.","PNG/JPG/GIF/WebP, до 900 КБ. Аватар основного профілю не зміниться.")+'</small><small id="fd-own-photo-error" role="status">'+esc(ownPhotoError)+'</small></div>'+
    '<div class="fd-editor-fields"><label class="fd-field"><span>'+tr("A little about you","Трішки про себе")+'</span><textarea id="fd-bio" rows="4" maxlength="280" placeholder="'+tr("Your interests, games, and what kind of people you'd like to meet…","Твої захоплення, ігри та з якими людьми хотілося б познайомитися…")+'">'+esc(draft.bio)+'</textarea><small>'+tr("No address, phone number, or personal contacts.","Не вказуй адресу, телефон чи особисті контакти.")+'</small></label>'+
    (mode==="dating"?'<div class="fd-editor-selects"><label class="fd-field"><span>'+tr("I am","Я")+'</span><select id="fd-gender">'+option("undisclosed",tr("Choose…","Обери…"),draft.gender)+option("girl",tr("Girl","Дівчина"),draft.gender)+option("boy",tr("Boy","Хлопець"),draft.gender)+option("other",tr("Other","Інше"),draft.gender)+'</select></label>'+
    '<label class="fd-field"><span>'+tr("Looking for","Кого шукати")+'</span><select id="fd-seeking">'+option("everyone",tr("Everyone","Усіх"),draft.seeking)+option("girls",tr("Girls","Дівчат"),draft.seeking)+option("boys",tr("Boys","Хлопців"),draft.seeking)+'</select></label></div>':'')+
@@ -88,6 +101,7 @@ if(root){
   if(mode==="dating"&&!enabled&&!loading&&!error)return '<div class="fd-state fd-dating-consent"><span class="fd-state-icon">💜</span><h3>'+tr("Meet people your age","Знайомся з однолітками")+'</h3><p>'+tr("Create your own dating card. Only others in your age range who also opted in can see it.","Створи власну анкету. Її побачать лише користувачі відповідного віку, які також погодилися.")+'</p><button type="button" class="btn primary" data-fd="edit-card">'+tr("💜 Create my dating card","💜 Створити анкету знайомств")+'</button><small>'+tr("Ages are self-declared, not verified.","Вік указують самостійно, без перевірки.")+'</small></div>';
   if(error)return '<div class="fd-state" role="status"><span class="fd-state-icon">✦</span><h3>'+tr("Set up your questionnaire","Налаштуй свою анкету")+'</h3><p>'+esc(error)+'</p><button type="button" class="btn primary" data-fd="edit-card">'+tr("＋ Create my card","＋ Створити анкету")+'</button></div>';
   if(loading)return '<div class="fd-state" role="status"><span class="fd-loader">◌</span><p>'+tr("Finding people…","Шукаємо людей…")+'</p></div>';
+  if(mode==="friends"&&self?.age_ready&&self.user_id)return '<div class="fd-cards">'+ownCard()+members.filter(x=>x.id!==self.user_id).map(card).join("")+'</div>';
   if(!members.length)return '<div class="fd-state"><span class="fd-state-icon">✦</span><h3>'+tr("Nobody here yet","Поки нікого немає")+'</h3><p>'+tr("Only profiles shared voluntarily in your eligible age range are shown. Try refreshing later.","Показуємо тільки добровільно опубліковані анкети відповідного віку. Спробуй оновити пізніше.")+'</p><button type="button" class="btn" data-fd="edit-card">'+tr("Edit my questionnaire","Моя анкета")+'</button></div>';
   return '<div class="fd-cards">'+members.map(card).join("")+'</div>';
  }
@@ -100,7 +114,7 @@ if(root){
    (token()?'<button type="button" class="btn fd-create" data-fd="edit-card">✎ '+(enabled?tr("My questionnaire","Моя анкета"):tr("＋ Create a questionnaire","＋ Створити анкету"))+'</button>':'')+'</div>'+
    '<div class="fd-notice"><span aria-hidden="true">🛡️</span><p>'+tr("Separate teen and adult groups. Your age comes from your profile and is not verified. You can hide your card anytime. Never share your address, phone or passwords.","Підлітки й дорослі окремо. Вік узято з профілю без перевірки. Анкету можна приховати будь-коли. Не поширюй адресу, телефон чи паролі.")+'</p></div>'+
    (editor?'':'<div class="fd-toolbar"><label class="fd-search"><span aria-hidden="true">⌕</span><input type="search" id="fd-query" maxlength="32" autocomplete="off" value="'+esc(query)+'" placeholder="'+tr("Search people or interests…","Пошук людей чи інтересів…")+'"></label><button type="button" class="btn primary" data-fd="search">'+tr("Search","Шукати")+'</button><button type="button" class="btn fd-refresh" data-fd="refresh" title="'+tr("Refresh","Оновити")+'">↻</button></div>')+
-   '<div class="fd-results-header"><strong>'+(editor?tr("Edit your questionnaire","Редагуй свою анкету"):tr("People for you","Люди для тебе"))+'</strong><span>'+esc(group||"")+(!editor?' · '+members.length+' '+tr("profiles","анкет"):'')+'</span></div>'+
+   '<div class="fd-results-header"><strong>'+(editor?tr("Edit your questionnaire","Редагуй свою анкету"):tr("People for you","Люди для тебе"))+'</strong><span>'+esc(group||"")+(!editor?' · '+(members.length+(mode==="friends"&&self?.age_ready&&self.user_id?1:0))+' '+tr("profiles","анкет"):'')+'</span></div>'+
    (message?'<p class="fd-feedback" role="status">'+esc(message)+'</p>':'')+
    '<section class="fd-results" aria-label="'+tr("People discovery","Пошук людей")+'">'+state()+'</section></div></div>';
  }
@@ -111,7 +125,7 @@ if(root){
    const own=await api("/discover/me?mode="+currentMode);
    if(rid!==revision||mode!==currentMode)return;
    self=own;group=own.age_range||"";enabled=own.enabled===true;
-   if(own.card?.has_photo&&own.user_id)void loadPhoto({id:own.user_id,has_photo:true},currentMode);
+   if(own.card?.has_photo&&own.user_id)void loadPhoto({id:own.user_id,has_photo:true},currentMode);else ownPhotoError="";
    if(!own.age_ready){error=tr("Set an eligible age in Profile → About me.","Вкажи відповідний вік у Профіль → Про мене.");members=[];return}
    if(!enabled){members=[];return}
    const data=await api((currentMode==="dating"?"/discover/dating":"/discover/friends")+"?q="+encodeURIComponent(query));
