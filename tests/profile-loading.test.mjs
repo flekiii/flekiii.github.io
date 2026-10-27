@@ -46,6 +46,7 @@ test("API failures show the real reason and a working retry instead of an infini
   if(url.endsWith("/profiles/me"))return failed
    ? {ok:false,status:503,json:async()=>({error:"Server unavailable"})}
    : {ok:true,json:async()=>({profile:user,owner:false,moderator:false})};
+  if(url.includes("/profiles/preview?as=public"))return {ok:true,json:async()=>({profile:{...user,display_name:url?"Builder":"Builder",relationship:"public"}})};
   if(url.endsWith("/houses/mine"))return {ok:true,json:async()=>({house:null})};
   return {ok:false,status:404,json:async()=>({error:"No media"})};
  });
@@ -63,7 +64,9 @@ test("Changed authentication tokens never show cached profile data from a differ
  let release;const oldPending=new Promise(resolve=>{release=resolve});
  const {render,state}=bootstrap(async(url,opts)=>{
   if(url.endsWith("/profiles/me")&&opts.headers.Authorization==="Bearer token-1")return oldPending;
+  if(url.includes("/profiles/preview?as=public"))return {ok:true,json:async()=>({profile:{...user,display_name:"Fresh login",relationship:"public"}})};
   if(url.endsWith("/profiles/me"))return {ok:true,json:async()=>({profile:{...user,display_name:"Fresh login"},owner:false,moderator:false})};
+  if(url.includes("/profiles/preview?as=public"))return {ok:true,json:async()=>({profile:{...user,display_name:url?"Builder":"Builder",relationship:"public"}})};
   if(url.endsWith("/houses/mine"))return {ok:true,json:async()=>({house:null})};
   return {ok:false,status:404,json:async()=>({})};
  });
