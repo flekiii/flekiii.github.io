@@ -37,8 +37,8 @@ test("Profile Studio shows published houses and offers a publish button",()=>{
  assert.match(profile,/\/houses\/profile\?user=/);
  assert.match(profile,/housePreview\(myHouse\)/);
  assert.match(html,/wrld-house-creator\.mjs\?v=8/);
- assert.match(html,/wrld-profile\.js\?v=5/);
- assert.match(html,/wrld-profile\.css\?v=3/);
+ assert.match(html,/wrld-profile\.js\?v=6/);
+ assert.match(html,/wrld-profile\.css\?v=4/);
  assert.doesNotThrow(()=>new Function(html.match(/<script>([\s\S]*?)<\/script>/)?.[1]));
 });
 

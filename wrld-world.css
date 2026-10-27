@@ -35,3 +35,11 @@
 .ww-empty{padding:35px 18px;border-radius:18px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);text-align:center}
 .ww-feedback{min-height:24px;margin:16px 0;color:var(--muted);font-size:13px}
 @media(max-width:630px){.ww-tabs{gap:5px}.ww-tabs button{flex:1 1 115px}.ww-item,.ww-compose,.ww-progress{padding:16px}.ww-toolbar .btn{font-size:11px}.ww-ranking p{flex-wrap:wrap}}
+
+.ww-quests{margin:27px 0;max-width:960px}.ww-quests>p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.ww-quest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px}
+.ww-quest{display:flex;align-items:center;gap:12px;padding:15px;border-radius:16px;border:1px solid var(--line);background:var(--panel2)}
+.ww-quest-icon{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;background:var(--panel);border-radius:12px;font-size:22px}
+.ww-quest>div{flex:1;min-width:0}.ww-quest strong{display:block;font-size:13px;line-height:1.4}.ww-quest small{display:block;color:var(--muted);margin-top:5px;font-size:12px}
+.ww-quest .btn{font-size:11px;white-space:nowrap;padding:8px 10px}.ww-quest-done{font-size:11px;color:#7cd0a2;font-weight:800}.ww-quest.completed{opacity:.75}
+@media(max-width:520px){.ww-quest-grid{grid-template-columns:1fr}}
