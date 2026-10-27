@@ -29,8 +29,8 @@ test("The visitor gets 3D first, can switch to 2D, zoom and reset camera",()=>{
  assert.match(view,/id="publicHouse2D"/);
  assert.match(view,/housePlan\(h\)/);
  assert.match(css,/\.wrld-public-3d/);
- assert.match(html,/wrld-house-creator\.mjs\?v=7/);
- assert.match(html,/wrld-home-creator\.css\?v=7/);
+ assert.match(html,/wrld-house-creator\.mjs\?v=8/);
+ assert.match(html,/wrld-home-creator\.css\?v=8/);
 });
 test("3D scene has the same real furniture meshes as the editable house",()=>{
  assert.match(engine,/for\(const item of house\.items\|\|\[\]\)/);
