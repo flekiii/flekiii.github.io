@@ -5,6 +5,8 @@ import {readFileSync} from "node:fs";
 const source=readFileSync(new URL("../index.html",import.meta.url),"utf8");
 
 test("About speaks about freedom, not the old biography",()=>{
+ assert.match(source,/if\(s\.id==='about'\)\{p\.innerHTML="/);
+ assert.doesNotMatch(source,/if\(s\.id==='about'\)\{p\.innerHTML\+="/);
  assert.match(source,/Freedom, made real\./);
  assert.match(source,/Свобода, втілена в реальність/);
  assert.match(source,/Your space\. Your choices\. Your world\./);
