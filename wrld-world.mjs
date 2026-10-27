@@ -32,9 +32,16 @@ if(root){
    }else if(tab==="clubs"){
     const r=await api("/world/clubs");html=clubsMarkup(r.clubs);
    }else{
-    const [rank,own]=await Promise.all([api("/world/ranking"),token()?api("/world/progress").catch(()=>({progress:null})):Promise.resolve({})]);
+    const [rank,own,quests]=await Promise.all([api("/world/ranking"),token()?api("/world/progress").catch(()=>({progress:null})):Promise.resolve({}),token()?api("/world/quests").catch(()=>({quests:[]})):Promise.resolve({quests:[]})]);
     const p=own.progress;
     html='<div class="ww-progress"><h2>'+t("Your level and rewards","Твій рівень і нагороди")+'</h2>'+(p?'<div class="ww-level">★ '+p.level+'</div><strong>'+p.xp+' XP</strong><p>'+t("Earn XP by posting and creating clubs. Daily caps stop easy farming.","Отримуй XP за публікації та створення клубів. Є щоденні обмеження від накрутки.")+'</p><div class="ww-badges">'+(p.badges?.length?p.badges.map(x=>'<span class="ww-badge">'+esc(x.replaceAll("-"," "))+'</span>').join(""):t("Badges are waiting for you.","Значки вже чекають на тебе."))+'</div>':'<p>'+t("Sign in to see your achievements.","Увійди, щоб побачити досягнення.")+'</p>')+'</div><h2>'+t("Community ranking","Рейтинг спільноти")+'</h2><div class="ww-ranking">'+(rank.ranking?.length?rank.ranking.map((r,i)=>'<p><strong>#'+(i+1)+' · @'+esc(r.username)+'</strong><span>★ '+r.level+' · '+r.xp+' XP</span></p>').join(""):'<p>'+t("Nobody has earned XP yet.","Ще ніхто не отримав XP.")+'</p>')+'</div>';
+   }
+   if(tab==="progress"&&token()){
+    html+='<div class="ww-quests"><h2>'+t("Daily quests and milestones","Щоденні квести й цілі")+'</h2><p>'+t("Earn XP only for real actions. Completed quests can be claimed once per day or once ever, depending on the goal.","Отримуй XP лише за справжні дії. Нагороди доступні раз на день або один раз назавжди — залежно від цілі.")+'</p><div class="ww-quest-grid">'+(quests.quests||[]).map(q=>
+      '<article class="ww-quest '+(q.claimed?"completed":"")+'"><span class="ww-quest-icon">'+esc(q.emoji)+'</span><div><strong>'+esc(t(q.title,q.uk))+'</strong><small>+'+Number(q.xp)+' XP</small></div>'+
+      (q.claimed?'<span class="ww-quest-done">✓ '+t("Claimed","Отримано")+'</span>':
+      '<button class="btn '+(q.complete?"primary":"")+'" data-ww="quest-claim" data-id="'+esc(q.id)+'" '+(q.complete?"":"disabled")+'>'
+      +(q.complete?t("Claim XP","Забрати XP"):t("Not yet","Ще не виконано"))+'</button>')+'</article>').join("")+'</div></div>';
    }
    if(tab==="progress")html+='<p><a class="btn" href="/account-export.html">↓ '+t("Export my data","Експорт моїх даних")+'</a></p>';
    if(seq===nonce&&active())body().innerHTML=html;
@@ -48,6 +55,12 @@ if(root){
   if(a==="retry"){void render();return}
   if(a==="search"){search=root.querySelector("#ww-search")?.value||"";void render();return}
   if(a==="sort"){gallerySort=gallerySort==="new"?"popular":"new";void render();return}
+  if(a==="quest-claim"){
+   el.disabled=true;
+   try{const result=await api("/world/quest/claim","POST",{id});await render();notice(t("Reward claimed: +","Нагорода отримана: +")+result.xp+" XP");window.dispatchEvent(new Event("wrld:profile-updated"))}
+   catch(error){notice(error.message)}finally{el.disabled=false}
+   return;
+  }
   if(a==="feed-mode"){feedMode=el.dataset.mode;void render();return}
   const actions={post:["/world/post",{body:root.querySelector("#ww-post")?.value}],club:["/world/club",{name:root.querySelector("#ww-club-name")?.value,description:root.querySelector("#ww-club-description")?.value}],like:["/world/like",{id}],follow:["/world/follow",{username:el.dataset.user}],join:["/world/join",{id}],comment:["/world/comment",{id,body:root.querySelector('[data-comment-input="'+id+'"]')?.value}]};
   if(a==="comments"){
