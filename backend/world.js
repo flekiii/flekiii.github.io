@@ -1,6 +1,7 @@
 import {gallery,xpInfo} from "./world-gallery.js";
 import {worldFeed} from "./world-feed.js";
 import {worldClubs} from "./world-clubs.js";
+import {worldDiscuss} from "./world-discuss.js";
 let setup=null;
 async function init(db){
  if(setup)return setup;
@@ -32,8 +33,10 @@ export async function worldHandle(req,env,path,{auth,authorized}){
  let result;
  if(["/world/feed","/world/post","/world/like","/world/comments","/world/comment","/world/follow"].includes(path))result=await worldFeed(req,env.DB,user);
  else if(["/world/clubs","/world/club","/world/join"].includes(path))result=await worldClubs(req,env.DB,user);
+ else if(["/world/comment","/world/follow"].includes(path))result=await worldDiscuss(req,env.DB,user);
  else return err("Not found",404);
  if(result.status===201&&user&&path==="/world/post")await award(env.DB,user.id,"post",15,3);
  if(result.status===201&&user&&path==="/world/club")await award(env.DB,user.id,"club",20,1);
+ if(result.status===201&&user&&path==="/world/comment")await award(env.DB,user.id,"comment",4,5);
  return result;
 }
