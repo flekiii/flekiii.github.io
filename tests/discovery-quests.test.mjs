@@ -49,7 +49,7 @@ test("Game catalogue serves SteamSpy real app IDs and has a second 1000-game pag
 test("Versioned assets and Worker routes match",()=>{
  assert.match(worker,/discoverHandle\(req,env,path/);
  assert.match(worker,/gamesCatalog\(req,path\)/);
- assert.match(html,/wrld-profile\.js\?v=6/);
- assert.match(html,/wrld-world\.mjs\?v=3/);
+ assert.match(html,/wrld-profile\.js\?v=7/);
+ assert.match(html,/wrld-world\.mjs\?v=4/);
  assert.match(html,/wrld-discover\.mjs\?v=1/);
 });
