@@ -49,8 +49,9 @@ function fakeClient(){
   if(path==="/notifications")return ok({notifications:[]});
   throw Error("Unexpected "+path);
  };
- vm.runInNewContext(script,{document:doc,window:{addEventListener:()=>{},dispatchEvent:()=>{}},sessionStorage:{getItem:()=>"session"},fetch,URL,AbortController,Date,Number,Math,JSON,Array,Map,Set,String,Intl,Promise,console,setTimeout,clearTimeout,setInterval:fn=>{interval=fn}});
- return {root,panel:()=>currentPanel,interval:()=>interval,renderCount:()=>renderCount,calls};
+ const window={addEventListener:()=>{},dispatchEvent:()=>{}};
+ vm.runInNewContext(script+"\nwindow.__testCommunityRefresh=()=>render({preserveAccount:true});",{document:doc,window,sessionStorage:{getItem:()=>"session"},fetch,URL,AbortController,Date,Number,Math,JSON,Array,Map,Set,String,Intl,Promise,console,setTimeout,clearTimeout,setInterval:fn=>{interval=fn}});
+ return {root,panel:()=>currentPanel,interval:()=>interval,refresh:()=>window.__testCommunityRefresh(),renderCount:()=>renderCount,calls};
 }
 test("Background chat refresh keeps the member's previous scroll position",async()=>{
  const s=fakeClient();await flush();
@@ -58,14 +59,14 @@ test("Background chat refresh keeps the member's previous scroll position",async
  assert.ok(s.root.innerHTML.includes("social-global"));
  s.panel().scrollTop=280;
  const before=s.renderCount();
- await s.interval();await flush();
+ s.refresh();await flush();
  assert.ok(s.renderCount()>before);
  assert.equal(s.panel().scrollTop,280);
 });
 test("When a member is at bottom, refresh stays with newest messages",async()=>{
  const s=fakeClient();await flush();
  s.panel().scrollTop=786;
- await s.interval();await flush();
+ s.refresh();await flush();
  assert.equal(s.panel().scrollTop,s.panel().scrollHeight);
 });
 test("Private messages and contact navigation are independently scrollable",()=>{
