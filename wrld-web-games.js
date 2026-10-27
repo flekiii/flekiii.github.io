@@ -1,4 +1,5 @@
 import {memoryDeck,tttResult,cpuMove,shift2048,newTile2048,canShift2048} from "./wrld-web-games-core.mjs";
+import {EXTRA_GAMES,createExtraArcade} from "./wrld-web-games-extra.mjs?v=1";
 const root=document.getElementById("wrld-web-games-root");
 const endpoint="https://flekis-wrld-api.flekideveloper.workers.dev/me";
 const L={
@@ -17,6 +18,16 @@ const L={
  odd:["Odd or Even","Парне чи непарне"],oddAbout:["Predict parity.","Вгадай парність числа."],
  mathadd:["Math Sprint · Addition","Математика · Додавання"],mathaddAbout:["Solve server-checked sums for XP.","Розв’язуй приклади за XP."],
  mathmultiply:["Math Sprint · Multiply","Математика · Множення"],mathmultiplyAbout:["Solve server-checked products for XP.","Розв’язуй множення за XP."],
+ wordmix:["Word Scramble","Анаграми"],wordmixAbout:["Unscramble mystery words.","Складай слова з перемішаних букв."],
+ hangman:["Hangman","Виселиця"],hangmanAbout:["Guess the word before six misses.","Вгадай слово за шість помилок."],
+ typing:["Typing Rush","Швидкий набір"],typingAbout:["Type phrases quickly and accurately.","Друкуй фрази швидко й без помилок."],
+ sequence:["Number Sequence","Числова послідовність"],sequenceAbout:["Find the next number.","Знайди наступне число."],
+ colors:["Color Quest","Вгадай колір"],colorsAbout:["Name the shown color.","Назви показаний колір."],
+ simon:["Simon Memory","Запам’ятай кольори"],simonAbout:["Repeat the growing color sequence.","Повторюй довшу послідовність кольорів."],
+ mines:["Mini Minesweeper","Мінісапер"],minesAbout:["Uncover safe tiles without hitting mines.","Відкривай клітинки без мін."],
+ lights:["Lights Out","Вимкни світло"],lightsAbout:["Turn every light off.","Вимкни всі лампи."],
+ slide:["Sliding Puzzle","Пазл 3×3"],slideAbout:["Slide the numbers into order.","Розташуй числа за порядком."],
+ connect:["Connect Four","Чотири в ряд"],connectAbout:["Challenge the computer.","Зіграй проти комп’ютера."],
  play:["Play now","Грати"],back:["← All games","← Усі ігри"],again:["New game","Нова гра"],moves:["Moves","Ходи"],pairs:["Pairs","Пари"],
  wonMemory:["All pairs found. Nice work! 🎉","Усі пари знайдено! Молодець! 🎉"],yourTurn:["Your turn: X","Твій хід: X"],won:["You win! 🎉","Ти переміг! 🎉"],lost:["Computer wins. Try again!","Комп'ютер переміг. Спробуй ще!"],draw:["It's a draw!","Нічия!"],
  ready:["Press Start to begin.","Натисни Старт, щоб почати."],start:["Start","Старт"],wait:["Wait for green…","Чекай на зелений…"],tap:["CLICK!","ТИСНИ!"],
@@ -28,9 +39,10 @@ const getToken=()=>{try{return sessionStorage.getItem("fw-token")||""}catch{retu
 let mergeGrid=Array(16).fill(0),mergeScore=0,guessNumber=0,guessTries=0,guessText="",rpsText="",rpsWins=0;
 let miniScore=0,miniInfo="",miniPrevious=7,mathRound=null,mathInfo="",mathBusy=false;
 let validated="",user=null,view="menu",deck=[],up=[],matched=new Set(),moves=0,locked=false,board=[],result=null,react="ready",reactionAt=0,reactMs=null,timeout=0,nonce=0,request=0;
+let extra=null;
 const onPage=()=>document.getElementById("page-web-games")?.classList.contains("active");
 const allowed=()=>!!(validated&&validated===getToken()&&user);
-function cancel(){clearTimeout(timeout);timeout=0;nonce++}
+function cancel(){clearTimeout(timeout);timeout=0;nonce++;extra?.cancel()}
 function revoke(){request++;validated="";user=null;view="menu";cancel()}
 function gate(error=false){
  root.innerHTML='<div class="wg-gate"><div class="wg-gate-icon">🎮</div><span class="overline">FLEKI\'S WRLD ARCADE</span><h2>'+t("gate")+'</h2><p>'+t("gateBody")+'</p>'+(error?'<p role="alert">'+t("error")+'</p>':'')+'<div class="wg-actions"><button class="btn primary" data-wg="sign">'+t("sign")+'</button>'+(error?'<button class="btn" data-wg="retry">'+t("retry")+'</button>':'')+'</div><p class="wg-note">'+t("note")+'</p></div>';
@@ -51,7 +63,7 @@ async function verify(showLoading=false){
  }catch{if(id===request&&onPage()){revoke();gate(true)}return false}
 }
 function menu(){
- const items=[["memory","🧠"],["ttt","⭕"],["reaction","⚡"],["merge","🔢"],["guess","🎯"],["rps","✊"],["coin","🪙"],["dice","🎲"],["higher","🃏"],["odd","🔮"],["mathadd","➕"],["mathmultiply","✖️"]];
+ const items=[["memory","🧠"],["ttt","⭕"],["reaction","⚡"],["merge","🔢"],["guess","🎯"],["rps","✊"],["coin","🪙"],["dice","🎲"],["higher","🃏"],["odd","🔮"],["mathadd","➕"],["mathmultiply","✖️"],["wordmix","🔤"],["hangman","🔠"],["typing","⌨️"],["sequence","🔢"],["colors","🎨"],["simon","🧩"],["mines","💣"],["lights","💡"],["slide","🧱"],["connect","🟣"]];
  root.innerHTML='<div class="wg-head"><p>'+t("subtitle")+'</p><span class="wg-account">● @'+escape(user.username)+'</span></div><div class="wg-grid">'+items.map(([id,icon])=>
   '<button class="wg-tile" data-wg="launch" data-game="'+id+'"><span class="wg-thumb">'+icon+'</span><strong>'+t(id)+'</strong><span class="wg-desc">'+t(id+"About")+'</span><span class="wg-play">'+t("play")+' ↗</span></button>').join("")+'</div>';
 }
@@ -68,6 +80,7 @@ function newGame(id){
  if(id==="rps"){rpsWins=0;rpsText=""}
  if(["coin","dice","higher","odd"].includes(id)){miniScore=0;miniInfo="";miniPrevious=1+Math.floor(Math.random()*13)}
  if(["mathadd","mathmultiply"].includes(id)){mathRound=null;mathInfo="";void mathStart()}
+ if(EXTRA_GAMES.includes(id)){extra.start(id);return}
  render();
 }
 function memoryView(){
@@ -171,14 +184,15 @@ async function mathAnswer(value){
   window.WrldProfile?.refresh?.();
  }catch(e){mathInfo=e.message}finally{mathBusy=false;if(view===mode)render()}
 }
-function render(){if(!onPage())return;if(!allowed())return gate();if(view==="memory")memoryView();else if(view==="ttt")tttView();else if(view==="reaction")reactionView();else if(view==="merge")mergeView();else if(view==="guess")guessView();else if(view==="rps")rpsView();else if(["coin","dice","higher","odd"].includes(view))miniView();else if(["mathadd","mathmultiply"].includes(view))mathView();else menu()}
+extra=createExtraArcade({frame,t});
+function render(){if(!onPage())return;if(!allowed())return gate();if(EXTRA_GAMES.includes(view))extra.render(view);else if(view==="memory")memoryView();else if(view==="ttt")tttView();else if(view==="reaction")reactionView();else if(view==="merge")mergeView();else if(view==="guess")guessView();else if(view==="rps")rpsView();else if(["coin","dice","higher","odd"].includes(view))miniView();else if(["mathadd","mathmultiply"].includes(view))mathView();else menu()}
 root.addEventListener("click",async e=>{
  const b=e.target.closest("[data-wg]");if(!b||!root.contains(b))return;
  const action=b.dataset.wg;
  if(action==="sign"){document.querySelector('#dock [data-go="profile"]')?.click();return}
  if(action==="retry"){void verify(true);return}
  if(!allowed()){revoke();gate();return}
- if(action==="launch"){const key=b.dataset.game;if(["memory","ttt","reaction","merge","guess","rps","coin","dice","higher","odd","mathadd","mathmultiply"].includes(key)&&await verify())newGame(key);return}
+ if(action==="launch"){const key=b.dataset.game;if(["memory","ttt","reaction","merge","guess","rps","coin","dice","higher","odd","mathadd","mathmultiply",...EXTRA_GAMES].includes(key)&&await verify())newGame(key);return}
  if(action==="back"){cancel();view="menu";render();return}
  if(action==="again"){newGame(view);return}
  if(action==="card"&&view==="memory")card(Number(b.dataset.i));
@@ -188,11 +202,13 @@ root.addEventListener("click",async e=>{
  if(action==="rps-pick"&&view==="rps")playRps(b.dataset.pick);
  if(action==="mini"&&["coin","dice","higher","odd"].includes(view))miniPlay(b.dataset.choice);
  if(action==="math-start"&&["mathadd","mathmultiply"].includes(view))void mathStart();
+ if(action==="extra"&&EXTRA_GAMES.includes(view))extra.action(b.dataset.command,b.dataset.choice);
 });
 window.addEventListener("wrld:page-change",e=>{if(e.detail?.id==="web-games")void verify(true);else revoke()});
 document.addEventListener("submit",e=>{
  if(e.target.id==="wg-guess-form"){e.preventDefault();if(onPage()&&allowed()&&view==="guess")guessIt(Number(new FormData(e.target).get("guess")))}
  if(e.target.id==="wg-math-form"){e.preventDefault();if(onPage()&&allowed()&&["mathadd","mathmultiply"].includes(view))void mathAnswer(Number(new FormData(e.target).get("answer")))}
+ if(e.target.id==="wg-extra-form"&&onPage()&&allowed()&&EXTRA_GAMES.includes(view)){e.preventDefault();extra.submit(e.target)}
 });
 window.addEventListener("keydown",e=>{if(!onPage()||!allowed()||view!=="merge"||e.target.closest("input,textarea,select,[contenteditable]"))return;const d={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"up",ArrowDown:"down"}[e.key];if(d){e.preventDefault();shift(d)}});
 window.addEventListener("fw-auth-changed",()=>{revoke();if(onPage())void verify(true)});
