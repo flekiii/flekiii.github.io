@@ -121,3 +121,13 @@
 .wp-real-game-mini{display:inline-flex;align-items:center;gap:6px}.wp-real-game-mini img{width:40px;aspect-ratio:460/215;object-fit:cover;border-radius:4px}
 
 .wp-level-progress{padding:17px 19px;border-radius:16px;border:1px solid var(--line);background:var(--panel2);margin:12px 0 18px}.wp-progress-heading{display:flex;justify-content:space-between;gap:10px;font-size:15px}.wp-progress-heading strong{font-size:17px}.wp-progress-heading span{color:var(--muted)}.wp-progress-track{height:9px;border-radius:99px;background:var(--panel);overflow:hidden;margin:14px 0 7px}.wp-progress-track>span{display:block;background:linear-gradient(90deg,#8861c3,#c47be8);height:100%;border-radius:99px}.wp-level-progress small{font-size:11px;color:var(--muted)}
+
+.wp-card{border:1px solid color-mix(in srgb,var(--wp-custom-accent,#9b73e4) 32%,var(--line));box-shadow:0 12px 44px color-mix(in srgb,var(--wp-custom-accent,#9b73e4) 13%,transparent);transition:box-shadow .3s ease,transform .3s ease}
+.wp-card:hover{box-shadow:0 22px 60px color-mix(in srgb,var(--wp-custom-accent,#9b73e4) 21%,transparent);transform:translateY(-2px)}
+.wp-card-banner{position:relative;background:radial-gradient(circle at 74% 35%,color-mix(in srgb,var(--wp-custom-accent) 75%,white) 0%,transparent 58%),linear-gradient(132deg,#161c31,var(--wp-custom-accent,#9b73e4))}.wp-card-banner:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 40%,#ffffff33,transparent 55%)}
+.wp-card.glow,.wp-card-glow{background:radial-gradient(circle at top right,color-mix(in srgb,var(--wp-custom-accent) 13%,transparent),transparent 55%),var(--panel)}
+.wp-card-glass{backdrop-filter:blur(18px);background:color-mix(in srgb,var(--panel) 73%,transparent)}.wp-card-minimal{box-shadow:none!important;background:var(--panel)}.wp-card-minimal .wp-card-banner{background:var(--wp-custom-accent)}.wp-card-sunset .wp-card-banner{background:linear-gradient(120deg,#ef9c78,#d66fa8,var(--wp-custom-accent))}
+.wp-palette{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}.wp-swatch{width:38px;height:38px;border-radius:12px;border:3px solid var(--panel);box-shadow:0 0 0 1px var(--line);cursor:pointer}.wp-swatch.selected{box-shadow:0 0 0 3px var(--text)}
+.wp-card .wp-level{background:var(--wp-custom-accent,#9b73e4)}
+.wp-editor-inner{animation:wp-pane-in .32s ease both}@keyframes wp-pane-in{from{opacity:.6;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.wp-editor-inner{animation:none}.wp-card{transition:none}}

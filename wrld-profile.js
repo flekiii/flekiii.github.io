@@ -74,7 +74,7 @@ const secure=async(path,opts={})=>{
 };
 function note(text){err=text;const target=document.getElementById("wp-feedback");if(target)target.textContent=text}
 function resetMedia(){for(const url of [avatar,banner,avatarTemp,bannerTemp])if(url?.startsWith("blob:"))URL.revokeObjectURL(url);avatar="";banner="";avatarTemp="";bannerTemp=""}
-function blank(p){return {display_name:p.display_name||"",bio:p.bio||"",status:p.status||"online",country:p.country||"",region:p.region||"",district:p.district||"",phone:p.phone||"",website:p.website||"",socials:{...(p.socials||{})},favorite_games:[...(p.favorite_games||[])],current_games:[...(p.current_games||[])],age:p.age||"",interests:[...(p.interests||[])],status_emoji:p.status_emoji||"",status_text:p.status_text||"",discoverable:p.discoverable===true,visibility:{...defaults,...(p.visibility||{})}}}
+function blank(p){return {display_name:p.display_name||"",bio:p.bio||"",status:p.status||"online",country:p.country||"",region:p.region||"",district:p.district||"",phone:p.phone||"",website:p.website||"",socials:{...(p.socials||{})},favorite_games:[...(p.favorite_games||[])],current_games:[...(p.current_games||[])],age:p.age||"",interests:[...(p.interests||[])],status_emoji:p.status_emoji||"",status_text:p.status_text||"",accent:p.accent||"#9b73e4",card_style:p.card_style||"glow",discoverable:p.discoverable===true,visibility:{...defaults,...(p.visibility||{})}}}
 async function imageFor(id,kind){try{const response=await fetch(API+"/profiles/media/"+encodeURIComponent(id)+"/"+kind,{headers:tok()?{Authorization:"Bearer "+tok()}: {},cache:"no-store"});if(!response.ok)return "";const blob=await response.blob();return URL.createObjectURL(blob)}catch{return ""}}
 const refreshAccount=()=>window.dispatchEvent(new Event("wrld:profile-updated"));
 async function load(userId){
@@ -118,7 +118,9 @@ function card(p,opts={}){
  const urls=[p.website&&showUrl(p.website),...links.filter(k=>social[k]).map(k=>showUrl(social[k]))].filter(Boolean);
  const fav=p.favorite_games||[],playing=p.current_games||[];
  const gameCard=x=>window.WrldGamePicker?.miniCard?.(x)||"<span>"+esc(x)+"</span>";
- return '<div class="wp-card">'+
+ const accent=/^#[0-9a-f]{6}$/i.test(p.accent||"")?p.accent:"#9b73e4";
+  const style=["glow","glass","minimal","sunset"].includes(p.card_style)?p.card_style:"glow";
+  return '<div class="wp-card wp-card-'+style+'" style="--wp-custom-accent:'+accent+'">'+
  '<div class="wp-card-banner">'+imageBox(opts.banner??(bannerTemp||banner),"Profile banner","✦","wp-banner-image")+'</div>'+
  '<div class="wp-card-meta">'+imageBox(opts.avatar??(avatarTemp||avatar),"Avatar",esc((n||"?").slice(0,1).toUpperCase()),"wp-avatar-image")+
  '<div class="wp-card-name"><h3>'+esc(n)+'</h3><span>@'+esc(p.username||data?.username||"member")+'</span></div>'+statusMarkup(p.status,p.status_emoji,p.status_text)+'</div>'+
@@ -146,7 +148,11 @@ function progressPanel(profile){
 function content(state){
  const p=draft||blank(state.user),v=p.visibility;
  if(activeTab==="overview")return '<h2>'+tr("Your profile","Твій профіль")+'</h2><p>'+tr("Customize your world, choose what to share and see changes instantly.","Налаштуй свій профіль, обери, що показувати іншим, і переглядай зміни одразу.")+'</p>'+progressPanel(data)+'<div class="wp-section-cards">'+sections.filter(s=>!["overview","preview"].includes(s[0])).map(s=>'<button type="button" data-wp="tab" data-id="'+s[0]+'"><strong>'+s[1]+' '+(en()?s[2]:s[3])+'</strong><span>↗</span></button>').join("")+'</div>';
- if(activeTab==="appearance")return '<h2>'+tr("Photos & banners","Фото та банери")+'</h2><p>'+tr("Upload JPG, PNG, WebP or GIF. Animated GIF banners will stay animated. Images are stored with your account.","Завантаж JPG, PNG, WebP або GIF. Анімовані GIF-банери залишаться рухомими. Зображення зберігаються у твоєму акаунті.")+'</p><div class="wp-upload-list">'+["avatar","banner"].map(kind=>'<div class="wp-upload"><strong>'+ (kind==="avatar"?tr("Profile photo","Фото профілю"):tr("Animated banner","Анімований банер"))+'</strong><small>'+ "3 MB max"+'</small><label class="btn"><input hidden type="file" data-wp-upload="'+kind+'" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpeg,image/webp,image/gif">'+tr("Choose image / GIF","Вибрати фото / GIF")+'</label><button class="btn" data-wp="remove-media" data-kind="'+kind+'">'+tr("Remove","Прибрати")+'</button></div>').join("")+'</div>';
+ if(activeTab==="appearance")return '<h2>✦ '+tr("Style your profile","Створи свій стиль")+'</h2><p>'+tr("Choose your colors, profile card design, photos and animated banner. Your look is visible to other users.","Обирай кольори, стиль картки, фото й анімований банер. Твій стиль бачитимуть інші.")+'</p>'+
+ '<h3>'+tr("Profile accent","Акцент профілю")+'</h3><div class="wp-palette">'+["#9b73e4","#67a8df","#eb8bb4","#5ccfaa","#f1b75f","#ec786e","#b8bed2","#976ded"].map(color=>'<button type="button" class="wp-swatch '+(p.accent===color?"selected":"")+'" data-wp="accent" data-color="'+color+'" style="background:'+color+'" aria-label="'+color+'"></button>').join("")+'</div>'+
+ '<label class="wp-field"><span>'+tr("Custom accent color","Власний колір")+'</span><input type="color" data-wp-field="accent" value="'+esc(p.accent)+'"></label>'+
+ '<label class="wp-field"><span>'+tr("Card style","Стиль картки")+'</span><select class="social-input" data-wp-field="card_style">'+[["glow",tr("Glow / Gradient","Сяйво / Градієнт")],["glass",tr("Glass / Frosted","Скло / Прозорість")],["minimal",tr("Minimal / Clean","Мінімалізм")],["sunset",tr("Sunset / Warm","Захід сонця")]].map(([v,label])=>'<option value="'+v+'" '+(p.card_style===v?"selected":"")+'>'+label+'</option>').join("")+'</select></label>'+
+ '<div class="wp-upload-list">'+["avatar","banner"].map(kind=>'<div class="wp-upload"><strong>'+(kind==="avatar"?tr("Profile photo","Фото профілю"):tr("Animated banner","Анімований банер"))+'</strong><small>3 MB max</small><label class="btn"><input hidden type="file" data-wp-upload="'+kind+'" accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpeg,image/webp,image/gif">'+tr("Choose image / GIF","Вибрати фото / GIF")+'</label><button class="btn" data-wp="remove-media" data-kind="'+kind+'">'+tr("Remove","Прибрати")+'</button></div>').join("")+'</div>'+save();
  if(activeTab==="about")return '<h2>'+tr("About me","Про мене")+'</h2>'+
  fld(tr("Display name","Ім’я профілю"),"display_name",p.display_name,"text",60)+
  textarea(tr("Description","Опис"),"bio",p.bio,350)+
@@ -256,7 +262,8 @@ document.addEventListener("click",async e=>{
  const target=e.target.closest("[data-wp]");if(!target)return;
  e.preventDefault();const a=target.dataset.wp;
  try{
- if(a==="retry-profile"){if(!loading&&who){err="";void load(who)}return}
+ if(a==="accent"){if(draft&&/^#[0-9a-f]{6}$/i.test(target.dataset.color)){draft.accent=target.dataset.color;liveUpdate();window.dispatchEvent(new Event("wrld:profile-updated"))}return}
+  if(a==="retry-profile"){if(!loading&&who){err="";void load(who)}return}
   if(a==="tab"){activeTab=target.dataset.id;window.dispatchEvent(new Event("wrld:profile-updated"));return}
   if(a==="close-modal"){document.getElementById("wp-public-modal")?.remove();return}
  if(a==="inspect"){await showProfile(target.dataset.username);return}

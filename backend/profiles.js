@@ -37,7 +37,7 @@ async function buildProfile(db,env,viewer,person,as){
  const t=Date.now(),relationType=await relation(db,viewer,person.id,as);
  const settings=await one(db,"SELECT * FROM wrld_profile_settings WHERE user_id=?",person.id)||{};
  const privacyMap=privacy(settings.visibility);
- const extra=await one(db,"SELECT age,interests,status_emoji,status_text,discoverable FROM wrld_profile_extras WHERE user_id=?",person.id)||{};
+ const extra=await one(db,"SELECT age,interests,status_emoji,status_text,discoverable,accent,card_style FROM wrld_profile_extras WHERE user_id=?",person.id)||{};
  const xp=Number((await one(db,"SELECT COALESCE(SUM(amount),0) xp FROM wrld_world_xp WHERE user_id=?",person.id))?.xp||0);
  const can=field=>visible(privacyMap,field,relationType);
  const rawStatus=statuses.includes(settings.status)?settings.status:"offline";
@@ -52,6 +52,8 @@ async function buildProfile(db,env,viewer,person,as){
    age:can("age")&&extra.age?Number(extra.age):null,
    interests:can("interests")?(js(extra.interests)||[]):null,
    discoverable:relationType==="self"?extra.discoverable===1:undefined,
+   accent:/^#[0-9a-f]{6}$/i.test(extra.accent||"")?extra.accent:"#9b73e4",
+   card_style:["glow","glass","minimal","sunset"].includes(extra.card_style)?extra.card_style:"glow",
    xp,level:Math.floor(Math.sqrt(xp/60))+1,
   country:can("location")?settings.country||"":null,region:can("location")?settings.region||"":null,district:can("location")?settings.district||"":null,
   phone:can("phone")?settings.phone||"":null,
@@ -130,6 +132,9 @@ export async function profileHandle(req,env,path,{auth,authorized}){
    const uniqueInterests=[...new Set(interests.map(x=>x.trim()))];
    const emoji=clean(p.status_emoji,16),statusText=clean(p.status_text,81);
    if([...emoji].length>6||statusText.length>80)return fail("Invalid custom status.");
+   const accent=String(p.accent||"#9b73e4");
+   const cardStyle=String(p.card_style||"glow");
+   if(!/^#[0-9a-f]{6}$/i.test(accent)||!["glow","glass","minimal","sunset"].includes(cardStyle))return fail("Invalid profile theme.");
    const discoverable=p.discoverable===true;
    if(discoverable&&!age)return fail("Set your age to enable friend discovery.");
    const v=privacy(p.visibility);
@@ -140,9 +145,9 @@ export async function profileHandle(req,env,path,{auth,authorized}){
    stmt(db,`INSERT INTO wrld_profile_settings(user_id,status,country,region,district,phone,website,socials,favorite_games,current_games,visibility,last_seen,updated_at)
    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET status=excluded.status,country=excluded.country,region=excluded.region,district=excluded.district,phone=excluded.phone,website=excluded.website,socials=excluded.socials,favorite_games=excluded.favorite_games,current_games=excluded.current_games,visibility=excluded.visibility,updated_at=excluded.updated_at`,
    viewer.id,status,country,region,district,phone,website,JSON.stringify(socials),JSON.stringify(games.favorite_games),JSON.stringify(games.current_games),JSON.stringify(v),t,t),
-   stmt(db,`INSERT INTO wrld_profile_extras(user_id,age,interests,status_emoji,status_text,discoverable)
-   VALUES(?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET age=excluded.age,interests=excluded.interests,status_emoji=excluded.status_emoji,status_text=excluded.status_text,discoverable=excluded.discoverable`,
-   viewer.id,age,JSON.stringify(uniqueInterests),emoji,statusText,Number(discoverable))
+   stmt(db,`INSERT INTO wrld_profile_extras(user_id,age,interests,status_emoji,status_text,discoverable,accent,card_style)
+   VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET age=excluded.age,interests=excluded.interests,status_emoji=excluded.status_emoji,status_text=excluded.status_text,discoverable=excluded.discoverable,accent=excluded.accent,card_style=excluded.card_style`,
+   viewer.id,age,JSON.stringify(uniqueInterests),emoji,statusText,Number(discoverable),accent,cardStyle)
   ]);
   return reply({ok:true});
  }
