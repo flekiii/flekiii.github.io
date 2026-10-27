@@ -35,5 +35,5 @@ test("Meet People is 15+ and separates adult and teen requests on server",()=>{
 });
 test("The site supports accessible focus effects and reduced motion",()=>{
  assert.match(get("wrld-polish.css"),/prefers-reduced-motion:reduce/);
- assert.match(html,/wrld-polish\.css\?v=1/);
+ assert.match(html,/wrld-polish\.css\?v=2/);
 });

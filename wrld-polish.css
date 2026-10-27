@@ -15,3 +15,24 @@
 @media(min-width:720px){.nav-button svg{transition:transform .3s var(--wrld-ease)}.nav-button:hover svg{transform:rotate(-7deg) scale(1.08)}}
 @media(max-width:680px){.page.active{animation-duration:.22s}.btn:hover,.tile:hover,.wg-tile:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Header language switcher: same themed surface, spacing and hover states as the site. */
+.wrld-lang-picker{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ height:43px;min-width:113px;box-sizing:border-box;padding:0 12px;
+ position:relative;border:1px solid var(--line);border-radius:13px;
+ color:var(--text);background:var(--panel);
+ box-shadow:inset 0 1px 0 color-mix(in srgb,var(--text) 4%,transparent);
+ transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease;
+}
+.wrld-lang-picker:hover{border-color:var(--accent2);background:var(--panel2);box-shadow:0 3px 18px color-mix(in srgb,var(--accent2) 12%,transparent)}
+.wrld-lang-picker:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.wrld-lang-icon{display:flex;align-items:center;flex:0 0 auto;color:var(--accent2)}
+.wrld-lang-icon svg{width:17px;height:17px;stroke:currentColor}
+.wrld-lang-caption{white-space:nowrap;font-size:11px;font-weight:700;letter-spacing:.01em;color:var(--muted)}
+#siteLanguage{appearance:none;-webkit-appearance:none;min-width:35px;max-width:55px;z-index:1;position:relative;cursor:pointer;border:none;outline:none!important;border-radius:5px;margin:0;padding:7px 13px 7px 1px;color:var(--text);background:transparent;font:800 12px "DM Sans",sans-serif;letter-spacing:.02em}
+#siteLanguage option{background:var(--panel);color:var(--text);font-weight:600}
+.wrld-lang-chevron{position:absolute;right:12px;top:50%;width:7px;height:7px;pointer-events:none;border-right:1.7px solid var(--accent2);border-bottom:1.7px solid var(--accent2);transform:translateY(-75%) rotate(45deg)}
+@media(max-width:1020px){.wrld-lang-picker{min-width:81px;padding:0 10px;gap:5px}.wrld-lang-caption{display:none}.wrld-lang-chevron{right:10px}}
+@media(max-width:470px){.wrld-lang-picker{height:39px;min-width:70px;padding:0 8px}.wrld-lang-icon svg{width:15px;height:15px}.wrld-lang-chevron{right:8px}#siteLanguage{font-size:11px;min-width:31px;padding-right:10px}}
+@media(prefers-reduced-motion:reduce){.wrld-lang-picker{transition:none}}

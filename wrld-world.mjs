@@ -23,13 +23,14 @@ if(root){
  async function render(){
   if(!root||!active()||loading)return;const seq=++nonce;loading=true;shell();body().innerHTML='<p class="ww-empty">'+t("Loading world…","Завантажуємо світ…")+'</p>';
   try{
-   let html="";
+   let html="",quests={quests:[]};
    if(tab==="feed"){
     const r=await api("/world/feed?mode="+feedMode);html=feedMarkup(r.posts);
    }else if(tab==="clubs"){
     const r=await api("/world/clubs");html=clubsMarkup(r.clubs);
    }else{
-    const [rank,own,quests]=await Promise.all([api("/world/ranking").catch(()=>({ranking:[]})),token()?api("/world/progress").catch(()=>({progress:null})):Promise.resolve({}),token()?api("/world/quests").catch(e=>({quests:[],error:e.message})):Promise.resolve({quests:[]})]);
+    const [rank,own,questResult]=await Promise.all([api("/world/ranking").catch(()=>({ranking:[]})),token()?api("/world/progress").catch(()=>({progress:null})):Promise.resolve({}),token()?api("/world/quests").catch(e=>({quests:[],error:e.message})):Promise.resolve({quests:[]})]);
+    quests=questResult;
     const p=own.progress;
     html='<div class="ww-progress"><h2>'+t("Your level and rewards","Твій рівень і нагороди")+'</h2>'+(p?'<div class="ww-level">★ '+p.level+'</div><strong>'+p.xp+' XP</strong><p>'+t("Earn XP by posting and creating clubs. Daily caps stop easy farming.","Отримуй XP за публікації та створення клубів. Є щоденні обмеження від накрутки.")+'</p><div class="ww-badges">'+(p.badges?.length?p.badges.map(x=>'<span class="ww-badge">'+esc(x.replaceAll("-"," "))+'</span>').join(""):t("Badges are waiting for you.","Значки вже чекають на тебе."))+'</div>':'<p>'+t("Sign in to see your achievements.","Увійди, щоб побачити досягнення.")+'</p>')+'</div><h2>'+t("Community ranking","Рейтинг спільноти")+'</h2><div class="ww-ranking">'+(rank.ranking?.length?rank.ranking.map((r,i)=>'<p><strong>#'+(i+1)+' · @'+esc(r.username)+'</strong><span>★ '+r.level+' · '+r.xp+' XP</span></p>').join(""):'<p>'+t("Nobody has earned XP yet.","Ще ніхто не отримав XP.")+'</p>')+'</div>';
    }
