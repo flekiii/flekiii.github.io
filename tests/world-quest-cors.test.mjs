@@ -17,6 +17,7 @@ function mockDB(){
      if(sql.includes("FROM wrld_world_posts"))return {n:1};
      return {n:0};
     },
+    async all(){return {results:[]}},
     async run(){statements.push({sql,params});return {success:true,meta:{changes:1}}}
    };
   }
@@ -47,7 +48,7 @@ test("Claiming earned XP has the same CORS headers as the list",async()=>{
  const db=mockDB(),response=await request(db,"/world/quest/claim","POST",{id:"share-post"});
  assert.equal(response.status,200);
  assertBrowserReadable(response);
- assert.deepEqual(await response.json(),{ok:true,xp:30});
+ assert.deepEqual(await response.json(),{ok:true,xp:30,id:"share-post"});
  assert.ok(db.statements.some(x=>x.sql.includes("INSERT OR IGNORE INTO wrld_world_quest_claims")));
  assert.ok(db.statements.some(x=>x.sql.includes("INSERT INTO wrld_world_xp")));
 });
