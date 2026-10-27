@@ -47,7 +47,7 @@ test("Game picker searches cross-platform titles without rate-limited 1,000-game
  assert.doesNotMatch(picker,/\/games\/catalog\?page=/);
  assert.match(picker,/cdn\.akamai\.steamstatic\.com\/steam\/apps/);
  assert.match(profile,/WrldGamePicker\?\.render/);
- assert.match(html,/wrld-game-picker\.js\?v=2/);
+ assert.match(html,/wrld-game-picker\.js\?v=3/);
 });
 test("Versioned assets and Worker routes match",()=>{
  assert.match(worker,/discoverHandle\(req,env,path/);
