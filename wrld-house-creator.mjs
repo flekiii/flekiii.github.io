@@ -1,4 +1,4 @@
-import {HOUSE_TEMPLATES,TEMPLATE_BY_ID,STORE_KEY,encode} from "./wrld-home-core.mjs?v=2";
+import {HOUSE_TEMPLATES,TEMPLATE_BY_ID,TYPE_BY_ID,STORE_KEY,encode} from "./wrld-home-core.mjs?v=2";
 import {mountPublicHouse3D} from "./wrld-public-house-3d.mjs?v=1";
 const API="https://flekis-wrld-api.flekideveloper.workers.dev";
 const REACTIONS=["👍","👎","❤️","💜","💙","💚","💛","🧡","🩷","😍","🥰","🔥","✨","👏","🎉","🤩","😮","😂","🏠","💯"];
@@ -17,6 +17,45 @@ function stopCloudSync(){clearTimeout(syncTimer);syncTimer=0;syncToken="";syncUs
 function localOwnerMismatch(user){
  const settings=getSettings();
  return !!(settings?.owner&&user?.id&&settings.owner!==user.id);
+}
+function checkBackup(input){
+ if(!input||typeof input!=="object"||!TEMPLATE_BY_ID[input.template])throw Error(tr("Unknown house plan in backup.","Невідомий план будинку в копії."));
+ if(typeof input.name!=="string"||!input.name.trim()||input.name.length>55)throw Error(tr("Invalid backup house name.","Некоректна назва будинку в копії."));
+ if(!Array.isArray(input.items)||input.items.length>90)throw Error(tr("Invalid furniture in backup.","Некоректні меблі у копії."));
+ const ids=new Set();
+ for(const item of input.items){
+  if(!item||typeof item.id!=="string"||!/^[-a-zA-Z0-9]{1,50}$/.test(item.id)||ids.has(item.id)||!TYPE_BY_ID[item.type]
+    ||!Number.isFinite(item.x)||!Number.isFinite(item.z)||Math.abs(item.x)>5||Math.abs(item.z)>4
+    ||!Number.isInteger(item.rot)||item.rot<0||item.rot>3)throw Error(tr("Backup contains invalid furniture.","Копія містить некоректні меблі."));
+  ids.add(item.id);
+ }
+ return {name:input.name.trim(),template:input.template,items:input.items.map(({id,type,x,z,rot})=>({id,type,x,z,rot}))};
+}
+function restoreLocalPackage(raw,owner=null){
+ const found=checkBackup(raw);
+ const current=getSettings();
+ if(current?.template&&!confirm(tr("Replace this device's house with the backup? A local restore point will be kept.","Замінити будинок на цьому пристрої резервною копією? Поточну версію збережемо.")))return false;
+ backupLocal();stopCloudSync();
+ const settings={template:found.template,name:found.name,createdAt:Date.now(),...(owner?{owner}:{})};
+ writeSettings(settings);
+ localStorage.removeItem(STORE_KEY);
+ selected=found.template;$("houseNameInput").value=found.name;cards();
+ window.dispatchEvent(new CustomEvent("wrld:house-import",{detail:{...settings,items:found.items}}));
+ $("houseOpenButton").hidden=false;$("continueHouseBtn").hidden=false;
+ const actual=snapshot();
+ setShareStatus(actual?.items?.length===found.items.length?"Backup restored successfully ✓":"Backup restored; some invalid or overlapping items were skipped.","Резервну копію відновлено ✓");
+ window.dispatchEvent(new CustomEvent("wrld:house-restored",{detail:{house:found}}));
+ return true;
+}
+function exportBackupFile(){
+ const details=checkBackup(localHouseData());
+ const contents=JSON.stringify({format:"fleki-wrld-house",version:1,...details,exported_at:new Date().toISOString()},null,2);
+ const blob=new Blob([contents],{type:"application/json"});
+ const url=URL.createObjectURL(blob),link=document.createElement("a");
+ link.href=url;link.download="fleki-wrld-house-"+new Date().toISOString().slice(0,10)+".json";
+ document.body.append(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+ setShareStatus("House backup downloaded ✓","Резервну копію будинку завантажено ✓");
 }
 function backupLocal(){
  try{
@@ -193,6 +232,26 @@ async function refreshVisibility(){
 $("houseSaveCloudButton").addEventListener("click",async()=>{try{await saveCloudDraft({manual:true})}catch(e){setShareStatus(e.message,e.message)}});
 $("houseRestoreCloudButton").addEventListener("click",async()=>{try{await restoreCloudHouse("draft")}catch(e){setShareStatus(e.message,e.message)}});
 $("houseRestorePublishedButton").addEventListener("click",async()=>{try{await restoreCloudHouse("published")}catch(e){setShareStatus(e.message,e.message)}});
+$("houseExportBackup").addEventListener("click",()=>{try{exportBackupFile()}catch(e){setShareStatus(e.message,e.message)}});
+$("houseImportBackupButton").addEventListener("click",()=>{$("houseImportBackupFile").click()});
+$("houseImportBackupFile").addEventListener("change",async event=>{
+ const file=event.target.files?.[0];event.target.value="";
+ if(!file)return;
+ if(file.size>65536){setShareStatus("Backup is too large.","Завелика резервна копія.");return}
+ try{
+  const input=JSON.parse(await file.text());
+  if(input.format!=="fleki-wrld-house"||input.version!==1)throw Error(tr("Unknown backup version.","Невідома версія резервної копії."));
+  restoreLocalPackage(input);
+ }catch(error){setShareStatus(error.message,error.message)}
+});
+$("houseRestoreLocalBackup").addEventListener("click",()=>{
+ try{
+  const found=JSON.parse(localStorage.getItem("fleki_wrld_house_last_backup")||"null");
+  if(!found?.settings||!found.layout){setShareStatus("No previous local backup available.","Немає попередньої локальної копії.");return}
+  const settings=JSON.parse(found.settings),layout=JSON.parse(found.layout);
+  restoreLocalPackage({name:settings.name,template:settings.template,items:layout.items},settings.owner||null);
+ }catch(error){setShareStatus(error.message,error.message)}
+});
 $("houseHideButton").addEventListener("click",async()=>{try{await changeVisibility(true,!currentVisibility.in_profile)}catch(e){setShareStatus(e.message,e.message)}});
 $("houseUnpublishButton").addEventListener("click",async()=>{if(!confirm(tr("Hide your published house from everyone? Your house and furniture will not be deleted.","Приховати опублікований будинок від усіх? Будинок і меблі не видаляться.")))return;try{await changeVisibility(false,false)}catch(e){setShareStatus(e.message,e.message)}});
 window.addEventListener("wrld:house-saved",()=>queueCloudSave());

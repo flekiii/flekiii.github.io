@@ -110,3 +110,6 @@
 .wrld-house-cloud-actions .wrld-house-danger:hover{background:#dc657824}
 #houseShareStatus{display:block;overflow-wrap:anywhere;line-height:1.65}
 @media(max-width:620px){.wrld-house-cloud-actions{display:grid;grid-template-columns:1fr}.house-actionbar .house-actions{flex-wrap:wrap}}
+
+/* Backup actions are deliberately separated from public publishing. */
+#houseImportBackupFile[hidden]{display:none!important}
