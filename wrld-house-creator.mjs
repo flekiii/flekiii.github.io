@@ -11,6 +11,22 @@ const planText=t=>houseLang()==="uk"?[t.name,t.tag]:(PLANS_EN[t.id]||[t.name,t.t
 const escapeHtml=text=>String(text??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const getSettings=()=>{try{return JSON.parse(localStorage.getItem(settingsKey)||"null")}catch{return null}};
 let selected=getSettings()?.template||"starter",publishedUser=null,currentShareUser=null,publicHouse=null,public3D=null,publicLoadId=0,publicModeId=0,currentReaction=null;
+let syncUser=null,syncToken="",syncVersion=null,syncTimer=0,cloudBusy=false,cloudPending=false,currentVisibility=null;
+const setShareStatus=(en,uk)=>{$("houseShareStatus").textContent=tr(en,uk)};
+function stopCloudSync(){clearTimeout(syncTimer);syncTimer=0;syncToken="";syncUser=null;syncVersion=null;cloudPending=false}
+function localOwnerMismatch(user){
+ const settings=getSettings();
+ return !!(settings?.owner&&user?.id&&settings.owner!==user.id);
+}
+function backupLocal(){
+ try{
+  const layout=localStorage.getItem(STORE_KEY),settings=localStorage.getItem(settingsKey);
+  if(!layout&&!settings)return;
+  localStorage.setItem("fleki_wrld_house_last_backup",JSON.stringify({layout,settings,savedAt:Date.now()}));
+ }catch{}
+}
+function writeSettings(value){localStorage.setItem(settingsKey,JSON.stringify(value))}
+
 function previewMarkup(template){
  const n=template.rooms;
  const cols=n<=2?n:n<=4?2:n<=6?3:4,rows=Math.ceil(n/cols),cells=[];
@@ -54,8 +70,10 @@ function createHouse(){
  if(!t||!name){$("houseShareStatus").textContent=tr("Name your house first.","Спочатку введи назву будинку.");return}
  const previous=getSettings();
  if(previous?.template&&!confirm(tr("Create a new house? This will replace your saved furniture layout on this device.","Створити новий будинок? Збережена розстановка меблів на цьому пристрої буде замінена.")))return;
+ stopCloudSync();
+ backupLocal();
  const settings={template:t.id,name,createdAt:Date.now()};
- try{localStorage.setItem(settingsKey,JSON.stringify(settings));localStorage.removeItem(STORE_KEY)}catch{}
+ try{writeSettings(settings);localStorage.removeItem(STORE_KEY)}catch{setShareStatus("Browser storage unavailable.","Недоступне сховище браузера.");return}
  window.dispatchEvent(new CustomEvent("wrld:house-create",{detail:settings}));
  $("houseShareStatus").textContent=tr("House created. Start decorating!","Будинок створено. Облаштовуй меблями!");
  $("houseOpenButton").hidden=false;$("continueHouseBtn").hidden=false;$("houseOpenButton").click();
@@ -71,9 +89,116 @@ async function call(path,method="GET",body){
  if(!response.ok){const error=new Error(result.error||"Server returned "+response.status);error.status=response.status;throw error}
  return result;
 }
+async function whoAmI(){
+ if(!token())throw Error(tr("Sign in to your fleki's wrld account first.","Спочатку увійди в акаунт fleki's wrld."));
+ const r=await call("/me");
+ if(!r.user?.id)throw Error(tr("Account verification failed.","Не вдалося перевірити акаунт."));
+ return r.user;
+}
+function localHouseData(){
+ const settings=getSettings(),layout=snapshot();
+ if(!settings?.template||!TEMPLATE_BY_ID[settings.template]||!layout)throw Error(tr("Create a house before saving.","Створи будинок перед збереженням."));
+ if(layout.template!==settings.template)throw Error(tr("House editor and selected plan differ. Reopen the editor.","План будинку й редактор не збігаються. Перевідкрий редактор."));
+ return {name:settings.name||layout.name,template:settings.template,items:layout.items};
+}
+function markOwner(user){
+ const old=getSettings();if(!old?.template)return;
+ if(old.owner===user.id)return;
+ writeSettings({...old,owner:user.id});
+}
+async function saveCloudDraft({manual=false}={}){
+ if(cloudBusy){cloudPending=true;return}
+ const startedToken=token();
+ if(!startedToken){stopCloudSync();if(manual)throw Error(tr("Sign in to save your private house.","Увійди, щоб приватно зберегти будинок."));return}
+ cloudBusy=true;
+ try{
+  const user=await whoAmI();
+  if(token()!==startedToken)throw Error(tr("Account changed. Please try again.","Акаунт змінився. Повтори дію."));
+  if(localOwnerMismatch(user))throw Error(tr("This browser house belongs to another account. Create or restore your own house.","Цей будинок у браузері належить іншому акаунту. Створи або віднови власний."));
+  const local=localHouseData();
+  // First cloud save is explicit: never silently overwrite another device's newer draft.
+  if(!syncUser||syncUser!==user.id||syncToken!==startedToken){
+   if(!manual)return;
+   const remote=await call("/houses/draft");
+   if(remote.draft&&(remote.draft.template!==local.template||JSON.stringify(remote.draft.items)!==JSON.stringify(local.items))){
+    if(!confirm(tr("Your account already has a private house draft. Replace it with the house on this device?","В акаунті вже є приватна чернетка. Замінити її будинком із цього пристрою?")))return;
+   }
+   syncVersion=remote.draft?.updated_at??null;
+  }
+  const payload={...local};
+  if(syncVersion!==null)payload.expected_updated_at=syncVersion;
+  const saved=await call("/houses/draft","PUT",payload);
+  if(token()!==startedToken){stopCloudSync();return}
+  syncUser=user.id;syncToken=startedToken;syncVersion=saved.updated_at;
+  markOwner(user);
+  if(manual)setShareStatus("Private cloud draft saved ✓ Auto-save is on.","Приватну чернетку збережено ✓ Автозбереження увімкнено.");
+  else setShareStatus("Saved privately to your account ✓","Приватно збережено в акаунті ✓");
+ }catch(error){
+  if(error.status===409){stopCloudSync();setShareStatus("Your draft changed on another device. Restore it or save again manually.","Чернетку змінено на іншому пристрої. Віднови її або збережи ще раз вручну.");}
+  else if(manual)throw error;
+  else setShareStatus("Cloud auto-save failed. Your local house is still saved.","Автозбереження не вдалося. Будинок залишився у браузері.");
+ }finally{
+  cloudBusy=false;
+  if(cloudPending){cloudPending=false;if(syncUser&&syncToken===token())queueCloudSave()}
+ }
+}
+function queueCloudSave(){
+ if(!syncUser||syncToken!==token())return;
+ clearTimeout(syncTimer);
+ syncTimer=setTimeout(()=>{syncTimer=0;void saveCloudDraft()},1500);
+}
+async function restoreCloudHouse(type="draft"){
+ const user=await whoAmI(),expectedToken=token();
+ const response=await call(type==="published"?"/houses/mine":"/houses/draft");
+ const source=type==="published"?response.house:response.draft;
+ if(!source){setShareStatus(type==="published"?"No published house in your account yet.":"No private cloud draft in your account yet.",type==="published"?"У твоєму акаунті ще немає опублікованого будинку.":"В акаунті ще немає приватної чернетки.");return}
+ if(expectedToken!==token())throw Error(tr("Account changed. Try again.","Акаунт змінився. Повтори дію."));
+ const local=getSettings();
+ if(local?.template&&!confirm(tr("Replace the house on this device with your saved account house? A local backup will be kept.","Замінити будинок на цьому пристрої версією з акаунта? Збережемо локальну резервну копію.")))return;
+ backupLocal();stopCloudSync();
+ const settings={template:source.template,name:source.name,owner:user.id,createdAt:Date.now()};
+ writeSettings(settings);
+ localStorage.removeItem(STORE_KEY);
+ selected=source.template;$("houseNameInput").value=source.name;
+ window.dispatchEvent(new CustomEvent("wrld:house-import",{detail:{...settings,items:source.items}}));
+ $("houseOpenButton").hidden=false;$("continueHouseBtn").hidden=false;
+ cards();
+ if(type==="draft"){syncUser=user.id;syncToken=expectedToken;syncVersion=source.updated_at}
+ setShareStatus("House restored from your account ✓","Будинок відновлено з акаунта ✓");
+ window.dispatchEvent(new CustomEvent("wrld:house-restored",{detail:{house:source}}));
+}
+async function changeVisibility(published,inProfile){
+ const user=await whoAmI();
+ const result=await call("/houses/visibility","PATCH",{published,in_profile:inProfile});
+ currentVisibility=result.house;
+ window.dispatchEvent(new CustomEvent("wrld:house-published",{detail:{house:result.house}}));
+ setShareStatus(published?(inProfile?"House is visible in your profile.":"House is public, but hidden from your profile."):"House hidden from public view. Your furniture remains saved.",published?(inProfile?"Будинок видно в профілі.":"Будинок публічний, але прихований із профілю."):"Будинок приховано від інших. Меблі залишилися збереженими.");
+ updateVisibilityButtons();
+}
+function updateVisibilityButtons(){
+ $("houseHideButton").hidden=!currentVisibility?.published;
+ $("houseUnpublishButton").hidden=!currentVisibility?.published;
+ if(currentVisibility?.published)$("houseHideButton").textContent=currentVisibility.in_profile?tr("Hide from profile","Приховати з профілю"):tr("Show in profile","Показати в профілі");
+}
+async function refreshVisibility(){
+ if(!token()){currentVisibility=null;updateVisibilityButtons();return}
+ try{const r=await call("/houses/mine");currentVisibility=r.house;updateVisibilityButtons()}catch{currentVisibility=null;updateVisibilityButtons()}
+}
+$("houseSaveCloudButton").addEventListener("click",async()=>{try{await saveCloudDraft({manual:true})}catch(e){setShareStatus(e.message,e.message)}});
+$("houseRestoreCloudButton").addEventListener("click",async()=>{try{await restoreCloudHouse("draft")}catch(e){setShareStatus(e.message,e.message)}});
+$("houseRestorePublishedButton").addEventListener("click",async()=>{try{await restoreCloudHouse("published")}catch(e){setShareStatus(e.message,e.message)}});
+$("houseHideButton").addEventListener("click",async()=>{try{await changeVisibility(true,!currentVisibility.in_profile)}catch(e){setShareStatus(e.message,e.message)}});
+$("houseUnpublishButton").addEventListener("click",async()=>{if(!confirm(tr("Hide your published house from everyone? Your house and furniture will not be deleted.","Приховати опублікований будинок від усіх? Будинок і меблі не видаляться.")))return;try{await changeVisibility(false,false)}catch(e){setShareStatus(e.message,e.message)}});
+window.addEventListener("wrld:house-saved",()=>queueCloudSave());
+window.addEventListener("fw-auth-changed",()=>{stopCloudSync();void refreshVisibility()});
+window.addEventListener("wrld:page-change",e=>{if(e.detail?.id==="create-house")void refreshVisibility()});
+window.addEventListener("wrld:house-restore",async e=>{try{await restoreCloudHouse(e.detail?.type==="published"?"published":"draft")}catch(error){window.dispatchEvent(new CustomEvent("wrld:house-restore-error",{detail:{message:error.message}}))}});
+void refreshVisibility();
 async function publish(profile=true){
  const saved=getSettings();
  if(!saved?.template){$("houseShareStatus").textContent=tr("Create a house first.","Спочатку створи будинок.");return null}
+ const current=await whoAmI();
+ if(localOwnerMismatch(current))throw Error(tr("This browser house belongs to another account. Restore your own house first.","Цей будинок у браузері належить іншому акаунту. Спочатку віднови власний будинок."));
  const layout=snapshot();
  if(!layout){$("houseShareStatus").textContent=tr("Open your house editor and try again.","Відкрий редактор будинку й повтори.");return null}
  const existing=await call("/houses/mine");
@@ -87,6 +212,7 @@ async function publish(profile=true){
   const check=await call("/houses/mine");
   if(!check.house?.published||check.house.in_profile!==showInProfile)throw Error(tr("Publication did not persist. Retry.","Публікація не збереглася. Спробуй ще."));
   publishedUser=r.username;
+  markOwner(current);currentVisibility=check.house;updateVisibilityButtons();
   $("houseShareStatus").textContent=tr("Your house is now visible in your profile!","Твій будинок тепер видно у профілі!");
   window.dispatchEvent(new CustomEvent("wrld:house-published",{detail:{house:check.house}}));
   return r;
