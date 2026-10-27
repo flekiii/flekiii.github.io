@@ -72,6 +72,7 @@ jobs:
           test -s wrld-web-games.css
           node --test backend/totp.test.mjs backend/marketplace.test.mjs
           node --test tests/wrld-ui.test.mjs
+          node --test tests/games-viewport.test.mjs
           node --test tests/marketplace-viewport.test.mjs
           node --test tests/marketplace-viewport.test.mjs
           node --test tests/community-viewport.test.mjs
