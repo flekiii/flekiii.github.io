@@ -1,0 +1,39 @@
+import {gallery,xpInfo} from "./world-gallery.js";
+import {worldFeed} from "./world-feed.js";
+import {worldClubs} from "./world-clubs.js";
+let setup=null;
+async function init(db){
+ if(setup)return setup;
+ setup=(async()=>{for(const sql of [
+ "CREATE TABLE IF NOT EXISTS wrld_world_posts(id TEXT PRIMARY KEY,author TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,body TEXT NOT NULL,created_at INTEGER NOT NULL)",
+ "CREATE TABLE IF NOT EXISTS wrld_world_likes(post_id TEXT NOT NULL REFERENCES wrld_world_posts(id) ON DELETE CASCADE,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,PRIMARY KEY(post_id,user_id))",
+ "CREATE TABLE IF NOT EXISTS wrld_world_comments(id TEXT PRIMARY KEY,post_id TEXT NOT NULL REFERENCES wrld_world_posts(id) ON DELETE CASCADE,author TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,body TEXT NOT NULL,created_at INTEGER NOT NULL)",
+ "CREATE TABLE IF NOT EXISTS wrld_world_follows(follower TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,followed TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,created_at INTEGER NOT NULL,PRIMARY KEY(follower,followed))",
+ "CREATE TABLE IF NOT EXISTS wrld_world_clubs(id TEXT PRIMARY KEY,owner TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,name TEXT NOT NULL,description TEXT NOT NULL,created_at INTEGER NOT NULL)",
+ "CREATE TABLE IF NOT EXISTS wrld_world_members(club_id TEXT NOT NULL REFERENCES wrld_world_clubs(id) ON DELETE CASCADE,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,joined_at INTEGER NOT NULL,PRIMARY KEY(club_id,user_id))",
+ "CREATE TABLE IF NOT EXISTS wrld_world_xp(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,action TEXT NOT NULL,amount INTEGER NOT NULL,created_at INTEGER NOT NULL)"
+ ])await db.prepare(sql).run()})();
+ try{await setup}catch(e){setup=null;throw e}
+}
+const err=(message,status)=>new Response(JSON.stringify({error:message}),{status,headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"https://flekiii.github.io"}});
+async function award(db,id,action,xp,limit){
+ const start=Math.floor(Date.now()/86400000)*86400000;
+ const n=await db.prepare("SELECT COUNT(*) n FROM wrld_world_xp WHERE user_id=? AND action=? AND created_at>=?").bind(id,action,start).first();
+ if(n?.n>=limit)return;
+ await db.prepare("INSERT INTO wrld_world_xp(id,user_id,action,amount,created_at) VALUES(?,?,?,?,?)").bind(crypto.randomUUID(),id,action,xp,Date.now()).run();
+}
+export async function worldHandle(req,env,path,{auth,authorized}){
+ if(!path.startsWith("/world/"))return null;
+ await init(env.DB);
+ const user=req.headers.get("Authorization")?await auth(req,env.DB):null;
+ if(path==="/world/gallery"&&req.method==="GET")return gallery(req,env,user);
+ if(["/world/ranking","/world/progress"].includes(path)&&req.method==="GET")return xpInfo(req,env,user);
+ if(req.method!=="GET"&&!authorized(user))return err("Verify Auth2FA for this session before posting.",403);
+ let result;
+ if(["/world/feed","/world/post","/world/like","/world/comments","/world/comment","/world/follow"].includes(path))result=await worldFeed(req,env.DB,user);
+ else if(["/world/clubs","/world/club","/world/join"].includes(path))result=await worldClubs(req,env.DB,user);
+ else return err("Not found",404);
+ if(result.status===201&&user&&path==="/world/post")await award(env.DB,user.id,"post",15,3);
+ if(result.status===201&&user&&path==="/world/club")await award(env.DB,user.id,"club",20,1);
+ return result;
+}
