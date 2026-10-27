@@ -45,8 +45,8 @@ body.about-view #main{height:calc(100dvh - 89px);overflow:hidden}
 .about-shortcuts{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
 .about-shortcuts .btn{padding:8px 13px;font-size:12px}
 @media(max-width:700px){
- body.about-view #main{height:calc(100dvh - 75px)}
- #page-about.active{height:calc(100dvh - 75px - 75px)}
+ body.about-view #main{height:calc(100dvh - 89px)}
+ #page-about.active{height:calc(100dvh - 89px - 98px)}
  .about-layout{gap:clamp(7px,1.4dvh,12px)}
  .about-bio{border-radius:17px;padding:16px 18px}
  .about-bio h2{font-size:clamp(25px,6.7vw,34px);letter-spacing:-1px;margin:5px 0 8px}
@@ -63,6 +63,10 @@ body.about-view #main{height:calc(100dvh - 89px);overflow:hidden}
  .about-social-link{grid-column:3;grid-row:1;padding:8px 10px;font-size:11px}
  .about-shortcuts{gap:6px}
  .about-shortcuts .btn{padding:7px 9px;font-size:10px}
+}
+@media(max-width:640px){
+ body.about-view #main{height:calc(100dvh - 75px)}
+ #page-about.active{height:calc(100dvh - 75px - 75px)}
 }
 @media(max-height:700px){
  .about-layout{gap:8px}

@@ -13,7 +13,7 @@ test("Web Games requires a server-confirmed account but not 2FA",()=>{
 });
 test("Monobank donation linked in About",()=>{
  assert.match(html,/https:\/\/send\.monobank\.ua\/jar\/91HH8iY31q/);
- assert.match(html,/about-social-card donate/);assert.match(html,/Donate via Monobank/);
+ assert.match(html,/about-social-card donate/);assert.match(html,/data-en=\\\"Support\\\"/);
 });
 test("Memory has eight real pairs",()=>{
  const deck=memoryDeck(()=>0.5);assert.equal(deck.length,16);
