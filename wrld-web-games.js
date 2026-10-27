@@ -11,6 +11,12 @@ const L={
  merge:["2048","2048"],mergeAbout:["Merge matching number tiles to reach 2048.","Об’єднуй плитки, щоб досягти 2048."],
  guess:["Guess the Number","Вгадай число"],guessAbout:["Find a hidden number from 1 to 100.","Відгадай число від 1 до 100."],
  rps:["Rock Paper Scissors","Камінь ножиці папір"],rpsAbout:["Challenge the computer to a quick match.","Зіграй проти комп’ютера."],
+ coin:["Coin Flip","Орел чи решка"],coinAbout:["Predict heads or tails.","Вгадай орла чи решку."],
+ dice:["Dice Duel","Дуель кубиків"],diceAbout:["Roll against the computer.","Грай у кубики з комп’ютером."],
+ higher:["Higher or Lower","Більше чи менше"],higherAbout:["Predict the next number.","Вгадай наступне число."],
+ odd:["Odd or Even","Парне чи непарне"],oddAbout:["Predict parity.","Вгадай парність числа."],
+ mathadd:["Math Sprint · Addition","Математика · Додавання"],mathaddAbout:["Solve server-checked sums for XP.","Розв’язуй приклади за XP."],
+ mathmultiply:["Math Sprint · Multiply","Математика · Множення"],mathmultiplyAbout:["Solve server-checked products for XP.","Розв’язуй множення за XP."],
  play:["Play now","Грати"],back:["← All games","← Усі ігри"],again:["New game","Нова гра"],moves:["Moves","Ходи"],pairs:["Pairs","Пари"],
  wonMemory:["All pairs found. Nice work! 🎉","Усі пари знайдено! Молодець! 🎉"],yourTurn:["Your turn: X","Твій хід: X"],won:["You win! 🎉","Ти переміг! 🎉"],lost:["Computer wins. Try again!","Комп'ютер переміг. Спробуй ще!"],draw:["It's a draw!","Нічия!"],
  ready:["Press Start to begin.","Натисни Старт, щоб почати."],start:["Start","Старт"],wait:["Wait for green…","Чекай на зелений…"],tap:["CLICK!","ТИСНИ!"],
@@ -20,6 +26,7 @@ const t=k=>L[k][document.documentElement.lang==="uk"?1:0];
 const escape=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const getToken=()=>{try{return sessionStorage.getItem("fw-token")||""}catch{return ""}};
 let mergeGrid=Array(16).fill(0),mergeScore=0,guessNumber=0,guessTries=0,guessText="",rpsText="",rpsWins=0;
+let miniScore=0,miniInfo="",miniPrevious=7,mathRound=null,mathInfo="",mathBusy=false;
 let validated="",user=null,view="menu",deck=[],up=[],matched=new Set(),moves=0,locked=false,board=[],result=null,react="ready",reactionAt=0,reactMs=null,timeout=0,nonce=0,request=0;
 const onPage=()=>document.getElementById("page-web-games")?.classList.contains("active");
 const allowed=()=>!!(validated&&validated===getToken()&&user);
@@ -44,7 +51,7 @@ async function verify(showLoading=false){
  }catch{if(id===request&&onPage()){revoke();gate(true)}return false}
 }
 function menu(){
- const items=[["memory","🧠"],["ttt","⭕"],["reaction","⚡"],["merge","🔢"],["guess","🎯"],["rps","✊"]];
+ const items=[["memory","🧠"],["ttt","⭕"],["reaction","⚡"],["merge","🔢"],["guess","🎯"],["rps","✊"],["coin","🪙"],["dice","🎲"],["higher","🃏"],["odd","🔮"],["mathadd","➕"],["mathmultiply","✖️"]];
  root.innerHTML='<div class="wg-head"><p>'+t("subtitle")+'</p><span class="wg-account">● @'+escape(user.username)+'</span></div><div class="wg-grid">'+items.map(([id,icon])=>
   '<button class="wg-tile" data-wg="launch" data-game="'+id+'"><span class="wg-thumb">'+icon+'</span><strong>'+t(id)+'</strong><span class="wg-desc">'+t(id+"About")+'</span><span class="wg-play">'+t("play")+' ↗</span></button>').join("")+'</div>';
 }
@@ -59,6 +66,8 @@ function newGame(id){
  if(id==="merge"){mergeGrid=newTile2048(newTile2048(Array(16).fill(0)));mergeScore=0}
  if(id==="guess"){guessNumber=1+Math.floor(Math.random()*100);guessTries=0;guessText=""}
  if(id==="rps"){rpsWins=0;rpsText=""}
+ if(["coin","dice","higher","odd"].includes(id)){miniScore=0;miniInfo="";miniPrevious=1+Math.floor(Math.random()*13)}
+ if(["mathadd","mathmultiply"].includes(id)){mathRound=null;mathInfo="";void mathStart()}
  render();
 }
 function memoryView(){
@@ -125,14 +134,51 @@ function playRps(pick){
  rpsText=en2048("Computer: ","Комп’ютер: ")+opponent+" · "+(pick===opponent?en2048("Draw!","Нічия!"):win?en2048("You win! 🎉","Ти переміг! 🎉"):en2048("Computer wins","Переміг комп’ютер"));
  rpsView();
 }
-function render(){if(!onPage())return;if(!allowed())return gate();if(view==="memory")memoryView();else if(view==="ttt")tttView();else if(view==="reaction")reactionView();else if(view==="merge")mergeView();else if(view==="guess")guessView();else if(view==="rps")rpsView();else menu()}
+function miniView(){
+ const id=view,choices=id==="coin"?[["heads","🪙 Heads"],["tails","🌙 Tails"]]:id==="dice"?[["roll","🎲 Roll"]]:id==="higher"?[["higher","↑ Higher"],["lower","↓ Lower"]]:[["odd","Odd"],["even","Even"]];
+ frame(id,'<div class="wg-mini-arena"><h3>🏆 '+en2048("Score: ","Рахунок: ")+miniScore+'</h3><div class="wg-card-number">'+(id==="higher"?miniPrevious:({coin:"🪙",dice:"🎲",odd:"🔮"}[id]))+'</div><div class="wg-mini-buttons">'+choices.map(([key,label])=>'<button type="button" data-wg="mini" data-choice="'+key+'">'+label+'</button>').join("")+'</div><p class="wg-status">'+(miniInfo||en2048("Choose!","Обирай!"))+'</p></div>');
+}
+function miniPlay(choice){
+ let win=false,result="";
+ if(view==="coin"){const x=Math.random()<.5?"heads":"tails";win=choice===x;result=x}
+ if(view==="dice"){const a=1+Math.floor(Math.random()*6),b=1+Math.floor(Math.random()*6);win=a>b;result=a+" vs "+b}
+ if(view==="higher"){const n=1+Math.floor(Math.random()*13);win=choice==="higher"?n>miniPrevious:n<miniPrevious;result=miniPrevious+" → "+n;miniPrevious=n}
+ if(view==="odd"){const n=1+Math.floor(Math.random()*100);win=choice===(n%2?"odd":"even");result=String(n)}
+ if(win)miniScore++;
+ miniInfo=result+" · "+(win?en2048("Correct! ✅","Правильно! ✅"):en2048("Try again","Спробуй ще"));miniView();
+}
+async function mathStart(){
+ if(mathBusy||!allowed())return;
+ const mode=view,auth=getToken();mathBusy=true;mathRound=null;mathInfo=en2048("Loading question…","Завантажуємо запитання…");render();
+ try{
+  const response=await fetch("https://flekis-wrld-api.flekideveloper.workers.dev/arcade/start",{method:"POST",headers:{Authorization:"Bearer "+auth,"Content-Type":"application/json"},body:JSON.stringify({mode:mode==="mathadd"?"add":"multiply"}),cache:"no-store"});
+  const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"Challenge unavailable");
+  if(view===mode&&getToken()===auth){mathRound=data;mathInfo=""}
+ }catch(e){mathInfo=e.message}finally{mathBusy=false;if(view===mode)render()}
+}
+function mathView(){
+ frame(view,'<div class="wg-mini-arena"><span class="overline">SERVER-VERIFIED · +5 XP</span><div class="wg-card-number">'+escape(mathRound?.question||"…")+'</div>'+
+ (mathRound?'<form id="wg-math-form" class="wg-guess-form"><input class="social-input" name="answer" type="number" required min="0" max="500" inputmode="numeric" placeholder="Answer"><button type="submit" class="btn primary">'+en2048("Check","Перевірити")+'</button></form>':'<button type="button" class="btn primary" data-wg="math-start">'+en2048("Next round","Новий раунд")+'</button>')+
+ '<p class="wg-status" role="status">'+escape(mathInfo||en2048("Solve and earn XP.","Вирішуй і заробляй XP."))+'</p></div>');
+}
+async function mathAnswer(value){
+ if(!mathRound||mathBusy||!Number.isInteger(value))return;
+ const round=mathRound,mode=view,auth=getToken();mathRound=null;mathBusy=true;
+ try{
+  const response=await fetch("https://flekis-wrld-api.flekideveloper.workers.dev/arcade/answer",{method:"POST",headers:{Authorization:"Bearer "+auth,"Content-Type":"application/json"},body:JSON.stringify({id:round.id,answer:value}),cache:"no-store"});
+  const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"Answer unavailable");
+  mathInfo=(data.correct?"✅ ":"❌ ")+en2048("Answer: ","Відповідь: ")+data.answer+(data.correct?" · +5 XP":"");
+  window.WrldProfile?.refresh?.();
+ }catch(e){mathInfo=e.message}finally{mathBusy=false;if(view===mode)render()}
+}
+function render(){if(!onPage())return;if(!allowed())return gate();if(view==="memory")memoryView();else if(view==="ttt")tttView();else if(view==="reaction")reactionView();else if(view==="merge")mergeView();else if(view==="guess")guessView();else if(view==="rps")rpsView();else if(["coin","dice","higher","odd"].includes(view))miniView();else if(["mathadd","mathmultiply"].includes(view))mathView();else menu()}
 root.addEventListener("click",async e=>{
  const b=e.target.closest("[data-wg]");if(!b||!root.contains(b))return;
  const action=b.dataset.wg;
  if(action==="sign"){document.querySelector('#dock [data-go="profile"]')?.click();return}
  if(action==="retry"){void verify(true);return}
  if(!allowed()){revoke();gate();return}
- if(action==="launch"){const key=b.dataset.game;if(["memory","ttt","reaction","merge","guess","rps"].includes(key)&&await verify())newGame(key);return}
+ if(action==="launch"){const key=b.dataset.game;if(["memory","ttt","reaction","merge","guess","rps","coin","dice","higher","odd","mathadd","mathmultiply"].includes(key)&&await verify())newGame(key);return}
  if(action==="back"){cancel();view="menu";render();return}
  if(action==="again"){newGame(view);return}
  if(action==="card"&&view==="memory")card(Number(b.dataset.i));
@@ -140,9 +186,14 @@ root.addEventListener("click",async e=>{
  if(action==="react"&&view==="reaction")reactionClick();
  if(action==="move"&&view==="merge")shift(b.dataset.dir);
  if(action==="rps-pick"&&view==="rps")playRps(b.dataset.pick);
+ if(action==="mini"&&["coin","dice","higher","odd"].includes(view))miniPlay(b.dataset.choice);
+ if(action==="math-start"&&["mathadd","mathmultiply"].includes(view))void mathStart();
 });
 window.addEventListener("wrld:page-change",e=>{if(e.detail?.id==="web-games")void verify(true);else revoke()});
-document.addEventListener("submit",e=>{if(e.target.id!=="wg-guess-form")return;e.preventDefault();if(onPage()&&allowed()&&view==="guess")guessIt(Number(new FormData(e.target).get("guess")))});
+document.addEventListener("submit",e=>{
+ if(e.target.id==="wg-guess-form"){e.preventDefault();if(onPage()&&allowed()&&view==="guess")guessIt(Number(new FormData(e.target).get("guess")))}
+ if(e.target.id==="wg-math-form"){e.preventDefault();if(onPage()&&allowed()&&["mathadd","mathmultiply"].includes(view))void mathAnswer(Number(new FormData(e.target).get("answer")))}
+});
 window.addEventListener("keydown",e=>{if(!onPage()||!allowed()||view!=="merge"||e.target.closest("input,textarea,select,[contenteditable]"))return;const d={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"up",ArrowDown:"down"}[e.key];if(d){e.preventDefault();shift(d)}});
 window.addEventListener("fw-auth-changed",()=>{revoke();if(onPage())void verify(true)});
 window.addEventListener("wrld:language-change",()=>{if(onPage())render()});
