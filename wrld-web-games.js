@@ -64,7 +64,7 @@ async function verify(showLoading=false){
 }
 function menu(){
  const items=[["memory","🧠"],["ttt","⭕"],["reaction","⚡"],["merge","🔢"],["guess","🎯"],["rps","✊"],["coin","🪙"],["dice","🎲"],["higher","🃏"],["odd","🔮"],["mathadd","➕"],["mathmultiply","✖️"],["wordmix","🔤"],["hangman","🔠"],["typing","⌨️"],["sequence","🔢"],["colors","🎨"],["simon","🧩"],["mines","💣"],["lights","💡"],["slide","🧱"],["connect","🟣"]];
- root.innerHTML='<div class="wg-head"><div><span class="overline">FLEKI'S WRLD · ARCADE</span><h2>'+(document.documentElement.lang==="uk"?"22 браузерні ігри":"22 browser games")+'</h2><p>'+t("subtitle")+'</p></div><span class="wg-account">● @'+escape(user.username)+'</span></div><div class="wg-grid">'+items.map(([id,icon])=>
+ root.innerHTML='<div class="wg-head"><div><span class="overline">FLEKI’S WRLD · ARCADE</span><h2>'+(document.documentElement.lang==="uk"?"22 браузерні ігри":"22 browser games")+'</h2><p>'+t("subtitle")+'</p></div><span class="wg-account">● @'+escape(user.username)+'</span></div><div class="wg-grid">'+items.map(([id,icon])=>
   '<button class="wg-tile" data-wg="launch" data-game="'+id+'"><span class="wg-thumb">'+icon+'</span><strong>'+t(id)+'</strong><span class="wg-desc">'+t(id+"About")+'</span><span class="wg-play">'+t("play")+' ↗</span></button>').join("")+'</div>';
 }
 function frame(id,inside){

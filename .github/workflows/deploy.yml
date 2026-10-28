@@ -70,6 +70,7 @@ jobs:
           node --check wrld-web-games-core.mjs
           node --test tests/web-games.test.mjs
           node --test tests/web-games-expanded.test.mjs
+          node --test tests/web-games-boot.test.mjs
           node --test tests/world-quests-expanded.test.mjs
           node --check backend/world-quests.js
           node --check wrld-web-games-extra.mjs
