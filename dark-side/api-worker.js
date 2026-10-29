@@ -10,10 +10,10 @@ const sha = async s => asHex(await crypto.subtle.digest("SHA-256",encoder.encode
 const equal = (a,b) => {if(typeof a!=="string"||typeof b!=="string"||a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0;};
 const validName = s => typeof s==="string" && /^[a-zA-Z0-9_]{3,24}$/.test(s);
 const validPass = s => typeof s==="string"&&s.length>=12&&s.length<=128;
-async function derive(password,salt) {
-  const key=await crypto.subtle.importKey("raw",encoder.encode(password),"PBKDF2",false,["deriveBits"]);
-  return asHex(await crypto.subtle.deriveBits({name:"PBKDF2",salt:Uint8Array.from(salt.match(/../g).map(h=>parseInt(h,16))),iterations:210000,hash:"SHA-256"},key,256));
-}
+// The browser runs PBKDF2; only its one-way verifier reaches the Worker.
+const validSalt = s => typeof s==="string" && /^[a-f0-9]{32}$/.test(s);
+const validProof = s => typeof s==="string" && /^[a-f0-9]{64}$/.test(s);
+const verifier = async proof => sha("darkside-v1/"+proof);
 function response(data,status=200,origin=ORIGIN) {
   return new Response(JSON.stringify(data),{status,headers:{
     "Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store, max-age=0",
@@ -74,10 +74,10 @@ async fetch(req,env) {
       const existing=await db.prepare("SELECT 1 FROM accounts WHERE role='owner' LIMIT 1").first();
       if(existing)throw fail("Власника вже створено",409);
       const b=await body(req);
-      if(!validName(b.username)||!validPass(b.password)||typeof b.setupKey!=="string")throw fail("Логін: 3–24 символи. Пароль: 12–128 символів.");
+      if(!validName(b.username)||!validSalt(b.salt)||!validProof(b.proof)||typeof b.setupKey!=="string")throw fail("Логін: 3–24 символи. Пароль: 12–128 символів.");
       const key=await sha(b.setupKey);
       if(!equal(key,env.BOOTSTRAP_HASH))throw fail("Невірний ключ власника",403);
-      const salt=randomHex(16), pw=await derive(b.password,salt),at=now();
+      const salt=b.salt, pw=await verifier(b.proof),at=now();
       const u={id:crypto.randomUUID(),username:b.username,role:"owner",created_at:at};
       try{await db.prepare("INSERT INTO accounts(id,username,salt,password_hash,role,enabled,created_at) VALUES(?,?,?,?,?,1,?)").bind(u.id,u.username,salt,pw,u.role,at).run();}
       catch {throw fail("Не вдалося створити власника (можливо, він уже існує)",409);}
@@ -85,11 +85,11 @@ async fetch(req,env) {
     }
     if(path==="/join"&&req.method==="POST"){
       const b=await body(req);
-      if(!validName(b.username)||!validPass(b.password)||typeof b.inviteCode!=="string"||b.inviteCode.length>128)throw fail("Недійсні дані реєстрації");
+      if(!validName(b.username)||!validSalt(b.salt)||!validProof(b.proof)||typeof b.inviteCode!=="string"||b.inviteCode.length>128)throw fail("Недійсні дані реєстрації");
       const codeHash=await sha(b.inviteCode),at=now();
       const active=await db.prepare("SELECT id FROM invites WHERE code_hash=? AND revoked_at IS NULL AND used_at IS NULL AND expires_at>?").bind(codeHash,at).first();
       if(!active)throw fail("Запрошення недійсне або вже використане",403);
-      const id=crypto.randomUUID(),salt=randomHex(16),pw=await derive(b.password,salt);
+      const id=crypto.randomUUID(),salt=b.salt,pw=await verifier(b.proof);
       try{
         const results=await db.batch([
           db.prepare("UPDATE invites SET used_by=?,used_at=? WHERE id=? AND used_at IS NULL AND revoked_at IS NULL AND expires_at>?").bind(id,at,active.id,at),
@@ -99,13 +99,19 @@ async fetch(req,env) {
       }catch(e){if(e?.status)throw e;throw fail("Логін зайнятий або запрошення недійсне",409);}
       return response(await issue(db,{id,username:b.username,role:"member",created_at:at}),201);
     }
+    if(path==="/auth/challenge"&&req.method==="POST"){
+      const b=await body(req);
+      if(typeof b.username!=="string"||b.username.length>60)throw fail("Неправильний логін");
+      const u=await db.prepare("SELECT salt FROM accounts WHERE username=?").bind(b.username).first();
+      return response({salt:u?.salt||(await sha("darkside-unknown/"+b.username.toLowerCase())).slice(0,32)});
+    }
     if(path==="/login"&&req.method==="POST"){
       const b=await body(req);
-      if(typeof b.username!=="string"||typeof b.password!=="string"||b.username.length>60||b.password.length>200)throw fail("Невірний логін або пароль",401);
+      if(typeof b.username!=="string"||b.username.length>60||!validProof(b.proof))throw fail("Невірний логін або пароль",401);
       const key=await sha((req.headers.get("cf-connecting-ip")||"unknown")+"|"+b.username.toLowerCase());
       await throttled(db,key);
       const u=await db.prepare("SELECT * FROM accounts WHERE username=? AND enabled=1").bind(b.username).first();
-      if(!u||!equal(await derive(b.password,u.salt),u.password_hash)){
+      if(!u||!equal(await verifier(b.proof),u.password_hash)){
         await wrong(db,key);throw fail("Невірний логін або пароль",401);
       }
       await db.prepare("DELETE FROM login_attempts WHERE key=?").bind(key).run();
