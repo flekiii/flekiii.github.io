@@ -23,6 +23,13 @@ async function api(path,{method="GET",body,authorized=true}={}){
   if(!response.ok)throw new Error(data.error||"Помилка запиту ("+response.status+")");
   return data;
 }
+async function passwordProof(password,salt){
+  const secret=await crypto.subtle.importKey("raw",new TextEncoder().encode(password),"PBKDF2",false,["deriveBits"]);
+  const saltBytes=Uint8Array.from(salt.match(/../g).map(hex=>parseInt(hex,16)));
+  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:saltBytes,iterations:210000,hash:"SHA-256"},secret,256);
+  return Array.from(new Uint8Array(bits)).map(byte=>byte.toString(16).padStart(2,"0")).join("");
+}
+function newSalt(){return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(byte=>byte.toString(16).padStart(2,"0")).join("");}
 function authMode(mode){
   state.mode=mode;notice("");
   show("setup-wrap",mode==="setup");
@@ -56,11 +63,18 @@ $("auth-form").addEventListener("submit",async e=>{
   const username=$("username").value.trim(),password=$("password").value;
   if(!/^[A-Za-z0-9_]{3,24}$/.test(username)){notice("Логін: від 3 до 24 латинських літер, цифр або _.");return;}
   if(password.length<12||password.length>128){notice("Пароль має містити від 12 до 128 символів.");return;}
-  let path="/login",payload={username,password};
-  if(state.mode==="setup"){path="/bootstrap";payload.setupKey=$("setup-key").value;}
-  if(state.mode==="join"){path="/join";payload.inviteCode=$("invite-code").value.trim();}
   btn.disabled=true;notice("");
   try{
+    let path="/login",payload={username};
+    if(state.mode==="login"){
+      const challenge=await api("/auth/challenge",{method:"POST",body:{username},authorized:false});
+      payload.proof=await passwordProof(password,challenge.salt);
+    }else{
+      const salt=newSalt();payload.salt=salt;
+      payload.proof=await passwordProof(password,salt);
+      if(state.mode==="setup"){path="/bootstrap";payload.setupKey=$("setup-key").value;}
+      else {path="/join";payload.inviteCode=$("invite-code").value.trim();}
+    }
     const d=await api(path,{method:"POST",body:payload,authorized:false});
     state.token=d.token;state.user=d.user;sessionStorage.setItem("darkside_session",state.token);
     $("password").value="";$("setup-key").value="";$("invite-code").value="";pendingInvite="";
